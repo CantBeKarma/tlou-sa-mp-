@@ -1,2 +1,1 @@
-# tlou-sa-mp-
-The Last of Us (SA-MP) Project
+# The Last of Us (SA-MP) Project
