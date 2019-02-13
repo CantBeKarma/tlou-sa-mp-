@@ -26,6 +26,8 @@ hook OnPlayerText(playerid, text[])
 				: (strfind(text, ".", true, 0) != -1) ? ("whispers") 
 				: ("says"), \
 				sizeof(msgType));
+
+	printf(msgType);
 	
 	switch(YHash(msgType))
 	{
@@ -36,6 +38,8 @@ hook OnPlayerText(playerid, text[])
 
 	new msgFormat[170];
 	format(msgFormat, sizeof(msgFormat), "%s %s: %c%s%c", PlayerName(playerid), msgType, toupper(text[0]), text[1], punctuation);
+	
+	printf(msgFormat);
 	ProxMessage(msgDistance, playerid, msgFormat);
 
 	Log(eLogs[e_Log_Index][LOG_INDEX_CHAT], INFO, msgFormat);
@@ -93,11 +97,15 @@ SendChatMessage(playerid, color, text[])
 		strcpy(messagePartOne, substr(text, 63, 128), sizeof(messagePartOne));
 	}
 
+	printf(messagePartOne);
+	printf(messagePartTwo);
+
 	new chatLineIdx = 0;
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
 	{
 		if(IsPlayerCustomChatFull[playerid] == true)
 		{
+			printf("My chat is full.");
 			chatLineIdx = (splitInTwoLines == true) ? (MAX_CHAT_LINES-2) : (MAX_CHAT_LINES-1);
 			break;
 		}
@@ -105,16 +113,19 @@ SendChatMessage(playerid, color, text[])
 		if(strlen(PlayerCustomChatText[playerid][i]) > 0 
 			|| PlayerCustomChatText[playerid][i][0] != EOS)
 		{
+			printf("Can't use index: %d", i);
 			continue;
 		}
 
 		if(i == MAX_CHAT_LINES-1)
 		{
+			printf("I'm on the last line of my chat");
 			IsPlayerCustomChatFull[playerid] = true;
 			chatLineIdx = MAX_CHAT_LINES-1;
 			break;
 		}
 
+		printf("My chatLineIdx used: %d", i);
 		chatLineIdx = i;
 	}
 
