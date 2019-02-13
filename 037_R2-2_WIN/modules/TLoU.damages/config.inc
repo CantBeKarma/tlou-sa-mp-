@@ -1,0 +1,24 @@
+#define     TICK_RATE_DAM_ANIM  	(1800)
+
+#define     BODY_PART_TORSO     	(3)
+#define     BODY_PART_GROIN     	(4)
+#define     BODY_PART_LEFT_ARM  	(5)
+#define     BODY_PART_RIGHT_ARM 	(6)
+#define     BODY_PART_LEFT_LEG  	(7)
+#define     BODY_PART_RIGHT_LEG 	(8)
+#define     BODY_PART_HEAD      	(9)
+
+#define     REDUCE_DAMAGE_AMOUNT_DISTANCE       (20.0)
+#define     SHOTGUN_TORSO_SHOT_DISTANCE         (10.0)
+
+// Array of damage animations.
+stock const DamageAnimations[MAX_DAMAGE_ANIMS][32] =
+{
+	"DAM_ARML_FRMBK", "DAM_ARML_FRMFT", "DAM_ARML_FRMLT",
+	"DAM_ARMR_FRMBK", "DAM_ARMR_FRMFT", "DAM_ARMR_FRMRT",
+
+	"DAM_LEGL_FRMBK", "DAM_LEGL_FRMFT", "DAM_LEGL_FRMLT",
+	"DAM_LEGR_FRMBK", "DAM_LEGR_FRMFT", "DAM_LEGR_FRMRT",
+
+	"DAM_STOMACH_FRMBK", "DAM_STOMACH_FRMFT", "DAM_STOMACH_FRMLT", "DAM_STOMACH_FRMRT"
+};

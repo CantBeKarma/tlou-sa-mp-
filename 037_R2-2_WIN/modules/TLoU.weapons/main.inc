@@ -1,0 +1,7 @@
+#include ".\modules\TLoU.weapons\utils.inc"
+#include ".\modules\TLoU.weapons\aiming.inc"
+#include ".\modules\TLoU.weapons\bow.inc"
+#include ".\modules\TLoU.weapons\shiv.inc"
+#include ".\modules\TLoU.weapons\projectiles.inc"
+#include ".\modules\TLoU.weapons\callbacks.inc"
+#include ".\modules\TLoU.weapons\timers.inc"

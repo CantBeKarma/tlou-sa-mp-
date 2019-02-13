@@ -1,0 +1,603 @@
+// Define player spawn info with SetPlayerTeam fix.
+function SetSpawnInfoEx(playerid, skin, Float:x, Float:y, Float:z, Float:rotation)
+{
+	SetPlayerTeam(playerid, FACTION_NONE);
+	SetSpawnInfo(playerid, NO_TEAM, skin, Float:x, Float:y, Float:z, Float:rotation, 0, 0, 0, 0, 0, 0);
+}
+
+// Clear player chat.
+ClearChat(playerid)
+{
+	for(new i = 0; i != 50; i++)
+	{
+		SendClientMessage(playerid, -1, " ");
+	}
+}
+
+// Check what key is player currently holding.
+IsPlayerHoldingKey(playerid, holdingKey)
+{
+    static keys, updown, leftright;
+	GetPlayerKeys(playerid, keys, updown, leftright);
+    return (keys & holdingKey);
+}
+
+// Absolute integer value.
+// IntAbs(value)
+// {
+// 	return ((value < 0) ? (-value) : (value));
+// }
+
+// Random between two numbers.
+RandomEx(min, max)
+{
+	return random(max - min) + min;
+}
+
+// Extends GetPlayerSkin default function.
+GetPlayerSkinEx(playerid)
+{
+	// if(GetPlayerSkin(playerid) == eCharsInfo[playerid][e_iSkinId])
+	// {
+	return eCharsInfo[playerid][e_iSkinId];
+	// }
+	// return -1;
+}
+
+// Extends SetPlayerSkin default function.
+SetPlayerSkinEx(playerid, skinId)
+{
+    eCharsInfo[playerid][e_iSkinId] = skinId;
+    SetPlayerSkin(playerid, skinId);
+    return 1;
+}
+
+// Check what's player's current speed.
+GetPlayerSpeed(playerid)
+{
+	new Float:x, Float:y, Float:z, Float:result;
+   	GetPlayerVelocity(playerid, x, y, z);
+    result = floatsqroot(floatpower(floatabs(x), 2.0) + floatpower(floatabs(y), 2.0) + floatpower(floatabs(z), 2.0)) * 179.28625;
+    return floatround(result);
+}
+
+#if !defined strcpy
+
+stock strcpy(dest[], src[], sz=sizeof(dest))
+{
+	dest[0] = 0;	
+	return strcat(dest, src, sz);
+}
+
+#endif
+
+// Set player screen to black and show it.
+ShowPlayerBlackScreen(playerid)
+{
+	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+	if(color != COLOR_BLACK)
+	{
+    	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], COLOR_BLACK);
+	}
+	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+}
+
+// Disable ambients noise (wind noise)
+DisableDefaultAmbientNoise(playerid)
+{
+	return PlayerPlaySound(playerid, 1, 0.0, 0.0, 0.0);
+}
+
+// Helper : checking if player is in a ducked mode or not (crouching).
+IsPlayerCrouched(playerid)
+{
+	return GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK;
+}
+
+// Get player's IP.
+forward [16]GetPlayerIpAddress(playerid);
+stock GetPlayerIpAddress(playerid)
+{
+	//#pragma unused playerid
+    #emit PUSH.C 16
+    #emit PUSH.S 16
+    //#emit PUSH.S 12
+	#emit PUSH.S playerid
+    #emit PUSH.C 12
+    #emit SYSREQ.C GetPlayerIp
+    #emit STACK 16
+    #emit RETN
+}
+// GetPlayerIpAddress(playerid)
+// {
+// 	new address[16];
+//     GetPlayerIp(playerid, address, sizeof(address));
+// 	return address;
+// }
+
+// Fade player screen
+function FadePlayerScreen(playerid, type)
+{
+	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+
+	if(type == FADE_IN)
+	{
+		color = (((color + 10) >= 255) ? 255 : color + 10);
+		if(color == 255)
+			type = FADE_NONE;
+	}
+	else if(type == FADE_OUT)
+	{
+		color = (((color - 10) <= 0) ? 0 : color - 10);
+		if(!color)
+			type = FADE_NONE;
+	}
+
+	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], color);
+	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+
+	if(type != FADE_NONE)
+	{
+	    SetTimerEx("FadePlayerScreen", 50, false, "dd", playerid, type);
+	}
+}
+
+// Face player against player.
+SetPlayerToFacePlayer(playerid, targetid)
+{
+	static  
+			Float:x, Float:y, Float:z, Float:angle,
+			Float:x2, Float:y2, Float:z2;
+
+	GetPlayerPos(targetid, x, y, z);
+	GetPlayerPos(playerid, x2, y2, z2);
+
+	angle = (180.0 - atan2(x2 - x, y2 - y));
+
+	if(IsPlayerNPC(playerid)) FCNPC_SetAngle(playerid, angle + (5.0 * -1));
+	else SetPlayerFacingAngle(playerid, angle + (5.0 * -1));
+}
+
+// Set player's facing angle where he's currently looking (useful for custom-weapons).
+SetAngleBasedOnCam(playerid)
+{
+	new Float:pCamX, Float:pCamY, Float:pCamZ;
+	GetPlayerCameraPos(playerid, pCamX, pCamY, pCamZ);
+
+	new Float:pCamVecX, Float:pCamVecY, Float:pCamVecZ;
+	GetPlayerCameraFrontVector(playerid, pCamVecX, pCamVecY, pCamVecZ);
+
+	new Float:pPosX, Float:pPosY, Float:pPosZ, Float:angle;
+	GetPlayerPos(playerid, pPosX, pPosY, pPosZ);
+
+	new Float:dest_angleX, Float:dest_angleY;
+	dest_angleX = (pCamX + pCamVecX);
+	dest_angleY = (pCamY + pCamVecY);
+	angle = atan2(dest_angleX - pPosX, dest_angleY - pPosY);
+	
+	SetPlayerFacingAngle(playerid, 180.0 - angle);
+}
+
+// Check distance between players.
+Float:GetDistanceBetweenPlayers(playerid, targetplayerid)
+{
+    if(!IsPlayerConnected(playerid) || !IsPlayerConnected(targetplayerid)) 
+	{
+        return -1.00;
+    }
+
+	new Float:x, Float:y, Float:z;
+	if(IsPlayerNPC(targetplayerid)) FCNPC_GetPosition(targetplayerid, x, y, z);
+	else GetPlayerPos(targetplayerid, x, y, z);
+	
+	return GetPlayerDistanceFromPoint(playerid, x, y, z);
+}
+
+// Check if one Z point is higher/lower than second Z point.
+CompareZ(Float:fZ, Float:fZ2, Float:difference)
+{
+	new Float:zdiff = floatabs(fZ-fZ2);
+	if(zdiff == 0.0) return true;
+	else if(fZ < 0 && fZ2 < 0)
+	{
+		if(zdiff <= difference) return true;
+		return false;
+	}
+	else if(fZ > 0 && fZ2 > 0)
+	{
+		if(zdiff <= difference) return true;
+		return false;
+	}
+	return false;
+}
+
+#define		INVALID_Z_LEVEL		(-1)
+#define		Z_LEVEL_SAME		(0)
+#define		Z_LEVEL_ABOVE		(1)
+#define		Z_LEVEL_BELOW		(2)
+
+CMD:checkzdiff(playerid, params[])
+{
+	new targetId;
+	if(sscanf(params, "d", targetId))return SCM(playerid, -1, "/checkzdiff (targetId)");
+	{
+		new Float:z;
+		GetPlayerPos(playerid, z, z, z);
+
+		new Float:targetZ;
+		FCNPC_GetPosition(targetId, targetZ, targetZ, targetZ);
+
+		SCMF(playerid, -1, "Height diff result : %d", CompareZ_Level(z, targetZ));
+		SCMF(playerid, -1, "Actual diff: %f", z-targetZ);
+	}
+	return 1;
+}
+
+CompareZ_Level(Float:fZ, Float:fZ2)//, Float:heightDiff)
+{
+	new Float:zDiff = fZ-fZ2;
+
+	if(zDiff >= -0.1 && zDiff <= 1.0)
+		return Z_LEVEL_SAME;
+		
+	else if(zDiff >= 1.1)
+	//else if(floatcmp(zDiff, heightDiff) == 1)
+		return Z_LEVEL_ABOVE;
+
+	else if(zDiff < -0.1)
+	//else if(floatcmp(zDiff, heightDiff) == -1)
+		return Z_LEVEL_BELOW;
+	
+	return INVALID_Z_LEVEL;	
+}
+
+// Camera interploation when opening the backpack.
+MoveCameraNextToPlayer(playerid, Float:distance, Float:offset, move_time, Float:height = 0.0)
+{
+    new Float:X, Float:Y, Float:Z, Float:Ang;
+    GetPlayerPos(playerid, X, Y, Z);
+    GetPlayerFacingAngle(playerid, Ang);
+
+    new Float:newX = X + (distance * floatsin(-Ang, degrees));
+    new Float:newY = Y + (distance * floatcos(-Ang, degrees));
+
+    SetCameraBehindPlayer(playerid);
+    SetPlayerCameraPos(playerid, newX, newY, Z + height);
+
+    X = newX, Y = newY;
+    Ang -= 90.0;
+
+    newX += (offset * floatsin(-Ang, degrees));
+    newY += (offset * floatcos(-Ang, degrees));
+    InterpolateCameraPos(playerid, X, Y, Z, newX, newY, Z, move_time, CAMERA_MOVE);
+}
+
+// Get XY coords in front of a player with certain distance.
+Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
+{
+	new Float:ang;
+	GetPlayerPos(playerid, x, y, ang);
+	GetPlayerFacingAngle(playerid, ang);
+
+	x += (distance * floatsin(-ang, degrees));
+	y += (distance * floatcos(-ang, degrees));
+	return ang;
+}
+Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)return GetXYInFrontOfPlayer(playerid, x, y, distance);
+// Get XY coords behind player with certain distance (for distance substract sign '-' needs to be supplied).
+
+// new Iterator:AttachmentSlots<MAX_PLAYERS, MAX_PLAYER_ATTACHED_OBJECTS>;
+// new Iterator:AttachmentModel<MAX_PLAYERS, MAX_PLAYER_ATTACHED_OBJECTS>;
+
+// Attach : attach backpack to player's back.
+AttachBackpackToPlayer(playerid, bool:isInFrontOfPlayer = false)
+{
+	switch(GetPlayerSkinEx(playerid))
+	{
+		case SKIN_JOEL:
+			SPAO(playerid, OBJECT_MODEL_JOELBP, isInFrontOfPlayer);
+
+		case SKIN_ELLIE, SKIN_ELLIE2:
+			SPAO(playerid, OBJECT_MODEL_ELLIEBP, isInFrontOfPlayer);
+
+		case SKIN_TESS:
+			SPAO(playerid, OBJECT_MODEL_TESSBP, isInFrontOfPlayer);
+
+		default:
+			SPAO(playerid, OBJECT_MODEL_BILLBP, isInFrontOfPlayer);
+	}
+}
+
+// Gets a free available attachment slot.
+GetFreeAttachmentSlot(playerid)
+{
+    for(new i = 0; i != MAX_PLAYER_ATTACHED_OBJECTS; i++)
+    {
+        if(!IsPlayerAttachedObjectSlotUsed(playerid, i))
+			return i;
+    }
+    return -1;
+}
+
+// Check if attached object slot is used - if so, remove attached object.
+RemovePlayerAttachedObj(playerid, slotId)
+{
+    if(IsPlayerAttachedObjectSlotUsed(playerid, slotId) && slotId != -1)
+	{
+		//SCMF(playerid, -1, "RemovePlayerAttObj: (slotId: %d)", slotId);
+        RemovePlayerAttachedObject(playerid, slotId);
+	}
+}
+
+// Attach models to player (extraInfo is used if there are more than one option for a specific model).
+SPAO(playerid, modelId, bool:extraInfo = false)
+{
+	if(modelId == -1)
+		return;
+		
+	new 
+		slotIndex = -1, 
+		attachmentIndex = -1;
+
+	for(new i = 0; i != MAX_ATTACHMENTS_DATA; i++)
+	{
+		if(eAttachmentsData[i][e_iModelId] != modelId || eAttachmentsData[i][e_bExtraInfo] != extraInfo)
+			continue;
+
+		if(eAttachmentsData[i][e_iSkinId] == GetPlayerSkinEx(playerid) || eAttachmentsData[i][e_iSkinId] == -1)
+		{
+			attachmentIndex = i;
+			//slotIndex = Iter_Alloc(AttachmentSlots<playerid>);
+
+			slotIndex = GetFreeAttachmentSlot(playerid);
+			//SCMF(playerid, -1, "(forLoop idx: %d) | Returned values from table: attachmentIdx = %d", i, attachmentIndex);
+			break;
+		}
+	}
+	
+	// if(slotIndex == INVALID_ITERATOR_SLOT || attachmentIndex == -1)
+	// 	return;
+
+//#region old
+	if(slotIndex == -1 || attachmentIndex == -1)
+		return;
+
+	switch(modelId)
+	{
+		case 
+			OBJECT_MODEL_JOELBP,
+			OBJECT_MODEL_ELLIEBP,
+			OBJECT_MODEL_TESSBP,
+			OBJECT_MODEL_BILLBP:
+			{
+				if(eCharsInfo[playerid][e_iAttachSlot_Backpack] != -1)
+					slotIndex = eCharsInfo[playerid][e_iAttachSlot_Backpack];
+				else
+				 eCharsInfo[playerid][e_iAttachSlot_Backpack] = slotIndex;
+
+				//SCMF(playerid, -1, "Attached backpack under slot: %d", eCharsInfo[playerid][e_iAttachSlot_Backpack]);
+			}
+
+		case 
+			ITEM_MODEL_PIPE,
+			ITEM_MODEL_SCSR_PIPE,
+			ITEM_MODEL_HATCHET,
+			ITEM_MODEL_MACHETE:
+			{
+				if(eCharsInfo[playerid][e_iAttachSlot_Melee] != -1)
+					slotIndex = eCharsInfo[playerid][e_iAttachSlot_Melee];
+				else
+					eCharsInfo[playerid][e_iAttachSlot_Melee] = slotIndex;
+
+				//SCMF(playerid, -1, "Attached melee under slot: %d", eCharsInfo[playerid][e_iAttachSlot_Melee]);
+			}
+
+		case ITEM_MODEL_9MM:
+		{
+			if(eCharsInfo[playerid][e_iAttachSlot_9mm] != -1)
+				slotIndex = eCharsInfo[playerid][e_iAttachSlot_9mm];
+			else
+				eCharsInfo[playerid][e_iAttachSlot_9mm] = slotIndex;
+
+			//SCMF(playerid, -1, "Attached 9mm pistol under slot: %d", eCharsInfo[playerid][e_iAttachSlot_9mm]);
+		}
+
+		case ITEM_MODEL_REVOLVER:
+		{
+			if(eCharsInfo[playerid][e_iAttachSlot_Revolver] != -1)
+				slotIndex = eCharsInfo[playerid][e_iAttachSlot_Revolver];
+			else
+				eCharsInfo[playerid][e_iAttachSlot_Revolver] = slotIndex;
+
+			//SCMF(playerid, -1, "Attached revolver under slot: %d", eCharsInfo[playerid][e_iAttachSlot_Revolver]);
+		}
+
+		case ITEM_MODEL_SHOTGUN, ITEM_MODEL_ASSAULT:
+		{
+			if(eCharsInfo[playerid][e_iAttachSlot_LongGunOne] != -1)
+				slotIndex = eCharsInfo[playerid][e_iAttachSlot_LongGunOne];
+			else
+				eCharsInfo[playerid][e_iAttachSlot_LongGunOne] = slotIndex;
+
+			//SCMF(playerid, -1, "Attached shotgun / assault rifle under slot: %d", eCharsInfo[playerid][e_iAttachSlot_LongGunOne]);
+		}
+
+		case ITEM_MODEL_RIFLE, ITEM_MODEL_BOW:
+		{
+			if(eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] != -1)
+				slotIndex = eCharsInfo[playerid][e_iAttachSlot_LongGunTwo];
+			else
+				eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] = slotIndex;
+
+			//SCMF(playerid, -1, "Attached rifle / bow under slot: %d", eCharsInfo[playerid][e_iAttachSlot_LongGunTwo]);
+		}
+
+		default: 
+		{
+			if(eCharsInfo[playerid][e_iAttachSlot_Dynamic] != -1)
+				slotIndex = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
+			else
+				eCharsInfo[playerid][e_iAttachSlot_Dynamic] = slotIndex;
+
+			//SCMF(playerid, -1, "[DYNAMIC] Attachment Idx: %d | (modelid: %d/%d) under slot: %d", attachmentIndex, modelId, eAttachmentsData[attachmentIndex][e_iModelId], eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+		}
+	}
+//#endregion
+
+	SetPlayerAttachedObject(playerid, slotIndex, eAttachmentsData[attachmentIndex][e_iModelId], eAttachmentsData[attachmentIndex][e_iBoneId], \
+		eAttachmentsData[attachmentIndex][e_fOffsetX], eAttachmentsData[attachmentIndex][e_fOffsetY], eAttachmentsData[attachmentIndex][e_fOffsetZ], \
+		eAttachmentsData[attachmentIndex][e_fRotX],    eAttachmentsData[attachmentIndex][e_fRotY],    eAttachmentsData[attachmentIndex][e_fRotZ], \
+		eAttachmentsData[attachmentIndex][e_fScaleX],  eAttachmentsData[attachmentIndex][e_fScaleY],  eAttachmentsData[attachmentIndex][e_fScaleZ]);
+}
+
+// Detach weapon models from player's body.
+DetachWeaponFromPlayersBody(playerid, weaponId)
+{
+	if(!IsBulletWeapon(weaponId) && !IsMeleeWeapon(weaponId))
+		return 1;
+
+    // Depends on the weapon Id - if new weapon is equipped then remove its attached object from player's body.
+    new slotId = -1;
+    switch(weaponId)
+    {
+        case WEAPON_9MM:        slotId = eCharsInfo[playerid][e_iAttachSlot_9mm];
+        case WEAPON_REVOLVER:   slotId = eCharsInfo[playerid][e_iAttachSlot_Revolver];
+        
+        case 
+            WEAPON_SHOTGUN,
+            WEAPON_ASSAULT:
+            {
+                slotId = eCharsInfo[playerid][e_iAttachSlot_LongGunOne];
+            }
+            
+        case 
+            WEAPON_RIFLE,
+            WEAPON_BOW:
+            {
+                slotId = eCharsInfo[playerid][e_iAttachSlot_LongGunTwo];
+            }
+
+        case 
+            WEAPON_PIPE,
+            WEAPON_SCISSOR_PIPE,
+            WEAPON_HATCHET,
+            WEAPON_MACHETE:
+            {
+                slotId = eCharsInfo[playerid][e_iAttachSlot_Melee];
+            }
+        
+        default:
+        {
+            // No need for seeking of dynamic object (e.g. projectiles, throwables, shiv)
+            // since they are not attached to player's body at all.
+            // so in fact, they are not going to be removed so we stop the code here from going any further.
+
+            // slotId = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
+            return 1;
+        }
+    }
+    RemovePlayerAttachedObj(playerid, slotId);
+
+	return 0;
+}
+
+// Closest player to player.
+// GetClosestPlayerToPlayer(playerid, Float:dist = FLOAT_INFINITY)
+// {
+//     new 
+// 		targetid = INVALID_PLAYER_ID,
+// 		Float:x, Float:y, Float:z, Fload:d;
+
+// 	foreach(new i : Player)
+// 	{
+// 		GetPlayerPos(i, x, y, z);
+		
+// 		if((d = GetPlayerDistanceFromPoint(playerid, x, y, z)) < dist)
+// 		{
+// 			dist = d;
+// 			targetid = i;
+// 		}
+// 	}
+// 	return targetid;
+// }
+
+// Returns player's distance to the ground.
+// Float:GetDistanceToGround(playerid)
+// {
+// 	new Float:x, Float:y, Float:z, Float:distZ, Float:distToGround;
+// 	GetPlayerPos(playerid, x, y, z);
+// 	CA_FindZ_For2DCoord(x, y, distZ);
+
+// 	distToGround = VectorSize(0.0, 0.0, z-distZ);
+// 	SCMF(playerid, -1, "Distance to the ground is: %f", distToGround);
+// 	return distToGround;
+// }
+
+// DiagonalRoute(Float:nx, Float:ny, Float: nz, Float:px, Float:py, Float:pz, Float: offset = 1.5, Float: diffHeigth = 1.5) 
+// {
+
+// 	//if(floatround(nz) != floatround(pz)) 
+// 	//	return  false;	
+
+// 	static Float: diffX;
+
+// 	if(nx > px) {
+// 		diffX = nx - px;
+// 	}
+// 	else {
+// 		diffX = px - nx;
+// 	}
+
+// 	new Float: diffY;
+
+// 	if(ny > py) {
+// 		diffY = ny - py;
+// 	}
+// 	else {
+// 		diffY = py - ny;
+// 	}
+
+// 	static Float: diffXY;
+
+// 	if(diffX > diffY) {
+// 		diffXY = (diffX / diffY) * offset ;
+// 	}
+// 	else {
+// 		diffXY = (diffY / diffX) * offset ;
+// 	}
+
+// 	if((nx < px)){
+// 		while(nx < px) {
+// 			nx += (diffXY);
+// 			if(ny > py) {
+// 				ny -= offset  ;
+// 			}
+// 			else {
+// 				ny += offset  ;
+// 			}
+// 			CA_FindZ_For2DCoord(nx, ny, nz);
+// 			if(floatabs((nz) - (pz)) > diffHeigth ) {
+// 				return  false;
+// 			}
+// 			pz = nz;
+// 		}
+// 	}
+// 	else {
+// 		while(nx > px) {
+// 			nx -= (diffXY);
+// 			if(ny > py) {
+// 				ny -= offset ;
+// 			}
+// 			else {
+// 				ny += offset ;
+// 			}
+// 			CA_FindZ_For2DCoord(nx, ny, nz);
+// 			if(floatabs((nz) - (pz)) > diffHeigth ) {
+// 				return  false;
+// 			}
+// 			pz = nz;
+// 		}
+// 	}
+
+// 	return true;
+// }

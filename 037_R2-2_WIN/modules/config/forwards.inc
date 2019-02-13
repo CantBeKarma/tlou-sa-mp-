@@ -1,0 +1,83 @@
+forward OnPlayerCrouchBug(playerid);
+forward OnPlayerBunnyHop(playerid);
+forward OnPlayerAnimFinish(playerid, animLib[], animName[], animIdx);
+forward OnPlayerPrepareToSign(playerid);
+forward OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart);
+//forward OnPlayerWeaponChange(playerid, newWeapon, oldWeapon);
+forward OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId);
+forward OnPlayerLookAtPlayer(playerid, lookingAt_playerId); 
+forward OnPlayerLookAtNPC(playerid, lookingAt_NpcId);
+forward OnPlayerShivPlayer(playerid, shivedId);
+
+forward OnPlayerDamageHimself(playerid, Float:damageAmount);
+forward OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount);
+forward OnPlayerShootPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount, Float:distance, bodypart);
+
+forward OnPlayerHoldingKey(playerid, key);
+forward OnPlayerReleaseKey(playerid, key, holding_time);
+
+forward OnPlayerStartedHealing(playerid);
+forward OnPlayerCanceledHealing(playerid, Float:oldHealth);
+forward OnPlayerHealed(playerid, Float:oldHealth, Float:newHealth);
+forward OnPlayerHealthChange(playerid, Float:oldHealth, Float:newHealth);
+
+forward OnPlayerBurn(playerid);
+forward OnPlayerStartBurning(playerid);
+forward OnPlayerStopBurning(playerid);
+
+forward OnPlayerOpenBackpack(playerid, category);
+forward OnPlayerCloseBackpack(playerid);
+forward OnPlayerUseBackpack(playerid, category, keys);
+forward OnPlayerSwitchBpCtgry(playerid, leftRight);
+forward OnPlayerStartedCrafting(playerid, craftItemId);
+forward OnPlayerCanceledCrafting(playerid);
+forward OnPlayerCraftedItem(playerid, craftItemId);
+
+forward OnPlayerStartedUpgradingSkill(playerid, skillid);
+forward OnPlayerCanceledUpgradingSkill(playerid);
+forward OnPlayerUpgradedSkill(playerid, skillid);
+
+forward OnPlayerOpenWeaponMenu(playerid);
+forward OnPlayerCloseWeaponMenu(playerid);
+forward OnPlayerUD_WeaponMenu(playerid, keys);
+forward OnPlayerLR_WeaponMenu(playerid, keys);
+forward OnPlayerUD_SwapWeaps(playerid, keys);
+forward OnPlayerStartSwappingWeaps(playerid);
+forward OnPlayerFinishSwappingWeaps(playerid);
+
+forward OnPlayerStartAimingBulletWeapon(playerid);
+forward OnPlayerStopAimingWeapon(playerid);
+forward OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo);
+forward OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, Float:fX, Float:fY, Float:fZ);
+
+forward OnPlayerStartAimingBow(playerid);
+forward OnPlayerStopAimingBow(playerid);
+forward OnPlayerShotArrow(playerid);
+forward OnPlayerGetArrowShot(playerid, damagerid);
+
+forward OnPlayerStartAimingProjectile(playerid, weaponId);
+forward OnPlayerStopAimingProjectile(playerid);
+forward OnPlayerThrowProjectile(playerid, weaponId);
+forward OnPlayerDropNailbomb(playerid);
+
+forward FCNPC_OnIdle(npcid);
+forward FCNPC_OnChasePlayer(npcid, chaseid);
+forward FCNPC_OnChasePlayerByPath(npcid, chaseid, pathid);
+forward FCNPC_OnAttackPlayer(npcid, chaseid, Float:chaseId_oldHealth, Float:chaseId_newHealth);
+forward FCNPC_OnAnimFinish(npcid, animIdx);
+forward FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart);
+forward FCNPC_OnBurn(npcid);
+forward FCNPC_OnGetArrowShot(npcid, damagerid);
+forward FCNPC_OnGetShived(npcid, shiverId);
+forward FCNPC_OnGetHitByPlayer(npcid, damagerId, damagerWeaponId, Float:damageAmount);
+forward FCNPC_OnGetShotByPlayer(npcid, damagerId, damagerWeaponId, Float:damageAmount, Float:distance, bodypart);
+forward FCNPC_OnGetDistracted(npcid, Float:distractPointX, Float:distractPointY, Float:distractPointZ);
+
+forward OnPlayerLookAtItem(playerid, item_objectId);
+forward OnPlayerPickUpItem(playerid, item_objectId);
+
+forward OnItemCreate(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId);
+forward OnItemDestroy(uid_item);
+forward OnItemUpdate(updateItemUid, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId);
+
+forward OnProjectileDestroy(projid, Float:x, Float:y, Float:z);
