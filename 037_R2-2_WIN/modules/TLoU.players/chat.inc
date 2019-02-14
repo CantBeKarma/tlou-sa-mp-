@@ -43,7 +43,7 @@ hook OnPlayerText(playerid, text[])
 	ProxMessage(msgDistance, playerid, msgFormat);
 
 	Log(eLogs[e_Log_Index][LOG_INDEX_CHAT], INFO, msgFormat);
-	return 1;
+	return 1; 
 }
 
 // Hide player's chat panel.
@@ -81,12 +81,15 @@ FormatChatMessage(playerid, chatLineIdx, color, const text[])
 // Custom send message which sends message in the chat panel
 SendChatMessage(playerid, color, text[])
 {
+	print("SendChatMessage - START");
 	static newLine[12] = "... ~n~ ...";
 
 	new 
 		messagePartOne[64] = EOS,
 		messagePartTwo[64] = EOS,
 		bool:splitInTwoLines = false;
+
+	printf(text);
 
 	if(strlen(text) > 64)
 	{
@@ -95,10 +98,10 @@ SendChatMessage(playerid, color, text[])
 		strcpy(messagePartOne, substr(text, 0, 63), sizeof(messagePartOne));
 	    strins(text, newLine, 63, 128);
 		strcpy(messagePartOne, substr(text, 63, 128), sizeof(messagePartOne));
-	}
 
-	printf(messagePartOne);
-	printf(messagePartTwo);
+		printf(messagePartOne);
+		printf(messagePartTwo);
+	}
 
 	new chatLineIdx = 0;
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
@@ -113,13 +116,13 @@ SendChatMessage(playerid, color, text[])
 		if(strlen(PlayerCustomChatText[playerid][i]) > 0 
 			|| PlayerCustomChatText[playerid][i][0] != EOS)
 		{
-			printf("Can't use index: %d", i);
+			printf("Index %d is in use. Skipping.", i);
 			continue;
 		}
 
 		if(i == MAX_CHAT_LINES-1)
 		{
-			printf("I'm on the last line of my chat");
+			printf("I'm on the last line of my chat. My chat is full.");
 			IsPlayerCustomChatFull[playerid] = true;
 			chatLineIdx = MAX_CHAT_LINES-1;
 			break;
