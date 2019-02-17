@@ -67,7 +67,7 @@ PlayerTextDraw_DeathProcedure(playerid)
 
 PlayerTextDraw_Chat(playerid)
 {
-	new Float:chat_posY = 330.0;
+	new Float:chat_posY = 430.0;
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
 	{
 		PlayerCustomChatText[playerid][i][0] = EOS;
@@ -77,7 +77,7 @@ PlayerTextDraw_Chat(playerid)
 		PlayerTextDrawSetOutline	(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
 		PlayerTextDrawLetterSize	(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 0.2, 1.0);
 		
-		chat_posY += 10.0;
+		chat_posY -= 10.0;
 	}
 	IsPlayerCustomChatFull[playerid] = false;
 }

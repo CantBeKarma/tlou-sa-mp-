@@ -20,26 +20,30 @@ hook OnPlayerText(playerid, text[])
 		msgLength = strlen(text) - 1,
 		punctuation = (text[msgLength] != '.') && (text[msgLength] != '!') && (text[msgLength] != '?') ? ('.') : ('\0');
 
-	strcpy(msgType, \
-				  (strfind(text, "?", true, msgLength) != -1) ? ("asks") 
-				: (strfind(text, "!", true, msgLength) != -1) ? ("shouts") 
-				: (strfind(text, ".", true, 0) != -1) ? ("whispers") 
-				: ("says"), \
-				sizeof(msgType));
-
-	printf(msgType);
-	
-	switch(YHash(msgType))
+	if(strfind(text, "?", true, msgLength) != -1)
 	{
-		case _I<whispers>: msgDistance = 2.0, strdel(text, 0, 1);
-		case _I<shouts>:   msgDistance = 25.0;
-		default: 		   msgDistance = 10.0;
+		strcpy(msgType, "asks", sizeof(msgType));
+		msgDistance = 10.0;
+	}
+	else if(strfind(text, "!", true, msgLength) != -1)
+	{
+		strcpy(msgType, "shouts", sizeof(msgType));
+		msgDistance = 25.0;
+	}
+	else
+	{
+		strcpy(msgType, "says", sizeof(msgType));
+		msgDistance = 10.0;
+	}
+
+	if(strfind(text, ".", true, 0) == 0)
+	{
+		strcpy(msgType, "whispers", sizeof(msgType));
+		msgDistance = 2.0, strdel(text, 0, 1);
 	}
 
 	new msgFormat[170];
 	format(msgFormat, sizeof(msgFormat), "%s %s: %c%s%c", PlayerName(playerid), msgType, toupper(text[0]), text[1], punctuation);
-	
-	printf(msgFormat);
 	ProxMessage(msgDistance, playerid, msgFormat);
 
 	Log(eLogs[e_Log_Index][LOG_INDEX_CHAT], INFO, msgFormat);
@@ -82,34 +86,39 @@ FormatChatMessage(playerid, chatLineIdx, color, const text[])
 SendChatMessage(playerid, color, text[])
 {
 	print("SendChatMessage - START");
-	static newLine[12] = "... ~n~ ...";
+	static newLine[4] = "~n~";
+	static dotContinuation[4] = "...";
 
 	new 
-		messagePartOne[64] = EOS,
-		messagePartTwo[64] = EOS,
+		msgPartOne[64 + 4 + 4] = EOS,
+		msgPartTwo[64 + 4 + 4] = EOS,
 		bool:splitInTwoLines = false;
-
-	printf(text);
 
 	if(strlen(text) > 64)
 	{
 		splitInTwoLines = true;
 
-		strcpy(messagePartOne, substr(text, 0, 63), sizeof(messagePartOne));
-	    strins(text, newLine, 63, 128);
-		strcpy(messagePartOne, substr(text, 63, 128), sizeof(messagePartOne));
+		strcpy(msgPartOne, substr(text, 0, 63), sizeof(msgPartOne));
+		strcpy(msgPartTwo, substr(text, 63, 128), sizeof(msgPartTwo));
 
-		printf(messagePartOne);
-		printf(messagePartTwo);
+	    strins(msgPartOne, dotContinuation, 63, sizeof(msgPartOne));
+		strins(msgPartOne, newLine, 66, sizeof(msgPartOne));
+
+		strins(msgPartTwo, dotContinuation, 0, sizeof(msgPartTwo));
 	}
 
 	new chatLineIdx = 0;
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
 	{
-		if(IsPlayerCustomChatFull[playerid] == true)
+		if(IsPlayerCustomChatFull[playerid] == true || i == MAX_CHAT_LINES-1)
 		{
+			if(IsPlayerCustomChatFull[playerid] == false)
+			{
+				IsPlayerCustomChatFull[playerid] = true;
+			}
+
+			chatLineIdx = 0;
 			printf("My chat is full.");
-			chatLineIdx = (splitInTwoLines == true) ? (MAX_CHAT_LINES-2) : (MAX_CHAT_LINES-1);
 			break;
 		}
 
@@ -120,26 +129,22 @@ SendChatMessage(playerid, color, text[])
 			continue;
 		}
 
-		if(i == MAX_CHAT_LINES-1)
-		{
-			printf("I'm on the last line of my chat. My chat is full.");
-			IsPlayerCustomChatFull[playerid] = true;
-			chatLineIdx = MAX_CHAT_LINES-1;
-			break;
-		}
-
 		printf("My chatLineIdx used: %d", i);
 		chatLineIdx = i;
+		break;
 	}
 
 	if(!splitInTwoLines)
 	{
 		FormatChatMessage(playerid, chatLineIdx, color, text);
+		printf("Not splitting. Simple message");
 	}
 	else
 	{
-		FormatChatMessage(playerid, chatLineIdx, color, messagePartOne);
-		FormatChatMessage(playerid, chatLineIdx+1, color, messagePartTwo);
+		FormatChatMessage(playerid, chatLineIdx+1, color, msgPartOne);
+		FormatChatMessage(playerid, chatLineIdx, color, msgPartTwo);
+
+		printf("Split in two. Indexes: %d | %d", chatLineIdx+1, chatLineIdx);
 	}
 }
 
