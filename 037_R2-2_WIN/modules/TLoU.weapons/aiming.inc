@@ -105,7 +105,6 @@ public OnPlayerStartAimingBulletWeapon(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStopAimingWeapon(playerid)
 {
-	KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
 	ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
 	
 	HidePlayerCrosshair(playerid);

@@ -52,6 +52,15 @@ hook OnPlayerText(playerid, text[])
 	return 1; 
 }
 
+// Show player his chat panel.
+ShowChatPanel(playerid)
+{
+	foreach(new i : PlayerChatMessages<playerid>)
+	{
+		PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i]);
+	}
+}
+
 // Hide player's chat panel.
 function HideChatPlanel(playerid)
 {
@@ -62,7 +71,7 @@ function HideChatPlanel(playerid)
 	}
 }
 
-// Determine if illegal character has been used in a chat.
+// Determine if illegal character has been used in a text string.
 TextHasRestrictedCharacters(const text[])
 {
 	for(new i = 0; i != sizeof(RestrictedTextCharactersList); i++)
@@ -81,7 +90,6 @@ FormatChatMessage(playerid, chatLineIdx, color, const text[])
 	format(PlayerCustomChatTextString[playerid][chatLineIdx], 128, "%s", text);
 	PlayerTextDrawColor     (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], color);
 	PlayerTextDrawSetString (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], PlayerCustomChatTextString[playerid][chatLineIdx]);
-	PlayerTextDrawShow      (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx]);
 }
 
 // strcpy(msgPartOne, substr(text, 0, 63), sizeof(msgPartOne));
@@ -90,6 +98,7 @@ FormatChatMessage(playerid, chatLineIdx, color, const text[])
 // strcpy(msgPartTwo, substr(text, 63, 128), sizeof(msgPartTwo));
 // strins(msgPartTwo, dotContinuation, 0, sizeof(msgPartTwo));
 
+// Rotate all the current chat lines and texts upwards by one.
 MovePlayerChatLinesUpByOne(playerid, bool:splitInTwoLines = false)
 {
 	foreach(new msgIdx : Reverse(PlayerChatMessages<playerid>))
@@ -101,7 +110,7 @@ MovePlayerChatLinesUpByOne(playerid, bool:splitInTwoLines = false)
 			break;
 		}
 
-		// Get each line: index and color below current (9) index (8, 7, 6...)
+		// Get each line: index and color below current (for example (9) index gets (8) data)
 		new lineBelowIdx = msgIdx-1;
 		new lineBelowColor = PlayerTextDrawGetColor(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][lineBelowIdx]);
 
@@ -119,20 +128,19 @@ SendChatMessage(playerid, color, text[])
 	new 
 		msgPartOne[64 + 4] = EOS,
 		msgPartTwo[64 + 4] = EOS,
-		bool:splitInTwoLines = false;
+		bool:splitInTwoLines = (strlen(text) > 64) ? true : false;
 
-	if(strlen(text) > 64)
+	if(splitInTwoLines)
 	{
 		print("Splitting my message in TWO strings.");
-		
-		splitInTwoLines = true;
+
 		SplitStringIntoTwoStrings(text, msgPartOne, msgPartTwo, 63, true);
 		print(msgPartOne);
 		print(msgPartTwo);
 	}
 
 	new chatLineIdx = Iter_Alloc(PlayerChatMessages<playerid>);
-	printf("chatLineIdx = %d", chatLineIdx);
+	printf("Iter_Alloc: chatLineIdx = %d", chatLineIdx);
 
 	// Chat isn't full.
 	if(chatLineIdx != INVALID_ITERATOR_SLOT)
@@ -169,6 +177,7 @@ SendChatMessage(playerid, color, text[])
 		FormatChatMessage(playerid, chatLineIdx+1, color, msgPartOne);
 		FormatChatMessage(playerid, chatLineIdx, color, msgPartTwo);
 	}
+	ShowChatPanel(playerid);
 }
 
 //#region old
@@ -249,20 +258,20 @@ SendChatMessage(playerid, color, text[])
 //#endregion
 
 // Send message based on distance to nearby players.
-ProxMessage(Float:msgDistance, playerid, message[])
+ProxMessage(Float:msgDistance, senderId, message[])
 {
     new Float:distance;
-	foreach(new person : Player)
+	foreach(new playerId : Player)
 	{
-	    if((GetPlayerVirtualWorld(person) == GetPlayerVirtualWorld(playerid)) && (GetPlayerInterior(person) == GetPlayerInterior(playerid)))
+	    if((GetPlayerVirtualWorld(playerId) == GetPlayerVirtualWorld(senderId)) && (GetPlayerInterior(playerId) == GetPlayerInterior(senderId)))
     	{
-            distance = GetDistanceBetweenPlayers(playerid, person);
+            distance = GetDistanceBetweenPlayers(senderId, playerId);
 
-            if(distance < (msgDistance / 16.0))		SendChatMessage(person, 0xE6E6E6E6, message);
-            else if(distance < (msgDistance / 8.0))	SendChatMessage(person, 0xC8C8C8C8, message);
-            else if(distance < (msgDistance / 4.0))	SendChatMessage(person, 0xAAAAAAAA, message);
-            else if(distance < (msgDistance / 2.0))	SendChatMessage(person, 0x8C8C8C8C, message);
-            else if(distance <  msgDistance)		SendChatMessage(person, 0x6E6E6E6E, message);
+            if(distance < (msgDistance / 16.0))		SendChatMessage(playerId, 0xE6E6E6E6, message);
+            else if(distance < (msgDistance / 8.0))	SendChatMessage(playerId, 0xC8C8C8C8, message);
+            else if(distance < (msgDistance / 4.0))	SendChatMessage(playerId, 0xAAAAAAAA, message);
+            else if(distance < (msgDistance / 2.0))	SendChatMessage(playerId, 0x8C8C8C8C, message);
+            else if(distance <  msgDistance)		SendChatMessage(playerId, 0x6E6E6E6E, message);
 		}
 	}
 }
