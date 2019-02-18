@@ -70,7 +70,7 @@ PlayerTextDraw_Chat(playerid)
 	new Float:chat_posY = 430.0;
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
 	{
-		PlayerCustomChatText[playerid][i][0] = EOS;
+		PlayerCustomChatTextString[playerid][i][0] = EOS;
 
 		ePlayerTextDrawInfo[playerid][e_ChatLines][i] = CreatePlayerTextDraw(playerid, 15.0, chat_posY, " ");
 		PlayerTextDrawAlignment		(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
@@ -79,7 +79,7 @@ PlayerTextDraw_Chat(playerid)
 		
 		chat_posY -= 10.0;
 	}
-	IsPlayerCustomChatFull[playerid] = false;
+	//IsPlayerCustomChatFull[playerid] = false;
 }
 
 PlayerTextDraw_HUD(playerid)

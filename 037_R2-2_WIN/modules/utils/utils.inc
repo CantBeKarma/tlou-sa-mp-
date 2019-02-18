@@ -61,6 +61,49 @@ GetPlayerSpeed(playerid)
     return floatround(result);
 }
 
+// Splits string into two strings based on the split point number position (can use dot Continuation symbols too).
+SplitStringIntoTwoStrings(string[], 
+	stringPartOne[], 
+	stringPartTwo[], 
+	splitPointNumber = 64, 
+	bool:useDotContinuation = false,
+	stringPartOneSize = sizeof(stringPartOne),
+	stringPartTwoSize = sizeof(stringPartTwo))
+{
+	static dotContinuation[3 + 1] = "...";
+
+	strcpy(stringPartOne, substr(string, 0, splitPointNumber), stringPartOneSize);
+	strcpy(stringPartTwo, substr(string, splitPointNumber, 128), stringPartTwoSize);
+
+	if(useDotContinuation)
+	{
+		strins(stringPartOne, dotContinuation, 63, stringPartOneSize);
+	}
+
+	if(useDotContinuation)
+	{
+		strins(stringPartTwo, dotContinuation, 0, stringPartTwoSize);
+	}
+}
+
+// SubString - Custom string extend function.
+substr(const sSource[], iStart, iLength = sizeof sSource)
+{
+	new
+		sReturn[128];
+
+	if(iLength < 0)
+	{
+		strmid(sReturn, sSource, iStart, strlen(sSource) + iLength);
+		return sReturn;
+	}
+	else
+	{
+		strmid(sReturn, sSource, iStart, (iStart + iLength));
+		return sReturn;
+	}
+}
+
 #if !defined strcpy
 
 stock strcpy(dest[], src[], sz=sizeof(dest))
