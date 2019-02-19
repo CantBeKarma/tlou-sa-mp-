@@ -67,7 +67,7 @@ ShowChatPanel(playerid)
 // Hide player's chat panel.
 timer HideChatPlanel[TIMER_HIDECHAT_DELAY](playerid)
 {
-	foreach(new i : Reverse(PlayerChatMessages))
+	foreach(new i : Reverse(PlayerChatMessages<playerid>))
 	{
 		PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i]);
 	}
@@ -93,12 +93,6 @@ FormatChatMessage(playerid, chatLineIdx, color, const text[])
 	PlayerTextDrawColor     (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], color);
 	PlayerTextDrawSetString (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], PlayerCustomChatTextString[playerid][chatLineIdx]);
 }
-
-// strcpy(msgPartOne, substr(text, 0, 63), sizeof(msgPartOne));
-// strins(msgPartOne, dotContinuation, 63, sizeof(msgPartOne));
-
-// strcpy(msgPartTwo, substr(text, 63, 128), sizeof(msgPartTwo));
-// strins(msgPartTwo, dotContinuation, 0, sizeof(msgPartTwo));
 
 // Rotate all the current chat lines and texts upwards by one.
 MovePlayerChatLinesUpByOne(playerid, bool:splitInTwoLines = false)
