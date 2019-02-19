@@ -4,6 +4,7 @@
 
 // TIMERS.
 #define		TIMER_HIDE_HUD			(5000)
+#define		TIMER_HIDECHAT_DELAY	(5000)
 #define		TIMER_GETUP_DELAY		(800)
 #define		TIMER_BUNNYHOP_DELAY	(1500)
 #define		TIMER_LOOKAT_RATE		(300)
@@ -53,7 +54,8 @@ enum e_PLAYER_DATA
 
 	e_iTickCounter_crouchBug,
 	e_iTickCounter_damageAnim,
-	e_iTickCounter_holdingKey
+	e_iTickCounter_holdingKey,
+	Timer:e_iTimer_hideChat,
 }
 new ePlayerInfo[MAX_PLAYERS][e_PLAYER_DATA];
 

@@ -55,19 +55,21 @@ hook OnPlayerText(playerid, text[])
 // Show player his chat panel.
 ShowChatPanel(playerid)
 {
+	stop HideChatPlanel(playerid);
 	foreach(new i : PlayerChatMessages<playerid>)
 	{
 		PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i]);
 	}
+
+	defer HideChatPlanel(playerid);
 }
 
 // Hide player's chat panel.
-function HideChatPlanel(playerid)
+timer HideChatPlanel[TIMER_HIDECHAT_DELAY](playerid)
 {
-    for(new i = 0; i != MAX_CHAT_LINES; i++)
+	foreach(new i : Reverse(PlayerChatMessages))
 	{
-        if(IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i]))
-            PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i]);
+		PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i]);
 	}
 }
 
