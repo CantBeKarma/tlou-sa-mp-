@@ -24,7 +24,6 @@
 
 // Custom chat data variables.
 new 
-	//bool:IsPlayerCustomChatFull[MAX_PLAYERS],
 	PlayerCustomChatTextString[MAX_PLAYERS][MAX_CHAT_LINES][128];
 
 new Iterator:PlayerChatMessages<MAX_PLAYERS, MAX_CHAT_LINES>;

@@ -79,7 +79,7 @@ PlayerTextDraw_Chat(playerid)
 		
 		chat_posY -= 10.0;
 	}
-	//IsPlayerCustomChatFull[playerid] = false;
+	Iter_Clear(PlayerChatMessages<playerid>);
 }
 
 PlayerTextDraw_HUD(playerid)
