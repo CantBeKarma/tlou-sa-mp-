@@ -170,8 +170,16 @@ SendChatMessage(playerid, color, text[])
 	{
 		printf("Split in two. Indexes: %d | %d", chatLineIdx+1, chatLineIdx);
 
-		FormatChatMessage(playerid, chatLineIdx+1, color, msgPartOne);
-		FormatChatMessage(playerid, chatLineIdx, color, msgPartTwo);
+		if(chatLineIdx == 1)
+		{
+			FormatChatMessage(playerid, chatLineIdx, color, msgPartOne);
+			FormatChatMessage(playerid, chatLineIdx-1, color, msgPartTwo);
+		}
+		else
+		{
+			FormatChatMessage(playerid, chatLineIdx+1, color, msgPartOne);
+			FormatChatMessage(playerid, chatLineIdx, color, msgPartTwo);
+		}
 	}
 	ShowChatPanel(playerid);
 }
