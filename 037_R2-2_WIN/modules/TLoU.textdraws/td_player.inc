@@ -67,15 +67,22 @@ PlayerTextDraw_DeathProcedure(playerid)
 
 PlayerTextDraw_Chat(playerid)
 {
+	// 2.5 TOP + 10.0
+	// 430 BOTTOM - 10.0
 	new Float:chat_posY = 430.0;
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
 	{
 		PlayerCustomChatTextString[playerid][i][0] = EOS;
 
 		ePlayerTextDrawInfo[playerid][e_ChatLines][i] = CreatePlayerTextDraw(playerid, 15.0, chat_posY, " ");
-		PlayerTextDrawAlignment		(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
-		PlayerTextDrawSetOutline	(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
-		PlayerTextDrawLetterSize	(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 0.2, 1.0);
+		PlayerTextDrawLetterSize		(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 0.2, 1.0);
+		PlayerTextDrawAlignment			(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
+		PlayerTextDrawColor				(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], -1);
+		PlayerTextDrawSetShadow			(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 0);
+		PlayerTextDrawSetOutline		(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
+		PlayerTextDrawBackgroundColor	(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 255);
+		PlayerTextDrawFont				(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
+		PlayerTextDrawSetProportional	(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 1);
 		
 		chat_posY -= 10.0;
 	}

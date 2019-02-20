@@ -18,6 +18,63 @@ CMD:removeweap(playerid, params[])
     return 1;
 }
 
+CMD:align(playerid, params[])
+{
+	new align[10];
+
+	if(sscanf(params, "s[10]", align))
+		return SCM(playerid, -1, "/align [left/right/center]");
+
+	if(strcmp(align, "left", false) == 0)
+	{
+		SetPlayerChatPanelAlignment(playerid, CP_ALIGNMENT:CP_ALIGN_LEFT);
+	}
+	else if(strcmp(align, "right", false) == 0)
+	{
+		SetPlayerChatPanelAlignment(playerid, CP_ALIGNMENT:CP_ALIGN_RIGHT);
+	}
+	else if(strcmp(align, "center", false) == 0)
+	{
+		SetPlayerChatPanelAlignment(playerid, CP_ALIGNMENT:CP_ALIGN_CENTERED);
+	}
+	
+	return 1;
+}
+
+CMD:chatpos(playerid, params[])
+{
+	new position[10], position2[10];
+
+	if(sscanf(params, "s[10]s[10]", position, position2))
+		return SCM(playerid, -1, "/chatpos [top/bottom] [left/right]");
+
+
+	if(strcmp(position, "top", false) == 0)
+	{
+		if(strcmp(position2, "left", false) == 0)
+		{
+			SetPlayerChatPosition(playerid, CP_POSITION:CP_POS_TOP_LEFT);
+		}
+		else if(strcmp(position2, "right", false) == 0)
+		{
+
+		}
+	}
+	else if(strcmp(position, "bottom", false) == 0)
+	{
+		if(strcmp(position2, "left", false) == 0)
+		{
+			SetPlayerChatPosition(playerid, CP_POSITION:CP_POS_BOTTOM_LEFT);
+		}
+		else if(strcmp(position2, "right", false) == 0)
+		{
+
+		}
+	}
+	
+	return 1;
+}
+
 CMD:freeze(playerid, params[])
 {
     FreezePlayer(playerid, true, 5);
