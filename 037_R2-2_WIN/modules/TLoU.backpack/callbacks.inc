@@ -73,13 +73,17 @@ public OnPlayerUseBackpack(playerid, category, keys)
             new oldSelection = Craft_GetSelection(playerid);
             if(keys == KEY_UP)
             {
-                if(Craft_GetSelection(playerid) == CRAFT_ITEM_MELEE) return 1;
-                else Craft_GetSelection(playerid) -= 1;
+                if(Craft_GetSelection(playerid) == CRAFT_ITEM_MELEE) 
+                    return;
+                
+                Craft_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
-                if(Craft_GetSelection(playerid) == CRAFT_ITEM_SMOKE_BOMB) return 1;
-                else Craft_GetSelection(playerid) += 1;
+                if(Craft_GetSelection(playerid) == CRAFT_ITEM_SMOKE_BOMB) 
+                    return;
+                
+                Craft_GetSelection(playerid) += 1;
             }
 
             Audio_PlayEx(playerid, RandomEx(AUDIO_CRAFT_UPDWN1, AUDIO_CRAFT_UPDWN5));
@@ -94,13 +98,17 @@ public OnPlayerUseBackpack(playerid, category, keys)
         {
             if(keys == KEY_UP)
             {
-                if(Skill_GetSelection(playerid) == SKILL_ITEM_MAXHP) return 1;
-                else Skill_GetSelection(playerid) -= 1;
+                if(Skill_GetSelection(playerid) == SKILL_ITEM_MAXHP)
+                    return;
+                
+                Skill_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
-                if(Skill_GetSelection(playerid) == SKILL_ITEM_SHIV_MASTER) return 1;
-                else Skill_GetSelection(playerid) += 1;
+                if(Skill_GetSelection(playerid) == SKILL_ITEM_SHIV_MASTER)
+                    return;
+
+                Skill_GetSelection(playerid) += 1;
             }
 
             Audio_PlayEx(playerid, AUDIO_SKILL_UPDWN);
@@ -114,13 +122,17 @@ public OnPlayerUseBackpack(playerid, category, keys)
         {
             if(keys == KEY_UP)
             {
-                if(Coll_GetSelection(playerid) == COLL_ITEM_ARTIFACTS) return 1;
-                else Coll_GetSelection(playerid) -= 1;
+                if(Coll_GetSelection(playerid) == COLL_ITEM_ARTIFACTS)
+                    return;
+                
+                Coll_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
-                if(Coll_GetSelection(playerid) == COLL_ITEM_FIREFLY_PEND) return 1;
-                else Coll_GetSelection(playerid) += 1;
+                if(Coll_GetSelection(playerid) == COLL_ITEM_FIREFLY_PEND) 
+                    return;
+                
+                Coll_GetSelection(playerid) += 1;
             }
 
             Audio_PlayEx(playerid, AUDIO_SKILL_UPDWN);
@@ -129,7 +141,6 @@ public OnPlayerUseBackpack(playerid, category, keys)
             Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selection][e_fSelBoxX], eBackpack_CollItemsData[selection][e_fSelBoxY]);
         }
     }
-    return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -140,15 +151,19 @@ public OnPlayerSwitchBpCtgry(playerid, leftRight)
     new oldCategory = PlayerBackpackCategory(playerid);
     if(leftRight == KEY_LEFT)
     {
-        if(PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING) return 1;
-        else PlayerBackpackCategory(playerid) -= 1;
+        if(PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING) 
+            return;
+
+        PlayerBackpackCategory(playerid) -= 1;
 
         Audio_PlayEx(playerid, AUDIO_NAVI_LEFT);
     }
     else if(leftRight == KEY_RIGHT)
     {
-        if(PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES) return 1;
-        else PlayerBackpackCategory(playerid) += 1;
+        if(PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES)
+            return;
+
+        PlayerBackpackCategory(playerid) += 1;
 
         Audio_PlayEx(playerid, AUDIO_NAVI_RIGHT);
     }
@@ -156,6 +171,5 @@ public OnPlayerSwitchBpCtgry(playerid, leftRight)
     HideBackpackCategory(playerid, oldCategory);
 
     new newCategory = PlayerBackpackCategory(playerid);
-    ShowBackpackCategory(playerid, newCategory);
-    return 0;
+    ShowBackpackCategory(playerid, newCategory);    
 }
