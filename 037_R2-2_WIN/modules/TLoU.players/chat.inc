@@ -71,7 +71,7 @@ ProxMessage(Float:msgDistance, senderId, message[])
 	}
 }
 
-// Format custom chat message (textdraw formatting).
+// Format custom chat message.
 FormatChatMessage(playerid, chatLineIdx, color, const text[])
 {
 	format(PlayerCustomChatTextString[playerid][chatLineIdx], 128, "%s", text);
@@ -79,30 +79,27 @@ FormatChatMessage(playerid, chatLineIdx, color, const text[])
 	PlayerTextDrawSetString (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], PlayerCustomChatTextString[playerid][chatLineIdx]);
 }
 
-// Rotate all the current chat lines and texts upwards by the upLinesCount.
-MovePlayerChatLinesUp(playerid, upLinesCount = 1, bool:splitInTwoLines = false)
+// Rotate all the current chat lines and texts upwards by one.
+MovePlayerChatLinesUpByOne(playerid, bool:splitInTwoLines = false)
 {
-	for(new i = 0; i != upLinesCount; i++)
+	foreach(new msgIdx : Reverse(PlayerChatMessages<playerid>))
 	{
-		foreach(new msgIdx : Reverse(PlayerChatMessages<playerid>))
+		// If my new message is split into two lines and my iterator is at
+		// index message of 1 (0, 1...)
+		if(splitInTwoLines && msgIdx == 1)
 		{
-			// If my new message is split into two lines and my iterator is at
-			// index message of 1 (0, 1...)
-			if(splitInTwoLines && msgIdx == 1)
-			{
-				break;
-			}
-
-			// Get each line: index and color below current (for example (9) index gets (8) data)
-			new lineBelowIdx = msgIdx-1;
-			if(lineBelowIdx <= -1)
-				break;
-
-			new lineBelowColor = PlayerTextDrawGetColor(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][lineBelowIdx]);
-
-			// Format current msgIdx (9) with message color of msgIdx below (8) and change the message string of current (9) to message string below (8).
-			FormatChatMessage(playerid, msgIdx, lineBelowColor, PlayerCustomChatTextString[playerid][lineBelowIdx]);
+			break;
 		}
+
+		// Get each line: index and color below current (for example (9) index gets (8) data)
+		new lineBelowIdx = msgIdx-1;
+		if(lineBelowIdx <= -1)
+			break;
+
+		new lineBelowColor = PlayerTextDrawGetColor(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][lineBelowIdx]);
+
+		// Format current msgIdx (9) with message color of msgIdx below (8) and change the message string of current (9) to message string below (8).
+		FormatChatMessage(playerid, msgIdx, lineBelowColor, PlayerCustomChatTextString[playerid][lineBelowIdx]);
 	}
 	return (splitInTwoLines) ? (1) : (0);
 }
@@ -110,51 +107,70 @@ MovePlayerChatLinesUp(playerid, upLinesCount = 1, bool:splitInTwoLines = false)
 // Custom send message which sends message in the chat panel
 SendChatMessage(playerid, color, text[])
 {
+	//print("SendChatMessage - START");
+
 	new 
 		firstChatLineIdx = INVALID_ITERATOR_SLOT,
 		secondChatLineIdx = INVALID_ITERATOR_SLOT,
 		msgPartOne[64 + 4] = EOS,
 		msgPartTwo[64 + 4] = EOS,
-		bool:splitInTwoLines = (strlen(text) > 64) ? (true) : (false);
+		bool:splitInTwoLines = (strlen(text) > 64) ? true : false;
 
 	firstChatLineIdx = Iter_Alloc(PlayerChatMessages<playerid>);
+	//printf("Iter_Alloc: firstChatLineIdx = %d", firstChatLineIdx);
 
 	if(splitInTwoLines)
 	{
 		secondChatLineIdx = Iter_Alloc(PlayerChatMessages<playerid>);
 		SplitStringIntoTwoStrings(text, msgPartOne, msgPartTwo, 63, true);
+
+		//printf("Iter_Alloc: secondChatLineIdx = %d", secondChatLineIdx);
+
+		//print(msgPartOne);
+		//print(msgPartTwo);
 	}
 
 	// Chat isn't full.
 	if(firstChatLineIdx != INVALID_ITERATOR_SLOT)
 	{
-		// If my new chat line is split into two lines and script has allocated my new message Idx on the last one (9).
+		//print("Chat is NOT full.");
+		// If my new chat line is split into two lines and script has allocated
+		// my new message Idx on the last one (9).
 		// We need to move all the chat lines up, so we got enough space for two lines
 		// and send my new splitted message in the beginning lines (Idx: 0 & 1).
 		if(splitInTwoLines && firstChatLineIdx == 9)
 		{
+			//print("firstChatLineIdx is 9 and my message is supposed to be split into two.");
 			firstChatLineIdx = 1;
-			MovePlayerChatLinesUp(playerid, 2, true);
+			MovePlayerChatLinesUpByOne(playerid, true);
 		}
 	}
+	// Chat is full | Move all messages up by one.
 	else
 	{
-		// Chat is full | Move all messages up by one.
-		firstChatLineIdx = MovePlayerChatLinesUp(playerid, .splitInTwoLines = splitInTwoLines);
+		//printf("Chat is full.");
+		firstChatLineIdx = MovePlayerChatLinesUpByOne(playerid, splitInTwoLines);
+		//printf("firstChatLineIdx = %d", firstChatLineIdx);
 	}
 
 	// Actual message formatting and showing.
 	if(!splitInTwoLines)
 	{
+		//printf("Not splitting. Simple message");
 		FormatChatMessage(playerid, firstChatLineIdx, color, text);
 	}
 	else
 	{
+		//printf("Message is split. Sending two textdraws.");
+
 		if(firstChatLineIdx == 1 && strlen(PlayerCustomChatTextString[playerid][9]) > 0)
 		{
+			//printf("First condition passed.");
 			if(strfind(PlayerCustomChatTextString[playerid][firstChatLineIdx], "...") != -1)
 			{
-				MovePlayerChatLinesUp(playerid, 2);
+				//printf("Current message at index '1' has '...' - I need to move my msgs up again.");
+				MovePlayerChatLinesUpByOne(playerid);
+				MovePlayerChatLinesUpByOne(playerid);
 			}
 
 			FormatChatMessage(playerid, 0, color, msgPartTwo);
@@ -162,6 +178,8 @@ SendChatMessage(playerid, color, text[])
 		}
 		else
 		{
+			//printf("Second condition passed.");
+			
 			FormatChatMessage(playerid, firstChatLineIdx, color, msgPartTwo);
 			FormatChatMessage(playerid, secondChatLineIdx, color, msgPartOne);
 		}
@@ -172,9 +190,9 @@ SendChatMessage(playerid, color, text[])
 // Changes player's chat position (4 options to pick from).
 SetPlayerChatPosition(playerid, CP_POSITION:positionType)
 {
-	static 
-		Float:chatPosTopLeftStart_Y = 2.5,
-		Float:chatPosBottomLeftStart_Y = 430.0;
+	new 
+		Float:chatPosTopStart_Y = 2.5,
+		Float:chatPosBottomStart_Y = 430.0;
 
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
 	{
@@ -182,14 +200,14 @@ SetPlayerChatPosition(playerid, CP_POSITION:positionType)
 		{
 			case CP_POS_TOP_LEFT:
 			{
-				PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosTopLeftStart_Y);
-				chatPosTopLeftStart_Y += 10.0;
+				PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosTopStart_Y);
+				chatPosTopStart_Y += 10.0;
 			}
 
 			case CP_POS_BOTTOM_LEFT:
 			{
-				PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosBottomLeftStart_Y);
-				chatPosBottomLeftStart_Y -= 10.0;
+				PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosBottomStart_Y);
+				chatPosBottomStart_Y -= 10.0;
 			}
 		}
 	}

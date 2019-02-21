@@ -125,13 +125,13 @@ HudTd_UpdateWeaponAmmo(playerid, weaponId)
         valstr(tmp_weapAmmo, GetPlayerWeaponAmmo(playerid, weaponId));
         PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo], tmp_weapAmmo);
     }
+    return 0;
 }
 
 // HUD : Display melee's weapon bars.
 HudTd_DisplayMeleeWeaponBars(playerid, weaponId)
 {
-    if(!IsMeleeWeapon(weaponId) || weaponId == WEAPON_UNARMED)
-        return;
+    if(!IsMeleeWeapon(weaponId) || weaponId == WEAPON_UNARMED) return 1;
 
     new 
         meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false),
@@ -159,8 +159,7 @@ HudTd_DisplayMeleeWeaponBars(playerid, weaponId)
                 }
                 else if(tdIdx >= meleeBasicCnd)
                 {
-                    if(!IsPlayerMeleeUpgraded[playerid]) 
-                        break;
+                    if(!IsPlayerMeleeUpgraded[playerid]) break;
                     
                     PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx], COLOR_WHITE);
                     PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx]);
@@ -176,8 +175,7 @@ HudTd_DisplayMeleeWeaponBars(playerid, weaponId)
                 }
                 else if(tdIdx >= meleeBasicCnd)
                 {
-                    if(!IsPlayerMeleeUpgraded[playerid]) 
-                        break;
+                    if(!IsPlayerMeleeUpgraded[playerid]) break;
 
                     new upgradedTdIdx = (tdIdx - meleeBasicCnd);
                     PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx], (upgradedTdIdx < playerMeleeExtCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
@@ -194,8 +192,7 @@ HudTd_DisplayMeleeWeaponBars(playerid, weaponId)
                 }
                 else if(tdIdx >= meleeBasicCnd)
                 {
-                    if(!IsPlayerMeleeUpgraded[playerid]) 
-                        break;
+                    if(!IsPlayerMeleeUpgraded[playerid]) break;
 
                     new upgradedTdIdx = (tdIdx - meleeBasicCnd);
                     PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx], (upgradedTdIdx < playerMeleeExtCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
@@ -204,6 +201,7 @@ HudTd_DisplayMeleeWeaponBars(playerid, weaponId)
             }
         }
     }
+    return 0;
 }
 
 // HUD : Update certain bar of the melee weapon (reduct it from the condition of the melee).

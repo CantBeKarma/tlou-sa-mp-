@@ -1,18 +1,11 @@
 // Return weapon's level of the specific upgrade type (e.g. clipSize, max ammo, fire rate..)
 GetPlayerWeaponUpgradeLvl(playerid, weaponId, upgradeType)
 {
-    if(weaponId == WEAPON_UNARMED) 
-        return -1;
-
-    new weaponSlotId = GetWeaponSlotId(weaponId);
-    if(weaponSlotId == -1)
-    {
-        return -1;
-    }
+    if(weaponId == WEAPON_UNARMED) return -1;
 
     switch(upgradeType)
     {
-        case UPGRADE_TYPE_CLIPSIZE: return ePlayerWeapon[playerid][e_iWeaponsUpgradeLvl_ClipSize][weaponSlotId];
+        case UPGRADE_TYPE_CLIPSIZE: return ePlayerWeapon[playerid][e_iWeaponsUpgradeLvl_ClipSize][GetCustomWeaponSlot(weaponId)];
     }
     return 0;
 }
@@ -20,17 +13,11 @@ GetPlayerWeaponUpgradeLvl(playerid, weaponId, upgradeType)
 // Set player weapon upgrade type level
 SetPlayerWeaponUpgradeLvl(playerid, weaponId, level, upgradeType)
 {
-    new weaponSlotId = GetWeaponSlotId(weaponId);
-    if(weaponSlotId == -1)
-    {
-        return;
-    }
-
     if(weaponId != WEAPON_UNARMED)
     {
         switch(upgradeType)
         {
-            case UPGRADE_TYPE_CLIPSIZE: ePlayerWeapon[playerid][e_iWeaponsUpgradeLvl_ClipSize][weaponSlotId] = level;
+            case UPGRADE_TYPE_CLIPSIZE: ePlayerWeapon[playerid][e_iWeaponsUpgradeLvl_ClipSize][GetCustomWeaponSlot(weaponId)] = level;
         }
     }
 }
@@ -38,12 +25,6 @@ SetPlayerWeaponUpgradeLvl(playerid, weaponId, level, upgradeType)
 // Returns maximal possible weapon clipsize that player can have for a specific weapon.
 GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId)
 {
-    new weapon_itemId = IsValidWeapon(weaponId);
-    if(weapon_itemId == -1)
-    {
-        return -1;
-    }
-
 	new playerWeaponLvl_ClipSize = GetPlayerWeaponUpgradeLvl(playerid, weaponId, UPGRADE_TYPE_CLIPSIZE);
 
 	for(new i = 0; i != MAX_WEAPONS_UPGRADES_DATA; i++)

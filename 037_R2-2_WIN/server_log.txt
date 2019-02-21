@@ -1,0 +1,155 @@
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[20:56:00] 
+[20:56:00] Server Plugins
+[20:56:00] --------------
+[20:56:00]  Loading plugin: mysql
+[20:56:00]  >> plugin.mysql: R41-4 successfully loaded.
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: crashdetect
+[20:56:00]   CrashDetect plugin 4.19.2
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: PawnPlus
+[20:56:00]  PawnPlus v0.11.0 loaded
+[20:56:00]  Created by IllidanS4
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: sscanf
+[20:56:00] 
+
+[20:56:00]  ===============================
+
+[20:56:00]       sscanf plugin loaded.     
+
+[20:56:00]          Version:  2.8.2        
+
+[20:56:00]    (c) 2012 Alex "Y_Less" Cole  
+
+[20:56:00]  ===============================
+
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: YSF
+[20:56:00] 
+[20:56:00]  ===============================
+[20:56:00]         YSF - kurta999's version R20-RC4 loaded
+[20:56:00]    (c) 2008 Alex "Y_Less" Cole - (c) 2010 - 2016 kurta999
+[20:56:00]     Server version: 0.3.7 R2-1
+[20:56:00]     Operating System: Windows
+[20:56:00]     Built on: Dec 20 2018 at 16:56:06
+[20:56:00]  ===============================
+[20:56:00] 
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: FCNPC
+[20:56:00] 
+[20:56:00] -------------------------------------------------
+[20:56:00]      FCNPC - Fully Controllable NPC v1.8.2
+[20:56:00]          Windows SA-MP 0.3.7 R2
+[20:56:00]           Jan  8 2018 at 01:14:48
+[20:56:00] 
+[20:56:00]   Author:       OrMisicL (2013 - 2015)
+[20:56:00]   Continued by: ziggi (2016 - present)
+[20:56:00]   Contributors: kurta999, Neutralneu
+[20:56:00] -------------------------------------------------
+[20:56:00] 
+[20:56:00] Loading...
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: audio
+[20:56:00] 
+
+*** Audio Plugin v0.5 R2 by Incognito loaded ***
+
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: streamer
+[20:56:00] 
+
+*** Streamer Plugin v2.9.3 by Incognito loaded ***
+
+[20:56:00]   Loaded.
+[20:56:00]  Loading plugin: ColAndreas
+[20:56:00] *********************
+[20:56:00] ** Created By:     **
+[20:56:00] ** [uL]Chris42O    **
+[20:56:00] ** [uL]Slice       **
+[20:56:00] ** [uL]Pottus      **
+[20:56:00] *********************
+[20:56:04] Loaded collision data.
+[20:56:04] *********************
+[20:56:04]   ColAndreas Loaded
+[20:56:04]    v1.4.0
+[20:56:04] *********************
+[20:56:04]   Loaded.
+[20:56:04]  Loading plugin: PathFinder
+[20:56:04] =========================================
+[20:56:04] PathFinder Plugin 1.0 MT
+[20:56:04]          by Pamdex
+[20:56:04] 
+[20:56:04] Using MapAndreas Plugin 1.2.1
+[20:56:04] Waiting for Init...
+[20:56:04] =========================================
+[20:56:04]   Loaded.
+[20:56:04]  Loading plugin: tlou_server
+[20:56:04] [SA-MP+] Loaded
+[20:56:04]   Loaded.
+[20:56:04]  Loading plugin: MapAndreas
+[20:56:04]   Loaded.
+[20:56:04]  Loading plugin: log-plugin
+[20:56:04]  >> plugin.log: v0.4 successfully loaded.
+[20:56:04]   Loaded.
+[20:56:04]  Loading plugin: iTD
+[20:56:04] 
+* iTD Plugin loaded. (Support for textdraw editor mouse/keyboard)
+
+[20:56:04]   Loaded.
+[20:56:04]  Loaded 14 plugins.
+
+[20:56:04] 
+[20:56:04] Filterscripts
+[20:56:04] ---------------
+[20:56:04]   Loading filterscript 'iTD.amx'...
+[20:56:04] [FCNPC] Warning: Unable to create NPCs. The maxnpc limit in server.cfg is 0.
+[20:56:04] 
+	iPLEOMAX's TextDraw Editor loaded successfully!
+	Version: 1.16 Stable (13/10/2012)
+
+[20:56:04]   Loading filterscript 'rcon.amx'...
+[20:56:04]   Loaded 2 filterscripts.
+
+[20:56:04]  
+[20:56:04]  
+[20:56:04]  
+[20:56:04] *** Audio Plugin: Started TCP server on port 7777
+[20:56:04]  ======================================= 
+[20:56:04]  |                                     | 
+[20:56:04]  |        YSI version 4.00.0001        | 
+[20:56:04]  |        By Alex "Y_Less" Cole        | 
+[20:56:04]  |                                     | 
+[20:56:04]  ======================================= 
+[20:56:04]  
+[20:56:06] Loading Map.
+[20:56:06] Loaded Map.                             
+[20:56:06] PathFinder Plugin -> Creating New Thread
+[20:56:06] *** Audio_SetPack: Audio pack set to "tlou_audio_pack" (transferable and automated)
+[20:56:06] [npc:join] FCNPC_49 has joined the server (49:127.0.0.1)
+[20:56:06] Number of vehicle models: 0
+[20:56:26] [connection] 127.0.0.1:59998 requests connection cookie.
+[20:56:27] [connection] incoming connection: 127.0.0.1:59998 id: 0
+[20:56:27] [join] Riddick has joined the server (0:127.0.0.1)
+[20:56:34] *** Audio Plugin: Incoming connecting from 127.0.0.1:54510
+[20:56:34] *** Audio Plugin: Riddick (ID: 0) has connected
+[21:06:24] Riddick left the server. Saving player's data..
+[21:06:24] DB_SavePlayerItems
+[21:06:24] ResetEnum_ePlayerInfo
+[21:06:24] ResetBits_ePlayerFlag
+[21:06:24] ResetEnum_eCharsInfo
+[21:06:24] ResetEnum_ePlayerBpInfo
+[21:06:24] ResetEnum_ePlayerAudio
+[21:06:24] ResetEnum_ePlayerWeapon
+[21:06:24] ResetEnum_ePlayerWeapMenu
+[21:06:24] *** Audio Plugin: Riddick (ID: 0) has disconnected
+[21:06:24] [part] Riddick has left the server (0:1)

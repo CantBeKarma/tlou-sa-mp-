@@ -23,7 +23,7 @@ FlyBackwardsWhenShot(damagedid)
 }
 
 // Plays damage animations on player.
-PlayPlayerDamagedAnimations(damagedId, bodypart)
+PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, Float:distance)
 {
     if(!IsPlayerPlayingActions(damagedId))
     {

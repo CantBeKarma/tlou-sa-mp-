@@ -128,6 +128,6 @@ public OnPlayerShootPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmou
     
     SetPlayerHealthEx(damagedId, GetPlayerHealthEx(damagedId) - damageAmount);
     ShowPlayerHitMarker(issuerId, bodypart);
-    PlayPlayerDamageAnimations(damagedId, bodypart);
+    PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, distance);
     return 1;
 }

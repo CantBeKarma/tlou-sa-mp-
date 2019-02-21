@@ -246,7 +246,25 @@ public FCNPC_OnAttackPlayer(npcid, chaseid, Float:chaseId_oldHealth, Float:chase
 	if(IsPlayerUsingAnim(chaseid, ANIM_COLLECTION_CLIMB))
 		return 1;
 
-	PlayPlayerDamageAnimsFromNpc(chaseid);
+	if(IsBulletWeapon(CurrentPlayerWeaponId[chaseid]))
+	{
+		switch(random(2))
+		{
+			case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
+			case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
+		}
+	}
+	else
+	{
+		if(random(2) == 1)
+		{
+			switch(random(2))
+			{
+				case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
+				case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
+			}
+		}
+	}
 	return 0;
 }
 
