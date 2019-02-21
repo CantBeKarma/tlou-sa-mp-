@@ -13,7 +13,7 @@ public OnPlayerShivPlayer(playerid, shivedId)
 		RemovePlayerWeapon(playerid, WEAPON_SHIV);
 	}
 
-	HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
+	HidePlayerWeapon(playerid);
 	ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PLAYER");
 	ApplyCallbackAnim(shivedId, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
 

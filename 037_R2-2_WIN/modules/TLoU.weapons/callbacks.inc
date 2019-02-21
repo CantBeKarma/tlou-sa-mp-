@@ -60,7 +60,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 if(GetPlayerWeaponAmmo(playerid, currentWeaponId) > 0) ReloadWeapon(playerid);
                 else
                 {
-                    new newWeaponId = GetNextWeaponWithAmmo(playerid);
+                    new newWeaponId = GetFirstWeaponWithAmmo(playerid);
                     if(newWeaponId == 0) Audio_PlayEx(playerid, AUDIO_WEAP_NOAMMO);
                     else
                     {
@@ -68,7 +68,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                         {
                             // This function is going to be called only if player keeps aiming
                             // It is needed here because of different crosshairs for shotgun and other weapons
-                            // and when weapon changes automatically with "GetNextWeaponWithAmmo"
+                            // and when weapon changes automatically with "GetFirstWeaponWithAmmo"
                             ShowPlayerCrosshair(playerid);
                         }
 

@@ -165,15 +165,19 @@ ResetEnum_ePlayerWeapon(playerid)
 	{
 		new weapon_itemId = IsValidWeapon(weaponId);
 
-		if(weapon_itemId == -1
-		|| weaponId == WEAPON_UNARMED
-		|| weaponId == CurrentPlayerWeaponId[playerid] && !IsMeleeWeapon(weaponId))
+		if(weapon_itemId == -1)
 		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "SetPlayerWeapon: Player %s [%d] tried to equip invalid weapon id [%d]", PlayerName(playerid), playerid, weaponId);
 			return;
 		}
 
+		if(weaponId == WEAPON_UNARMED
+			|| weaponId == CurrentPlayerWeaponId[playerid] && !IsMeleeWeapon(weaponId))
+		{
+			return ;
+		}
+
 		new oldWeaponId = CurrentPlayerWeaponId[playerid];
-		CurrentPlayerWeaponId[playerid] = weaponId;
 
 		if(ammo <= 0)
 		{
@@ -193,13 +197,7 @@ ResetEnum_ePlayerWeapon(playerid)
 				GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
 				SetPlayerNoReload(playerid, (weaponId == WEAPON_SHOTGUN) ? (false) : (true));
 
-				new weaponSlotId = GetWeaponSlotId(weaponId);
-				if(weaponSlotId == -1)
-				{
-					return;
-				}
-
-				new clipAmmoSaved = ePlayerWeapon[playerid][e_iWeaponClipAmmo][weaponSlotId];
+				new clipAmmoSaved = ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetWeaponSlotId(weaponId)];
 				if(clipAmmoSaved > -1) CurrentPlayerWeaponClipSize[playerid] = clipAmmoSaved;
 				else
 				{
@@ -215,15 +213,24 @@ ResetEnum_ePlayerWeapon(playerid)
 			}
 		}
 
-		OnPlayerWeaponChange(playerid, oldWeaponId, weaponId);
+		new newWeaponId = CurrentPlayerWeaponId[playerid] = weaponId;
+		OnPlayerWeaponChange(playerid, oldWeaponId, newWeaponId);
 	}
 
 	// Hide's player current weapon equipped.
-	HidePlayerWeapon(playerid, weaponId)
+	HidePlayerWeapon(playerid, weaponId = -1)
 	{
+		weaponId = (weaponId == -1 ? CurrentPlayerWeaponId[playerid] : weaponId);
+		if(weaponId == -1)
+		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "HidePlayerWeapon: Player %s [%d] tried to hide invalid weapon [%d] (did not find weapon data in data table)", PlayerName(playerid), playerid, weaponId);
+			return;
+		}
+
 		new weaponSlotId = GetWeaponSlotId(weaponId);
 		if(weaponSlotId == -1)
 		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "HidePlayerWeapon: Player %s [%d] tried to hide invalid weapon [%d] (did not find slot for the weapon)", PlayerName(playerid), playerid, weaponId);
 			return;
 		}
 
@@ -250,7 +257,7 @@ ResetEnum_ePlayerWeapon(playerid)
 
 			// Don't do any any attachments with my current weapon if it
 			// was a projectile or a throwable weapon (not necessary to call).
-			// Additionally: It may be re-attached in SetPlayerWeapon at the very end!
+			// Additionally: It may be re-attached in OnPlayerWeaponChange (DetachWeaponFromPlayersBody)!
 			if(!IsProjectileWeapon(weaponId) && !IsThrowableWeapon(weaponId))
 			{
 				SPAO(playerid, GetWeaponModelFromId(weaponId));
@@ -273,6 +280,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		new weaponSlotId = GetWeaponSlotId(weaponId);
 		if(weaponSlotId == -1)
 		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "SetPlayerWeaponAmmo: Player %s [%d] tried to set ammo for weapon [%d]", PlayerName(playerid), playerid, weaponId);
 			return;
 		}
 
@@ -290,10 +298,14 @@ ResetEnum_ePlayerWeapon(playerid)
 		new weaponSlotId = GetWeaponSlotId(weaponId);
 		if(weaponSlotId == -1)
 		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "GetPlayerWeaponAmmo: Player %s [%d] tried to check for weapon [%d] (did not find slot for the weapon)", PlayerName(playerid), playerid, weaponId);
 			return -1;
 		}
 
-		return CurrentPlayerWeaponId[playerid] == weaponId ? CurrentPlayerWeaponAmmo[playerid] : PlayerWeaponSlotAmmo[playerid, weaponSlotId];
+		return 
+			CurrentPlayerWeaponId[playerid] == weaponId 
+			? CurrentPlayerWeaponAmmo[playerid] 
+			: PlayerWeaponSlotAmmo[playerid, weaponSlotId];
 	}
 
 	// Check if player has certain weapon.
@@ -302,6 +314,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		new weaponSlotId = GetWeaponSlotId(weaponId);
 		if(weaponSlotId == -1)
 		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "HasPlayerWeapon: Player %s [%d] tried to check for weapon [%d] (did not find slot for the weapon)", PlayerName(playerid), playerid, weaponId);
 			return -1;
 		}
 
@@ -315,45 +328,13 @@ ResetEnum_ePlayerWeapon(playerid)
 		return result;
 	}
 
-	// Iter_HasPlayerWeapon(playerid, weaponId)
-	// {
-	// 	return Iter_Contains(PlayerWeapons[playerid]<weaponId>);
-	// }
-
-	// Iter_GivePlayerWeapon(playerid, weaponId)
-	// {
-	// 	if(Iter_HasPlayerWeapon(playerid, weaponId))
-	// 		return;
-
-	// 	switch(weaponId)
-	// 	{
-	// 		case WEAPON_SHOTGUN, WEAPON_RIFLE, WEAPON_BOW, WEAPON_ASSAULT:
-	// 		{
-	// 			new weapMenu_Ls_freeSlot = WeapMenuTd_GetFreeSlot_H_Ls(playerid);
-	// 			WeapMenu_Ls_WeaponId(playerid, weapMenu_Ls_freeSlot) = weaponId;
-	// 		}
-
-	// 		case WEAPON_9MM, WEAPON_REVOLVER, WEAPON_SHORTY:
-	// 		{
-	// 			new weapMenu_Rs_freeSlot = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
-	// 			WeapMenu_Rs_WeaponId(playerid, weapMenu_Rs_freeSlot) = weaponId;
-	// 		}
-	// 	}
-
-	// 	Iter_Add(PlayerWeapons<playerid>, weaponId);
-
-	// 	if(IsPlayerUsingWeaponMenu(playerid))
-	// 	{
-	// 		WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-	// 	}
-	// }
-
 	// Give player weapon based on slot.
 	GivePlayerWeaponInSlot(playerid, weaponId)
 	{
 		new weaponSlotId = GetWeaponSlotId(weaponId);
 		if(weaponSlotId == -1)
 		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "GivePlayerWeaponInSlot: Player %s [%d] tried to check for weapon [%d] (did not find slot for the weapon)", PlayerName(playerid), playerid, weaponId);
 			return;
 		}
 
@@ -389,6 +370,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		new weaponSlotId = GetWeaponSlotId(weaponId);
 		if(weaponSlotId == -1)
 		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "RemovePlayerWeapon: Player %s [%d] tried to check for weapon [%d] (did not find slot for the weapon)", PlayerName(playerid), playerid, weaponId);
 			return;
 		}
 
@@ -396,10 +378,10 @@ ResetEnum_ePlayerWeapon(playerid)
 			return;
 
 		if(CurrentPlayerWeaponId[playerid] == weaponId)
-			HidePlayerWeapon(playerid, weaponId);
+			HidePlayerWeapon(playerid);
 
 		if(LastPlayerWeaponId[playerid] == weaponId)
-			LastPlayerWeaponId[playerid] = GetNextWeaponWithAmmo(playerid);
+			LastPlayerWeaponId[playerid] = GetFirstWeaponWithAmmo(playerid);
 
 		// switch(weaponId)
 		// {
@@ -432,7 +414,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		|| GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_CROUCHLOAD || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_LOAD
 		|| IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid) || !IsBulletWeapon(currentWeapon))
 		{
-			return 1;
+			return;
 		}
 
 		new 
@@ -442,18 +424,17 @@ ResetEnum_ePlayerWeapon(playerid)
 
 		if(currentAmmo <= currentClipSize || currentClipSize == maxWeaponClipSize)
 		{
-			return 1;
+			return;
 		}
 
 		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
 		
 		new newClipSize = CurrentPlayerWeaponClipSize[playerid] = (currentAmmo > maxWeaponClipSize) ? (maxWeaponClipSize) : (currentAmmo);
 		OnPlayerReloadWeapon(playerid, currentWeapon, currentClipSize, newClipSize);
-		return 0;
 	}
 
 	// Gets first bullet weapon that player's own and has some ammo for it (used on the "Click noise")
-	GetNextWeaponWithAmmo(playerid)
+	GetFirstWeaponWithAmmo(playerid)
 	{
 		new
 			returnWeaponId = 0,
@@ -482,7 +463,7 @@ ResetEnum_ePlayerWeapon(playerid)
 	{
 		// If player's current weapon isn't melee (hands or melee weapon).
 		if(!IsMeleeWeapon(CurrentPlayerWeaponId[playerid])) 
-			return 1;
+			return;
 
 		// If player uses backpack animations / or doing other actions.
 		if(GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
@@ -490,7 +471,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP
 		|| IsPlayerPlayingActions(playerid))
 		{
-			return 1;
+			return;
 		}
 
 		new lastWeaponId = LastPlayerWeaponId[playerid];
@@ -499,7 +480,6 @@ ResetEnum_ePlayerWeapon(playerid)
 			new lastWeapon_Ammo = GetPlayerWeaponAmmo(playerid, lastWeaponId);
 			SetPlayerWeapon(playerid, lastWeaponId, lastWeapon_Ammo);
 		}
-		return 0;
 	}
 
 	// Gives player his melee weapon.
@@ -508,7 +488,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		if(IsPlayerAllowedToShiv(playerid))
 		{
 			SCMF(playerid, -1, "Player is allowed to shiv. I won't equip a melee weapon.");
-			HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
+			HidePlayerWeapon(playerid);
 			return 1;
 		}
 
@@ -519,9 +499,7 @@ ResetEnum_ePlayerWeapon(playerid)
 				: (NO_MELEE)
 			);
 
-		SCMF(playerid, -1, "Melee weaponId: %d", weaponId);
-
-		if(weaponId == NO_MELEE) HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
+		if(weaponId == NO_MELEE) HidePlayerWeapon(playerid);
 		else
 		{
 			new durability = (weaponId == GetPlayerMelee[playerid] ? GetPlayerMeleeCnd[playerid] : 1);

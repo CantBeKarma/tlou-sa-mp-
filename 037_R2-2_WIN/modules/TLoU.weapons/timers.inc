@@ -11,7 +11,8 @@ timer Update_Nailbomb[TICK_RATE_NAILBMB_UPDATE](projid, Float:x, Float:y, Float:
     // for loop so it's going to apply for both players and NPCs.
     for(new i = 0; i != MAX_PLAYERS; i++)
     {
-        if(!IsPlayerConnected(i)) continue;
+        if(!IsPlayerConnected(i)) 
+            continue;
 
         if(IsPlayerInRangeOfPoint(i, NAILBMB_EXPLODE_RANGE, x, y, z))
         {

@@ -398,7 +398,7 @@ public FCNPC_OnGetShived(npcid, shiverId)
 	//new audioIdx = Audio3D_Stream(shiverId, SFX_ClickerShivDeaths[random(sizeof(SFX_ClickerShivDeaths))], x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
 	Audio3D_Play(shiverId, RandomEx(AUDIO_CLICKER_DEATH01, AUDIO_CLICKER_DEATH03), x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
 
-	HidePlayerWeapon(shiverId, CurrentPlayerWeaponId[shiverId]);
+	HidePlayerWeapon(shiverId);
 	FCNPC_SetAnimCallback(npcid, KNIFE_KILL_KNIFE_PED_DAMAGE);
 	ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
 	SPAO(shiverId, ITEM_MODEL_SHIV);

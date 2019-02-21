@@ -44,7 +44,7 @@ function HideHud(playerid)
     }
 
     // Weapon HUD hiding is being done inside 'HidePlayerWeapon' !
-    HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
+    HidePlayerWeapon(playerid);
 }
 
 // HUD : Checking if there's anything to craft and displays wrench icon if so.
