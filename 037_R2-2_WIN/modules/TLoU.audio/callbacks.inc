@@ -43,11 +43,8 @@ CMD:checkiter(playerid, params[])
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public Audio_OnStop(playerid, handleid)
 {
-    SCMF(playerid, -1, "1) Audio_OnStop: handleid = %d", handleid);
-
     if(Iter_Contains(iAudioHandle3D<playerid>, handleid))
     {
-        SCMF(playerid, -1, "Iter contained: %d (REMOVED IT)", handleid);
         Iter_Remove(iAudioHandle3D<playerid>, handleid);
     }
     return 1;

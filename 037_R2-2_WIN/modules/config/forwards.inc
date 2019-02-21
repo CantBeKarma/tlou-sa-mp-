@@ -1,6 +1,6 @@
 forward OnPlayerCrouchBug(playerid);
 forward OnPlayerBunnyHop(playerid);
-forward OnPlayerAnimFinish(playerid, animLib[], animName[], animIdx);
+forward OnPlayerAnimFinish(playerid, animIdx);
 forward OnPlayerPrepareToSign(playerid);
 forward OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart);
 forward OnPlayerWeaponChange(playerid, oldWeaponId, newWeaponId);

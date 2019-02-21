@@ -138,6 +138,12 @@ ShowBackpack(playerid, category)
 // Hide player's backpack menu.
 HideBackpack(playerid)
 {
+    if(!IsPlayerUsingBackpack(playerid) || Bit_Get(ePlayerFlag[e_bIsCrafting], playerid)
+        || ((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) < TICK_RATE_BP_OPENING))
+    {
+        return;
+    }
+
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Bg]);
 
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);

@@ -10,11 +10,8 @@ hook OnPlayerUpdate(playerid)
 		new currentAnimIdx = GetPlayerAnimationIndex(playerid);
 		if(currentAnimIdx != ePlayerInfo[playerid][e_iAnimIdx])
 		{
-			new animLib[32], animName[32];
-			GetAnimationName(ePlayerInfo[playerid][e_iAnimIdx], animLib, sizeof(animLib), animName, sizeof(animName));
-
 			Bit_Vet(ePlayerFlag[e_bAnimPlaying], playerid);
-			OnPlayerAnimFinish(playerid, animLib, animName, ePlayerInfo[playerid][e_iAnimIdx]);
+			OnPlayerAnimFinish(playerid, ePlayerInfo[playerid][e_iAnimIdx]);
 			ePlayerInfo[playerid][e_iAnimIdx] = 0;
 		}
 	}
@@ -24,9 +21,11 @@ hook OnPlayerUpdate(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnPlayerAnimFinish ----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerAnimFinish(playerid, animLib[], animName[], animIdx)
+public OnPlayerAnimFinish(playerid, animIdx)
 {
-    //SCMF(playerid, -1, "Animation Lib: %s | Name: %s | Idx: %d", animLib, animName, animIdx);
+	// new animLib[32], animName[32];
+	// GetAnimationName(ePlayerInfo[playerid][e_iAnimIdx], animLib, sizeof(animLib), animName, sizeof(animName));
+    // SCMF(playerid, -1, "Animation Lib: %s | Name: %s | Idx: %d", animLib, animName, animIdx);
 
 	switch(animIdx)
 	{

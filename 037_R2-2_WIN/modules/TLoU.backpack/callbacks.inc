@@ -14,7 +14,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         if(!Bit_Get(ePlayerFlag[e_bIsCrafting], playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
         {
             if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid) 
-            && GetPlayerSpeed(playerid) <= 0.0 && !IsPlayerLookingAtItem(playerid) && !IsPlayerBurning(playerid))
+                && GetPlayerSpeed(playerid) <= 0.0 && !IsPlayerLookingAtItem(playerid) && !IsPlayerBurning(playerid))
             {
                 ShowBackpack(playerid, PlayerBackpackCategory(playerid));
             }
@@ -28,11 +28,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     if(PRESSED(KEY_AIM))
     {
         // Backpack closing.
-        if(IsPlayerUsingBackpack(playerid) && !Bit_Get(ePlayerFlag[e_bIsCrafting], playerid)
-        && ((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING))
-        {
-            HideBackpack(playerid);
-        }
+        HideBackpack(playerid);
     }
 
     return 1;

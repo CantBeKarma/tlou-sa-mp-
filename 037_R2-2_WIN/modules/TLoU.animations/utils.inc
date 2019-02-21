@@ -22,21 +22,12 @@ ApplyCallbackAnim(playerid, animlib[], animname[])
 	if(!Bit_Get(ePlayerFlag[e_bAnimPlaying], playerid))
 	{
 		ApplyAnimation(playerid, animlib, animname, 4.1, 0, 1, 1, 0, 0);
-		//defer DelayTimer_GetAnimIndex(playerid);
 
 		wait_ms(150);
 		Bit_Let(ePlayerFlag[e_bAnimPlaying], playerid);
 		ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
 	}
 }
-
-// Get player animation index.
-// timer DelayTimer_GetAnimIndex[150](playerid)
-// {
-// 	Bit_Let(ePlayerFlag[e_bAnimPlaying], playerid);
-//     ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
-//     return ePlayerInfo[playerid][e_iAnimIdx];
-// }
 
 // Clear animations using other anim.
 ClearAnims(playerid)

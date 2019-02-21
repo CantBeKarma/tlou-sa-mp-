@@ -7,6 +7,7 @@
 #define     NO_AUDIO                (-1)
 
 #define     MAX_3D_AUDIOS           (10)
+#define     MAX_RELOAD_SFX_AUDIOS   (5)
 
 //#region LOCAL AUDIO FILES (INDEXES)
     #define     AUDIO_RELOAD_SHOTGUN        (52)
@@ -103,6 +104,20 @@ new Iterator:iAudioHandle3D<MAX_PLAYERS, MAX_3D_AUDIOS>;
 //     { "http://localhost/TLoU/infected_noise/clicker/clicker_death02.mp3" },
 //     { "http://localhost/TLoU/infected_noise/clicker/clicker_death03.mp3" }
 // };
+
+enum e_RELOAD_AUDIO_SFX
+{
+    e_iWeaponId,
+    e_iAudioId
+}
+stock const SFX_WeaponReloads[MAX_RELOAD_SFX_AUDIOS][e_RELOAD_AUDIO_SFX] =
+{
+    {WEAPON_9MM,            AUDIO_RELOAD_9MM},
+    {WEAPON_REVOLVER,       AUDIO_RELOAD_REVOLVER},
+    {WEAPON_SHOTGUN,        AUDIO_RELOAD_SHOTGUN},
+    {WEAPON_RIFLE,          AUDIO_RELOAD_RIFLE},
+    {WEAPON_ASSAULT,        AUDIO_RELOAD_ASSAULT}
+};
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnGameModeInit --------------------

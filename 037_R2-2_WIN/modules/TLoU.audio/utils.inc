@@ -28,7 +28,6 @@ Audio3D_Play(playerid, audioid, Float:x, Float:y, Float:z, Float:distance, bool:
 
     new audioHandle = Iter_Add(iAudioHandle3D<playerid>, Audio_Play(playerid, audioid, ppause, loop, downmix));
     Audio_Set3DPosition(playerid, audioHandle, x, y, z, distance);
-
     return audioHandle;
 }
 
@@ -47,32 +46,16 @@ Audio3D_Play(playerid, audioid, Float:x, Float:y, Float:z, Float:distance, bool:
 // Plays reload sound effect for player (and for nearby players 3D sound effect).
 PlayPlayerReloadSound(playerid, weaponId)
 {
-	new tmpAudioId = -1;
+    for(new i = 0; i != MAX_RELOAD_SFX_AUDIOS; i++)
+    {
+        if(SFX_WeaponReloads[i][e_iWeaponId] != weaponId)
+            continue;
 
-	switch(weaponId)
-	{
-		case WEAPON_9MM: 
-			tmpAudioId = AUDIO_RELOAD_9MM;
+        new Float:x, Float:y, Float:z;
+        GetPlayerPos(playerid, x, y, z);
 
-		case WEAPON_REVOLVER: 
-			tmpAudioId = AUDIO_RELOAD_REVOLVER;
-
-		case WEAPON_SHOTGUN:
-			tmpAudioId = AUDIO_RELOAD_SHOTGUN;
-
-		case WEAPON_RIFLE:
-			tmpAudioId = AUDIO_RELOAD_RIFLE;
-
-		case WEAPON_ASSAULT: 
-			tmpAudioId = AUDIO_RELOAD_ASSAULT;
-	}
-
-    if(tmpAudioId == -1)
-        return;
-
-    new Float:x, Float:y, Float:z;
-    GetPlayerPos(playerid, x, y, z);
-
-    new tmpAudioHandle = Audio_Play(playerid, tmpAudioId);
-    Audio_Set3DPosition(playerid, tmpAudioHandle, x, y, z, DIST3D_RELOAD_WEAPON_RANGE);
+        new tmpAudioHandle = Audio_Play(playerid, SFX_WeaponReloads[i][e_iAudioId]);
+        Audio_Set3DPosition(playerid, tmpAudioHandle, x, y, z, DIST3D_RELOAD_WEAPON_RANGE);
+        break;
+    }
 }
