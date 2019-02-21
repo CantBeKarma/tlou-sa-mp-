@@ -157,8 +157,6 @@ CMD:weapsdata(playerid, params[])
         weaponMaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, weaponId);
         weaponClipAmmo = ePlayerWeapon[playerid][e_iWeaponClipAmmo][i];
 
-        SPAO(playerid, GetWeaponModelFromId(weaponId));
-
         format(formattedStr, sizeof(formattedStr), "%d\t%d\t%d\t%d\n", weaponId, weaponAmmo, weaponMaxAmmo, weaponClipAmmo);
         strcat(str_weapsData, formattedStr, sizeof(str_weapsData));
     }
@@ -352,11 +350,10 @@ CMD:ambientnoise(playerid, params[])
 
 CMD:npcupdate(playerid, params[])
 {
-    new npcid, update, bool:force;
-    if(sscanf(params, "ddd", npcid, update, force))return SCM(playerid, -1, "/npcupdate [npcid] [0/1] [force-(0/1)]");
+    new npcid, update;
+    if(sscanf(params, "dd", npcid, update))return SCM(playerid, -1, "/npcupdate [npcid] [0/1]");
     {
-        if(update) FCNPC_StartUpdateTimer(npcid);
-        else FCNPC_StopUpdateTimer(npcid, force);
+        FCNPC_StartUpdateTimer(npcid);
     }
     return 1;
 }

@@ -246,25 +246,7 @@ public FCNPC_OnAttackPlayer(npcid, chaseid, Float:chaseId_oldHealth, Float:chase
 	if(IsPlayerUsingAnim(chaseid, ANIM_COLLECTION_CLIMB))
 		return 1;
 
-	if(IsBulletWeapon(CurrentPlayerWeaponId[chaseid]))
-	{
-		switch(random(2))
-		{
-			case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
-			case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
-		}
-	}
-	else
-	{
-		if(random(2) == 1)
-		{
-			switch(random(2))
-			{
-				case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
-				case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
-			}
-		}
-	}
+	PlayPlayerDamageAnimsFromNpc(chaseid);
 	return 0;
 }
 
@@ -416,7 +398,7 @@ public FCNPC_OnGetShived(npcid, shiverId)
 	//new audioIdx = Audio3D_Stream(shiverId, SFX_ClickerShivDeaths[random(sizeof(SFX_ClickerShivDeaths))], x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
 	Audio3D_Play(shiverId, RandomEx(AUDIO_CLICKER_DEATH01, AUDIO_CLICKER_DEATH03), x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
 
-	HidePlayerWeapon(shiverId);
+	HidePlayerWeapon(shiverId, CurrentPlayerWeaponId[shiverId]);
 	FCNPC_SetAnimCallback(npcid, KNIFE_KILL_KNIFE_PED_DAMAGE);
 	ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
 	SPAO(shiverId, ITEM_MODEL_SHIV);

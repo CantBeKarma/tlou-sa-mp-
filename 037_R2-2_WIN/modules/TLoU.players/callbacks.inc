@@ -101,7 +101,7 @@ public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
 	}
 
 	FreezePlayer(playerid, true, -1);
-	HidePlayerWeapon(playerid);
+	HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
 	Disable_OnPlayerLookAt(playerid);
 	PlayDeathAnimation(playerid, bodypart);
 	PlayDeathProcedureForPlayer(playerid);
@@ -263,7 +263,7 @@ public OnPlayerHealed(playerid, Float:oldHealth, Float:newHealth)
 
 	if(newMedkitAmount <= 0)
 	{
-		HidePlayerWeapon(playerid);
+		HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
 	}
 
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);

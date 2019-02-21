@@ -75,7 +75,11 @@ function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 			}
 			else
 			{
-				new healSpeed = (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (500) : (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (300) : (100);
+				new healSpeed = 
+					(Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (500) 
+					: (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (300) 
+					: (100);
+
 				SetPlayerHealthEx(playerid, currentHealth + 2.0);
 
 				SetTimerEx("HealMyself", healSpeed, false, "dff", playerid, oldHealth, destHealth);
@@ -247,6 +251,31 @@ PlayDeathAnimation(playerid, bodypart)
 
 			default:
 				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+		}
+	}
+}
+
+// Animations applied on a player when attacked by NPC.
+// Different behaviour when weapon is equipped or not.
+PlayPlayerDamageAnimsFromNpc(chaseid)
+{
+	if(IsBulletWeapon(CurrentPlayerWeaponId[chaseid]))
+	{
+		switch(random(2))
+		{
+			case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
+			case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
+		}
+	}
+	else
+	{
+		if(random(2) == 1)
+		{
+			switch(random(2))
+			{
+				case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
+				case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
+			}
 		}
 	}
 }

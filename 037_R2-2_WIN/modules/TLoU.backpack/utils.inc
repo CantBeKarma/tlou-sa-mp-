@@ -53,7 +53,7 @@ Perform_BackpackOpening(playerid)
     }
 
     HideHud(playerid);
-    HidePlayerWeapon(playerid);
+    HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
     AttachBackpackToPlayer(playerid, true);
     MoveCameraNextToPlayer(playerid, -0.9, 0.25, 500);
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 1, 1, 1, 0, 1);

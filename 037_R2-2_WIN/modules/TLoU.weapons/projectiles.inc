@@ -37,7 +37,7 @@ public OnPlayerThrowProjectile(playerid, weaponId)
 
     if(newProjectileAmount <= 0)
     {
-        HidePlayerWeapon(playerid);
+        HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
     }
 
     ApplyCallbackAnim(playerid, "GRENADE", "WEAPON_THROW");
@@ -54,7 +54,7 @@ public OnPlayerDropNailbomb(playerid)
 
     if(newProjectileAmount <= 0)
     {
-        HidePlayerWeapon(playerid);
+        HidePlayerWeapon(playerid, CurrentPlayerWeaponId[playerid]);
     }
 
     ApplyAnimation(playerid, "GRENADE", "WEAPON_THROWU", 3.0, 0, 1, 1, 0, 0);
