@@ -15,7 +15,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
     if(PRESSED(KEY_FIRE))
     {
-        new currentWeapon = CurrentPlayerWeaponId[playerid];
+        new currentWeaponId = CurrentPlayerWeaponId[playerid];
         
         if(!Bit_Get(ePlayerFlag[e_bAiming], playerid) 
         && !IsPlayerUsingBackpack(playerid) 
@@ -23,7 +23,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         && !IsPlayerPlayingActions(playerid))
         {
             // Healing
-            if(currentWeapon == WEAPON_MEDKIT && GetPlayerMedkits[playerid] > 0)
+            if(currentWeaponId == WEAPON_MEDKIT && GetPlayerMedkits[playerid] > 0)
             {
                 if(!Bit_Get(ePlayerFlag[e_bIsHealing], playerid) && GetPlayerHealthEx(playerid) < 100.0 && !IsPlayerBurning(playerid))
                 {
@@ -33,14 +33,20 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             }
 
             // Equipping melee weapon
-            else if(IsBulletWeapon(currentWeapon) || IsProjectileWeapon(currentWeapon) || currentWeapon == WEAPON_BOW || currentWeapon == WEAPON_UNARMED)
+            else if(IsBulletWeapon(currentWeaponId) 
+            || IsProjectileWeapon(currentWeaponId) 
+            || currentWeaponId == WEAPON_BOW 
+            || currentWeaponId == WEAPON_UNARMED)
             {
-                SetPlayerMeleeWeapon(playerid);
+                if(currentWeaponId != WEAPON_NAIL_BOMB)
+                {
+                    SetPlayerMeleeWeapon(playerid);
+                }
             }
         }
 
         // If player uses bullet weapon and has no ammo in a weapon magazine...
-        if(IsBulletWeapon(currentWeapon) && CurrentPlayerWeaponClipSize[playerid] <= 0 && Bit_Get(ePlayerFlag[e_bAiming], playerid))
+        if(IsBulletWeapon(currentWeaponId) && CurrentPlayerWeaponClipSize[playerid] <= 0 && Bit_Get(ePlayerFlag[e_bAiming], playerid))
         {
             // perform a sound effect when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
@@ -51,14 +57,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             else
             {
                 // reload a weapon if still has some ammo left or seek for the new weapon in the inventory.
-                if(GetPlayerWeaponAmmo(playerid, currentWeapon) > 0) ReloadWeapon(playerid);
+                if(GetPlayerWeaponAmmo(playerid, currentWeaponId) > 0) ReloadWeapon(playerid);
                 else
                 {
                     new newWeaponId = GetNextWeaponWithAmmo(playerid);
                     if(newWeaponId == 0) Audio_PlayEx(playerid, AUDIO_WEAP_NOAMMO);
                     else
                     {
-                        if(currentWeapon != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN)
+                        if(currentWeaponId != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN)
                         {
                             // This function is going to be called only if player keeps aiming
                             // It is needed here because of different crosshairs for shotgun and other weapons
@@ -96,25 +102,25 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-    new currentWeapon = CurrentPlayerWeaponId[playerid];
-    if(currentWeapon <= 0)
+    new currentWeaponId = CurrentPlayerWeaponId[playerid];
+    if(currentWeaponId <= 0)
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [%d] [%s] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), playerid, GetPlayerIpAddress(playerid), weaponid);
         return 0;
     }
 
     new 
-        oldAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon),
+        oldAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
         oldClipAmmo = CurrentPlayerWeaponClipSize[playerid];
 
-    SetPlayerWeaponAmmo(playerid, currentWeapon, oldAmmo-1);
+    SetPlayerWeaponAmmo(playerid, currentWeaponId, oldAmmo-1);
     CurrentPlayerWeaponClipSize[playerid] -= 1;
 
     new
-        newAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon),
+        newAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
         newClipAmmo = CurrentPlayerWeaponClipSize[playerid];
 
-    CallLocalFunction("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeapon, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
+    CallLocalFunction("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
 	return 0;
 }
 
@@ -123,25 +129,25 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
 {
-    new currentWeapon = CurrentPlayerWeaponId[playerid];
-    if(currentWeapon <= 0)
+    new currentWeaponId = CurrentPlayerWeaponId[playerid];
+    if(currentWeaponId <= 0)
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [%d] [%s] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), playerid, GetPlayerIpAddress(playerid), weaponid);
         return 0;
     }
 
     new 
-        oldAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon),
+        oldAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
         oldClipAmmo = CurrentPlayerWeaponClipSize[playerid];
 
-    SetPlayerWeaponAmmo(playerid, currentWeapon, oldAmmo-1);
+    SetPlayerWeaponAmmo(playerid, currentWeaponId, oldAmmo-1);
     CurrentPlayerWeaponClipSize[playerid] -= 1;
 
     new
-        newAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon),
+        newAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
         newClipAmmo = CurrentPlayerWeaponClipSize[playerid];
 
-    CallLocalFunction("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeapon, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, x, y, z);
+    CallLocalFunction("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, x, y, z);
     return 1;
 }
 

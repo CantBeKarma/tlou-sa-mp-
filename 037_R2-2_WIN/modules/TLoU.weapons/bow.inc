@@ -107,7 +107,7 @@ hook OnDynamicObjectMoved(objectid)
 
 		switch(random(2))
 		{
-			case 0: DestroyDynamicObject(ePlayerWeapon[i][e_iArrowObjectId]), SCMF(i, -1, "Your arrow has been destroyed");
+			case 0: DestroyDynamicObject(ePlayerWeapon[i][e_iArrowObjectId]), SCMF(i, -1, "Your arrow have been destroyed");
 			case 1:
 			{
 
