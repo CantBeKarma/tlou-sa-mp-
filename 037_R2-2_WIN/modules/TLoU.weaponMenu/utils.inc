@@ -71,6 +71,11 @@ WeapMenu_Ls_SortWeapons(playerid)
 
         slot = slotToCheck;
     }
+
+    if(IsPlayerUsingWeaponMenu(playerid))
+    {
+        WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+    }
 }
 
 // Change the position of selection box
@@ -228,7 +233,8 @@ WeapMenuTd_DisplayWeapsAndAmmo(playerid)
             case 8: weaponId = WeapMenu_Rs_WeaponId(playerid, 1);
         }
 
-        if(!HasPlayerWeapon(playerid, weaponId)) continue;
+        if(!HasPlayerWeapon(playerid, weaponId)) 
+            continue;
 
         switch(weaponId)
         {

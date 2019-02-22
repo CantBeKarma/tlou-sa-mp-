@@ -142,17 +142,17 @@ public OnPlayerPickUpItem(playerid, item_objectId)
             {
                 for(new i = 0; i != MAX_ITEMS_DATA; i++)
                 {
-                    if(playerMeleeWeapon == eItemsData[i][e_iItem_SA_WeaponId])
-                    {
-                        calcItemId_idxValue = i;
-                        shouldUpdateObject = true;
-                        calcAmount = GetPlayerMeleeCnd[playerid];
+                    if(playerMeleeWeapon != eItemsData[i][e_iItem_SA_WeaponId])
+                        continue;
 
-                        if(IsPlayerMeleeUpgraded[playerid]) 
-                            calcMeleeExtCnd = GetPlayerMeleeExtCnd[playerid];
+                    calcItemId_idxValue = i;
+                    shouldUpdateObject = true;
+                    calcAmount = GetPlayerMeleeCnd[playerid];
 
-                        break;
-                    }
+                    if(IsPlayerMeleeUpgraded[playerid]) 
+                        calcMeleeExtCnd = GetPlayerMeleeExtCnd[playerid];
+                        
+                    break;
                 }
             }
 
@@ -173,13 +173,13 @@ public OnPlayerPickUpItem(playerid, item_objectId)
             {
                 for(new i = 0; i != MAX_ITEMS_DATA; i++)
                 {
-                    if(playerThrowable == eItemsData[i][e_iItem_SA_WeaponId])
-                    {
-                        calcItemId_idxValue = i;
-                        shouldUpdateObject = true;
-                        calcAmount = 1;
-                        break;
-                    }
+                    if(playerThrowable != eItemsData[i][e_iItem_SA_WeaponId])
+                        continue;
+
+                    calcItemId_idxValue = i;
+                    shouldUpdateObject = true;
+                    calcAmount = 1;
+                    break;
                 }
             }
 
