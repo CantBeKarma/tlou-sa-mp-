@@ -1,2 +1,0 @@
-[20:56:44] [INFO] Riddick is trying to sign in to account of Guid: 1 (.\modules\TLoU.registerLogin\login.inc:8 -> .\modules\TLoU.registerLogin\utils.inc:51 -> .\modules\TLoU.registerLogin\utils.inc:40 -> .\modules\includes\YSI-Includes-4.x\YSI\..\YSI_Visual\y_dialog.inc:201 -> .\modules\includes\YSI-Includes-4.x\YSI\..\YSI_Visual\..\YSI_Coding\..\YSI_Internal\y_cgen.inc:113)
-[20:56:44] [INFO] Loading player textdraws for: Riddick [0]... (.\modules\TLoU.textdraws\td_player.inc:36 -> .\modules\TLoU.players\cache.inc:7 -> .\modules\TLoU.registerLogin\login.inc:15)
