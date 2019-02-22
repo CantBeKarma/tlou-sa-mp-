@@ -262,8 +262,10 @@ ResetEnum_ePlayerWeapon(playerid)
 
 		// Clear current player's weapon data.
 		CurrentPlayerWeaponId[playerid] = WEAPON_UNARMED;
-		CurrentPlayerWeaponAmmo[playerid] = CurrentPlayerWeaponClipSize[playerid] = 0;
-		PlayerWeaponBodyDamage[playerid] = PlayerWeaponHeadDamage[playerid] = 8.0;
+		CurrentPlayerWeaponAmmo[playerid] = 0;
+		CurrentPlayerWeaponClipSize[playerid] = 0;
+		PlayerWeaponBodyDamage[playerid] = 8.0;
+		PlayerWeaponHeadDamage[playerid] = 8.0;
 		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
 
 		// Save player's weapon ammo and save it as a last used weaponId by player.
@@ -275,7 +277,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 		ResetPlayerWeapons(playerid);
 
-		// Don't do any any attachments with my current weapon if it
+		// Don't do any attachments with my current weapon if it
 		// was a projectile or a throwable weapon (not necessary to call).
 		// Additionally: It may be re-attached in SetPlayerWeapon at the very end!
 		if(!IsProjectileWeapon(currentWeapon) && !IsThrowableWeapon(currentWeapon))
@@ -307,7 +309,10 @@ ResetEnum_ePlayerWeapon(playerid)
 	// Get player's weapon ammo (doesn't matter if weapon is equipped or not).
 	GetPlayerWeaponAmmo(playerid, weaponId)
 	{
-		return CurrentPlayerWeaponId[playerid] == weaponId ? CurrentPlayerWeaponAmmo[playerid] : PlayerWeaponSlotAmmo[playerid, GetCustomWeaponSlot(weaponId)];
+		return 
+			CurrentPlayerWeaponId[playerid] == weaponId 
+			? CurrentPlayerWeaponAmmo[playerid] 
+			: PlayerWeaponSlotAmmo[playerid, GetCustomWeaponSlot(weaponId)];
 	}
 
 	// Check if player has certain weapon.
