@@ -388,7 +388,7 @@ ResetEnum_ePlayerWeapon(playerid)
 				WEAPON_SHOTGUN, WEAPON_RIFLE, 
 				WEAPON_ASSAULT, WEAPON_BOW:
 				{
-					for(new i = 0; i != 4; i++)
+					for(new i = 0; i <= 3; i++)
 					{
 						if(weaponId == WeapMenu_Ls_WeaponId(playerid, i))
 						{

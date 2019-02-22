@@ -48,24 +48,12 @@ timer DestroyFire[FIRE_DESTROY_DELAY](fireId)
 
     for(new i = 0; i != MAX_FIRES_PER_MOLOTOV; i++)
     {
-        if(!IsValidDynamicObject(eFireData[fireId][e_iFireObjectId][i])) break;
+        if(!IsValidDynamicObject(eFireData[fireId][e_iFireObjectId][i]))
+            break;
 
         DestroyDynamicObject(eFireData[fireId][e_iFireObjectId][i]);
     }
 }
-
-// // Get a free slot of fires.
-// GetFreeServerFireSlot()
-// {
-//     for(new i = 0; i != MAX_POSSIBLE_FIRES; i++)
-//     {
-//         if(!Iter_Contains(ServerFires, i))
-//         {
-//             return i;
-//         }
-//     }
-//     return -1;
-// }
 
 // Check if player is burning.
 IsPlayerBurning(playerid) return Bit_Get(ePlayerFlag[e_bIsBurning], playerid);
