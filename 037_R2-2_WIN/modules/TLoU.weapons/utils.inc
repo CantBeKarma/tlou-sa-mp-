@@ -118,38 +118,6 @@ ResetEnum_ePlayerWeapon(playerid)
 			|| weaponId == WEAPON_BOTTLE;
 	}
 
-	// Return weapon's ID based on model.
-	// GetWeaponIdFromModel(model)
-	// {
-	// 	switch(model)
-	// 	{
-	// 		case ITEM_MODEL_PIPE: 	   return WEAPON_PIPE;
-	// 		case ITEM_MODEL_SCSR_PIPE: return WEAPON_SCISSOR_PIPE;
-	// 		case ITEM_MODEL_HATCHET:   return WEAPON_HATCHET;
-	// 		case ITEM_MODEL_MACHETE:   return WEAPON_MACHETE;
-
-	// 		case ITEM_MODEL_9MM: 	  return WEAPON_9MM;
-	// 		case ITEM_MODEL_REVOLVER: return WEAPON_REVOLVER;
-	// 		case ITEM_MODEL_SHORTY:   return WEAPON_SHORTY;
-
-	// 		case ITEM_MODEL_SHOTGUN: return WEAPON_SHOTGUN;
-	// 		case ITEM_MODEL_RIFLE: 	 return WEAPON_RIFLE;
-	// 		case ITEM_MODEL_ASSAULT: return WEAPON_ASSAULT;
-	// 		case ITEM_MODEL_BOW:	 return WEAPON_BOW;
-
-	// 		case ITEM_MODEL_BRICK:	 return WEAPON_BRICK;
-	// 		case ITEM_MODEL_BOTTLE:	 return WEAPON_BOTTLE;
-
-	// 		case ITEM_MODEL_MOLOTOV: return WEAPON_MOLOTOV;
-	// 		case ITEM_MODEL_BOMB: 	 return WEAPON_NAIL_BOMB;
-	// 		case ITEM_MODEL_SMKBMB:  return WEAPON_SMOKE_BOMB;
-
-	// 		case ITEM_MODEL_SHIV:	 return WEAPON_SHIV;
-	// 		case ITEM_MODEL_MEDKIT:  return WEAPON_MEDKIT;
-	// 	}
-	// 	return -1;
-	// }
-
 	// Return for which weapon id the specified ammo is for.
 	GetWeaponIdForAmmoType(ammoModelId)
 	{
