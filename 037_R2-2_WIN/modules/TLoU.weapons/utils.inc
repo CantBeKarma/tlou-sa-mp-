@@ -187,11 +187,16 @@ ResetEnum_ePlayerWeapon(playerid)
 	// Set player weapon to dest.
 	SetPlayerWeapon(playerid, weaponId, ammo = 1)
 	{
-		new weapon_itemId = IsValidWeapon(weaponId);
+		if(weaponId == WEAPON_UNARMED
+			|| weaponId == CurrentPlayerWeaponId[playerid] && !IsMeleeWeapon(weaponId))
+		{
+			return;
+		}
 
+		new weapon_itemId = IsValidWeapon(weaponId);
 		if(weapon_itemId == -1)
 		{
-			return 1;
+			return;
 		}
 
 		HidePlayerWeapon(playerid);
@@ -201,7 +206,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		{
 			if(weaponId == WEAPON_BOW) SPAO(playerid, ITEM_MODEL_BOW, true);
 			else if(IsBulletWeapon(weaponId)) GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
-			else return 1;
+			else return;
 		}
 		else if(ammo > 0)
 		{
@@ -240,7 +245,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		HudTd_UpdateWeaponAmmo(playerid, weaponId);
 		HudTd_DisplayMeleeWeaponBars(playerid, weaponId);
 		HudTd_DisplayWeaponCurrentAmmo(playerid, weaponId);
-		return 0;
+		return;
 	}
 
 	// Hide's player current weapon equipped.
@@ -248,44 +253,44 @@ ResetEnum_ePlayerWeapon(playerid)
 	{
 		new currentWeapon = CurrentPlayerWeaponId[playerid];
 
-		if(currentWeapon != WEAPON_UNARMED)
+		if(currentWeapon == WEAPON_UNARMED)
+			return;
+	
+		new 
+			currentAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon),
+			currentClipAmmo = CurrentPlayerWeaponClipSize[playerid];
+
+		// Clear current player's weapon data.
+		CurrentPlayerWeaponId[playerid] = WEAPON_UNARMED;
+		CurrentPlayerWeaponAmmo[playerid] = CurrentPlayerWeaponClipSize[playerid] = 0;
+		PlayerWeaponBodyDamage[playerid] = PlayerWeaponHeadDamage[playerid] = 8.0;
+		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
+
+		// Save player's weapon ammo and save it as a last used weaponId by player.
+		LastPlayerWeaponId[playerid] = currentWeapon;
+		ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(currentWeapon)] = currentClipAmmo;
+		SetPlayerWeaponAmmo(playerid, currentWeapon, currentAmmo);
+
+		// Remove attached object if it was a projectile/medkit/throwable.
+		RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+		ResetPlayerWeapons(playerid);
+
+		// Don't do any any attachments with my current weapon if it
+		// was a projectile or a throwable weapon (not necessary to call).
+		// Additionally: It may be re-attached in SetPlayerWeapon at the very end!
+		if(!IsProjectileWeapon(currentWeapon) && !IsThrowableWeapon(currentWeapon))
 		{
-			new 
-				currentAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon),
-				currentClipAmmo = CurrentPlayerWeaponClipSize[playerid];
-
-			// Clear current player's weapon data.
-			CurrentPlayerWeaponId[playerid] = WEAPON_UNARMED;
-			CurrentPlayerWeaponAmmo[playerid] = CurrentPlayerWeaponClipSize[playerid] = 0;
-			PlayerWeaponBodyDamage[playerid] = PlayerWeaponHeadDamage[playerid] = 8.0;
-			ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
-
-			// Save player's weapon ammo and save it as a last used weaponId by player.
-			LastPlayerWeaponId[playerid] = currentWeapon;
-			ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(currentWeapon)] = currentClipAmmo;
-			SetPlayerWeaponAmmo(playerid, currentWeapon, currentAmmo);
-
-			// Remove attached object if it was a projectile/medkit/throwable.
-			RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
-			ResetPlayerWeapons(playerid);
-
-			// Don't do any any attachments with my current weapon if it
-			// was a projectile or a throwable weapon (not necessary to call).
-			// Additionally: It may be re-attached in SetPlayerWeapon at the very end!
-			if(!IsProjectileWeapon(currentWeapon) && !IsThrowableWeapon(currentWeapon))
-			{
-				SPAO(playerid, GetWeaponModelFromWeaponId(currentWeapon));
-			}
-
-			// Update HUD weapon display 
-			HudTd_UpdateWeapon(playerid, WEAPON_UNARMED);
-			
-			HudTd_UpdateWeaponAmmo(playerid, WEAPON_UNARMED);
-			HudTd_HideWeaponCurrentAmmo(playerid, currentWeapon);
-
-			HudTd_HideMeleeWeaponBars(playerid, currentWeapon);
-			HudTd_HideMeleeUpgradedBars(playerid, currentWeapon);
+			SPAO(playerid, GetWeaponModelFromWeaponId(currentWeapon));
 		}
+
+		// Update HUD weapon display 
+		HudTd_UpdateWeapon(playerid, WEAPON_UNARMED);
+		
+		HudTd_UpdateWeaponAmmo(playerid, WEAPON_UNARMED);
+		HudTd_HideWeaponCurrentAmmo(playerid, currentWeapon);
+
+		HudTd_HideMeleeWeaponBars(playerid, currentWeapon);
+		HudTd_HideMeleeUpgradedBars(playerid, currentWeapon);
 	}
 
 	// Set player's weapon ammo (doesn't matter if weapon is equipped or not).
