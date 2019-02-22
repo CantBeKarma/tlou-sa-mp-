@@ -41,47 +41,37 @@ WeapMenuTd_GetFreeSlot_H_Rs(playerid)
     return -1;
 }
 
-//#region Sort weapons on the left side-bar of the weapon menu (long-guns).
-    // WeapMenu_Ls_SortWeapons(playerid)
-    // {
-    //     new slot = 1;
-    //     while(slot < 3)
-    //     {
-    //         if(WeapMenu_Ls_WeaponId(playerid, slot) == -1) // If no weapon found in slot..
-    //         {
-    //             for(new nextSlot = slot+1; nextSlot <= 3; nextSlot++)
-    //             {
-    //                 if(WeapMenu_Ls_WeaponId(playerid, nextSlot) != -1)
-    //                 {
-    //                     WeapMenu_Ls_WeaponId(playerid, nextSlot) = WeapMenu_Ls_WeaponId(playerid, slot);
-    //                 }
-    //             }
-    //         }
+// Sort weapons on the left side-bar of the weapon menu (long-guns).
+WeapMenu_Ls_SortWeapons(playerid)
+{
+    print("WeapMenu_Ls_SortWeapons");
+    static slot = 1;
+    while(slot < 3)
+    {
+        printf("Checking slot: %d", slot);
+        if(WeapMenu_Ls_WeaponId(playerid, slot) != -1)
+        {
+            printf("There's a weapon in slot: %d", slot);
+            continue;
+        }
 
-    //         switch(slot)
-    //         {
-    //             case 1: slot = 0;
-    //             case 0: slot = 2;
-    //             case 2: slot = 3;
-    //         }
-    //     }
+        new slotToCheck = 
+              (slot == 1) ? (0)
+            : (slot == 0) ? (2)
+            : (slot == 2) ? (3)
+            : (-1);
 
+        printf("Checking slot %d if there's any weapon...", slotToCheck);
+        if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
+        {
+            printf("There is. I need to move weapon from slot %d to slot %d", slotToCheck, slot);
+            WeapMenu_Ls_WeaponId(playerid, slot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
+            WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
+        }
 
-    // 	// for(new i = 0; i != 4 i++)
-    // 	// {
-    // 	// 	if(WeapMenu_Ls_WeaponId(playerid, i) == -1) // If no weapon found in slot..
-    // 	// 	{
-    // 	// 		for(new nextWeaponInSlot = i+1; nextWeaponInSlot != 4; nextWeaponInSlot++)
-    // 	// 		{
-    // 	// 			if(WeapMenu_Ls_WeaponId(playerid, nextWeaponInSlot) != -1) // If weapon found in the next slot...
-    // 	// 			{
-    // 	// 				WeapMenu_Ls_WeaponId(playerid, nextWeaponInSlot) = WeapMenu_Ls_WeaponId(playerid, i);
-    // 	// 			}
-    // 	// 		}
-    // 	// 	}
-    // 	// }
-    // }
-//#endregion
+        slot = slotToCheck;
+    }
+}
 
 // Change the position of selection box
 WeapMenu_MoveSelectBox(playerid, Float:x, Float:y)

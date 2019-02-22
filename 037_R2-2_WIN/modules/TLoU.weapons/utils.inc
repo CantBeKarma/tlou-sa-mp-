@@ -259,7 +259,6 @@ ResetEnum_ePlayerWeapon(playerid)
 		HudTd_UpdateWeaponAmmo(playerid, weaponId);
 		HudTd_DisplayMeleeWeaponBars(playerid, weaponId);
 		HudTd_DisplayWeaponCurrentAmmo(playerid, weaponId);
-		return;
 	}
 
 	// Hide's player current weapon equipped.
@@ -383,17 +382,23 @@ ResetEnum_ePlayerWeapon(playerid)
 		if(LastPlayerWeaponId[playerid] == weaponId)
 			LastPlayerWeaponId[playerid] = GetFirstWeaponWithAmmo(playerid);
 
-		// switch(weaponId)
-		// {
-		// 	case 
-		// 		WEAPON_SHOTGUN, 
-		// 		WEAPON_RIFLE, 
-		// 		WEAPON_ASSAULT, 
-		// 		WEAPON_BOW:
-		// 		{
-		// 			WeapMenu_Ls_SortWeapons(playerid);
-		// 		}
-		// }
+		switch(weaponId)
+		{
+			case 
+				WEAPON_SHOTGUN, WEAPON_RIFLE, 
+				WEAPON_ASSAULT, WEAPON_BOW:
+				{
+					for(new i = 0; i != 4; i++)
+					{
+						if(weaponId == WeapMenu_Ls_WeaponId(playerid, i))
+						{
+							WeapMenu_Ls_WeaponId(playerid, i) = -1;
+							break;
+						}
+					}
+					WeapMenu_Ls_SortWeapons(playerid);
+				}
+		}
 
 		new weaponSlot = GetCustomWeaponSlot(weaponId);
 		ePlayerWeapon[playerid][e_iWeaponsId][weaponSlot] = 0;

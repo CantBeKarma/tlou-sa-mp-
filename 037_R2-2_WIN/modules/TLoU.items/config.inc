@@ -59,7 +59,7 @@ enum e_ITEM_DATA
     e_sItem_Name[24],
     e_iItem_Type,
     e_iItem_ModelId,
-    e_iItem_Slot,
+    e_iItem_SlotId,
     e_iItem_AudioPickupId,
     e_iItem_SA_WeaponId,
 
