@@ -161,35 +161,18 @@ ResetEnum_ePlayerWeapon(playerid)
 	}
 
 	// Return weapon's model based on ID.
-	GetWeaponModelFromId(weaponId)
+	GetWeaponModelFromWeaponId(weaponId)
 	{
-		switch(weaponId)
+		new item_modelId = -1;
+		for(new i = 0; i != MAX_ITEMS_DATA; i++)
 		{
-			case WEAPON_PIPE: 	   		return ITEM_MODEL_PIPE;
-			case WEAPON_SCISSOR_PIPE: 	return ITEM_MODEL_SCSR_PIPE;
-			case WEAPON_HATCHET:   		return ITEM_MODEL_HATCHET;
-			case WEAPON_MACHETE:   		return ITEM_MODEL_MACHETE;
-
-			case WEAPON_9MM: 	  		return ITEM_MODEL_9MM;
-			case WEAPON_REVOLVER: 		return ITEM_MODEL_REVOLVER;
-			case WEAPON_SHORTY:   		return ITEM_MODEL_SHORTY;
-
-			case WEAPON_SHOTGUN: 		return ITEM_MODEL_SHOTGUN;
-			case WEAPON_RIFLE: 	 		return ITEM_MODEL_RIFLE;
-			case WEAPON_ASSAULT: 		return ITEM_MODEL_ASSAULT;
-			case WEAPON_BOW:  	 		return ITEM_MODEL_BOW;
-
-			case WEAPON_BRICK:	 		return ITEM_MODEL_BRICK;
-			case WEAPON_BOTTLE:	 		return ITEM_MODEL_BOTTLE;
-
-			case WEAPON_MOLOTOV: 		return ITEM_MODEL_MOLOTOV;
-			case WEAPON_NAIL_BOMB: 	 	return ITEM_MODEL_BOMB;
-			case WEAPON_SMOKE_BOMB:  	return ITEM_MODEL_SMKBMB;
-
-			case WEAPON_SHIV:	 		return ITEM_MODEL_SHIV;
-			case WEAPON_MEDKIT:  		return ITEM_MODEL_MEDKIT;
+			if(weaponId == eItemsData[i][e_iItem_SA_WeaponId])
+			{
+				item_modelId = eItemsData[i][e_iItem_ModelId];
+				break;
+			}
 		}
-		return -1;
+		return item_modelId;
 	}
 
 	// Return slot of a weapon (server-sided weapons).
@@ -323,7 +306,7 @@ ResetEnum_ePlayerWeapon(playerid)
 			// Additionally: It may be re-attached in SetPlayerWeapon at the very end!
 			if(!IsProjectileWeapon(currentWeapon) && !IsThrowableWeapon(currentWeapon))
 			{
-				SPAO(playerid, GetWeaponModelFromId(currentWeapon));
+				SPAO(playerid, GetWeaponModelFromWeaponId(currentWeapon));
 			}
 
 			// Update HUD weapon display 

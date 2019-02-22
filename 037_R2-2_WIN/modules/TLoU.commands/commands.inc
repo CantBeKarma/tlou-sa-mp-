@@ -157,7 +157,7 @@ CMD:weapsdata(playerid, params[])
         weaponMaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, weaponId);
         weaponClipAmmo = ePlayerWeapon[playerid][e_iWeaponClipAmmo][i];
 
-        SPAO(playerid, GetWeaponModelFromId(weaponId));
+        SPAO(playerid, GetWeaponModelFromWeaponId(weaponId));
 
         format(formattedStr, sizeof(formattedStr), "%d\t%d\t%d\t%d\n", weaponId, weaponAmmo, weaponMaxAmmo, weaponClipAmmo);
         strcat(str_weapsData, formattedStr, sizeof(str_weapsData));

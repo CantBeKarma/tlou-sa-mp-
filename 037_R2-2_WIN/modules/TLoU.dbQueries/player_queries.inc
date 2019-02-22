@@ -77,7 +77,7 @@
                 GivePlayerWeaponInSlot(playerid, weaponId);
                 SetPlayerWeaponAmmo(playerid, weaponId, row_amount);
 
-                SPAO(playerid, GetWeaponModelFromId(weaponId));
+                SPAO(playerid, GetWeaponModelFromWeaponId(weaponId));
             }
         }
 
