@@ -144,36 +144,50 @@ ResetEnum_ePlayerWeapon(playerid)
 	}
 
 	// Return slot of a weapon (server-sided weapons).
+	// GetCustomWeaponSlot(weaponId)
+	// {
+	// 	new slot = -1;
+	// 	switch(weaponId)
+	// 	{
+	// 		case 
+	// 			WEAPON_PIPE, 
+	// 			WEAPON_SCISSOR_PIPE, 
+	// 			WEAPON_HATCHET, 
+	// 			WEAPON_MACHETE: 	slot = WEAPON_SLOT_MELEE;
+
+	// 		case WEAPON_SHIV: 		slot = WEAPON_SLOT_SHIV;
+	// 		case WEAPON_MEDKIT: 	slot = WEAPON_SLOT_MEDKIT;
+	// 		case WEAPON_MOLOTOV: 	slot = WEAPON_SLOT_MOLOTOV;
+	// 		case WEAPON_NAIL_BOMB: 	slot = WEAPON_SLOT_BOMB;
+	// 		case WEAPON_SMOKE_BOMB: slot = WEAPON_SLOT_SMOKE_BOMB;
+
+	// 		case WEAPON_9MM: 		slot = WEAPON_SLOT_9MM;
+	// 		case WEAPON_REVOLVER: 	slot = WEAPON_SLOT_REVOLVER;
+	// 		case WEAPON_SHORTY:		slot = WEAPON_SLOT_SHORTY;
+			
+	// 		case WEAPON_SHOTGUN:	slot = WEAPON_SLOT_SHOTGUN;
+	// 		case WEAPON_RIFLE:		slot = WEAPON_SLOT_RIFLE;
+	// 		case WEAPON_ASSAULT:	slot = WEAPON_SLOT_ASSAULT;
+	// 		case WEAPON_BOW: 		slot = WEAPON_SLOT_BOW;
+			
+	// 		case WEAPON_BRICK, 
+	// 			WEAPON_BOTTLE:		slot = WEAPON_SLOT_BRICK_BOTTLE;
+	// 	}
+	// 	return slot;
+	// }
+
 	GetCustomWeaponSlot(weaponId)
 	{
-		new slot = -1;
-		switch(weaponId)
+		new item_slotId = -1;
+		for(new i = 0; i != MAX_ITEMS_DATA; i++)
 		{
-			case 
-				WEAPON_PIPE, 
-				WEAPON_SCISSOR_PIPE, 
-				WEAPON_HATCHET, 
-				WEAPON_MACHETE: 	slot = WEAPON_SLOT_MELEE;
-
-			case WEAPON_SHIV: 		slot = WEAPON_SLOT_SHIV;
-			case WEAPON_MEDKIT: 	slot = WEAPON_SLOT_MEDKIT;
-			case WEAPON_MOLOTOV: 	slot = WEAPON_SLOT_MOLOTOV;
-			case WEAPON_NAIL_BOMB: 	slot = WEAPON_SLOT_BOMB;
-			case WEAPON_SMOKE_BOMB: slot = WEAPON_SLOT_SMOKE_BOMB;
-
-			case WEAPON_9MM: 		slot = WEAPON_SLOT_9MM;
-			case WEAPON_REVOLVER: 	slot = WEAPON_SLOT_REVOLVER;
-			case WEAPON_SHORTY:		slot = WEAPON_SLOT_SHORTY;
-			
-			case WEAPON_SHOTGUN:	slot = WEAPON_SLOT_SHOTGUN;
-			case WEAPON_RIFLE:		slot = WEAPON_SLOT_RIFLE;
-			case WEAPON_ASSAULT:	slot = WEAPON_SLOT_ASSAULT;
-			case WEAPON_BOW: 		slot = WEAPON_SLOT_BOW;
-			
-			case WEAPON_BRICK, 
-				WEAPON_BOTTLE:		slot = WEAPON_SLOT_BRICK_BOTTLE;
+			if(weaponId == eItemsData[i][e_iItem_SA_WeaponId])
+			{
+				item_slotId = eItemsData[i][e_iItem_SlotId];
+				break;
+			}
 		}
-		return slot;
+		return item_slotId;
 	}
 
 	// Check if player is full on ammo for certain weapon.
@@ -360,36 +374,36 @@ ResetEnum_ePlayerWeapon(playerid)
 	// Remove player's weapon (doesn't matter if equipped or not).
 	RemovePlayerWeapon(playerid, weaponId)
 	{
-		if(HasPlayerWeapon(playerid, weaponId))
-		{
-			if(CurrentPlayerWeaponId[playerid] == weaponId)
-				HidePlayerWeapon(playerid);
+		if(!HasPlayerWeapon(playerid, weaponId))
+			return;
 
-			if(LastPlayerWeaponId[playerid] == weaponId)
-				LastPlayerWeaponId[playerid] = GetFirstWeaponWithAmmo(playerid);
+		if(CurrentPlayerWeaponId[playerid] == weaponId)
+			HidePlayerWeapon(playerid);
 
-			// switch(weaponId)
-			// {
-			// 	case 
-			// 		WEAPON_SHOTGUN, 
-			// 		WEAPON_RIFLE, 
-			// 		WEAPON_ASSAULT, 
-			// 		WEAPON_BOW:
-			// 		{
-			// 			WeapMenu_Ls_SortWeapons(playerid);
-			// 		}
-			// }
+		if(LastPlayerWeaponId[playerid] == weaponId)
+			LastPlayerWeaponId[playerid] = GetFirstWeaponWithAmmo(playerid);
 
-			new weaponSlot = GetCustomWeaponSlot(weaponId);
-			ePlayerWeapon[playerid][e_iWeaponsId][weaponSlot] = 0;
-			ePlayerWeapon[playerid][e_iWeaponsAmmo][weaponSlot] = 0;
+		// switch(weaponId)
+		// {
+		// 	case 
+		// 		WEAPON_SHOTGUN, 
+		// 		WEAPON_RIFLE, 
+		// 		WEAPON_ASSAULT, 
+		// 		WEAPON_BOW:
+		// 		{
+		// 			WeapMenu_Ls_SortWeapons(playerid);
+		// 		}
+		// }
 
-			if(IsMeleeWeapon(weaponId))
-				HudTd_UpdateMelee(playerid);
+		new weaponSlot = GetCustomWeaponSlot(weaponId);
+		ePlayerWeapon[playerid][e_iWeaponsId][weaponSlot] = 0;
+		ePlayerWeapon[playerid][e_iWeaponsAmmo][weaponSlot] = 0;
 
-			if(weaponId == WEAPON_SHIV)
-				HudTd_UpdateShivs(playerid);
-		}
+		if(IsMeleeWeapon(weaponId))
+			HudTd_UpdateMelee(playerid);
+
+		if(weaponId == WEAPON_SHIV)
+			HudTd_UpdateShivs(playerid);
 	}
 
 	// Reloads player's weapon
