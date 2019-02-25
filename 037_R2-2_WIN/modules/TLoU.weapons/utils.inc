@@ -192,14 +192,23 @@ ResetEnum_ePlayerWeapon(playerid)
 			return;
 		}
 
+		new oldWeaponId = CurrentPlayerWeaponId[playerWeaponId];
 		HidePlayerWeapon(playerid);
-		CurrentPlayerWeaponId[playerid] = weaponId;
 
 		if(ammo <= 0)
 		{
-			if(weaponId == WEAPON_BOW) SPAO(playerid, ITEM_MODEL_BOW, true);
-			else if(IsBulletWeapon(weaponId)) GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
-			else return;
+			if(weaponId == WEAPON_BOW)
+			{
+				SPAO(playerid, ITEM_MODEL_BOW, true);
+			}
+			else if(IsBulletWeapon(weaponId))
+			{
+				GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
+			}
+			else
+			{
+				return;
+			}
 		}
 		else if(ammo > 0)
 		{
@@ -228,16 +237,9 @@ ResetEnum_ePlayerWeapon(playerid)
 					(weaponId == WEAPON_BOW ? true : false));
 			}
 		}
-
-		// Detach weapon from player's body when it is in use.
-		DetachWeaponFromPlayersBody(playerid, weaponId);
-
-		// Update HUD weapon display.
-		ShowHud(playerid);
-		HudTd_UpdateWeapon(playerid, weaponId);
-		HudTd_UpdateWeaponAmmo(playerid, weaponId);
-		HudTd_DisplayMeleeWeaponBars(playerid, weaponId);
-		HudTd_DisplayWeaponCurrentAmmo(playerid, weaponId);
+		
+		new newWeaponId = CurrentPlayerWeaponId[playerid] = weaponId;
+		OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId);
 	}
 
 	// Hide's player current weapon equipped.

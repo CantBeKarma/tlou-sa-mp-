@@ -3,7 +3,7 @@ forward OnPlayerBunnyHop(playerid);
 forward OnPlayerAnimFinish(playerid, animIdx);
 forward OnPlayerPrepareToSign(playerid);
 forward OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart);
-//forward OnPlayerWeaponChange(playerid, newWeapon, oldWeapon);
+forward OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId);
 forward OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId);
 forward OnPlayerLookAtPlayer(playerid, lookingAt_playerId); 
 forward OnPlayerLookAtNPC(playerid, lookingAt_NpcId);

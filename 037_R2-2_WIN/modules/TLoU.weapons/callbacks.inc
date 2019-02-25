@@ -207,11 +207,16 @@ public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnPlayerWeaponChange --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public OnPlayerWeaponChange(playerid, newWeapon, oldWeapon)
-// {
-//     // This function is going to be called only if player keeps aiming
-//     // It is needed here because of different crosshairs for shotgun and other weapons
-//     // and when weapon changes automatically with "GetNextWeaponWithAmmo"
-//     ShowPlayerCrosshair(playerid);
-//     return 0;
-// }
+public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
+{
+    // Detach weapon from player's body when it is in use.
+    DetachWeaponFromPlayersBody(playerid, newWeaponId);
+
+    // Update HUD weapon display.
+    ShowHud(playerid);
+    HudTd_UpdateWeapon(playerid, newWeaponId);
+    HudTd_UpdateWeaponAmmo(playerid, newWeaponId);
+    HudTd_DisplayMeleeWeaponBars(playerid, newWeaponId);
+    HudTd_DisplayWeaponCurrentAmmo(playerid, newWeaponId);
+    return 0;
+}
