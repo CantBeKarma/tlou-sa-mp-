@@ -209,6 +209,8 @@ public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
 {
+    SCMF(playerid, -1, "Changed weapon: from %d to %d", oldWeaponId, newWeaponId);
+    
     // Detach weapon from player's body when it is in use.
     DetachWeaponFromPlayersBody(playerid, newWeaponId);
 
