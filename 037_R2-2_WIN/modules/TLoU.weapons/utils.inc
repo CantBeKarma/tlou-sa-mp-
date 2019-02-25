@@ -44,10 +44,9 @@ ResetEnum_ePlayerWeapon(playerid)
 			else 
 				TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Aim][3]), TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][2]);
 
-
 			if(!IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][2]) || !IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][3]))
 			{
-				SetTimerEx("HidePlayerHitMarker", 300, false, "d", playerid);
+				SetTimerEx("HidePlayerHitMarker", 200, false, "d", playerid);
 			}
 		}
 	}
@@ -144,38 +143,6 @@ ResetEnum_ePlayerWeapon(playerid)
 	}
 
 	// Return slot of a weapon (server-sided weapons).
-	// GetCustomWeaponSlot(weaponId)
-	// {
-	// 	new slot = -1;
-	// 	switch(weaponId)
-	// 	{
-	// 		case 
-	// 			WEAPON_PIPE, 
-	// 			WEAPON_SCISSOR_PIPE, 
-	// 			WEAPON_HATCHET, 
-	// 			WEAPON_MACHETE: 	slot = WEAPON_SLOT_MELEE;
-
-	// 		case WEAPON_SHIV: 		slot = WEAPON_SLOT_SHIV;
-	// 		case WEAPON_MEDKIT: 	slot = WEAPON_SLOT_MEDKIT;
-	// 		case WEAPON_MOLOTOV: 	slot = WEAPON_SLOT_MOLOTOV;
-	// 		case WEAPON_NAIL_BOMB: 	slot = WEAPON_SLOT_BOMB;
-	// 		case WEAPON_SMOKE_BOMB: slot = WEAPON_SLOT_SMOKE_BOMB;
-
-	// 		case WEAPON_9MM: 		slot = WEAPON_SLOT_9MM;
-	// 		case WEAPON_REVOLVER: 	slot = WEAPON_SLOT_REVOLVER;
-	// 		case WEAPON_SHORTY:		slot = WEAPON_SLOT_SHORTY;
-			
-	// 		case WEAPON_SHOTGUN:	slot = WEAPON_SLOT_SHOTGUN;
-	// 		case WEAPON_RIFLE:		slot = WEAPON_SLOT_RIFLE;
-	// 		case WEAPON_ASSAULT:	slot = WEAPON_SLOT_ASSAULT;
-	// 		case WEAPON_BOW: 		slot = WEAPON_SLOT_BOW;
-			
-	// 		case WEAPON_BRICK, 
-	// 			WEAPON_BOTTLE:		slot = WEAPON_SLOT_BRICK_BOTTLE;
-	// 	}
-	// 	return slot;
-	// }
-
 	GetCustomWeaponSlot(weaponId)
 	{
 		new item_slotId = -1;
