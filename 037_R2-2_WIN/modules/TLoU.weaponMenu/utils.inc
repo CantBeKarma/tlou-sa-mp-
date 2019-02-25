@@ -34,9 +34,10 @@ WeapMenuTd_GetFreeSlot_H_Ls(playerid)
 // Get free slot in which player's weapon is going to be placed on the RIGHT SIDE of the weapon menu
 WeapMenuTd_GetFreeSlot_H_Rs(playerid)
 {
-    for(new i = 0; i != 3; i++)
+    for(new i = 0; i <= 3; i++)
     {
-        if(WeapMenu_Rs_WeaponId(playerid, i) == -1) return i;
+        if(WeapMenu_Rs_WeaponId(playerid, i) == -1) 
+            return i;
     }
     return -1;
 }
@@ -44,32 +45,31 @@ WeapMenuTd_GetFreeSlot_H_Rs(playerid)
 // Sort weapons on the left side-bar of the weapon menu (long-guns).
 WeapMenu_Ls_SortWeapons(playerid)
 {
-    print("WeapMenu_Ls_SortWeapons");
-    static slot = 1;
-    while(slot < 3)
+    new 
+        currentSlot = 1,
+        slotToCheck = -1;
+        
+    while(currentSlot < 3)
     {
-        printf("Checking slot: %d", slot);
-        if(WeapMenu_Ls_WeaponId(playerid, slot) != -1)
+        if(WeapMenu_Ls_WeaponId(playerid, currentSlot) == -1)
         {
-            printf("There's a weapon in slot: %d", slot);
-            continue;
+            slotToCheck =
+                      (currentSlot == 1) ? (0)
+                    : (currentSlot == 0) ? (2)
+                    : (currentSlot == 2) ? (3)
+                    : (-1);
+
+            if(slotToCheck == -1)
+                break;
+
+            if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
+            {
+                WeapMenu_Ls_WeaponId(playerid, currentSlot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
+                WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
+            }
         }
 
-        new slotToCheck = 
-              (slot == 1) ? (0)
-            : (slot == 0) ? (2)
-            : (slot == 2) ? (3)
-            : (-1);
-
-        printf("Checking slot %d if there's any weapon...", slotToCheck);
-        if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
-        {
-            printf("There is. I need to move weapon from slot %d to slot %d", slotToCheck, slot);
-            WeapMenu_Ls_WeaponId(playerid, slot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
-            WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
-        }
-
-        slot = slotToCheck;
+        currentSlot = slotToCheck;
     }
 
     if(IsPlayerUsingWeaponMenu(playerid))
@@ -145,32 +145,32 @@ WeapMenu_MoveSwapWeaponIcons(playerid, selectId)
 // WeapMenu : Show "Swap weapon icons"
 WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH)
 {
+    if(selectionH != WEAPON_MENU_H_LEFT0 && selectionH != WEAPON_MENU_H_LEFT1)
+        return;
+
     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
 
-    if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
+    new icon[18];
+
+    for(new i = 0; i != 4; i++)
     {
-        new icon[18], weaponId;
+        if(WeapMenu_Ls_WeaponId(playerid, i) == -1) 
+            continue;
 
-        for(new i = 0; i != 4; i++)
+        switch(WeapMenu_Ls_WeaponId(playerid, i))
         {
-            weaponId = WeapMenu_Ls_WeaponId(playerid, i);
-            if(weaponId == -1) continue;
+            case WEAPON_SHOTGUN:    strcpy(icon, "TLoU:weap_shot");
+            case WEAPON_RIFLE:      strcpy(icon, "TLoU:weap_huntrif");
+            case WEAPON_BOW:        strcpy(icon, "TLoU:weap_bow");
+            case WEAPON_ASSAULT:    strcpy(icon, "TLoU:weap_assault");
+        }
 
-            switch(weaponId)
-            {
-                case WEAPON_SHOTGUN:    strcpy(icon, "TLoU:weap_shot");
-                case WEAPON_RIFLE:      strcpy(icon, "TLoU:weap_huntrif");
-                case WEAPON_BOW:        strcpy(icon, "TLoU:weap_bow");
-                case WEAPON_ASSAULT:    strcpy(icon, "TLoU:weap_assault");
-            }
-
-            switch(i)
-            {
-                case 0, 1: WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-                case 2:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], icon);
-                case 3:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], icon);
-            }
+        switch(i)
+        {
+            case 0, 1: WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+            case 2:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], icon);
+            case 3:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], icon);
         }
     }
 }

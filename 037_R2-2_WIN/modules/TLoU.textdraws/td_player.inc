@@ -793,6 +793,7 @@ PlayerTextDraw_WeaponMenu(playerid)
 			case 2:posX_weapIcon = 437.333343, posY_weapIcon = 279.096160, sizeX_weapIcon = 24.333347, sizeY_weapIcon = 30.281484, strcpy(symbol_weapIcon, "TLoU:weap_brick");
 			case 3:posX_weapIcon = 438.000000, posY_weapIcon = 321.163085, sizeX_weapIcon = 25.333343, sizeY_weapIcon = 31.111112, strcpy(symbol_weapIcon, "TLoU:weap_molotov");
 			case 4:posX_weapIcon = 439.666625, posY_weapIcon = 366.133392, sizeX_weapIcon = 20.000007, sizeY_weapIcon = 26.962972, strcpy(symbol_weapIcon, "TLoU:weap_smkbmb");
+			
 			case 5:posX_weapIcon = 335.999969, posY_weapIcon = 225.892562, sizeX_weapIcon = 46.000007, sizeY_weapIcon = 51.022228, strcpy(symbol_weapIcon, "TLoU:weap_bow");
 			case 6:posX_weapIcon = 384.666656, posY_weapIcon = 220.500000, sizeX_weapIcon = 41.000015, sizeY_weapIcon = 52.681484, strcpy(symbol_weapIcon, "TLoU:weap_shot");
 			case 7:posX_weapIcon = 472.333404, posY_weapIcon = 232.800003, sizeX_weapIcon = 28.333322, sizeY_weapIcon = 36.918544, strcpy(symbol_weapIcon, "TLoU:weap_rev");
