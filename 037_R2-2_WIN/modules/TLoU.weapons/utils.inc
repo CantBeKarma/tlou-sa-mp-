@@ -26,7 +26,7 @@ ResetEnum_ePlayerWeapon(playerid)
 			TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][1]);
 			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][0]);
 		}
-		else 
+		else
 		{
 			TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][0]);
 			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][1]);

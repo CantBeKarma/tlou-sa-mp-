@@ -101,7 +101,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 //------------- OnPlayerStartAimingBulletWeapon -----------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartAimingBulletWeapon(playerid)
-{	
+{
 	if(CurrentPlayerWeaponClipSize[playerid] > 0)
 	{
 		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
@@ -116,6 +116,14 @@ public OnPlayerStopAimingBulletWeapon(playerid)
 {
 	TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
 	return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------ OnPlayerShootDynamicObject -----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
+{
+    return 1;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -146,33 +154,6 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------ OnPlayerShootDynamicObject -----------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
-{
-    new currentWeaponId = CurrentPlayerWeaponId[playerid];
-    if(currentWeaponId <= 0)
-    {
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [%d] [%s] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), playerid, GetPlayerIpAddress(playerid), weaponid);
-        return 0;
-    }
-
-    new 
-        oldAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
-        oldClipAmmo = CurrentPlayerWeaponClipSize[playerid];
-
-    SetPlayerWeaponAmmo(playerid, currentWeaponId, oldAmmo-1);
-    CurrentPlayerWeaponClipSize[playerid] -= 1;
-
-    new
-        newAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
-        newClipAmmo = CurrentPlayerWeaponClipSize[playerid];
-
-    CallLocalFunction("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, x, y, z);
-    return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- OnPlayerWeaponShoot ----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, Float:fX, Float:fY, Float:fZ)
@@ -188,7 +169,7 @@ hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newC
 
     // Every rifle shot perform "reload" animation
     // applies to rifle because of "SetWeaponNoReload" was causing rapid fire of the weapon.
-    if(weaponId == WEAPON_RIFLE && newAmmo > 0)
+    if(weaponId == WEAPON_RIFLE && newClipAmmo > 0)
     {
         ApplyAnimation(playerid, "RIFLE", (IsPlayerCrouched(playerid) ? "RIFLE_CROUCHLOAD" : "RIFLE_LOAD"), 4.1, 0, 1, 1, 0, 0);
     }
@@ -211,8 +192,6 @@ public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
 {
-    SCMF(playerid, -1, "Changed weapon: from %d to %d", oldWeaponId, newWeaponId);
-
     // Don't do any attachments with my current weapon if it
     // was a projectile or a throwable weapon (not necessary to call).
     if(!IsProjectileWeapon(oldWeaponId) && !IsThrowableWeapon(oldWeaponId))
@@ -230,12 +209,12 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
 		ResetPlayerWeapons(playerid);
         RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 
-        HudTd_HideWeaponCurrentAmmo(playerid, newWeaponId);
-		HudTd_HideMeleeWeaponBars(playerid, newWeaponId);
-		HudTd_HideMeleeUpgradedBars(playerid, newWeaponId);
+        HudTd_HideWeaponCurrentAmmo(playerid, oldWeaponId);
+		HudTd_HideMeleeWeaponBars(playerid, oldWeaponId);
+		HudTd_HideMeleeUpgradedBars(playerid, oldWeaponId);
     }
     else
-    {		
+    {
 		ShowHud(playerid);
         
         HudTd_DisplayMeleeWeaponBars(playerid, newWeaponId);
