@@ -92,6 +92,9 @@
 #define     MIN_NOAMMO_CLICKS           (2)
 #define     MAX_NOAMMO_CLICKS           (5)
 
+#define		MAX_THROWABLES			(MAX_PLAYERS * 3)
+#define		MAX_ARROWS				(MAX_PLAYERS * 9)
+
 // Helpers.
 #define     CurrentPlayerWeaponId[%0]           ePlayerWeapon[%0][e_iWeaponId]
 #define     CurrentPlayerWeaponClipSize[%0]     ePlayerWeapon[%0][e_iWeaponClipSize]
@@ -117,6 +120,7 @@
 // Projectiles data.
 enum e_SERVER_PROJECTILES_DATA
 {
+    e_iProjectile_ObjectId,
     e_iSmkBmbSmoke_ObjectId,
     e_iNailBmbSmoke_ObjectId,
     Timer:e_iNailBmb_Timer

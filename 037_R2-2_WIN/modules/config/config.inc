@@ -5,8 +5,7 @@
 #define		MAX_PLAYERS				(50)
 #define		MAX_CHAT_LINES			(10)
 #define		MAX_LOG_FILES			(7)
-#define		MAX_THROWABLES			(MAX_PLAYERS * 3)
-#define		MAX_ARROWS				(MAX_PLAYERS * 9)
+
 #define		MAX_PATHFINDER_THREADS	(1) // = MAX_FCNPCS (CHANGE WHEN NECESSARY SINCE I CAN'T ACCESS IT!)
 
 // ON-CLIENT DISPLAY SETTINGS
@@ -88,8 +87,7 @@
 // Server enumerator.
 enum e_SERVER_DATA
 {
-	MySQL:e_SqlHandler,
-	e_iProjectilesObjectId[MAX_THROWABLES]
+	MySQL:e_SqlHandler
 }
 new eServerInfo[e_SERVER_DATA];
 

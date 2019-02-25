@@ -63,10 +63,10 @@ public OnProjectileUpdate(projid)
 {
     new Float:x, Float:y, Float:z;
     GetProjectilePos(projid, x, y, z);
-    SetDynamicObjectPos(eServerInfo[e_iProjectilesObjectId][projid], x, y, z);
+    SetDynamicObjectPos(eProjectileData[projid][e_iProjectile_ObjectId], x, y, z);
 
     GetProjectileRot(projid, x, y, z);
-    SetDynamicObjectRot(eServerInfo[e_iProjectilesObjectId][projid], x, y, z);
+    SetDynamicObjectRot(eProjectileData[projid][e_iProjectile_ObjectId], x, y, z);
 	return 1;
 }
 
@@ -75,7 +75,7 @@ public OnProjectileUpdate(projid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
 {
-    new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID);
+    new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
 
     if(weaponId == WEAPON_BOTTLE
     || weaponId == WEAPON_BRICK
@@ -98,7 +98,7 @@ public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnProjectileStop(projid, Float:x, Float:y, Float:z)
 {
-    new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID);
+    new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
 
     if(weaponId == WEAPON_SMOKE_BOMB)
     {
@@ -258,14 +258,14 @@ Projectile_Throw(playerid, weaponId)
     new Float:dest_projY = fPY + floatmul(0.7, floatsin(pAngle, degrees)) + floatmul(fVY, fScale);
     new Float:dest_projZ = fPZ + floatmul(fVZ, fScale);
 
-	new projId = CreateProjectile(dest_projX, dest_projY, dest_projZ, \
+	new projid = CreateProjectile(dest_projX, dest_projY, dest_projZ, \
                     (MAX_PROJECTILE_SPEED * fVX), (MAX_PROJECTILE_SPEED * fVY), (MAX_PROJECTILE_SPEED * fVZ) + 5.0, \
                     0.0, 0.0, 0.0, \
                     PROJ_PHYS_SPHERECOL_RADIUS, PROJ_PHYS_GROUND_FRICTION, PROJ_PHYS_COLL_FRICTION, PROJ_PHYS_AIR_ASSISTANCE, PROJ_PHYS_GRAVITY, PROJ_PHYS_PLAYER_COL_RADIUS, PROJ_PHYS_COLLIDE_SIMULATION, PROJ_PHYS_MASS);
 
-    if(projId == -1)
+    if(projid == -1)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Unable to create projectile (ID: %d) for player: %s (ID: %d). Weapon equipped: %d", projId, PlayerName(playerid), playerid, weaponId);
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Unable to create projectile (ID: %d) for player: %s (ID: %d). Weapon equipped: %d", projid, PlayerName(playerid), playerid, weaponId);
         return 1;
     }
 
@@ -286,7 +286,7 @@ Projectile_Throw(playerid, weaponId)
         return 1;
     }
 
-	eServerInfo[e_iProjectilesObjectId][projId] = projObjectId;
+	eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
     Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, weaponId);
 
     // Update.
@@ -315,14 +315,14 @@ Projectile_Drop_Nailbomb(playerid)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, ang);
 
-    new projId = CreateProjectile(x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, \
+    new projid = CreateProjectile(x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, \
                 5.0 * floatsin(-ang, degrees), 5.0 * floatcos(-ang, degrees), 3.0, \
                 0.0, 0.0, 0.0, \
                 PROJ_PHYSDROP_SPHERECOL_RADIUS, PROJ_PHYSDROP_GROUND_FRICTION, PROJ_PHYSDROP_COLL_FRICTION, PROJ_PHYSDROP_AIR_ASSISTANCE, PROJ_PHYSDROP_GRAVITY, PROJ_PHYSDROP_PLAYER_COL_RADIUS, PROJ_PHYSDROP_COLLIDE_SIMULATION, PROJ_PHYSDROP_MASS);
 
-    if(projId == -1)
+    if(projid == -1)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Drop_Nailbomb] Unable to create projectile (ID: %d) for player: %s (ID: %d)", projId, PlayerName(playerid), playerid);
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Drop_Nailbomb] Unable to create projectile (ID: %d) for player: %s (ID: %d)", projid, PlayerName(playerid), playerid);
         return 1;
     }
 
@@ -334,7 +334,7 @@ Projectile_Drop_Nailbomb(playerid)
         return 1;
     }
 
-    eServerInfo[e_iProjectilesObjectId][projId] = projObjectId;
+    eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
     Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, WEAPON_NAIL_BOMB);
 
     // Update.
@@ -348,7 +348,7 @@ Projectile_Drop_Nailbomb(playerid)
 }
 
 // Creates projectile destroy effect based on the weaponId.
-CreateProjectileDestroyEffect(weaponId, projId, Float:x, Float:y, Float:z)
+CreateProjectileDestroyEffect(weaponId, projid, Float:x, Float:y, Float:z)
 {
     switch(weaponId)
     {
@@ -364,7 +364,7 @@ CreateProjectileDestroyEffect(weaponId, projId, Float:x, Float:y, Float:z)
 
         case WEAPON_SMOKE_BOMB:
         {
-            eProjectileData[projId][e_iSmkBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_SMOKE, x, y, z, 0.0, 0.0, 0.0);
+            eProjectileData[projid][e_iSmkBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_SMOKE, x, y, z, 0.0, 0.0, 0.0);
         }
     }
 }
@@ -397,22 +397,22 @@ GetProjectileDestroySfxIdx(weaponId)
 }
 
 // Destroy projectile's data.
-ResetProjectileData(projId)
+ResetProjectileData(projid)
 {
-    DestroyProjectile(projId);
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, E_STREAMER_EXTRA_ID, projId, -1);
+    DestroyProjectile(projid);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, E_STREAMER_EXTRA_ID, projid, -1);
 }
 
 // Delete projectiles objects.
-DestroyProjectileObjects(projId)
+DestroyProjectileObjects(projid)
 {
-    if(IsValidDynamicObject(eServerInfo[e_iProjectilesObjectId][projId]))
+    if(IsValidDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]))
     {
-        DestroyDynamicObject(eServerInfo[e_iProjectilesObjectId][projId]);
+        DestroyDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]);
     }
 
-    if(IsValidDynamicObject(eProjectileData[projId][e_iNailBmbSmoke_ObjectId]))
+    if(IsValidDynamicObject(eProjectileData[projid][e_iNailBmbSmoke_ObjectId]))
     {
-        DestroyDynamicObject(eProjectileData[projId][e_iNailBmbSmoke_ObjectId]);
+        DestroyDynamicObject(eProjectileData[projid][e_iNailBmbSmoke_ObjectId]);
     }
 }

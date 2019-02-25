@@ -16,11 +16,11 @@ timer Update_NailBombTimer[TICK_RATE_NAILBMB_UPDATE](projid, Float:x, Float:y, F
 }
 
 // Destroy SmokeBomb smoke effect and reset projectile's data.
-timer DestroySmokeBombData[TICK_RATE_SMOKEBMB_EFFECT](projId)
+timer DestroySmokeBombData[TICK_RATE_SMOKEBMB_EFFECT](projid)
 {
-    if(IsValidDynamicObject(eProjectileData[projId][e_iSmkBmbSmoke_ObjectId]))
+    if(IsValidDynamicObject(eProjectileData[projid][e_iSmkBmbSmoke_ObjectId]))
     {
-        DestroyDynamicObject(eProjectileData[projId][e_iSmkBmbSmoke_ObjectId]);
+        DestroyDynamicObject(eProjectileData[projid][e_iSmkBmbSmoke_ObjectId]);
     }
-    ResetProjectileData(projId);
+    ResetProjectileData(projid);
 }
