@@ -188,8 +188,10 @@ hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newC
 
     // Every rifle shot perform "reload" animation
     // applies to rifle because of "SetWeaponNoReload" was causing rapid fire of the weapon.
-    if(weaponId == WEAPON_RIFLE)
+    if(weaponId == WEAPON_RIFLE && newAmmo > 0)
+    {
         ApplyAnimation(playerid, "RIFLE", (IsPlayerCrouched(playerid) ? "RIFLE_CROUCHLOAD" : "RIFLE_LOAD"), 4.1, 0, 1, 1, 0, 0);
+    }
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -210,7 +212,7 @@ public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
 public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
 {
     SCMF(playerid, -1, "Changed weapon: from %d to %d", oldWeaponId, newWeaponId);
-    
+
     // Detach weapon from player's body when it is in use.
     DetachWeaponFromPlayersBody(playerid, newWeaponId);
 
