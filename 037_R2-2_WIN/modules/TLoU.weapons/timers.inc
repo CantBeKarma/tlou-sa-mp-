@@ -10,6 +10,7 @@ timer Update_NailBombTimer[TICK_RATE_NAILBMB_UPDATE](projid, Float:x, Float:y, F
         if(IsPlayerInRangeOfPoint(i, NAILBMB_EXPLODE_RANGE, x, y, z))
         {
             OnProjectileDestroy(projid, WEAPON_NAIL_BOMB, x, y, z);
+            OnPlayerGotDamagedByNailbomb(i, projid, x, y, z);
             break;
         }
     }

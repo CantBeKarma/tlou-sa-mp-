@@ -62,6 +62,7 @@ forward OnPlayerStartAimingProjectile(playerid, weaponId);
 forward OnPlayerStopAimingProjectile(playerid);
 forward OnPlayerThrowProjectile(playerid, weaponId);
 forward OnPlayerDropNailbomb(playerid);
+forward OnPlayerGotDamagedByNailbomb(playerid, projid, Float:x, Float:y, Float:z);
 
 forward FCNPC_OnIdle(npcid);
 forward FCNPC_OnChasePlayer(npcid, chaseid);

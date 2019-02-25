@@ -56,6 +56,20 @@ public OnPlayerDropNailbomb(playerid)
     return 0;
 }
 
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//-------------- OnPlayerGotDamagedByNailbomb -------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerGotDamagedByNailbomb(playerid, projid, Float:x, Float:y, Float:z)
+{
+    SCMF(playerid, -1, "You triggered nailbomb and got damaged!");
+
+    if(IsPlayerNPC(playerid))
+    {
+        SCMF_ALL(-1, "NPCID: %d triggered a nailbomb!", playerid);
+    }
+    return 0;
+}
+
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------------- OnProjectileUpdate --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -88,6 +102,7 @@ public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
         if(type == PROJECTILE_COLLIDE_PLAYER)
         {
             OnProjectileDestroy(projid, weaponId, x, y, z);
+            OnPlayerGotDamagedByNailbomb(extraid, projid, x, y, z);
         }
     }
 	return 1;
@@ -150,7 +165,9 @@ public OnProjectileDestroy(projid, weaponId, Float:x, Float:y, Float:z)
             if(weaponId == WEAPON_SMOKE_BOMB)
             {
                 if(IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
+                {
                     StunPlayer(i);
+                }
             }
         }
         else
