@@ -45,23 +45,21 @@ WeapMenuTd_GetFreeSlot_H_Rs(playerid)
 // Sort weapons on the left side-bar of the weapon menu (long-guns).
 WeapMenu_Ls_SortWeapons(playerid)
 {
-    new 
-        currentSlot = 1,
-        slotToCheck = -1;
-        
+    new currentSlot = 1;
+
     while(currentSlot < 3)
     {
+        new slotToCheck =
+            (currentSlot == 1) ? (0)
+        :   (currentSlot == 0) ? (2)
+        :   (currentSlot == 2) ? (3)
+        :   (-1);
+
+        if(slotToCheck == -1)
+            break;
+
         if(WeapMenu_Ls_WeaponId(playerid, currentSlot) == -1)
         {
-            slotToCheck =
-                      (currentSlot == 1) ? (0)
-                    : (currentSlot == 0) ? (2)
-                    : (currentSlot == 2) ? (3)
-                    : (-1);
-
-            if(slotToCheck == -1)
-                break;
-
             if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
             {
                 WeapMenu_Ls_WeaponId(playerid, currentSlot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
