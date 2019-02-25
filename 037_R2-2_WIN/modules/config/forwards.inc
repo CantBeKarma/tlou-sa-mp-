@@ -45,8 +45,10 @@ forward OnPlayerUD_SwapWeaps(playerid, keys);
 forward OnPlayerStartSwappingWeaps(playerid);
 forward OnPlayerFinishSwappingWeaps(playerid);
 
-forward OnPlayerStartAimingBulletWeapon(playerid);
+forward OnPlayerStartAimingWeapon(playerid, weaponId);
+forward OnPlayerIsAimingWeapon(playerid, weaponId);
 forward OnPlayerStopAimingWeapon(playerid);
+forward OnPlayerStartAimingBulletWeapon(playerid);
 forward OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo);
 forward OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, Float:fX, Float:fY, Float:fZ);
 

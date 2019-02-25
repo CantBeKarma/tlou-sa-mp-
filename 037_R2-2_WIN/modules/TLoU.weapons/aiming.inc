@@ -5,7 +5,8 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerUpdate(playerid)
 {
-	if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) return 0;
+	if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid))
+		return 0;
 
 	// Aiming.
 	if(IsPlayerHoldingKey(playerid, KEY_AIM))
@@ -14,62 +15,11 @@ hook OnPlayerUpdate(playerid)
 
 		if(!Bit_Get(ePlayerFlag[e_bAiming], playerid))
 		{
-			// Bullet weapons.
-			if(IsBulletWeapon(currentWeaponId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
-			{
-				Bit_Let(ePlayerFlag[e_bAiming], playerid);
-				OnPlayerStartAimingBulletWeapon(playerid);
-			}
-
-			// Projectiles / Bow.
-			if(GetPlayerWeaponAmmo(playerid, currentWeaponId) > 0 && !IsPlayerPlayingActions(playerid))
-			{
-				if(currentWeaponId == WEAPON_BOW)
-				{
-					Bit_Let(ePlayerFlag[e_bAiming], playerid);
-					OnPlayerStartAimingBow(playerid);
-				}
-				else if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
-				{
-					Bit_Let(ePlayerFlag[e_bAiming], playerid);
-					OnPlayerStartAimingProjectile(playerid, currentWeaponId);
-				}
-			}
+			OnPlayerStartAimingWeapon(playerid, currentWeaponId);
 		}
 		else
 		{
-			if(IsBulletWeapon(currentWeaponId) || currentWeaponId == WEAPON_BOW)
-			{
-				// Weapon Sway.
-				new drunkLevel = 
-					  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
-					: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? 2500
-					: 0;
-
-				if(drunkLevel > 0)
-				{
-					if(IsPlayerCrouched(playerid))
-					{
-						drunkLevel = floatround(drunkLevel / 2);
-					}
-					SetPlayerDrunkLevel(playerid, drunkLevel);
-				}
-
-				// Player targets another player.
-				new playerTarget = GetPlayerTargetPlayer(playerid);
-				if(playerTarget != ePlayerInfo[playerid][e_iTargetedPlayer])
-				{
-					OnPlayerTargetPlayer(playerid, playerTarget, ePlayerInfo[playerid][e_iTargetedPlayer]);
-					ePlayerInfo[playerid][e_iTargetedPlayer] = playerTarget;
-				}
-
-				// If using bullet weapon but not using AIM animation (hiding crosshair).
-				// if(!IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
-				// {
-				// 	Bit_Vet(ePlayerFlag[e_bAiming], playerid);
-				// 	OnPlayerStopAimingWeapon(playerid);
-				// }
-			}
+			OnPlayerIsAimingWeapon(playerid, currentWeaponId);
 		}
 	}
 	else
@@ -84,20 +34,72 @@ hook OnPlayerUpdate(playerid)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------- OnPlayerStartAimingBulletWeapon -----------
+//---------------- OnPlayerStartAimingWeapon --------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStartAimingBulletWeapon(playerid)
+public OnPlayerStartAimingWeapon(playerid, weaponId)
 {
-	KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
-	
-	ShowPlayerCrosshair(playerid);
-	Disable_OnPlayerLookAt(playerid);
-
-	if(CurrentPlayerWeaponClipSize[playerid] > 0)
+	// Bullet weapons.
+	if(IsBulletWeapon(weaponId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	{
-		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+		Bit_Let(ePlayerFlag[e_bAiming], playerid);
+		OnPlayerStartAimingBulletWeapon(playerid);
 	}
-	return 1;
+
+	// Projectiles / Bow.
+	if(GetPlayerWeaponAmmo(playerid, weaponId) > 0 && !IsPlayerPlayingActions(playerid))
+	{
+		if(weaponId == WEAPON_BOW)
+		{
+			Bit_Let(ePlayerFlag[e_bAiming], playerid);
+			OnPlayerStartAimingBow(playerid);
+		}
+		else if(IsProjectileWeapon(weaponId) || IsThrowableWeapon(weaponId))
+		{
+			Bit_Let(ePlayerFlag[e_bAiming], playerid);
+			OnPlayerStartAimingProjectile(playerid, weaponId);
+		}
+	}
+	return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//----------------- OnPlayerIsAimingWeapon ----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerIsAimingWeapon(playerid, weaponId)
+{
+	if(!IsBulletWeapon(weaponId) && weaponId != WEAPON_BOW)
+		return;
+	
+	// Weapon Sway.
+	new drunkLevel = 
+		  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
+		: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? 2500
+		: 0;
+
+	if(drunkLevel > 0)
+	{
+		if(IsPlayerCrouched(playerid))
+		{
+			drunkLevel = floatround(drunkLevel / 2);
+		}
+		SetPlayerDrunkLevel(playerid, drunkLevel);
+	}
+
+	// Player targets another player.
+	new playerTarget = GetPlayerTargetPlayer(playerid);
+	if(playerTarget != ePlayerInfo[playerid][e_iTargetedPlayer])
+	{
+		OnPlayerTargetPlayer(playerid, playerTarget, ePlayerInfo[playerid][e_iTargetedPlayer]);
+		ePlayerInfo[playerid][e_iTargetedPlayer] = playerTarget;
+	}
+
+	// If using bullet weapon but not using AIM animation (hiding crosshair).
+	// if(!IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
+	// {
+	// 	Bit_Vet(ePlayerFlag[e_bAiming], playerid);
+	// 	OnPlayerStopAimingWeapon(playerid);
+	// }
+	return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -118,6 +120,23 @@ public OnPlayerStopAimingWeapon(playerid)
 	{
 		SetPlayerDrunkLevel(playerid, 0);
 		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
+	}
+	return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------- OnPlayerStartAimingBulletWeapon -----------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerStartAimingBulletWeapon(playerid)
+{
+	KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
+	
+	ShowPlayerCrosshair(playerid);
+	Disable_OnPlayerLookAt(playerid);
+
+	if(CurrentPlayerWeaponClipSize[playerid] > 0)
+	{
+		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
 	}
 	return 1;
 }
