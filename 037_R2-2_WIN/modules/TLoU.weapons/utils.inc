@@ -12,19 +12,25 @@ ResetEnum_ePlayerWeapon(playerid)
 	// Does a check if player see's a crosshair currently.
 	IsCrosshairVisibleForPlayer(playerid)
 	{
-		return IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][2]) || IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][2]);
+		return IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][0]) || IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][1]);
 	}
 
 	// Show player custom-crosshair for weapons.
 	ShowPlayerCrosshair(playerid)
 	{
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid) && !IsCrosshairVisibleForPlayer(playerid))
+		if(!Bit_Get(ePlayerFlag[e_bAiming], playerid) || IsCrosshairVisibleForPlayer(playerid))
+			return;
+
+		if(CurrentPlayerWeaponId[playerid] == WEAPON_SHOTGUN || CurrentPlayerWeaponId[playerid] == WEAPON_SHORTY)
 		{
-			if(CurrentPlayerWeaponId[playerid] == WEAPON_SHOTGUN || CurrentPlayerWeaponId[playerid] == WEAPON_SHORTY) 
-				TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][1]), TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][0]);
-			else 
-				TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][0]), TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][1]);
+			TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][1]);
+			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][0]);
 		}
+		else 
+		{
+			TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][0]);
+			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][1]);
+		}	
 	}
 
 	// Hide player custom-crosshair.
@@ -37,22 +43,28 @@ ResetEnum_ePlayerWeapon(playerid)
 	// Show damage crosshair symbol.
 	ShowPlayerHitMarker(playerid, bodypart)
 	{
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
-		{
-			if(bodypart == BODY_PART_HEAD) 
-				TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Aim][2]), TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][3]);
-			else 
-				TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Aim][3]), TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][2]);
+		if(!Bit_Get(ePlayerFlag[e_bAiming], playerid))
+			return;
 
-			if(!IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][2]) || !IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][3]))
-			{
-				SetTimerEx("HidePlayerHitMarker", 200, false, "d", playerid);
-			}
+		if(bodypart == BODY_PART_HEAD) 
+		{
+			TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Aim][2]);
+			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][3]);
+		}
+		else 
+		{
+			TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Aim][3]);
+			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][2]);
+		}
+
+		if(!IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][2]) || !IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Aim][3]))
+		{
+			defer HidePlayerHitMarker(playerid);
 		}
 	}
 
 	// Hide crosshair damage symbol.
-	function HidePlayerHitMarker(playerid)
+	timer HidePlayerHitMarker[TICK_RATE_HIDE_CROSSHAIR_SYMBOL](playerid)
 	{
 		TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][2]);
 		TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][3]);

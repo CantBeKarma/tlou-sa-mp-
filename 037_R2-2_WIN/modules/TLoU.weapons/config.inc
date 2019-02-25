@@ -95,6 +95,8 @@
 #define		MAX_THROWABLES			(MAX_PLAYERS * 3)
 #define		MAX_ARROWS				(MAX_PLAYERS * 9)
 
+#define     TICK_RATE_HIDE_CROSSHAIR_SYMBOL     (200)
+
 // Helpers.
 #define     CurrentPlayerWeaponId[%0]           ePlayerWeapon[%0][e_iWeaponId]
 #define     CurrentPlayerWeaponClipSize[%0]     ePlayerWeapon[%0][e_iWeaponClipSize]
