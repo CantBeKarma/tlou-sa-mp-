@@ -5,12 +5,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartAimingProjectile(playerid, weaponId)
 {
-    KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
-    
-    ShowPlayerCrosshair(playerid);
     ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
-
-    // If player was holding ANY key before aiming projectile - force change the old holding key to KEY_AIM
     ForceChangeHoldingKeyDef(playerid, KEY_AIM);
     return 0;
 }

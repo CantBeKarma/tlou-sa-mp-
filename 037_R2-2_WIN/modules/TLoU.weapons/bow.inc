@@ -4,14 +4,9 @@
 //----------------- OnPlayerStartAimingBow ----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartAimingBow(playerid)
-{
-	KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
-	
+{	
 	FreezePlayer(playerid, true, -1);
-	ShowPlayerCrosshair(playerid);
 	Bow_PullString(playerid);
-	
-	// If player was holding ANY key before aiming bow - force change the old holding key to KEY_AIM
 	ForceChangeHoldingKeyDef(playerid, KEY_AIM);
 	return 1;
 }
@@ -23,26 +18,6 @@ public OnPlayerStopAimingBow(playerid)
 {
 	UnfreezePlayer(playerid);
 	Bow_ReleaseString(playerid);
-	return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- OnPlayerKeyStateChange -----------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
-        return 1;
-	
-	if(PRESSED(KEY_FIRE))
-	{
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
-		{
-			//new bowString_pullTime = GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey];
-			//new Float:arrowDistance = (bowString_pullTime >= 3800) ? (MAX_ARROW_DISTANCE) : (MAX_ARROW_DISTANCE / 2);
-			Arrow_FireArrow(playerid);
-		}
-	}
 	return 1;
 }
 
@@ -93,6 +68,26 @@ hook OnPlayerHoldingKey(playerid, key)
             SetAngleBasedOnCam(playerid);
     }
 	return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//---------------- OnPlayerKeyStateChange -----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
+        return 1;
+	
+	if(PRESSED(KEY_FIRE))
+	{
+		if(Bit_Get(ePlayerFlag[e_bAiming], playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
+		{
+			//new bowString_pullTime = GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey];
+			//new Float:arrowDistance = (bowString_pullTime >= 3800) ? (MAX_ARROW_DISTANCE) : (MAX_ARROW_DISTANCE / 2);
+			Arrow_FireArrow(playerid);
+		}
+	}
+	return 1;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

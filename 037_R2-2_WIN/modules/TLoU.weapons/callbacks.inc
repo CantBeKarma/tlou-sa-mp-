@@ -97,6 +97,27 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     return 1;
 }
 
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------- OnPlayerStartAimingBulletWeapon -----------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerStartAimingBulletWeapon(playerid)
+{	
+	if(CurrentPlayerWeaponClipSize[playerid] > 0)
+	{
+		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+	}
+	return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//-------------- OnPlayerStopAimingBulletWeapon -----------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerStopAimingBulletWeapon(playerid)
+{
+	TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
+	return 1;
+}
+
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnPlayerWeaponShot ----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

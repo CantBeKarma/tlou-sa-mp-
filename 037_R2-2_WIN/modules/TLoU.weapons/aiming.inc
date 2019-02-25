@@ -15,11 +15,11 @@ hook OnPlayerUpdate(playerid)
 
 		if(!Bit_Get(ePlayerFlag[e_bAiming], playerid))
 		{
-			OnPlayerStartAimingWeapon(playerid, currentWeaponId);
+			OnPlayerTryAimingWeapon(playerid, currentWeaponId);
 		}
 		else
 		{
-			OnPlayerIsAimingWeapon(playerid, currentWeaponId);
+			OnPlayerAimsWeapon(playerid, currentWeaponId);
 		}
 	}
 	else
@@ -34,9 +34,9 @@ hook OnPlayerUpdate(playerid)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- OnPlayerStartAimingWeapon --------------
+//----------------- OnPlayerTryAimingWeapon ---------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStartAimingWeapon(playerid, weaponId)
+public OnPlayerTryAimingWeapon(playerid, weaponId)
 {
 	// Bullet weapons.
 	if(IsBulletWeapon(weaponId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
@@ -59,30 +59,37 @@ public OnPlayerStartAimingWeapon(playerid, weaponId)
 			OnPlayerStartAimingProjectile(playerid, weaponId);
 		}
 	}
+
+	if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
+	{
+		ShowPlayerCrosshair(playerid);
+		Disable_OnPlayerLookAt(playerid);
+		KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
+	}
 	return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//----------------- OnPlayerIsAimingWeapon ----------------
+//------------------- OnPlayerAimsWeapon ------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerIsAimingWeapon(playerid, weaponId)
+public OnPlayerAimsWeapon(playerid, weaponId)
 {
-	if(!IsBulletWeapon(weaponId) && weaponId != WEAPON_BOW)
-		return;
-	
 	// Weapon Sway.
-	new drunkLevel = 
-		  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
-		: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? 2500
-		: 0;
-
-	if(drunkLevel > 0)
+	if(IsBulletWeapon(weaponId) || weaponId != WEAPON_BOW)
 	{
-		if(IsPlayerCrouched(playerid))
+		new drunkLevel = 
+			  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
+			: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? 2500
+			: (0);
+
+		if(drunkLevel > 0)
 		{
-			drunkLevel = floatround(drunkLevel / 2);
+			if(IsPlayerCrouched(playerid))
+			{
+				drunkLevel = floatround(drunkLevel / 2);
+			}
+			SetPlayerDrunkLevel(playerid, drunkLevel);
 		}
-		SetPlayerDrunkLevel(playerid, drunkLevel);
 	}
 
 	// Player targets another player.
@@ -94,10 +101,10 @@ public OnPlayerIsAimingWeapon(playerid, weaponId)
 	}
 
 	// If using bullet weapon but not using AIM animation (hiding crosshair).
+	// (hides crosshair when rolling for example).
 	// if(!IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	// {
-	// 	Bit_Vet(ePlayerFlag[e_bAiming], playerid);
-	// 	OnPlayerStopAimingWeapon(playerid);
+	// 	HidePlayerCrosshair(playerid);
 	// }
 	return 0;
 }
@@ -112,31 +119,20 @@ public OnPlayerStopAimingWeapon(playerid)
 	HidePlayerCrosshair(playerid);
 	HidePlayerHitMarker(playerid);
 	Enable_OnPlayerLookAt(playerid);
+	SetPlayerDrunkLevel(playerid, 0);
 
 	new currentWeaponId = CurrentPlayerWeaponId[playerid];
-	if(currentWeaponId == WEAPON_BOW) OnPlayerStopAimingBow(playerid);
-	else if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId)) OnPlayerStopAimingProjectile(playerid);
-	else if(IsBulletWeapon(currentWeaponId))
+	if(IsBulletWeapon(currentWeaponId))
 	{
-		SetPlayerDrunkLevel(playerid, 0);
-		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
+		OnPlayerStopAimingBulletWeapon(playerid);
 	}
-	return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------- OnPlayerStartAimingBulletWeapon -----------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStartAimingBulletWeapon(playerid)
-{
-	KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
-	
-	ShowPlayerCrosshair(playerid);
-	Disable_OnPlayerLookAt(playerid);
-
-	if(CurrentPlayerWeaponClipSize[playerid] > 0)
+	else if(currentWeaponId == WEAPON_BOW)
 	{
-		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+		OnPlayerStopAimingBow(playerid);
 	}
-	return 1;
+	else if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
+	{
+		OnPlayerStopAimingProjectile(playerid);
+	}
+	return 0;
 }
