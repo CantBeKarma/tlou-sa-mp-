@@ -144,7 +144,6 @@ public OnProjectileDestroy(projid, weaponId, Float:x, Float:y, Float:z)
     CreateProjectileDestroyEffect(weaponId, projid, x, y, z);
 
     // Reset & destroy (object) projectile's data.
-    DestroyProjectileObjects(projid);
     if(weaponId == WEAPON_SMOKE_BOMB)
     {
         defer DestroySmokeBombData(projid);
@@ -158,6 +157,7 @@ public OnProjectileDestroy(projid, weaponId, Float:x, Float:y, Float:z)
         }
         ResetProjectileData(projid);
     }
+    DestroyProjectileObjects(projid);
 
     for(new i = 0; i != MAX_PLAYERS; i++)
     {
