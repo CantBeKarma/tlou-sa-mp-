@@ -117,7 +117,7 @@
 // Projectiles data.
 enum e_SERVER_PROJECTILES_DATA
 {
-    e_iSmkBmb_ObjectId,
+    e_iSmkBmbSmoke_ObjectId,
     e_iNailBmbSmoke_ObjectId,
     Timer:e_iNailBmb_Timer
 };

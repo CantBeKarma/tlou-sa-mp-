@@ -376,7 +376,7 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 		interiorId = GetPlayerInterior(playerid);
 
 	// If NPC is stunned - other players are allowed to shiv that NPC.
-	if(Bit_Get(eNpcFlag[e_bIsStunned], lookingAt_NpcId))
+	if(FCNPC_IsStunned(lookingAt_NpcId))
 	{
 		if(!IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 			ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);

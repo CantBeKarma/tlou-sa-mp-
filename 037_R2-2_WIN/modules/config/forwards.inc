@@ -83,4 +83,4 @@ forward OnItemCreate(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Floa
 forward OnItemDestroy(uid_item);
 forward OnItemUpdate(updateItemUid, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId);
 
-forward OnProjectileDestroy(projid, Float:x, Float:y, Float:z);
+forward OnProjectileDestroy(projid, weaponId, Float:x, Float:y, Float:z);

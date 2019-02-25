@@ -92,6 +92,12 @@ FCNPC_IsBurning(npcid)
 	return Bit_Get(eNpcFlag[e_bIsBurning], npcid);
 }
 
+// Check if NPC is stunned
+FCNPC_IsStunned(npcid)
+{
+	return Bit_Get(eNpcFlag[e_bIsStunned], npcid);
+}
+
 // Put NPC in a fire state.
 FCNPC_SetOnFire(npcid)
 {
@@ -105,24 +111,24 @@ FCNPC_SetOnFire(npcid)
 // Puts NPC in a stunned state.
 FCNPC_Stun(npcid)
 {
-    if(!Bit_Get(eNpcFlag[e_bIsStunned], npcid))
-    {
-        Bit_Let(eNpcFlag[e_bIsStunned], npcid);
-		FCNPC_StopUpdateTimer(npcid);
+	if(FCNPC_IsStunned(npcid))
+		return;
 
-		FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
-		wait_ms(3000);
+	Bit_Let(eNpcFlag[e_bIsStunned], npcid);
+	FCNPC_StopUpdateTimer(npcid);
 
-		FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
-		wait_ms(2000);
-		
-		if(!FCNPC_IsDeadEx(npcid))
-		{
-			FCNPC_ClearAnims(npcid);
-			FCNPC_StartUpdateTimer(npcid);
-		}
-		Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
-    }
+	FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
+	wait_ms(3000);
+
+	FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
+	wait_ms(2000);
+	
+	if(!FCNPC_IsDeadEx(npcid))
+	{
+		FCNPC_ClearAnims(npcid);
+		FCNPC_StartUpdateTimer(npcid);
+	}
+	Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
 }
 
 // Clear NPCs anims and packets data.
@@ -208,7 +214,7 @@ FCNPC_StartUpdateTimer(npcid)
 		Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 		eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
 
-		if(Bit_Get(eNpcFlag[e_bIsStunned], npcid))
+		if(FCNPC_IsStunned(npcid))
 			Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
 		
 		if(FCNPC_IsBurning(npcid))

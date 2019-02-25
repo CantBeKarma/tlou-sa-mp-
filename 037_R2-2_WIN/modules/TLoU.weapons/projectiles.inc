@@ -71,17 +71,42 @@ public OnProjectileUpdate(projid)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//---------------------- OnProjectileCollide --------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
+{
+    new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID);
+
+    if(weaponId == WEAPON_BOTTLE
+    || weaponId == WEAPON_BRICK
+    || weaponId == WEAPON_MOLOTOV)
+    {
+        OnProjectileDestroy(projid, weaponId, x, y, z);
+    }
+    else if(weaponId == WEAPON_SMOKE_BOMB || weaponId == WEAPON_NAIL_BOMB)
+    {
+        if(type == PROJECTILE_COLLIDE_PLAYER)
+        {
+            OnProjectileDestroy(projid, weaponId, x, y, z);
+        }
+    }
+	return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------------ OnProjectileStop ---------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnProjectileStop(projid, Float:x, Float:y, Float:z)
 {
-    if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID) == WEAPON_SMOKE_BOMB)
+    new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID);
+
+    if(weaponId == WEAPON_SMOKE_BOMB)
     {
-        OnProjectileDestroy(projid, x, y, z);
+        OnProjectileDestroy(projid, WEAPON_SMOKE_BOMB, x, y, z);
     }
-    else if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID) == WEAPON_NAIL_BOMB)
+    else if(weaponId == WEAPON_NAIL_BOMB)
     {
-        eProjectileData[projid][e_iNailBmb_Timer] = repeat Update_Nailbomb(projid, x, y, z);
+        eProjectileData[projid][e_iNailBmb_Timer] = repeat Update_NailBombTimer(projid, x, y, z);
         eProjectileData[projid][e_iNailBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_NAILBOMB_SMOKE, x + 0.06, y, z - 1.5, 0.0, 0.0, 0.0);
     }
     return 1;
@@ -90,105 +115,67 @@ public OnProjectileStop(projid, Float:x, Float:y, Float:z)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //---------------------- OnProjectileDestroy --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnProjectileDestroy(projid, Float:x, Float:y, Float:z)
+public OnProjectileDestroy(projid, weaponId, Float:x, Float:y, Float:z)
 {
-    new audioId = -1;
-    switch(Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID))
-    {
-        case WEAPON_BOTTLE:     audioId = AUDIO_BOTTLE_BREAK;
-        case WEAPON_BRICK:      audioId = AUDIO_BRICK_BREAK;
-        case WEAPON_MOLOTOV:
-        {
-            audioId = AUDIO_MOLOTOV_EXPLODE;
-            CreateFire(x, y, z);
-        }
+    // Create explosion effects of an projectile.
+    CreateProjectileDestroyEffect(weaponId, projid, x, y, z);
 
-        case WEAPON_NAIL_BOMB:
+    // Reset & destroy (object) projectile's data.
+    DestroyProjectileObjects(projid);
+    if(weaponId == WEAPON_SMOKE_BOMB)
+    {
+        defer DestroySmokeBombData(projid);
+    }
+    else
+    {
+        if(weaponId == WEAPON_NAIL_BOMB 
+        && IsValidDynamicObject(eProjectileData[projid][e_iNailBmbSmoke_ObjectId]))
         {
-            audioId = AUDIO_NAILBMB_EXPLODE;
             stop eProjectileData[projid][e_iNailBmb_Timer];
-            
-            CreateDynamicObject(OBJ_MODEL_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
-            DestroyDynamicObject(eProjectileData[projid][e_iNailBmbSmoke_ObjectId]);
         }
-
-        case WEAPON_SMOKE_BOMB:
-        {
-            audioId = AUDIO_SMKBMB_EXPLODE;
-        
-            eProjectileData[projid][e_iSmkBmb_ObjectId] = CreateDynamicObject(OBJ_MODEL_SMOKE, x, y, z, 0.0, 0.0, 0.0);
-            defer Destroy_SmokebombEffect(eProjectileData[projid][e_iSmkBmb_ObjectId]);
-        }
+        ResetProjectileData(projid);
     }
 
-    // Destroy projectile's data.
-    DestroyProjectile(projid);
-    DestroyDynamicObject(eServerInfo[e_iProjectilesObjectId][projid]);
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, E_STREAMER_EXTRA_ID, projid, -1);
-
-    if(audioId == -1)
-        return 1;
-    
-    // Configure audio distance of the projectile.
-    new Float:audioDistance = 
-        ( audioId == AUDIO_NAILBMB_EXPLODE ? DIST3D_EXPLODE_RANGE
-        : audioId == AUDIO_MOLOTOV_EXPLODE ? DIST3D_EXPLODE_RANGE
-        : audioId == AUDIO_SMKBMB_EXPLODE  ? DIST3D_EXPLODE_RANGE
-        : DIST3D_THROWABLE_BREAK_RANGE );
-    
-    // Play 3D Sound effect for nearby players.
-    foreach(new playerid : Player)
+    for(new i = 0; i != MAX_PLAYERS; i++)
     {
-        if(IsPlayerInRangeOfPoint(playerid, audioDistance, x, y, z))
-        {
-            Audio3D_Play(playerid, audioId, x, y, z, DIST3D_EXPLODE_RANGE);
-        }
-        Streamer_UpdateEx(playerid, x, y, z, .type = STREAMER_TYPE_OBJECT);
-
-        if(audioId == AUDIO_SMKBMB_EXPLODE)
-        {
-            // Stun player if he's in smokebomb range.
-            if(IsPlayerInRangeOfPoint(playerid, SMOKEBMB_AFFECT_RANGE, x, y, z))
-                StunPlayer(playerid);
-        }
-    }
-    
-    foreach(new npcid : FCNPC)
-    {
-        if(Bit_Get(eNpcFlag[e_bIsStunned], npcid) || FCNPC_IsBurning(npcid) || FCNPC_IsDeadEx(npcid))
+        if(!IsPlayerConnected(i)) 
             continue;
-        
-        if(audioId == AUDIO_SMKBMB_EXPLODE)
+            
+        if(!IsPlayerNPC(i))
         {
-            // Stun NPC if he's in smokebomb range.
-            if(IsPlayerInRangeOfPoint(npcid, SMOKEBMB_AFFECT_RANGE, x, y, z))
+            PlayPlayer3D_ProjectileSFX(i, weaponId, x, y, z);
+            Streamer_UpdateEx(i, x, y, z, .type = STREAMER_TYPE_OBJECT);
+
+            // Stun player if he's in smokebomb range.
+            if(weaponId == WEAPON_SMOKE_BOMB)
             {
-                FCNPC_Stun(npcid);
-                continue;
+                if(IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
+                    StunPlayer(i);
             }
         }
-
-        // Distract FCNPC with the sound effects.
-        if(IsPlayerInRangeOfPoint(npcid, audioDistance + 5.0, x, y, z))
+        else
         {
-            FCNPC_Distract(npcid, x, y, z);
+            if(FCNPC_IsStunned(i) || FCNPC_IsBurning(i) || FCNPC_IsDeadEx(i))
+                continue;
+            
+            if(weaponId == WEAPON_SMOKE_BOMB)
+            {
+                // Stun NPC if he's in smokebomb range.
+                if(IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
+                {
+                    FCNPC_Stun(i);
+                    continue;
+                }
+            }
+
+            // Distract FCNPC with the sound effects.
+            if(IsPlayerInRangeOfPoint(i, 30.0, x, y, z))
+            {
+                FCNPC_Distract(i, x, y, z);
+            }
         }
     }
     return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------------- OnProjectileCollide --------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
-{
-    if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID) == WEAPON_BOTTLE
-    || Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID) == WEAPON_BRICK
-    || Streamer_GetIntData(STREAMER_TYPE_OBJECT, eServerInfo[e_iProjectilesObjectId][projid], E_STREAMER_EXTRA_ID) == WEAPON_MOLOTOV)
-    {
-        OnProjectileDestroy(projid, x, y, z);
-    }
-	return 1;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -358,4 +345,74 @@ Projectile_Drop_Nailbomb(playerid)
 
 	OnPlayerDropNailbomb(playerid);
     return 0;
+}
+
+// Creates projectile destroy effect based on the weaponId.
+CreateProjectileDestroyEffect(weaponId, projId, Float:x, Float:y, Float:z)
+{
+    switch(weaponId)
+    {
+        case WEAPON_MOLOTOV:
+        {
+            CreateFire(x, y, z);
+        }
+
+        case WEAPON_NAIL_BOMB:
+        {
+            CreateDynamicObject(OBJ_MODEL_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
+        }
+
+        case WEAPON_SMOKE_BOMB:
+        {
+            eProjectileData[projId][e_iSmkBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_SMOKE, x, y, z, 0.0, 0.0, 0.0);
+        }
+    }
+}
+
+// Plays player 3D Sound effect of destroyed projectile.
+// SFX is played in the specific location (based on coordinates).
+PlayPlayer3D_ProjectileSFX(playerid, weaponId, Float:x, Float:y, Float:z)
+{
+    new projDataTableIdx = GetProjectileDestroySfxIdx(weaponId);
+    if(projDataTableIdx == -1)
+        return;
+
+    if(IsPlayerInRangeOfPoint(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_fProjectileDistanceSFX], x, y, z))
+    {
+        Audio3D_Play(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_iProjectileDestroySFX], x, y, z, DIST3D_EXPLODE_RANGE);
+    }
+}
+
+// Return data table index of the projectile based on its weapon id.
+GetProjectileDestroySfxIdx(weaponId)
+{
+    for(new i = 0; i != sizeof(SFX_ProjectilesDestroy); i++)
+    {
+        if(weaponId == SFX_ProjectilesDestroy[i][e_iProjectileWeaponId])
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Destroy projectile's data.
+ResetProjectileData(projId)
+{
+    DestroyProjectile(projId);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, E_STREAMER_EXTRA_ID, projId, -1);
+}
+
+// Delete projectiles objects.
+DestroyProjectileObjects(projId)
+{
+    if(IsValidDynamicObject(eServerInfo[e_iProjectilesObjectId][projId]))
+    {
+        DestroyDynamicObject(eServerInfo[e_iProjectilesObjectId][projId]);
+    }
+
+    if(IsValidDynamicObject(eProjectileData[projId][e_iNailBmbSmoke_ObjectId]))
+    {
+        DestroyDynamicObject(eProjectileData[projId][e_iNailBmbSmoke_ObjectId]);
+    }
 }

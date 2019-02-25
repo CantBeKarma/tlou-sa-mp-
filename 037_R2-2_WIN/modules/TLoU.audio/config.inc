@@ -8,6 +8,7 @@
 
 #define     MAX_3D_AUDIOS           (10)
 #define     MAX_RELOAD_SFX_AUDIOS   (5)
+#define     MAX_PROJECTILES_SFX     (5)
 
 //#region LOCAL AUDIO FILES (INDEXES)
     #define     AUDIO_RELOAD_SHOTGUN        (52)
@@ -117,6 +118,21 @@ stock const SFX_WeaponReloads[MAX_RELOAD_SFX_AUDIOS][e_RELOAD_AUDIO_SFX] =
     {WEAPON_SHOTGUN,        AUDIO_RELOAD_SHOTGUN},
     {WEAPON_RIFLE,          AUDIO_RELOAD_RIFLE},
     {WEAPON_ASSAULT,        AUDIO_RELOAD_ASSAULT}
+};
+
+enum e_SERVER_PROJECTILES_SFX
+{
+    e_iProjectileWeaponId,
+    e_iProjectileDestroySFX,
+    Float:e_fProjectileDistanceSFX
+};
+stock const SFX_ProjectilesDestroy[MAX_PROJECTILES_SFX][e_SERVER_PROJECTILES_SFX] =
+{
+    {WEAPON_BOTTLE,         AUDIO_BOTTLE_BREAK,     DIST3D_THROWABLE_BREAK_RANGE},
+    {WEAPON_BRICK,          AUDIO_BRICK_BREAK,      DIST3D_THROWABLE_BREAK_RANGE},
+    {WEAPON_MOLOTOV,        AUDIO_MOLOTOV_EXPLODE,  DIST3D_EXPLODE_RANGE},
+    {WEAPON_NAIL_BOMB,      AUDIO_NAILBMB_EXPLODE,  DIST3D_EXPLODE_RANGE},
+    {WEAPON_SMOKE_BOMB,     AUDIO_SMKBMB_EXPLODE,   DIST3D_EXPLODE_RANGE}
 };
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
