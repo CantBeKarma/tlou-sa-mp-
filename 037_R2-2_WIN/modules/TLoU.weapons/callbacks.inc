@@ -213,14 +213,36 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
 {
     SCMF(playerid, -1, "Changed weapon: from %d to %d", oldWeaponId, newWeaponId);
 
-    // Detach weapon from player's body when it is in use.
-    DetachWeaponFromPlayersBody(playerid, newWeaponId);
+    // Don't do any attachments with my current weapon if it
+    // was a projectile or a throwable weapon (not necessary to call).
+    if(!IsProjectileWeapon(oldWeaponId) && !IsThrowableWeapon(oldWeaponId))
+    {
+        SPAO(playerid, GetWeaponModelFromWeaponId(oldWeaponId));
+    }
 
     // Update HUD weapon display.
-    ShowHud(playerid);
     HudTd_UpdateWeapon(playerid, newWeaponId);
     HudTd_UpdateWeaponAmmo(playerid, newWeaponId);
-    HudTd_DisplayMeleeWeaponBars(playerid, newWeaponId);
-    HudTd_DisplayWeaponCurrentAmmo(playerid, newWeaponId);
+
+    if(newWeaponId == WEAPON_UNARMED)
+    {
+        // Remove attached object if it was a projectile/medkit/throwable.
+		ResetPlayerWeapons(playerid);
+        RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+
+        HudTd_HideWeaponCurrentAmmo(playerid, newWeaponId);
+		HudTd_HideMeleeWeaponBars(playerid, newWeaponId);
+		HudTd_HideMeleeUpgradedBars(playerid, newWeaponId);
+    }
+    else
+    {		
+		ShowHud(playerid);
+        
+        HudTd_DisplayMeleeWeaponBars(playerid, newWeaponId);
+        HudTd_DisplayWeaponCurrentAmmo(playerid, newWeaponId);
+
+        // Detach weapon from player's body when it is in use.
+        DetachWeaponFromPlayersBody(playerid, newWeaponId);
+    }
     return 0;
 }

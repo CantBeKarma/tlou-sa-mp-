@@ -267,26 +267,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(currentWeapon)] = currentClipAmmo;
 		SetPlayerWeaponAmmo(playerid, currentWeapon, currentAmmo);
 
-		// Remove attached object if it was a projectile/medkit/throwable.
-		RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
-		ResetPlayerWeapons(playerid);
-
-		// Don't do any attachments with my current weapon if it
-		// was a projectile or a throwable weapon (not necessary to call).
-		// Additionally: It may be re-attached in SetPlayerWeapon at the very end!
-		if(!IsProjectileWeapon(currentWeapon) && !IsThrowableWeapon(currentWeapon))
-		{
-			SPAO(playerid, GetWeaponModelFromWeaponId(currentWeapon));
-		}
-
-		// Update HUD weapon display 
-		HudTd_UpdateWeapon(playerid, WEAPON_UNARMED);
-		
-		HudTd_UpdateWeaponAmmo(playerid, WEAPON_UNARMED);
-		HudTd_HideWeaponCurrentAmmo(playerid, currentWeapon);
-
-		HudTd_HideMeleeWeaponBars(playerid, currentWeapon);
-		HudTd_HideMeleeUpgradedBars(playerid, currentWeapon);
+		OnPlayerWeaponChange(playerid, WEAPON_UNARMED, currentWeapon);
 	}
 
 	// Set player's weapon ammo (doesn't matter if weapon is equipped or not).
