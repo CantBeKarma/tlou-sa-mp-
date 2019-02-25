@@ -192,7 +192,7 @@ ResetEnum_ePlayerWeapon(playerid)
 			return;
 		}
 
-		new oldWeaponId = CurrentPlayerWeaponId[playerWeaponId];
+		new oldWeaponId = CurrentPlayerWeaponId[playerid];
 		HidePlayerWeapon(playerid);
 
 		if(ammo <= 0)
