@@ -17,36 +17,29 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         new currentWeaponId = CurrentPlayerWeaponId[playerid];
         
-        if(!Bit_Get(ePlayerFlag[e_bAiming], playerid) 
+        if(!IsPlayerAimingWeapon(playerid)
         && !IsPlayerUsingBackpack(playerid) 
         && !IsPlayerUsingWeaponMenu(playerid)
-        && !IsPlayerPlayingActions(playerid))
+        && !IsPlayerUnableToPerformAction(playerid))
         {
             // Healing
             if(currentWeaponId == WEAPON_MEDKIT && GetPlayerMedkits[playerid] > 0)
             {
-                if(!Bit_Get(ePlayerFlag[e_bIsHealing], playerid) && GetPlayerHealthEx(playerid) < 100.0 && !IsPlayerBurning(playerid))
+                if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < 100.0)
                 {
                     Bit_Let(ePlayerFlag[e_bIsHealing], playerid);
                     OnPlayerStartedHealing(playerid);
                 }
             }
-
             // Equipping melee weapon
-            else if(IsBulletWeapon(currentWeaponId) 
-            || IsProjectileWeapon(currentWeaponId) 
-            || currentWeaponId == WEAPON_BOW 
-            || currentWeaponId == WEAPON_UNARMED)
+            else if(currentWeaponId != WEAPON_NAIL_BOMB && currentWeaponId != WEAPON_UNARMED)
             {
-                if(currentWeaponId != WEAPON_NAIL_BOMB)
-                {
-                    SetPlayerMeleeWeapon(playerid);
-                }
+                SetPlayerMeleeWeapon(playerid);
             }
         }
 
         // If player uses bullet weapon and has no ammo in a weapon magazine...
-        if(IsBulletWeapon(currentWeaponId) && CurrentPlayerWeaponClipSize[playerid] <= 0 && Bit_Get(ePlayerFlag[e_bAiming], playerid))
+        if(IsBulletWeapon(currentWeaponId) && CurrentPlayerWeaponClipSize[playerid] <= 0 && IsPlayerAimingWeapon(playerid))
         {
             // perform a sound effect when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
@@ -69,7 +62,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                             // This function is going to be called only if player keeps aiming
                             // It is needed here because of different crosshairs for shotgun and other weapons
                             // and when weapon changes automatically with "GetFirstWeaponWithAmmo"
-                            ShowPlayerCrosshair(playerid);
+                            ShowPlayerCrosshair(playerid, .forceUpdate = true);
                         }
 
                         ApplyAnimation(playerid, "TLoU", "WEAPON_SWITCH", 4.1, 0, 1, 1, 0, 0);
@@ -85,7 +78,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         // If player tries to AIM while using weapon menu ..
         // Hide weapon menu and start aiming (doesn't apply when player is switching weapons).
-        if(IsPlayerUsingWeaponMenu(playerid) && !Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid))
+        if(IsPlayerUsingWeaponMenu(playerid) && !IsPlayerSwitchingWeapons(playerid))
         {
             HideWeaponMenu(playerid);
         }

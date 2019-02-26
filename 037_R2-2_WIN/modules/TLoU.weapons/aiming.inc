@@ -13,7 +13,7 @@ hook OnPlayerUpdate(playerid)
 	{
 		new currentWeaponId = CurrentPlayerWeaponId[playerid];
 
-		if(!Bit_Get(ePlayerFlag[e_bAiming], playerid))
+		if(!IsPlayerAimingWeapon(playerid))
 		{
 			OnPlayerTryAimingWeapon(playerid, currentWeaponId);
 		}
@@ -24,7 +24,7 @@ hook OnPlayerUpdate(playerid)
 	}
 	else
 	{
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
+		if(IsPlayerAimingWeapon(playerid))
 		{
 			Bit_Vet(ePlayerFlag[e_bAiming], playerid);
 			OnPlayerStopAimingWeapon(playerid);
@@ -38,6 +38,9 @@ hook OnPlayerUpdate(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerTryAimingWeapon(playerid, weaponId)
 {
+	if(IsPlayerUnableToPerformAction(playerid))
+		return 1;
+
 	// Bullet weapons.
 	if(IsBulletWeapon(weaponId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	{
@@ -46,7 +49,7 @@ public OnPlayerTryAimingWeapon(playerid, weaponId)
 	}
 
 	// Projectiles / Bow.
-	if(GetPlayerWeaponAmmo(playerid, weaponId) > 0 && !IsPlayerPlayingActions(playerid))
+	if(GetPlayerWeaponAmmo(playerid, weaponId) > 0)
 	{
 		if(weaponId == WEAPON_BOW)
 		{
@@ -60,7 +63,7 @@ public OnPlayerTryAimingWeapon(playerid, weaponId)
 		}
 	}
 
-	if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
+	if(IsPlayerAimingWeapon(playerid))
 	{
 		ShowPlayerCrosshair(playerid);
 		Disable_OnPlayerLookAt(playerid);

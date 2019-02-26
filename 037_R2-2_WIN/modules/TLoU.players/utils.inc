@@ -63,29 +63,29 @@ SetPlayerHealthEx(playerid, Float:health)
 // (recursive) Function which makes player heal himself with a medkit.
 function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 {
-	if(Bit_Get(ePlayerFlag[e_bIsHealing], playerid))
-	{
-		if(IsPlayerHoldingKey(playerid, KEY_FIRE))
-		{
-			new Float:currentHealth = GetPlayerHealthEx(playerid);
-			if(currentHealth >= 100.0 || currentHealth >= destHealth)
-			{
-				Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
-				OnPlayerHealed(playerid, oldHealth, currentHealth);
-			}
-			else
-			{
-				new healSpeed = (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (500) : (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (300) : (100);
-				SetPlayerHealthEx(playerid, currentHealth + 2.0);
+	if(!IsPlayerHealing(playerid))
+		return;
 
-				SetTimerEx("HealMyself", healSpeed, false, "dff", playerid, oldHealth, destHealth);
-			}
+	if(IsPlayerHoldingKey(playerid, KEY_FIRE))
+	{
+		new Float:currentHealth = GetPlayerHealthEx(playerid);
+		if(currentHealth >= 100.0 || currentHealth >= destHealth)
+		{
+			Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
+			OnPlayerHealed(playerid, oldHealth, currentHealth);
 		}
 		else
 		{
-			Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
-			OnPlayerCanceledHealing(playerid, oldHealth);
-		}	
+			new healSpeed = (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (500) : (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (300) : (100);
+			SetPlayerHealthEx(playerid, currentHealth + 2.0);
+
+			SetTimerEx("HealMyself", healSpeed, false, "dff", playerid, oldHealth, destHealth);
+		}
+	}
+	else
+	{
+		Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
+		OnPlayerCanceledHealing(playerid, oldHealth);
 	}
 }
 
@@ -93,6 +93,18 @@ function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 IsPlayerLookingAtPlayer(playerid)
 {
 	return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
+}
+
+// Checks if player is aiming a weapon
+IsPlayerAimingWeapon(playerid)
+{
+	return Bit_Get(ePlayerFlag[e_bAiming], playerid);
+}
+
+// Checks if player is currently healing.
+IsPlayerHealing(playerid)
+{
+	return Bit_Get(ePlayerFlag[e_bIsHealing], playerid);
 }
 
 // Frezee player with timer to unfreeze (optional).

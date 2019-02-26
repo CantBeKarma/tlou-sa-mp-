@@ -25,7 +25,7 @@ FlyBackwardsWhenShot(damagedid)
 // Plays damage animations on player.
 PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, Float:distance)
 {
-    if(IsPlayerPlayingActions(damagedId))
+    if(IsPlayerUnableToPerformAction(damagedId))
         return;
 
     if((GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)

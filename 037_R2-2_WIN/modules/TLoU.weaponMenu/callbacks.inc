@@ -202,14 +202,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             if(GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_2IDLE 
             && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_IN
             && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_LOOP
-            && !IsPlayerUsingBackpack(playerid) && !Bit_Get(ePlayerFlag[e_bAiming], playerid) && !IsPlayerBurning(playerid))
+            && !IsPlayerUsingBackpack(playerid) && !IsPlayerAimingWeapon(playerid))
             {
                 ShowWeaponMenu(playerid);
             }
         }
         else 
         {
-            if(!Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid))
+            if(!IsPlayerSwitchingWeapons(playerid))
                 HideWeaponMenu(playerid);
         }
     }
@@ -223,7 +223,7 @@ hook OnPlayerHoldingKey(playerid, key)
 {
     if(key & KEY_FIRE)
     {
-        if(IsPlayerUsingWeaponMenu(playerid) && IsAllowedToSwitchWeaps(playerid) && !Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid))
+        if(IsPlayerUsingWeaponMenu(playerid) && IsAllowedToSwitchWeaps(playerid) && !IsPlayerSwitchingWeapons(playerid))
         {
             Bit_Let(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
             OnPlayerStartSwappingWeaps(playerid);
@@ -239,7 +239,7 @@ hook OnPlayerReleaseKey(playerid, key, holding_time)
 {
     if(key & KEY_FIRE)
     {
-        if(Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid))
+        if(IsPlayerSwitchingWeapons(playerid))
         {
             Bit_Vet(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
             OnPlayerFinishSwappingWeaps(playerid);

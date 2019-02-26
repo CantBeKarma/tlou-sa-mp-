@@ -15,6 +15,12 @@ IsPlayerUsingWeaponMenu(playerid)
     return IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
 }
 
+// Check if player is switching weapons.
+IsPlayerSwitchingWeapons(playerid)
+{
+    return Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
+}
+
 // Check if player has any weapons to switch in the weapon menu.
 IsAllowedToSwitchWeaps(playerid)
 {

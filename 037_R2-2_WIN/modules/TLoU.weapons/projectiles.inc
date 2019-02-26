@@ -210,7 +210,7 @@ hook OnPlayerHoldingKey(playerid, key)
 {
     if(key & KEY_AIM)
     {
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
+		if(IsPlayerAimingWeapon(playerid))
         {
             new currentWeaponId = CurrentPlayerWeaponId[playerid];
             if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
@@ -234,7 +234,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         // Throw projectiles & sissy throw of a nailbomb (close throw).
         new currentWeaponId = CurrentPlayerWeaponId[playerid];
-        if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
+        if(IsPlayerAimingWeapon(playerid))
         {
             if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
             {
@@ -244,7 +244,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         else
         {
             if(!IsPlayerUsingBackpack(playerid) 
-            && !IsPlayerUsingWeaponMenu(playerid) && !IsPlayerPlayingActions(playerid))
+            && !IsPlayerUsingWeaponMenu(playerid) && !IsPlayerUnableToPerformAction(playerid))
             {
                 if(currentWeaponId == WEAPON_NAIL_BOMB)
                 {

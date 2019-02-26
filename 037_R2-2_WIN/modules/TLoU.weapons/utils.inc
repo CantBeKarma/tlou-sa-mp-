@@ -16,10 +16,15 @@ ResetEnum_ePlayerWeapon(playerid)
 	}
 
 	// Show player custom-crosshair for weapons.
-	ShowPlayerCrosshair(playerid)
+	ShowPlayerCrosshair(playerid, bool:forceUpdate = false)
 	{
-		if(!Bit_Get(ePlayerFlag[e_bAiming], playerid) || IsCrosshairVisibleForPlayer(playerid))
-			return;
+		if(!forceUpdate)
+		{
+			if(!IsPlayerAimingWeapon(playerid) || IsCrosshairVisibleForPlayer(playerid))
+			{
+				return;
+			}
+		}
 
 		if(CurrentPlayerWeaponId[playerid] == WEAPON_SHOTGUN || CurrentPlayerWeaponId[playerid] == WEAPON_SHORTY)
 		{
@@ -43,7 +48,7 @@ ResetEnum_ePlayerWeapon(playerid)
 	// Show damage crosshair symbol.
 	ShowPlayerHitMarker(playerid, bodypart)
 	{
-		if(!Bit_Get(ePlayerFlag[e_bAiming], playerid))
+		if(!IsPlayerAimingWeapon(playerid))
 			return;
 
 		if(bodypart == BODY_PART_HEAD) 
@@ -378,7 +383,7 @@ ResetEnum_ePlayerWeapon(playerid)
 	{
 		new currentWeapon = CurrentPlayerWeaponId[playerid];
 
-		if(IsPlayerPlayingActions(playerid)
+		if(IsPlayerUnableToPerformAction(playerid)
 		|| GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_CROUCHLOAD || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_LOAD
 		|| IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid) || !IsBulletWeapon(currentWeapon))
 		{
@@ -437,7 +442,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		if(GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
 		|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
 		|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP
-		|| IsPlayerPlayingActions(playerid))
+		|| IsPlayerUnableToPerformAction(playerid))
 		{
 			return;
 		}

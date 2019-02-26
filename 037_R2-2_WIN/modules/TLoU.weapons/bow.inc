@@ -33,12 +33,12 @@ public OnPlayerShotArrow(playerid)
 	
 	if(newBowArrows > 0)
 	{
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
+		if(IsPlayerAimingWeapon(playerid))
 			Bow_PullString(playerid);
 	}
 	else
 	{
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid))
+		if(IsPlayerAimingWeapon(playerid))
 		{
 			Bit_Vet(ePlayerFlag[e_bAiming], playerid);
 			OnPlayerStopAimingWeapon(playerid);
@@ -64,7 +64,7 @@ hook OnPlayerHoldingKey(playerid, key)
 {
     if(key & KEY_AIM)
     {
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
+		if(IsPlayerAimingWeapon(playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
             SetAngleBasedOnCam(playerid);
     }
 	return 0;
@@ -80,7 +80,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	
 	if(PRESSED(KEY_FIRE))
 	{
-		if(Bit_Get(ePlayerFlag[e_bAiming], playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
+		if(IsPlayerAimingWeapon(playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
 		{
 			//new bowString_pullTime = GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey];
 			//new Float:arrowDistance = (bowString_pullTime >= 3800) ? (MAX_ARROW_DISTANCE) : (MAX_ARROW_DISTANCE / 2);

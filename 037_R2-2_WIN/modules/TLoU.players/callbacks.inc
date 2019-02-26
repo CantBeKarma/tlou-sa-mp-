@@ -119,7 +119,7 @@ hook OnPlayerUpdate(playerid)
 	// // Don't allow "fake shooting" when out of ammo.
 	// // That code below stops data sync of an player when he tries to keep shoting.
 	// // Ugly code, shouldn't use that ever since it may cause many problems.
-	// if(Bit_Get(ePlayerFlag[e_bAiming], playerid) 
+	// if(IsPlayerAimingWeapon(playerid))
 	// 	&& GetPlayerSpeed(playerid) == 0.0 && IsPlayerHoldingKey(playerid, KEY_FIRE)
 	// 	&& IsBulletWeapon(CurrentPlayerWeaponId[playerid]) && CurrentPlayerWeaponClipSize[playerid] <= 0)
 	// {
@@ -129,7 +129,7 @@ hook OnPlayerUpdate(playerid)
     // Don't allow "fake shooting" when out of ammo.
 	// Thanks to YSF and new function "SetPlayerSyncKeys" I am able to sync all the keys that player 
 	// presses but KEY_FIRE. So that way people won't see "fake-shooting" when player is out of ammo for the weapon.
-    if(Bit_Get(ePlayerFlag[e_bAiming], playerid) 
+    if(IsPlayerAimingWeapon(playerid)
         && IsBulletWeapon(CurrentPlayerWeaponId[playerid]) && CurrentPlayerWeaponClipSize[playerid] <= 0)
     {
 		new keys, updown, leftright;
@@ -139,8 +139,8 @@ hook OnPlayerUpdate(playerid)
  
 //#region walking when A/W/S/D | custom-walking
 	// if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid) 
-	// && !Bit_Get(ePlayerFlag[e_bAiming], playerid) 
-	// && !IsPlayerPlayingActions(playerid)
+	// && !IsPlayerAimingWeapon(playerid)
+	// && !IsPlayerUnableToPerformAction(playerid)
 	// && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_2IDLE 
 	// && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_IN
 	// && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_LOOP)
@@ -425,7 +425,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 	
-	if(!Bit_Get(ePlayerFlag[e_bHoldingKey], playerid) && !Bit_Get(ePlayerFlag[e_bAiming], playerid))
+	if(!Bit_Get(ePlayerFlag[e_bHoldingKey], playerid) && !IsPlayerAimingWeapon(playerid))
 	{
 		Bit_Let(ePlayerFlag[e_bHoldingKey], playerid);
 		ePlayerInfo[playerid][e_iTickCounter_holdingKey] = GetConnectedTime(playerid);

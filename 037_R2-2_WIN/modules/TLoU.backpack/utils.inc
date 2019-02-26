@@ -114,7 +114,7 @@ UpdateNavItemsColors(playerid)
 // Show player backpack based on the category (CRAFTING / SKILLS / COLLECTIBLE)
 ShowBackpack(playerid, category)
 {
-    if(IsPlayerPlayingActions(playerid))
+    if(IsPlayerUnableToPerformAction(playerid))
     {
         return 1;
     }

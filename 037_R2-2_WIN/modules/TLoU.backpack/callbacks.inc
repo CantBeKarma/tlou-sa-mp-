@@ -14,7 +14,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         if(!Bit_Get(ePlayerFlag[e_bIsCrafting], playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
         {
             if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid) 
-                && GetPlayerSpeed(playerid) <= 0.0 && !IsPlayerLookingAtItem(playerid) && !IsPlayerBurning(playerid))
+                && GetPlayerSpeed(playerid) <= 0.0 && !IsPlayerLookingAtItem(playerid))
             {
                 ShowBackpack(playerid, PlayerBackpackCategory(playerid));
             }

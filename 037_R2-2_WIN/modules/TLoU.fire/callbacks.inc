@@ -39,17 +39,18 @@ public OnPlayerStopBurning(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerEnterDynamicArea(playerid, areaid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) return 1;
+    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
+        return 1;
 
-    if(!IsPlayerBurning(playerid))
+    if(IsPlayerBurning(playerid))
+        return 1;
+
+    foreach(new i : ServerFires)
     {
-        foreach(new i : ServerFires)
+        if(areaid == eFireData[i][e_iFireAreaId])
         {
-            if(areaid == eFireData[i][e_iFireAreaId])
-            {
-                OnPlayerStartBurning(playerid);
-                break;
-            }
+            OnPlayerStartBurning(playerid);
+            break;
         }
     }
     return 1;
@@ -60,17 +61,18 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerLeaveDynamicArea(playerid, areaid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) return 1;
+    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
+        return 1;
     
-    if(IsPlayerBurning(playerid))
+    if(!IsPlayerBurning(playerid))
+        return 1;
+        
+    foreach(new i : ServerFires)
     {
-        foreach(new i : ServerFires)
+        if(areaid == eFireData[i][e_iFireAreaId])
         {
-            if(areaid == eFireData[i][e_iFireAreaId])
-            {
-                PutOutFireOnPlayer(playerid, FIRE_PUT_OUT_DELAY);
-                break;
-            }
+            PutOutFireOnPlayer(playerid, FIRE_PUT_OUT_DELAY);
+            break;
         }
     }
     return 1;

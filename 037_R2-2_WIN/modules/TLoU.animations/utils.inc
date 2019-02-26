@@ -70,7 +70,7 @@ PerformReloadAnimation(playerid, weaponId)
 }
 
 // Actions in which player can't do some stuff (e.g. opening backpack, equipping last weapon and other).
-IsPlayerPlayingActions(playerid)
+IsPlayerUnableToPerformAction(playerid)
 {
     return 
         IsPlayerUsingAnim(playerid, ANIM_COLLECTION_CLIMB)
@@ -78,6 +78,7 @@ IsPlayerPlayingActions(playerid)
         || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_JUMP)
         || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_FALL)
 		|| IsPlayerDead(playerid)
+		|| IsPlayerBurning(playerid)
     ;
 }
 

@@ -56,32 +56,35 @@ timer DestroyFire[FIRE_DESTROY_DELAY](fireId)
 }
 
 // Check if player is burning.
-IsPlayerBurning(playerid) return Bit_Get(ePlayerFlag[e_bIsBurning], playerid);
+IsPlayerBurning(playerid) 
+{
+    return Bit_Get(ePlayerFlag[e_bIsBurning], playerid);
+}
 
 // Puts player on fire state.
 SetPlayerOnFire(playerid)
 {
-    if(!IsPlayerBurning(playerid))
-    {
-        SPAO(playerid, OBJECT_MODEL_BURNING);
-        Bit_Let(ePlayerFlag[e_bIsBurning], playerid);
-    }
+    if(IsPlayerBurning(playerid))
+        return;
+
+    SPAO(playerid, OBJECT_MODEL_BURNING);
+    Bit_Let(ePlayerFlag[e_bIsBurning], playerid);
 }
 
 // Puts the fire out of player.
 function PutOutFireOnPlayer(playerid, delay)
 {
-    if(IsPlayerBurning(playerid))
+    if(!IsPlayerBurning(playerid))
+        return;
+
+    if(delay > 0)
     {
-        if(delay > 0)
-        {
-            OnPlayerBurn(playerid);
-            SetTimerEx("PutOutFireOnPlayer", FIRE_DAMAGE_RATE, false, "dd", playerid, delay-1);
-        }
-        else
-        {
-            OnPlayerStopBurning(playerid);
-            Bit_Vet(ePlayerFlag[e_bIsBurning], playerid);
-        }
+        OnPlayerBurn(playerid);
+        SetTimerEx("PutOutFireOnPlayer", FIRE_DAMAGE_RATE, false, "dd", playerid, delay-1);
+    }
+    else
+    {
+        OnPlayerStopBurning(playerid);
+        Bit_Vet(ePlayerFlag[e_bIsBurning], playerid);
     }
 }

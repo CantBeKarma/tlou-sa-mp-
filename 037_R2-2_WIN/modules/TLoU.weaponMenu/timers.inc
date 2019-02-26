@@ -19,7 +19,7 @@ timer Key_WeaponMenu[50](playerid)
 
         ePlayerWeapMenu[playerid][e_iWeapMenu_KeysUpDown] = updown;
         
-        if(Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid)) 
+        if(IsPlayerSwitchingWeapons(playerid))
             OnPlayerUD_SwapWeaps(playerid, updown);
         else 
             OnPlayerUD_WeaponMenu(playerid, updown);
@@ -33,11 +33,11 @@ timer Key_WeaponMenu[50](playerid)
 		    return 1;
 		}
 
-        if(Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid)) return 1;
+        if(IsPlayerSwitchingWeapons(playerid)) 
+            return 1;
 
         ePlayerWeapMenu[playerid][e_iWeapMenu_KeysLeftRight] = leftright;
         OnPlayerLR_WeaponMenu(playerid, leftright);
     }
-
     return 0;
 }
