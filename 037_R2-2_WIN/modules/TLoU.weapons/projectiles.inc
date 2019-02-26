@@ -25,7 +25,7 @@ public OnPlayerStopAimingProjectile(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //---------------- OnPlayerThrowProjectile ----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerThrowProjectile(playerid, weaponId)
+public OnPlayerThrowProjectile(playerid, projid, weaponId)
 {
     new newProjectileAmount = GetPlayerWeaponAmmo(playerid, weaponId)-1;
 	SetPlayerWeaponAmmo(playerid, weaponId, newProjectileAmount);
@@ -57,18 +57,72 @@ public OnPlayerDropNailbomb(playerid)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//----------------- OnPlayerTriggerNailbomb ---------------
+//----------------- OnPlayerGetHitByNailbomb --------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerTriggerNailbomb(playerid, projid, Float:x, Float:y, Float:z)
+
+///
+public OnPlayerGetHitByNailbomb(playerid, throwerid, projid, Float:x, Float:y, Float:z)
 {
-    OnProjectileDestroy(projid, WEAPON_NAIL_BOMB, x, y, z);
+    return 0;
+}
 
-    SCMF(playerid, -1, "You triggered nailbomb!");
+public OnPlayerGetHitBySmokebomb(playerid, throwerid, projid, Float:x, Float:y, Float:z)
+{
+    StunPlayer(playerid);
+    return 0;
+}
 
-    if(IsPlayerNPC(playerid))
+public OnPlayerGetHitByThrowable(playerid, throwerid, projid, weaponid)
+{
+    return 0;
+}
+
+///
+public OnThrowableDestroy(projid, throwerid, weaponid, Float:x, Float:y, Float:z)
+{
+    return 0;
+}
+
+public OnMolotovExplode(projid, throwerid, Float:x, Float:y, Float:z)
+{
+    return 0;
+}
+
+public OnSmokebombExplode(projid, throwerid, Float:x, Float:y, Float:z)
+{
+    return 0;
+}
+
+public OnNailbombActivate(projid, throwerid, Float:x, Float:y, Float:z)
+{
+    eProjectileData[projid][e_iNailBmb_Timer] = repeat OnNailbombUpdate(projid, eProjectileData[projid][e_iProjectileThrowerId], x, y, z);
+    eProjectileData[projid][e_iNailBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_NAILBOMB_SMOKE, x + 0.06, y, z - 1.5, 0.0, 0.0, 0.0);
+    return 0;
+}
+
+timer OnNailbombUpdate[TICK_RATE_NAILBMB_UPDATE](projid, throwerid, Float:x, Float:y, Float:z)
+{
+    // for loop so it's going to apply for both players and NPCs.
+    for(new i = 0; i != MAX_PLAYERS; i++)
     {
-        SCMF_ALL(-1, "NPCID: %d triggered a nailbomb!", playerid);
+        if(!IsPlayerConnected(i) || i == throwerid)
+            continue;
+
+        if(IsPlayerInRangeOfPoint(i, NAILBMB_EXPLODE_RANGE, x, y, z))
+        {
+            if(IsPlayerNPC(i))
+                FCNPC_OnTriggerNailbomb(i, throwerid, projid, x, y, z);
+            else
+                OnPlayerTriggerNailbomb(i, throwerid, projid, x, y, z);
+            
+            break;
+        }
     }
+    return 0;
+}
+
+public OnPlayerTriggerNailbomb(playerid, throwerid, projid, Float:x, Float:y, Float:z)
+{
     return 0;
 }
 
@@ -91,26 +145,56 @@ public OnProjectileUpdate(projid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
 {
+    // If I hitted myself (during throwing) ignore collision.
+    if(type == PROJECTILE_COLLIDE_PLAYER && extraid == eProjectileData[projid][e_iProjectileThrowerId])
+    {
+        return 1;
+    }
+
     new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
 
-    if(weaponId == WEAPON_BOTTLE
-    || weaponId == WEAPON_BRICK
-    || weaponId == WEAPON_MOLOTOV)
+    switch(weaponId)
     {
-        OnProjectileDestroy(projid, weaponId, x, y, z);
-    }
-    else if(weaponId == WEAPON_SMOKE_BOMB)
-    {
-        if(type == PROJECTILE_COLLIDE_PLAYER)
+        case WEAPON_BOTTLE, WEAPON_BRICK:
         {
-            OnProjectileDestroy(projid, WEAPON_SMOKE_BOMB, x, y, z);
+            if(type == PROJECTILE_COLLIDE_PLAYER)
+            {
+                if(IsPlayerNPC(extraid))
+                    FCNPC_OnGetHitByThrowable(extraid, eProjectileData[projid][e_iProjectileThrowerId], projid, weaponId, x, y, z);
+                else 
+                    OnPlayerGetHitByThrowable(extraid, eProjectileData[projid][e_iProjectileThrowerId], projid, weaponId, x, y, z);
+            }
+            else
+            {
+                OnThrowableDestroy(projid, eProjectileData[projid][e_iProjectileThrowerId], weaponId, x, y, z);
+            }
         }
-    }
-    else if(weaponId == WEAPON_NAIL_BOMB)
-    {
-        if(type == PROJECTILE_COLLIDE_PLAYER)
+
+        case WEAPON_MOLOTOV:
         {
-            OnPlayerTriggerNailbomb(extraid, projid, x, y, z);
+            OnMolotovExplode(projid, eProjectileData[projid][e_iProjectileThrowerId], x, y, z);
+        }
+
+        case WEAPON_SMOKE_BOMB:
+        {
+            if(type == PROJECTILE_COLLIDE_PLAYER)
+            {
+                if(IsPlayerNPC(extraid))
+                    FCNPC_OnGetHitBySmokebomb(extraid, eProjectileData[projid][e_iProjectileThrowerId], projid, x, y, z);
+                else
+                    OnPlayerGetHitBySmokebomb(extraid, eProjectileData[projid][e_iProjectileThrowerId], projid, x, y, z);   
+            }
+        }
+
+        case WEAPON_NAIL_BOMB:
+        {
+            if(type == PROJECTILE_COLLIDE_PLAYER)
+            {
+                if(IsPlayerNPC(extraid))
+                    FCNPC_OnGetHitByNailbomb(extraid, eProjectileData[projid][e_iProjectileThrowerId], projid, x, y, z);
+                else
+                    OnPlayerGetHitByNailbomb(extraid, eProjectileData[projid][e_iProjectileThrowerId], projid, x, y, z);
+            }
         }
     }
 	return 1;
@@ -125,12 +209,11 @@ public OnProjectileStop(projid, Float:x, Float:y, Float:z)
 
     if(weaponId == WEAPON_SMOKE_BOMB)
     {
-        OnProjectileDestroy(projid, WEAPON_SMOKE_BOMB, x, y, z);
+        OnSmokebombExplode(projid, eProjectileData[projid][e_iProjectileThrowerId], x, y, z);
     }
     else if(weaponId == WEAPON_NAIL_BOMB)
     {
-        eProjectileData[projid][e_iNailBmb_Timer] = repeat Update_NailBombTimer(projid, x, y, z);
-        eProjectileData[projid][e_iNailBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_NAILBOMB_SMOKE, x + 0.06, y, z - 1.5, 0.0, 0.0, 0.0);
+        OnNailbombActivate(projid, eProjectileData[projid][e_iProjectileThrowerId], x, y, z);
     }
     return 1;
 }
@@ -144,19 +227,7 @@ public OnProjectileDestroy(projid, weaponId, Float:x, Float:y, Float:z)
     CreateProjectileDestroyEffect(weaponId, projid, x, y, z);
 
     // Reset & destroy (object) projectile's data.
-    if(weaponId == WEAPON_SMOKE_BOMB)
-    {
-        defer DestroySmokeBombData(projid);
-    }
-    else
-    {
-        if(weaponId == WEAPON_NAIL_BOMB 
-        && IsValidDynamicObject(eProjectileData[projid][e_iNailBmbSmoke_ObjectId]))
-        {
-            stop eProjectileData[projid][e_iNailBmb_Timer];
-        }
-        ResetProjectileData(projid);
-    }
+    ResetProjectileData(projid);
     DestroyProjectileObjects(projid);
 
     for(new i = 0; i != MAX_PLAYERS; i++)
@@ -167,7 +238,7 @@ public OnProjectileDestroy(projid, weaponId, Float:x, Float:y, Float:z)
         if(!IsPlayerNPC(i))
         {
             PlayPlayer3D_ProjectileSFX(i, weaponId, x, y, z);
-            Streamer_UpdateEx(i, x, y, z, .type = STREAMER_TYPE_OBJECT);
+            Streamer_Update(i, STREAMER_TYPE_OBJECT);
 
             // Stun player if he's in smokebomb range.
             if(weaponId == WEAPON_SMOKE_BOMB)
@@ -260,13 +331,11 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 Projectile_Throw(playerid, weaponId)
 {
     // Validation.
-	if(GetPlayerWeaponAmmo(playerid, weaponId) <= 0 
-    || GetProjectilePoolSize() >= MAX_THROWABLES //|| !IsProjectileWeapon(weaponId) || !IsThrowableWeapon(weaponId)
+	if(GetPlayerWeaponAmmo(playerid, weaponId) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES
     || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
 	{
 		return 1;
 	}
-    ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
 	
     // Physics.
 	new Float:fPX, Float:fPY, Float:fPZ;
@@ -311,16 +380,18 @@ Projectile_Throw(playerid, weaponId)
         return 1;
     }
 
-	eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, weaponId);
-
     // Update.
 	foreach(new i : Player)
 	{
-		Streamer_UpdateEx(i, dest_projX, dest_projY, dest_projZ, .type = STREAMER_TYPE_OBJECT);
+		Streamer_Update(i, STREAMER_TYPE_OBJECT);
 	}
 
-    OnPlayerThrowProjectile(playerid, weaponId);
+    eProjectileData[projid][e_iProjectileThrowerId] = playerid;
+	eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
+    ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, weaponId);
+    
+    OnPlayerThrowProjectile(playerid, projid, weaponId);
 	return 0;
 }
 
@@ -328,13 +399,11 @@ Projectile_Throw(playerid, weaponId)
 Projectile_Drop_Nailbomb(playerid)
 {
     // Validation.
-	if(GetPlayerWeaponAmmo(playerid, WEAPON_NAIL_BOMB) <= 0 
-    || GetProjectilePoolSize() >= MAX_THROWABLES || CurrentPlayerWeaponId[playerid] != WEAPON_NAIL_BOMB
+	if(GetPlayerWeaponAmmo(playerid, WEAPON_NAIL_BOMB) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES
     || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
 	{
 		return 1;
 	}
-    ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
 
     new Float:x, Float:y, Float:z, Float:ang;
 	GetPlayerPos(playerid, x, y, z);
@@ -359,15 +428,17 @@ Projectile_Drop_Nailbomb(playerid)
         return 1;
     }
 
-    eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, WEAPON_NAIL_BOMB);
-
     // Update.
 	foreach(new i : Player)
 	{
 		Streamer_Update(i, STREAMER_TYPE_OBJECT);
 	}
 
+    eProjectileData[projid][e_iProjectileThrowerId] = playerid;
+    eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
+    ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, WEAPON_NAIL_BOMB);
+    
 	OnPlayerDropNailbomb(playerid);
     return 0;
 }
@@ -377,55 +448,24 @@ CreateProjectileDestroyEffect(weaponId, projid, Float:x, Float:y, Float:z)
 {
     switch(weaponId)
     {
-        case WEAPON_MOLOTOV:
-        {
-            CreateFire(x, y, z);
-        }
-
-        case WEAPON_NAIL_BOMB:
-        {
-            CreateDynamicObject(OBJ_MODEL_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
-        }
-
+        case WEAPON_MOLOTOV:    CreateFire(x, y, z);
+        case WEAPON_NAIL_BOMB:  CreateDynamicObject(OBJ_MODEL_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
         case WEAPON_SMOKE_BOMB:
         {
             eProjectileData[projid][e_iSmkBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_SMOKE, x, y, z, 0.0, 0.0, 0.0);
+            Iter_Add(SmkBmbSmokesList, eProjectileData[projid][e_iSmkBmbSmoke_ObjectId]);
         }
     }
-}
-
-// Plays player 3D Sound effect of destroyed projectile.
-// SFX is played in the specific location (based on coordinates).
-PlayPlayer3D_ProjectileSFX(playerid, weaponId, Float:x, Float:y, Float:z)
-{
-    new projDataTableIdx = GetProjectileDestroySfxIdx(weaponId);
-    if(projDataTableIdx == -1)
-        return;
-
-    if(IsPlayerInRangeOfPoint(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_fProjectileDistanceSFX], x, y, z))
-    {
-        Audio3D_Play(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_iProjectileDestroySFX], x, y, z, DIST3D_EXPLODE_RANGE);
-    }
-}
-
-// Return data table index of the projectile based on its weapon id.
-GetProjectileDestroySfxIdx(weaponId)
-{
-    for(new i = 0; i != sizeof(SFX_ProjectilesDestroy); i++)
-    {
-        if(weaponId == SFX_ProjectilesDestroy[i][e_iProjectileWeaponId])
-        {
-            return i;
-        }
-    }
-    return -1;
 }
 
 // Destroy projectile's data.
 ResetProjectileData(projid)
 {
     DestroyProjectile(projid);
+    eProjectileData[projid][e_iProjectileThrowerId] = INVALID_PLAYER_ID;
     Streamer_SetIntData(STREAMER_TYPE_OBJECT, E_STREAMER_EXTRA_ID, projid, -1);
+    
+    stop eProjectileData[projid][e_iNailBmb_Timer];
 }
 
 // Delete projectiles objects.

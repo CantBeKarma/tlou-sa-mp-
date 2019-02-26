@@ -126,27 +126,33 @@ UnfreezePlayer(playerid)
 		TogglePlayerControllable(playerid, true);
 }
 
+// Check if player is stunned
+IsPlayerStunned(playerid)
+{
+	return Bit_Get(ePlayerFlag[e_bIsStunned], playerid);
+}
+
 // Stuns player.
 StunPlayer(playerid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bIsStunned], playerid))
-    {		
-		Disable_OnPlayerLookAt(playerid);
-		Bit_Let(ePlayerFlag[e_bIsStunned], playerid);
+	if(IsPlayerStunned(playerid))
+		return;
+	
+	Disable_OnPlayerLookAt(playerid);
+	Bit_Let(ePlayerFlag[e_bIsStunned], playerid);
 
-		//ApplyCallbackAnim(playerid, "PED", "GAS_CWR");
-		ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
-		wait_ms(3000);
+	ApplyCallbackAnim(playerid, "PED", "GAS_CWR");
+	//ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
+	//wait_ms(3000);
 
-		//ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
-		ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
-		wait_ms(2000);
+	//ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
+	//ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
+	//wait_ms(2000);
 
-		ClearAnims(playerid);
+	//ClearAnims(playerid);
 
-		Enable_OnPlayerLookAt(playerid);
-		Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);   
-    }
+	//Enable_OnPlayerLookAt(playerid);
+	//Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
 }
 
 // Enable OnPlayerLookAt callback timer if it isn't running.

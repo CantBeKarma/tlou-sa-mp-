@@ -72,22 +72,22 @@ public OnPlayerAnimFinish(playerid, animIdx)
 			RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 		}
 
-		// // Player got stunned by smoke bomb.
-		// case PED_GAS_CWR:
-		// {
-		// 	if(Bit_Get(ePlayerFlag[e_bIsStunned], playerid))
-		// 		ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
-		// }
+		// Player got stunned by smoke bomb.
+		case PED_GAS_CWR:
+		{
+			if(IsPlayerStunned(playerid))
+				ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
+		}
 
 		// Not stunned anymore.
-		// case PED_IDLE_TIRED:
-		// {
-		// 	if(Bit_Get(ePlayerFlag[e_bIsStunned], playerid))
-		// 	{
-		// 		Enable_OnPlayerLookAt(playerid);
-		// 		Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
-		// 	}
-		// }
+		case PED_IDLE_TIRED:
+		{
+			if(IsPlayerStunned(playerid))
+			{
+				Enable_OnPlayerLookAt(playerid);
+				Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
+			}
+		}
 	}
 	return 1;
 }

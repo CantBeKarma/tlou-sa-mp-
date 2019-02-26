@@ -79,6 +79,7 @@ IsPlayerUnableToPerformAction(playerid)
         || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_FALL)
 		|| IsPlayerDead(playerid)
 		|| IsPlayerBurning(playerid)
+		|| IsPlayerStunned(playerid)
     ;
 }
 

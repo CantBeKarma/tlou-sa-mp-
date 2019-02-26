@@ -665,3 +665,24 @@ public FCNPC_OnFinishMovePath(npcid, pathid)
 	FCNPC_StartUpdateTimer(npcid);	
 	return 0;
 }
+
+public FCNPC_OnGetHitByThrowable(npcid, throwerid, projid, weaponid)
+{
+    return 0;
+}
+
+public FCNPC_OnGetHitBySmokebomb(npcid, throwerid, projid, Float:x, Float:y, Float:z)
+{
+    FCNPC_Stun(npcid);
+    return 0;
+}
+
+public FCNPC_OnGetHitByNailbomb(npcid, throwerid, projid, Float:x, Float:y, Float:z)
+{
+    return 0;
+}
+
+public FCNPC_OnTriggerNailbomb(npcid, throwerid, projid, Float:x, Float:y, Float:z)
+{
+    return 0;
+}

@@ -59,3 +59,30 @@ PlayPlayerReloadSound(playerid, weaponId)
         break;
     }
 }
+
+// Plays player 3D Sound effect of destroyed projectile.
+// SFX is played in the specific location (based on coordinates).
+PlayPlayer3D_ProjectileSFX(playerid, weaponId, Float:x, Float:y, Float:z)
+{
+    new projDataTableIdx = GetProjectileDestroySfxIdx(weaponId);
+    if(projDataTableIdx == -1)
+        return;
+
+    if(IsPlayerInRangeOfPoint(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_fProjectileDistanceSFX], x, y, z))
+    {
+        Audio3D_Play(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_iProjectileDestroySFX], x, y, z, DIST3D_EXPLODE_RANGE);
+    }
+}
+
+// Return data table index of the projectile based on its weapon id.
+GetProjectileDestroySfxIdx(weaponId)
+{
+    for(new i = 0; i != sizeof(SFX_ProjectilesDestroy); i++)
+    {
+        if(weaponId == SFX_ProjectilesDestroy[i][e_iProjectileWeaponId])
+        {
+            return i;
+        }
+    }
+    return -1;
+}
