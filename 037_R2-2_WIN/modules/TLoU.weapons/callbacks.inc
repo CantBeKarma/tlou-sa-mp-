@@ -173,7 +173,7 @@ hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newC
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
 {
-    PlayPlayerReloadSound(playerid, weaponId);
+    PlayPlayer3D_ReloadSFX(playerid, weaponId);
     PerformReloadAnimation(playerid, weaponId);
 	HudTd_DisplayWeaponCurrentAmmo(playerid, weaponId);
 	TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);

@@ -49,8 +49,7 @@
 
     #define     AUDIO_SMKBMB_EXPLODE        (76)
 
-    #define     AUDIO_NAILBMB_IN            (77)
-    #define     AUDIO_NAILBMB_LOOP          (78)
+    #define     AUDIO_NAILBMB_TRIGGER       (77)
     #define     AUDIO_NAILBMB_EXPLODE       (79)
 
     #define     AUDIO_WEAP_NOAMMO           (80)

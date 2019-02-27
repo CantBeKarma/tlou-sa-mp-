@@ -52,6 +52,7 @@
     #define     MAX_PROJECTILE_SPEED            (12.0)
 
     #define     TICK_RATE_NAILBMB_UPDATE        (600)
+    #define     NAILBMB_TRIGGERED_EXPLODE       (1000)
     #define     TICK_RATE_SMOKEBMB_EFFECT       (10000)
     #define     TICK_RATE_PROJECTILE_THROW      (1100)
 

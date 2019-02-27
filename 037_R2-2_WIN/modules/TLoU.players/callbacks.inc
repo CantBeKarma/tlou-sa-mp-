@@ -407,6 +407,28 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------ OnPlayerGetStunned -------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerGetStunned(playerid)
+{
+    Disable_OnPlayerLookAt(playerid);
+    ApplyCallbackAnim(playerid, "PED", "GAS_CWR");
+
+	//ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
+	//wait_ms(3000);
+
+	//ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
+	//ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
+	//wait_ms(2000);
+
+	//ClearAnims(playerid);
+
+	//Enable_OnPlayerLookAt(playerid);
+	//Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
+    return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------- OnPlayerKeyStateChange ----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

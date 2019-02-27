@@ -3,8 +3,6 @@ ResetEnum_ePlayerAudio(playerid)
 {
     static sBlank[e_PLAYER_AUDIO];
     ePlayerAudio[playerid] = sBlank;
-
-    print("ResetEnum_ePlayerAudio");
 }
 
 // Play audio and assign it to player's handle.
@@ -31,20 +29,8 @@ Audio3D_Play(playerid, audioid, Float:x, Float:y, Float:z, Float:distance, bool:
     return audioHandle;
 }
 
-// Plays 3D STREAM audio sound to the next available free 3D slot effect.
-// Audio3D_Stream(playerid, const url[], Float:x, Float:y, Float:z, Float:distance, bool:ppause = false, bool:loop = false, bool:downmix = false)
-// {
-//     if(Iter_Alloc(iAudioHandle3D<playerid>) == INVALID_ITERATOR_SLOT)
-//         return INVALID_ITERATOR_SLOT;
-
-//     new audioHandle = Iter_Add(iAudioHandle3D<playerid>, Audio_PlayStreamed(playerid, url, ppause, loop, downmix));
-//     Audio_Set3DPosition(playerid, audioHandle, x, y, z, distance);
-
-//     return audioHandle;
-// }
-
 // Plays reload sound effect for player (and for nearby players 3D sound effect).
-PlayPlayerReloadSound(playerid, weaponId)
+PlayPlayer3D_ReloadSFX(playerid, weaponId)
 {
     for(new i = 0; i != MAX_RELOAD_SFX_AUDIOS; i++)
     {
@@ -64,25 +50,15 @@ PlayPlayerReloadSound(playerid, weaponId)
 // SFX is played in the specific location (based on coordinates).
 PlayPlayer3D_ProjectileSFX(playerid, weaponId, Float:x, Float:y, Float:z)
 {
-    new projDataTableIdx = GetProjectileDestroySfxIdx(weaponId);
-    if(projDataTableIdx == -1)
-        return;
-
-    if(IsPlayerInRangeOfPoint(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_fProjectileDistanceSFX], x, y, z))
+    for(new i = 0; i != MAX_PROJECTILES_SFX; i++)
     {
-        Audio3D_Play(playerid, SFX_ProjectilesDestroy[projDataTableIdx][e_iProjectileDestroySFX], x, y, z, DIST3D_EXPLODE_RANGE);
-    }
-}
+        if(SFX_ProjectilesDestroy[i][e_iProjectileWeaponId] != weaponId)
+            continue;
 
-// Return data table index of the projectile based on its weapon id.
-GetProjectileDestroySfxIdx(weaponId)
-{
-    for(new i = 0; i != sizeof(SFX_ProjectilesDestroy); i++)
-    {
-        if(weaponId == SFX_ProjectilesDestroy[i][e_iProjectileWeaponId])
+        if(IsPlayerInRangeOfPoint(playerid, SFX_ProjectilesDestroy[i][e_fProjectileDistanceSFX], x, y, z))
         {
-            return i;
+            Audio3D_Play(playerid, SFX_ProjectilesDestroy[i][e_iProjectileDestroySFX], x, y, z, DIST3D_EXPLODE_RANGE);
         }
+        break;
     }
-    return -1;
 }

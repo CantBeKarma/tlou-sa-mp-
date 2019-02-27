@@ -544,6 +544,29 @@ DetachWeaponFromPlayersBody(playerid, weaponId)
 	return 0;
 }
 
+// Stuns all nearby players and FCNPCs that are in range of x, y, z coordinates.
+// Optional: throwerid - so he won't get stunned if he's the initiator of the projectile.
+StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_ID)
+{
+    for(new i = 0; i != MAX_PLAYERS; i++)
+    {
+        if(!IsPlayerConnected(i) || i == throwerid
+        || IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
+        {
+            continue;
+        }
+
+        if(IsPlayerNPC(i))
+        {
+            FCNPC_Stun(i);
+        }
+        else
+        {
+            StunPlayer(i);
+        }
+    }
+}
+
 // Closest player to player.
 // GetClosestPlayerToPlayer(playerid, Float:dist = FLOAT_INFINITY)
 // {

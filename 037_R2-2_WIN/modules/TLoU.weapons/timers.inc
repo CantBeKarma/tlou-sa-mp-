@@ -1,11 +1,13 @@
 // Destroy SmokeBomb smoke effect and reset projectile's data.
-timer DestroySmokeBombData[TICK_RATE_SMOKEBMB_EFFECT](projid)
+timer DestroySmkBmbSmokeObject[TICK_RATE_SMOKEBMB_EFFECT](objectId)
 {
-    if(IsValidDynamicObject(eProjectileData[projid][e_iSmkBmbSmoke_ObjectId]))
-    {
-        DestroyDynamicObject(eProjectileData[projid][e_iSmkBmbSmoke_ObjectId]);
-    }
-    ResetProjectileData(projid);
+    if(!Iter_Contains(SmkBmbSmokesList, objectId))
+        return;
+
+    if(!IsValidDynamicObject(objectId))
+        return;
+
+    DestroyDynamicObject(objectId);
 
     foreach(new playerid : Player)
     {

@@ -136,23 +136,11 @@ IsPlayerStunned(playerid)
 StunPlayer(playerid)
 {
 	if(IsPlayerStunned(playerid))
-		return;
-	
-	Disable_OnPlayerLookAt(playerid);
+		return false;
+	    
 	Bit_Let(ePlayerFlag[e_bIsStunned], playerid);
-
-	ApplyCallbackAnim(playerid, "PED", "GAS_CWR");
-	//ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
-	//wait_ms(3000);
-
-	//ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
-	//ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
-	//wait_ms(2000);
-
-	//ClearAnims(playerid);
-
-	//Enable_OnPlayerLookAt(playerid);
-	//Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
+	OnPlayerGetStunned(playerid);
+	return true;
 }
 
 // Enable OnPlayerLookAt callback timer if it isn't running.

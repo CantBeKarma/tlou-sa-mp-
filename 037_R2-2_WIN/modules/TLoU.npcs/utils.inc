@@ -98,23 +98,41 @@ FCNPC_IsStunned(npcid)
 	return Bit_Get(eNpcFlag[e_bIsStunned], npcid);
 }
 
+// Check if NPC's timer is running.
+FCNPC_IsTimerRunning(npcid)
+{
+	return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
+}
+
+// Check if NPC is not: stunned, burning, dead and its timer is running.
+FCNPC_IsAllowedToDoAction(npcid)
+{
+	return
+		!FCNPC_IsStunned(npcid) 
+		&& !FCNPC_IsBurning(npcid) 
+		&& !FCNPC_IsDeadEx(npcid) 
+		&& FCNPC_IsTimerRunning(npcid);
+}
+
 // Put NPC in a fire state.
 FCNPC_SetOnFire(npcid)
 {
-    if(!Bit_Get(eNpcFlag[e_bIsBurning], npcid))
-    {
-        Bit_Let(eNpcFlag[e_bIsBurning], npcid);
-		FCNPC_OnBurn(npcid);
-    }
+	if(!FCNPC_IsAllowedToDoAction(npcid))
+		return;
+
+	Bit_Let(eNpcFlag[e_bIsBurning], npcid);
+	FCNPC_OnBurn(npcid);
 }
 
 // Puts NPC in a stunned state.
 FCNPC_Stun(npcid)
 {
-	if(FCNPC_IsStunned(npcid))
-		return;
+	if(!FCNPC_IsAllowedToDoAction(npcid))
+		return false;
 
 	Bit_Let(eNpcFlag[e_bIsStunned], npcid);
+
+	FCNPC_OnGetStunnedBySmokeBomb(npcid);
 	FCNPC_StopUpdateTimer(npcid);
 
 	FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
@@ -129,6 +147,7 @@ FCNPC_Stun(npcid)
 		FCNPC_StartUpdateTimer(npcid);
 	}
 	Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
+	return true;
 }
 
 // Clear NPCs anims and packets data.
@@ -179,8 +198,10 @@ FCNPC_ChasePlayerByPath(npcid, chaseid)
 // Distract NPC (force it to go to the specific location).
 FCNPC_Distract(npcid, Float:x, Float:y, Float:z, bool:force = false)
 {
-	if(!Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid))
+	if(!FCNPC_IsAllowedToDoAction(npcid) || !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
+	{
 		return 1;
+	}
 
 	if(force)
 	{
@@ -206,23 +227,23 @@ FCNPC_Distract(npcid, Float:x, Float:y, Float:z, bool:force = false)
 // Start NPC update timer.
 FCNPC_StartUpdateTimer(npcid)
 {
-	if(!Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid))
-	{
-		SCMF_ALL(-1, "NPC timer started");
-		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
+	if(FCNPC_IsTimerRunning(npcid))
+		return;
 
-		Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
-		eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
+	SCMF_ALL(-1, "NPC timer started");
+	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
 
-		if(FCNPC_IsStunned(npcid))
-			Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
-		
-		if(FCNPC_IsBurning(npcid))
-			Bit_Vet(eNpcFlag[e_bIsBurning], npcid);
+	Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
+	eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
 
-		if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
-			Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);
-	}
+	if(FCNPC_IsStunned(npcid))
+		Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
+	
+	if(FCNPC_IsBurning(npcid))
+		Bit_Vet(eNpcFlag[e_bIsBurning], npcid);
+
+	if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
+		Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);
 }
 
 // Stop NPC update timer.
@@ -237,21 +258,21 @@ FCNPC_StopUpdateTimer(npcid, bool:force = false)
 		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
 	}
 
-	if(Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid))
+	if(!FCNPC_IsTimerRunning(npcid))
+		return;
+		
+	SCMF_ALL(-1, "NPC timer stopped");
+	stop eNpcInfo[npcid][e_iUpdateTimer];
+	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
+
+	if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
+		Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);
+
+	if(FCNPC_IsMoving(npcid))
 	{
-		SCMF_ALL(-1, "NPC timer stopped");
-		stop eNpcInfo[npcid][e_iUpdateTimer];
-		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
-
-		if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
-			Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);
-
-		if(FCNPC_IsMoving(npcid))
-		{
-			FCNPC_Stop(npcid);
-			FCNPC_ClearAnims(npcid);
-		}
-
-		Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
+		FCNPC_Stop(npcid);
+		FCNPC_ClearAnims(npcid);
 	}
+
+	Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 }
