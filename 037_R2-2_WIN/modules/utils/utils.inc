@@ -551,7 +551,7 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
     for(new i = 0; i != MAX_PLAYERS; i++)
     {
         if(!IsPlayerConnected(i) || i == throwerid
-        || IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
+        || !IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
         {
             continue;
         }

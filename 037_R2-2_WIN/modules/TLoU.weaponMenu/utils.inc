@@ -182,6 +182,9 @@ WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH)
 // Show player weapon menu.
 ShowWeaponMenu(playerid)
 {
+    if(IsPlayerUnableToPerformAction(playerid))
+        return;
+
     TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
     TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
 

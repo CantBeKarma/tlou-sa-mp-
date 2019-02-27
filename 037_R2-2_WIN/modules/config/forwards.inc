@@ -60,15 +60,15 @@ forward OnPlayerGetArrowShot(playerid, damagerid);
 
 forward OnPlayerStartAimingProjectile(playerid, weaponId);
 forward OnPlayerStopAimingProjectile(playerid);
-forward OnPlayerThrowProjectile(playerid, projid, weaponId);
+forward OnPlayerThrowProjectile(playerid, weaponId);
 forward OnPlayerDropNailbomb(playerid);
-forward OnPlayerTriggerNailbomb(playerid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
+forward OnPlayerTriggerNailbomb(triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward OnPlayerGetStunned(playerid);
 
 forward OnMolotovExplode(projid, throwerid, Float:x, Float:y, Float:z);
 forward OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z);
 forward OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, Float:z);
-forward OnNailbombInitiate(projid, throwerid, Float:x, Float:y, Float:z);
+forward OnNailbombInitiate(nailBmbIdx, throwerid, Float:x, Float:y, Float:z);
 
 forward FCNPC_OnIdle(npcid);
 forward FCNPC_OnChasePlayer(npcid, chaseid);

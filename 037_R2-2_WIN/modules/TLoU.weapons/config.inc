@@ -52,7 +52,7 @@
     #define     MAX_PROJECTILE_SPEED            (12.0)
 
     #define     TICK_RATE_NAILBMB_UPDATE        (600)
-    #define     NAILBMB_TRIGGERED_EXPLODE       (1000)
+    #define     NAILBMB_TRIGGERED_EXPLODE       (770)
     #define     TICK_RATE_SMOKEBMB_EFFECT       (10000)
     #define     TICK_RATE_PROJECTILE_THROW      (1100)
 
@@ -128,17 +128,15 @@
 // Projectiles data.
 enum e_SERVER_PROJECTILES_DATA
 {
-    e_iProjectileThrowerId,
-
+    e_iProjectile_ThrowerId,
     e_iProjectile_ObjectId,
-    e_iSmkBmbSmoke_ObjectId,
-    e_iNailBmbSmoke_ObjectId,
-    
+
+    e_iNailBmb_ObjectId,
+    e_iNailBmb_SmokeObjectId,
     Timer:e_iNailBmb_Timer
 };
 new eProjectileData[MAX_THROWABLES][e_SERVER_PROJECTILES_DATA];
 
-new Iterator:SmkBmbSmokesList<MAX_THROWABLES>;
 new Iterator:NailBmbsList<MAX_THROWABLES>;
 
 // Player weapon's data.

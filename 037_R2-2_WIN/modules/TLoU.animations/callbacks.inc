@@ -73,21 +73,21 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		}
 
 		// Player got stunned by smoke bomb.
-		case PED_GAS_CWR:
-		{
-			if(IsPlayerStunned(playerid))
-				ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
-		}
+		// case PED_GAS_CWR:
+		// {
+		// 	if(IsPlayerStunned(playerid))
+		// 		ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
+		// }
 
-		// Not stunned anymore.
-		case PED_IDLE_TIRED:
-		{
-			if(IsPlayerStunned(playerid))
-			{
-				Enable_OnPlayerLookAt(playerid);
-				Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
-			}
-		}
+		// // Not stunned anymore.
+		// case PED_IDLE_TIRED:
+		// {
+		// 	if(IsPlayerStunned(playerid))
+		// 	{
+		// 		Enable_OnPlayerLookAt(playerid);
+		// 		Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
+		// 	}
+		// }
 	}
 	return 1;
 }
