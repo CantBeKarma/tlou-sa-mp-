@@ -18,7 +18,7 @@ timer FCNPC_AttackPlayer[NPC_ATTACK_DELAY](npcid, chaseid)
 //		if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_ATTACKING)
 ///		{
 			new 
-				npcType = eNpcInfo[npcid][e_iType],
+				NPC_TYPE:npcType = eNpcInfo[npcid][e_iType],
 				Float:chaseId_oldHealth = GetPlayerHealthEx(chaseid),
 				Float:chaseId_newHealth = chaseId_oldHealth - NpcDamageValues[npcType];
 

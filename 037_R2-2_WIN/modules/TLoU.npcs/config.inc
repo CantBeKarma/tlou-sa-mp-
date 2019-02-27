@@ -87,16 +87,28 @@ stock const NpcSkins[15] =
 
 enum NPC_STATUS
 {
+    NONE,
     IDLE,
     CHASE,
     ATTACK,
-    DISTRACTED
+    DISTRACTED,
+    BURNING,
+    STUNNED
+}
+
+enum NPC_TYPE
+{
+    RUNNER,
+    STALKER,
+    CLICKER,
+    BLOATER
 }
 
 enum e_NPC_DATA
 {
-    e_iType,
+    NPC_TYPE:e_iType,
     NPC_STATUS:e_iCurrentStatus,
+
     Float:e_fHealth,
     e_iAnimIdx,
     e_iAnimTick,

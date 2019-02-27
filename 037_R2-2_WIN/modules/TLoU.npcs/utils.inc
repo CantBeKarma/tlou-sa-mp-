@@ -1,3 +1,19 @@
+function NPC_TYPE:FCNPC_GetType(npcid)
+{
+	return NPC_TYPE:eNpcInfo[npcid][e_iType];
+}
+
+// Create specified amount of infected.
+FCNPC_CreateInfected()
+{
+	new str_fcnpcName[9];
+	for(new i = MAX_PLAYERS-1, maxNpcs = MAX_FCNPCS; maxNpcs > 0; i--, maxNpcs--)
+	{
+  		format(str_fcnpcName, sizeof(str_fcnpcName), "FCNPC_%d", i);
+		FCNPC_Create(str_fcnpcName);
+	}
+}
+
 // Reset all enum of the NPC data.
 ResetEnum_eNpcInfo(npcid)
 {
@@ -14,15 +30,77 @@ ResetEnum_eNpcFlag(npcid)
 	Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 }
 
-// Create specified amount of infected.
-FCNPC_CreateInfected()
+// Clear NPCs anims and packets data.
+FCNPC_ClearAnims(npcid)
 {
-	new str_fcnpcName[9];
-	for(new i = MAX_PLAYERS-1, maxNpcs = MAX_FCNPCS; maxNpcs > 0; i--, maxNpcs--)
+	FCNPC_ResetAnimation(npcid);
+	FCNPC_ClearAnimations(npcid);
+}
+
+// -> Prepare data for NPC on spawn.
+FCNPC_ResetAllData(npcid)
+{
+	ResetEnum_eNpcInfo(npcid);
+	ResetEnum_eNpcFlag(npcid);
+
+	FCNPC_ClearAnims(npcid);
+    FCNPC_SetInterior(npcid, 0);
+	FCNPC_SetVirtualWorld(npcid, 0);
+	FCNPC_SetStatus(npcid, NPC_STATUS:IDLE);
+
+	SetPlayerTeam(npcid, FACTION_NONE);
+	RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
+
+	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]))
 	{
-  		format(str_fcnpcName, sizeof(str_fcnpcName), "FCNPC_%d", i);
-		FCNPC_Create(str_fcnpcName);
+		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
 	}
+
+	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[RESET] Data has been reset for NPC ID: %d", npcid);
+}
+
+FCNPC_GetStatus(npcid)
+{
+	return eNpcInfo[npcid][e_iCurrentStatus];
+}
+
+FCNPC_SetStatus(npcid, NPC_STATUS:status)
+{
+	if(!FCNPC_IsTimerRunning(npcid)|| eNpcInfo[npcid][e_iCurrentStatus] == status)
+	{
+		return;
+	}
+
+	eNpcInfo[npcid][e_iCurrentStatus] = status;
+
+	switch(NPC_STATUS:status)
+	{
+		case NONE:	ResetEnum_eNpcFlag(npcid);
+	}
+}
+
+FCNPC_SetType(npcid, NPC_TYPE:type)
+{
+	if(eNpcInfo[npcid][e_iType] == type)
+		return;
+
+	new skinid = 0;
+	switch(NPC_TYPE:type)
+	{
+		case RUNNER:	skinid = NpcSkins[random(7)];
+		case STALKER:	skinid = NpcSkins[random(6) + 7];
+		case CLICKER:	skinid = NpcSkins[13];
+		case BLOATER:	skinid = NpcSkins[14];
+	}
+
+	if(skinid == 0)
+	{
+		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], ERROR, "[TYPE]: NPC ID: %d | TYPE: %d | Couldn't find skin model for the specified type!", npcid, _:type);
+		return;
+	}
+	
+	eNpcInfo[npcid][e_iType] = type;
+	FCNPC_SetSkin(npcid, skinid);
 }
 
 // Return current FCNPC health.
@@ -41,19 +119,6 @@ FCNPC_IsDeadEx(npcid)
 FCNPC_SetHealthEx(npcid, Float:health)
 {
 	eNpcInfo[npcid][e_fHealth] = (health <= 0.0 ? 0.0 : health);
-}
-
-// -> Prepare data for NPC on spawn.
-FCNPC_PrepareForSpawn(npcid)
-{
-	SetPlayerTeam(npcid, FACTION_NONE);
-
-    FCNPC_SetInterior(npcid, 0);
-	FCNPC_SetVirtualWorld(npcid, 0);
-	FCNPC_SetHealthEx(npcid, 100.0);
-	FCNPC_ResetAnimation(npcid);
-
-	RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 }
 
 // Custom SetAnimation for FCNPC.
@@ -149,40 +214,25 @@ FCNPC_Stun(npcid)
 	return true;
 }
 
-// Clear NPCs anims and packets data.
-FCNPC_ClearAnims(npcid)
-{
-	FCNPC_ResetAnimation(npcid);
-	FCNPC_ClearAnimations(npcid);
-}
-
-FCNPC_SetStatus(npcid, NPC_STATUS:status)
-{
-	if(eNpcInfo[npcid][e_iCurrentStatus] != status)
-	{
-		eNpcInfo[npcid][e_iCurrentStatus] = status;
-	}
-}
-
-FCNPC_GetStatus(npcid)
-{
-	return eNpcInfo[npcid][e_iCurrentStatus];
-}
-
 // Put NPC in the chase state after given playerid (chaseid).
 FCNPC_ChasePlayer(npcid, chaseid)
 {
 	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]))
+	{
 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
+	}
+
+	FCNPC_SetStatus(npcid, NPC_STATUS:CHASE);
 
 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
+	{
 		eNpcInfo[npcid][e_iChasedId] = chaseid;
-
-	// if(eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_CHASING)
-	// 	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_CHASING;
+	}
 
 	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
-	FCNPC_GoToPlayer(npcid, chaseid, MOVE_TYPE_AUTO, NpcMovementSpeed[ eNpcInfo[npcid][e_iType] ], false, NPC_RUN_OFFSET, true);
+
+	new npcType = FCNPC_GetType(npcid);
+	FCNPC_GoToPlayer(npcid, chaseid, MOVE_TYPE_AUTO, NpcMovementSpeed[npcType], false, NPC_RUN_OFFSET, true);
 	FCNPC_OnChasePlayer(npcid, chaseid);
 }
 

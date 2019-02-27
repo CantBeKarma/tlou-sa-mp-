@@ -3,26 +3,11 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnCreate(npcid)
 {
-	new 
-		skinid = 0,
-		npcType = eNpcInfo[npcid][e_iType] = NPC_TYPE_CLICKER;//random(4);
+	// Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[CREATE]: NPC ID: %d | TYPE: %d", npcid, npcType);
 
-	switch(npcType)
-	{
-		case NPC_TYPE_RUNNER:	skinid = NpcSkins[random(7)];
-		case NPC_TYPE_STALKER:	skinid = NpcSkins[random(6) + 7];
-		case NPC_TYPE_CLICKER:	skinid = NpcSkins[13];
-		case NPC_TYPE_BLOATER:  skinid = NpcSkins[14];
-	}
-
-	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[CREATE]: NPC ID: %d | TYPE: %d", npcid, npcType);
-
-	if(skinid != 0)
-		FCNPC_Spawn(npcid, skinid, 2510.5881, -1675.1179, 13.5457);
-	else
-	{
-		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], ERROR, "[CREATE]: NPC ID: %d | TYPE: %d | Couldn't find skin model for the NPC!", npcid, npcType);
-	}
+	FCNPC_ResetAllData(npcid);
+	FCNPC_SetType(npcid, NPC_TYPE:CLICKER);
+	FCNPC_Spawn(npcid, SKIN_CLICKER, 2510.5881, -1675.1179, 13.5457);
 	return 1;
 }
 
@@ -33,8 +18,7 @@ public FCNPC_OnDestroy(npcid)
 {
 	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DESTROY]: NPC ID: %d", npcid);
 
-    ResetEnum_eNpcInfo(npcid);
-	ResetEnum_eNpcFlag(npcid);
+	FCNPC_ResetAllData(npcid);
     return 1;
 }
 
@@ -46,7 +30,7 @@ public FCNPC_OnSpawn(npcid)
 	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[SPAWN]: NPC ID: %d", npcid);
 
 	PreloadAnimations(npcid);
-	FCNPC_PrepareForSpawn(npcid);
+	FCNPC_SetHealthEx(npcid, 100.0);
 	return 1;
 }
 
@@ -57,7 +41,7 @@ public FCNPC_OnRespawn(npcid)
 {
 	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[RESPAWN]: NPC ID: %d", npcid);
 
-	FCNPC_PrepareForSpawn(npcid);
+	FCNPC_SetHealthEx(npcid, 100.0);
 	return 1;
 }
 
@@ -67,7 +51,6 @@ public FCNPC_OnRespawn(npcid)
 public FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart)
 {
 	FCNPC_StopUpdateTimer(npcid);
-	FCNPC_SetHealthEx(npcid, 0.0);
 
 	if(weaponid != WEAPON_MOLOTOV)
 	{
