@@ -167,7 +167,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnNailbombInitiate(projid, throwerid, Float:x, Float:y, Float:z)
     {
-        InitiateNailbomb(projid);
+        
         return 0;
     }
 
@@ -297,7 +297,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         }
         else if(weaponId == WEAPON_NAIL_BOMB)
         {
-            OnNailbombInitiate(projid, throwerid, x, y, z);
+            InitiateNailbomb(projid, throwerid, x, y, z);
         }
         return 1;
     }
@@ -421,7 +421,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     }
 
     // Initiates nailbomb in the "idle" state.
-    InitiateNailbomb(projid)
+    InitiateNailbomb(projid, throwerid, Float:x, Float:y, Float:z)
     {
         ResetProjectileData(projid);
 
@@ -431,6 +431,8 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 
         eProjectileData[nailBmbIdx][e_iNailBmb_Timer] = repeat OnNailbombUpdate(nailBmbIdx, throwerid, x, y, z);
         eProjectileData[nailBmbIdx][e_iNailBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_NAILBOMB_SMOKE, x + 0.06, y, z - 1.5, 0.0, 0.0, 0.0);
+
+        OnNailbombInitiate(projid, throwerid, x, y, z);
     }
 
     // Creates projectile destroy effect based on the weaponId.
@@ -465,7 +467,11 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
                 defer DestroySmkBmbSmokeObject(smkBmbSmokeObjectId);
             }
         }
-        DestroyProjectileObjects(projid);
+
+        if(IsValidDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]))
+        {
+            DestroyDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]);
+        }
         
         foreach(new playerid : Player)
         {
@@ -479,14 +485,5 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         DestroyProjectile(projid);
         eProjectileData[projid][e_iProjectileThrowerId] = INVALID_PLAYER_ID;
         Streamer_SetIntData(STREAMER_TYPE_OBJECT, E_STREAMER_EXTRA_ID, projid, -1);
-    }
-
-    // Delete projectiles objects.
-    DestroyProjectileObjects(projid)
-    {
-        if(IsValidDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]))
-        {
-            DestroyDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]);
-        }
     }
 //#endregion
