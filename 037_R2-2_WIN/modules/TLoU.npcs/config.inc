@@ -31,8 +31,7 @@
 
 #define     MAX_FCNPCS                  (1)
 
-// NPC taking damage animations.
-new const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
+stock const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
 {
     PED_DAM_ARML_FRMBK, PED_DAM_ARML_FRMFT, PED_DAM_ARML_FRMLT,
     PED_DAM_ARMR_FRMBK, PED_DAM_ARMR_FRMFT, PED_DAM_ARMR_FRMRT,
@@ -43,8 +42,7 @@ new const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
     PED_DAM_STOMACH_FRMBK, PED_DAM_STOMACH_FRMFT, PED_DAM_STOMACH_FRMLT, PED_DAM_STOMACH_FRMRT
 };
 
-// NPC idle animations (while roaming around).
-new const NpcIdleAnims[5] =
+stock const NpcIdleAnims[5] =
 {
     PED_FLEE_LKAROUND_01,
     PED_DAM_ARML_FRMFT,
@@ -53,28 +51,26 @@ new const NpcIdleAnims[5] =
     KISSING_GF_CARARGUE_02
 };
 
-// NPC attack animations.
-new const NpcAttackAnims[3] =
+stock const NpcAttackAnims[3] =
 {
 	KNIFE_KNIFE_PART,
     SWORD_SWORD_PART,
     PED_SHOVE_PARTIAL  
 };
 
-new const Float:NpcDamageValues[4] =
+stock const Float:NpcDamageValues[4] =
 {
     // Runner, Stalker, Clicker, Bloater
     5.0, 8.0, 30.0, 100.0
 };
 
-new const Float:NpcMovementSpeed[4] =
+stock const Float:NpcMovementSpeed[4] =
 {
     // Runner, Stalker, Clicker, Bloater
     0.66444, 0.46444, 0.46444, 0.26444
 };
 
-// NPC skin IDs.
-new const NpcSkins[15] =
+stock const NpcSkins[15] =
 {
     // Runner
     289, 253, 230, 212, 213, 210, 209, 
@@ -89,10 +85,18 @@ new const NpcSkins[15] =
     5
 };
 
+enum NPC_STATUS
+{
+    IDLE,
+    CHASE,
+    ATTACK,
+    DISTRACTED
+}
+
 enum e_NPC_DATA
 {
     e_iType,
-    e_iCurrentStatus,
+    NPC_STATUS:e_iCurrentStatus,
     Float:e_fHealth,
     e_iAnimIdx,
     e_iAnimTick,

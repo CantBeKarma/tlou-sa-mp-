@@ -96,15 +96,15 @@ public FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 {
-	if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
-	{
-		return 1;
-	}
+	// if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
+	// {
+	// 	return 1;
+	// }
 
 	foreach(new chaseid : Player)
 	{
 		if(!Bit_Get(ePlayerFlag[e_bLogged], chaseid) || IsPlayerDead(chaseid)
-		|| IsPlayerCrouched(chaseid) && eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_CHASING)
+		|| IsPlayerCrouched(chaseid))// && eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_CHASING)
 		{
 			continue;
 		}
@@ -113,8 +113,8 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 		// but also player is above or below NPC on certain distance
 		// NPC ignores that player.
 		new Float:distanceToPlayer = GetDistanceBetweenPlayers(npcid, chaseid);
-		if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_IDLE)
-		{
+//		if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_IDLE)
+//		{
 			if(distanceToPlayer <= RANGE_NPC_CHASE || (distanceToPlayer <= RANGE_NPC_CHASE_BY_PATH && distanceToPlayer > RANGE_NPC_CHASE))
 			{
 				new Float:chasePosZ;
@@ -128,7 +128,7 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 					continue;
 				}
 			}
-		}
+//		}
 
 		if(distanceToPlayer <= RANGE_NPC_ATTACK)
 		{
@@ -155,10 +155,10 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnIdle(npcid)
 {
-	if(eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_IDLE)
-	{
-		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
-	}
+	// if(eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_IDLE)
+	// {
+	// 	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
+	// }
 
 	if(eNpcInfo[npcid][e_iChasedId] != INVALID_PLAYER_ID)
 	{
@@ -473,11 +473,11 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
 
 		case PED_FLEE_LKAROUND_01:
 		{
-			if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
-			{
-				FCNPC_GoTo(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ]+1.0);
-				FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
-			}
+			// if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
+			// {
+			// 	FCNPC_GoTo(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ]+1.0);
+			// 	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
+			// }
 		}
 	}
 	//printf("FCNPC_OnAnimFinish(%d, %d)", npcid, animIdx);
@@ -565,7 +565,7 @@ public OnPathCalculated(routeid, success, Float:nodesX[], Float:nodesY[], Float:
 	}
 
 	FCNPC_StopUpdateTimer(routeid);
-	eNpcInfo[routeid][e_iCurrentStatus] = NPC_STATUS_CHASING_BY_PATH;
+//	eNpcInfo[routeid][e_iCurrentStatus] = NPC_STATUS_CHASING_BY_PATH;
 
 	new 
 		i,

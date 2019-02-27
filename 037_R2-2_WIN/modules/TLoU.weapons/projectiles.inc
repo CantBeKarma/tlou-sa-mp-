@@ -125,6 +125,9 @@ public OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, 
 
     // foreach(new npcid : FCNPC)
     // {
+    //     if(npcid == hitid)
+    //         continue;
+
     //     if(FCNPC_Distract(npcid, x, y, z) == 1)
     //         continue;
     // }
@@ -215,6 +218,9 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     timer OnNailbombExplode[NAILBMB_TRIGGERED_EXPLODE](triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
     {
+        #pragma unused triggererid
+        #pragma unused throwerid
+        
         CreateProjectileDestroyEffect(WEAPON_NAIL_BOMB, nailBmbIdx, x, y, z);
         return 0;
     }
@@ -489,3 +495,12 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         Streamer_SetIntData(STREAMER_TYPE_OBJECT, E_STREAMER_EXTRA_ID, projid, -1);
     }
 //#endregion
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//-------------------- OnGameModeExit ---------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+hook OnGameModeExit()
+{
+    Iter_Clear(NailBmbsList);
+    return 1;
+}

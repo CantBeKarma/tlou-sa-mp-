@@ -9,14 +9,14 @@ timer FCNPC_AttackPlayer[NPC_ATTACK_DELAY](npcid, chaseid)
 {
 	if(!FCNPC_IsDeadEx(npcid))
 	{
-		if(eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_ATTACKING && GetDistanceBetweenPlayers(npcid, chaseid) <= RANGE_NPC_ATTACK)
-		{
-			FCNPC_StopUpdateTimer(npcid);
-			eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_ATTACKING;
-		}
+		// if(eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_ATTACKING && GetDistanceBetweenPlayers(npcid, chaseid) <= RANGE_NPC_ATTACK)
+		// {
+		// 	FCNPC_StopUpdateTimer(npcid);
+		// 	//eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_ATTACKING;
+		// }
 
-		if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_ATTACKING)
-		{
+//		if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_ATTACKING)
+///		{
 			new 
 				npcType = eNpcInfo[npcid][e_iType],
 				Float:chaseId_oldHealth = GetPlayerHealthEx(chaseid),
@@ -27,6 +27,6 @@ timer FCNPC_AttackPlayer[NPC_ATTACK_DELAY](npcid, chaseid)
 
 			FCNPC_OnAttackPlayer(npcid, chaseid, chaseId_oldHealth, chaseId_newHealth);
 			eNpcInfo[npcid][e_iUpdateTimer] = defer FCNPC_AttackPlayer(npcid, chaseid);
-		}
+	//	}
 	}
 }

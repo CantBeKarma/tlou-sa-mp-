@@ -27,8 +27,6 @@ public OnPlayerStartBurning(playerid)
     }
     HidePlayerWeapon(playerid);
     HideBackpack(playerid, true);
-
-    SetPlayerOnFire(playerid);
     return 0;
 }
 
@@ -57,7 +55,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
     {
         if(areaid == eFireData[i][e_iFireAreaId])
         {
-            OnPlayerStartBurning(playerid);
+            SetPlayerOnFire(playerid);
             break;
         }
     }

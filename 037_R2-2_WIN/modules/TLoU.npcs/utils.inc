@@ -52,7 +52,6 @@ FCNPC_PrepareForSpawn(npcid)
 	FCNPC_SetVirtualWorld(npcid, 0);
 	FCNPC_SetHealthEx(npcid, 100.0);
 	FCNPC_ResetAnimation(npcid);
-	FCNPC_StartUpdateTimer(npcid);
 
 	RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 }
@@ -117,7 +116,7 @@ FCNPC_IsAllowedToDoAction(npcid)
 // Put NPC in a fire state.
 FCNPC_SetOnFire(npcid)
 {
-	if(!FCNPC_IsAllowedToDoAction(npcid))
+	if(!FCNPC_IsTimerRunning(npcid) || FCNPC_IsBurning(npcid))
 		return;
 
 	Bit_Let(eNpcFlag[e_bIsBurning], npcid);
@@ -127,7 +126,7 @@ FCNPC_SetOnFire(npcid)
 // Puts NPC in a stunned state.
 FCNPC_Stun(npcid)
 {
-	if(!FCNPC_IsAllowedToDoAction(npcid))
+	if(!FCNPC_IsTimerRunning(npcid) || FCNPC_IsStunned(npcid) || FCNPC_IsDeadEx(npcid))
 		return false;
 
 	Bit_Let(eNpcFlag[e_bIsStunned], npcid);
@@ -157,6 +156,19 @@ FCNPC_ClearAnims(npcid)
 	FCNPC_ClearAnimations(npcid);
 }
 
+FCNPC_SetStatus(npcid, NPC_STATUS:status)
+{
+	if(eNpcInfo[npcid][e_iCurrentStatus] != status)
+	{
+		eNpcInfo[npcid][e_iCurrentStatus] = status;
+	}
+}
+
+FCNPC_GetStatus(npcid)
+{
+	return eNpcInfo[npcid][e_iCurrentStatus];
+}
+
 // Put NPC in the chase state after given playerid (chaseid).
 FCNPC_ChasePlayer(npcid, chaseid)
 {
@@ -166,8 +178,8 @@ FCNPC_ChasePlayer(npcid, chaseid)
 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
 		eNpcInfo[npcid][e_iChasedId] = chaseid;
 
-	if(eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_CHASING)
-		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_CHASING;
+	// if(eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_CHASING)
+	// 	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_CHASING;
 
 	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
 	FCNPC_GoToPlayer(npcid, chaseid, MOVE_TYPE_AUTO, NpcMovementSpeed[ eNpcInfo[npcid][e_iType] ], false, NPC_RUN_OFFSET, true);
@@ -177,8 +189,8 @@ FCNPC_ChasePlayer(npcid, chaseid)
 // Put NPC in the chase state by path to the specific point (not using native GoTo).
 FCNPC_ChasePlayerByPath(npcid, chaseid)
 {
-	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]) && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH)
-		return 1;
+//	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]) && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH)
+//		return 1;
 
 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
 		eNpcInfo[npcid][e_iChasedId] = chaseid;
@@ -206,21 +218,21 @@ FCNPC_Distract(npcid, Float:x, Float:y, Float:z, bool:force = false)
 	if(force)
 	{
 		FCNPC_StopUpdateTimer(npcid);
-		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_DISTRACTED;
+//		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_DISTRACTED;
 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
 		FCNPC_OnGetDistracted(npcid, x, y, z);
 		return 0;
 	}
 
-    if (eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_IDLE
-    || (eNpcInfo[npcid][e_iType] == NPC_TYPE_CLICKER && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING)
-	|| (eNpcInfo[npcid][e_iType] == NPC_TYPE_CLICKER && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH))
-    {
+//    if (eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_IDLE)
+//    || (eNpcInfo[npcid][e_iType] == NPC_TYPE_CLICKER && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING)
+//	|| (eNpcInfo[npcid][e_iType] == NPC_TYPE_CLICKER && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH))
+   // {
 		FCNPC_StopUpdateTimer(npcid, true);
-        eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_DISTRACTED;
+//        eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_DISTRACTED;
 
 		FCNPC_OnGetDistracted(npcid, x, y, z);
-	}
+	//}
 	return 0;
 }
 
@@ -231,7 +243,7 @@ FCNPC_StartUpdateTimer(npcid)
 		return;
 
 	SCMF_ALL(-1, "NPC timer started");
-	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
+//	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
 
 	Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 	eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
@@ -255,7 +267,7 @@ FCNPC_StopUpdateTimer(npcid, bool:force = false)
 		FCNPC_Stop(npcid);
 		FCNPC_ClearAnims(npcid);
 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
-		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
+//		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
 	}
 
 	if(!FCNPC_IsTimerRunning(npcid))
@@ -263,7 +275,7 @@ FCNPC_StopUpdateTimer(npcid, bool:force = false)
 		
 	SCMF_ALL(-1, "NPC timer stopped");
 	stop eNpcInfo[npcid][e_iUpdateTimer];
-	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
+//	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
 
 	if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
 		Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);

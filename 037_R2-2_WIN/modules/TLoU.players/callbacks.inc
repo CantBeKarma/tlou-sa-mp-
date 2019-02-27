@@ -384,8 +384,8 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 	// If NPC isn't stunned (is IDLE and not a Bloater) and other player is behind him.
 	else
 	{
-		if(eNpcInfo[lookingAt_NpcId][e_iType] == NPC_TYPE_BLOATER 
-		|| eNpcInfo[lookingAt_NpcId][e_iCurrentStatus] != NPC_STATUS_IDLE)
+		if(eNpcInfo[lookingAt_NpcId][e_iType] == NPC_TYPE_BLOATER)
+//		|| eNpcInfo[lookingAt_NpcId][e_iCurrentStatus] != NPC_STATUS_IDLE)
 		{
 			if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 			{

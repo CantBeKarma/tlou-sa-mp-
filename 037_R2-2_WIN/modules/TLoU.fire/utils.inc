@@ -30,7 +30,7 @@ CreateFire(Float:x, Float:y, Float:z)
 
     foreach(new playerid : Player)
     {
-        Streamer_UpdateEx(playerid, x, y, z, .type = STREAMER_TYPE_OBJECT);
+        Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     }
 
     defer DestroyFire(fireId);
@@ -69,6 +69,7 @@ SetPlayerOnFire(playerid)
 
     SPAO(playerid, OBJECT_MODEL_BURNING);
     Bit_Let(ePlayerFlag[e_bIsBurning], playerid);
+    OnPlayerStartBurning(playerid);
 }
 
 // Puts the fire out of player.
