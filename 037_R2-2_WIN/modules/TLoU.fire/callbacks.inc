@@ -20,6 +20,14 @@ public OnPlayerBurn(playerid)
 public OnPlayerStartBurning(playerid)
 {
     Disable_OnPlayerLookAt(playerid);
+
+    if(IsPlayerUsingWeaponMenu(playerid))
+    {
+        HideWeaponMenu(playerid);
+    }
+    HidePlayerWeapon(playerid);
+    HideBackpack(playerid, true);
+
     SetPlayerOnFire(playerid);
     return 0;
 }

@@ -77,7 +77,7 @@ hook OnPlayerHoldingKey(playerid, key)
 {
     if(key & KEY_FIRE)
     {
-        if(Bit_Get(ePlayerFlag[e_bIsCrafting], playerid))
+        if(IsPlayerCrafting(playerid))
         {
             return 1;
         }
@@ -130,7 +130,7 @@ hook OnPlayerReleaseKey(playerid, key, holding_time)
 {
     if(key & KEY_FIRE)
     {
-        if(Bit_Get(ePlayerFlag[e_bIsCrafting], playerid))
+        if(IsPlayerCrafting(playerid))
         {
             Bit_Vet(ePlayerFlag[e_bIsCrafting], playerid);
             OnPlayerCanceledCrafting(playerid);
@@ -142,7 +142,7 @@ hook OnPlayerReleaseKey(playerid, key, holding_time)
 // Crafting : Craft item (recursive).
 timer Craft_CraftItem[1000](playerid, craftItemId, craft_time)
 {
-    if(Bit_Get(ePlayerFlag[e_bIsCrafting], playerid))
+    if(IsPlayerCrafting(playerid))
     {
         if(craft_time > 0) OnPlayerCraftedItem(playerid, craftItemId);
         else

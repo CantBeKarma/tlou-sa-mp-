@@ -36,6 +36,9 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
         return 1;
     }
 
+    // If player is using backpack.
+    HideBackpack(playerid);
+
     if(issuerid == INVALID_PLAYER_ID)
     {
         OnPlayerDamageHimself(playerid, amount);

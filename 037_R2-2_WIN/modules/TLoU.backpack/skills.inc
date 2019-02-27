@@ -68,7 +68,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         {
             if(PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS 
             && Iter_Contains(SkillsToUpgrade<playerid>, Skill_GetSelection(playerid))
-            && !Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid))
+            && !IsPlayerUpgradingSkill(playerid))
             {
                 Bit_Let(ePlayerFlag[e_bIsUpgradingSkill], playerid);
                 OnPlayerStartedUpgradingSkill(playerid, Skill_GetSelection(playerid));
@@ -76,6 +76,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         }
     }
     return 1;
+}
+
+// Check if player is upgrading a skill.
+IsPlayerUpgradingSkill(playerid)
+{
+    return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 }
 
 // Sets player certain level for the specified skillId.
@@ -97,34 +103,34 @@ Skill_SetLevel(playerid, skillId, level)
 // Change skill's progress bar value.
 function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, barIdx, Float:bar_start_value)
 {
-    if(Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid))
+    if(!IsPlayerUpgradingSkill(playerid))
+        return;
+
+    if(IsPlayerHoldingKey(playerid, KEY_FIRE))
     {
-        if(IsPlayerHoldingKey(playerid, KEY_FIRE))
+        if(Skill_GetLevel(playerid, skillid) < newSkillLvl)
         {
-            if(Skill_GetLevel(playerid, skillid) < newSkillLvl)
+            // If first value is higher than 100.0
+            if(floatcmp(bar_start_value, 100.0) == 1)
             {
-                // If first value is higher than 100.0
-                if(floatcmp(bar_start_value, 100.0) == 1)
-                {
-                    Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
-                    OnPlayerUpgradedSkill(playerid, skillid);
-                }
-                else
-                {
-                    bar_start_value += 7.4;
-                    PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, bar_start_value), 0.0);
-                    SetTimerEx("Skill_UpgradeSkill", 120, false, "dddfdf", playerid, skillid, newSkillLvl, barColumn, barIdx, bar_start_value);
-                }
+                Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
+                OnPlayerUpgradedSkill(playerid, skillid);
+            }
+            else
+            {
+                bar_start_value += 7.4;
+                PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, bar_start_value), 0.0);
+                SetTimerEx("Skill_UpgradeSkill", 120, false, "dddfdf", playerid, skillid, newSkillLvl, barColumn, barIdx, bar_start_value);
             }
         }
-        else
-        {
-            PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, 0.0), 0.0);
-            Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
-            OnPlayerCanceledUpgradingSkill(playerid);
-        }
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx]);
     }
+    else
+    {
+        PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, 0.0), 0.0);
+        Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
+        OnPlayerCanceledUpgradingSkill(playerid);
+    }
+    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx]);
 }
 
 // Display player total-supps.

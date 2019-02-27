@@ -11,7 +11,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     if(PRESSED(KEY_NO))
     {
         // Backpack opening/closing.
-        if(!Bit_Get(ePlayerFlag[e_bIsCrafting], playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
+        if(!IsPlayerCrafting(playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
         {
             if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid) 
                 && GetPlayerSpeed(playerid) <= 0.0 && !IsPlayerLookingAtItem(playerid))

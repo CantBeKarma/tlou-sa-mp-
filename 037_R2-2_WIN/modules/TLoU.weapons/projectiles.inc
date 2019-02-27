@@ -152,7 +152,7 @@ public OnMolotovExplode(projid, throwerid, Float:x, Float:y, Float:z)
 public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 {
     CreateProjectileDestroyEffect(WEAPON_SMOKE_BOMB, projid, x, y, z);
-    StunNearbyPlayersAndNpcs(x, y, z);
+    StunNearbyPlayersAndNpcs(x, y, z, throwerid);
 
     // foreach(new npcid : FCNPC)
     // {
@@ -177,11 +177,9 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     timer OnNailbombUpdate[TICK_RATE_NAILBMB_UPDATE](nailBmbIdx, throwerid, Float:x, Float:y, Float:z)
     {
-        printf("OnNailbombUpdate(%d)", nailBmbIdx);
-            
         for(new i = 0; i != MAX_PLAYERS; i++)
         {
-            if(!IsPlayerConnected(i)// || i == throwerid
+            if(!IsPlayerConnected(i) || i == throwerid
             || !IsPlayerInRangeOfPoint(i, NAILBMB_EXPLODE_RANGE, x, y, z))
             {
                 continue;

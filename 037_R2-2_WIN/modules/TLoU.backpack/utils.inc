@@ -15,6 +15,12 @@ IsPlayerUsingBackpack(playerid)
     return IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Bg]);
 }
 
+// Check if player is currently crafting something.
+IsPlayerCrafting(playerid)
+{
+    return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
+}
+
 // Change the position of selection box.
 Backpack_MoveSelectBox(playerid, Float:x, Float:y)
 {
@@ -136,12 +142,33 @@ ShowBackpack(playerid, category)
 }
 
 // Hide player's backpack menu.
-HideBackpack(playerid)
+HideBackpack(playerid, forceClose = false)
 {
-    if(!IsPlayerUsingBackpack(playerid) || Bit_Get(ePlayerFlag[e_bIsCrafting], playerid)
-        || ((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) < TICK_RATE_BP_OPENING))
-    {
+    if(!IsPlayerUsingBackpack(playerid))
         return;
+        
+    if(!forceClose)
+    {
+        if(IsPlayerCrafting(playerid) || IsPlayerUpgradingSkill(playerid)
+        || ((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) < TICK_RATE_BP_OPENING))
+        {
+            return;
+        }
+    }
+    else
+    {
+        if(IsPlayerCrafting(playerid))
+        {
+            Bit_Vet(ePlayerFlag[e_bIsCrafting], playerid);
+            Audio_StopEx(playerid);
+            stop ePlayerBpInfo[playerid][e_iTimer_craftingOrUpgrading];
+        }
+        
+        if(IsPlayerUpgradingSkill(playerid))
+        {
+            Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
+            Audio_StopEx(playerid);
+        }
     }
 
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Bg]);
