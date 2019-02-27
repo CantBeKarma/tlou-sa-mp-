@@ -438,17 +438,22 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     // Creates projectile destroy effect based on the weaponId.
     CreateProjectileDestroyEffect(weaponId, projid, Float:x, Float:y, Float:z)
     {
+        ResetProjectileData(projid);
+
+        if(IsValidDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]))
+        {
+            DestroyDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]);
+        }
+
         switch(weaponId)
         {
             case WEAPON_MOLOTOV:
             {
-                ResetProjectileData(projid);
                 CreateFire(x, y, z);
             }
 
             case WEAPON_NAIL_BOMB:
             {
-                ResetProjectileData(projid);
                 Iter_Remove(NailBmbsList, projid);
                 stop eProjectileData[projid][e_iNailBmb_Timer];
                 CreateDynamicObject(OBJ_MODEL_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
@@ -461,16 +466,10 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 
             case WEAPON_SMOKE_BOMB:
             {
-                ResetProjectileData(projid);
                 eProjectileData[projid][e_iSmkBmbSmoke_ObjectId] = CreateDynamicObject(OBJ_MODEL_SMOKE, x, y, z, 0.0, 0.0, 0.0);
                 new smkBmbSmokeObjectId = Iter_Add(SmkBmbSmokesList, eProjectileData[projid][e_iSmkBmbSmoke_ObjectId]);
                 defer DestroySmkBmbSmokeObject(smkBmbSmokeObjectId);
             }
-        }
-
-        if(IsValidDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]))
-        {
-            DestroyDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]);
         }
         
         foreach(new playerid : Player)
