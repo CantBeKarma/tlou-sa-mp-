@@ -6,8 +6,8 @@ timer DelayedTimer_AnimGetUp[TIMER_GETUP_DELAY](playerid)
         Bit_Vet(ePlayerFlag[e_bDoingCrouchBug], playerid);
     }
 
-    if(IsPlayerNPC(playerid)) 
-		FCNPC_SetAnimCallback(playerid, PED_GETUP); // Start UpdateTimer when anim. finishes.
+    if(IsPlayerNPC(playerid)) {}
+//		FCNPC_SetAnimCallback(playerid, PED_GETUP); // Start UpdateTimer when anim. finishes.
 	else 
 		ApplyAnimation(playerid, "PED", "GETUP", 4.1, 0, 1, 1, 0, 0);
 }
@@ -114,7 +114,7 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 		else
 		{
 			// If looking at dead NPC or dead player.
-			if(IsPlayerNPC(lookingAt_playerId)  && FCNPC_IsDeadEx(lookingAt_playerId)
+			if(IsPlayerNPC(lookingAt_playerId)//  && FCNPC_IsDeadEx(lookingAt_playerId)
 			|| !IsPlayerNPC(lookingAt_playerId) && IsPlayerDead(lookingAt_playerId))
 			{
 				if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))

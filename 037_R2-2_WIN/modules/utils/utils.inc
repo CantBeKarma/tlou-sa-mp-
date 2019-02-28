@@ -558,7 +558,7 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
 
         if(IsPlayerNPC(i))
         {
-            FCNPC_Stun(i);
+//            FCNPC_Stun(i);
         }
         else
         {

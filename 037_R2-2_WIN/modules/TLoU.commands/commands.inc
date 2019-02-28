@@ -350,16 +350,16 @@ CMD:ambientnoise(playerid, params[])
     return 1;
 }
 
-CMD:npcupdate(playerid, params[])
-{
-    new npcid, update, bool:force;
-    if(sscanf(params, "ddd", npcid, update, force))return SCM(playerid, -1, "/npcupdate [npcid] [0/1] [force-(0/1)]");
-    {
-        if(update) FCNPC_StartUpdateTimer(npcid);
-        else FCNPC_StopUpdateTimer(npcid, force);
-    }
-    return 1;
-}
+// CMD:npcupdate(playerid, params[])
+// {
+//     new npcid, update, bool:force;
+//     if(sscanf(params, "ddd", npcid, update, force))return SCM(playerid, -1, "/npcupdate [npcid] [0/1] [force-(0/1)]");
+//     {
+//         if(update) FCNPC_StartUpdateTimer(npcid);
+//         else FCNPC_StopUpdateTimer(npcid, force);
+//     }
+//     return 1;
+// }
 
 CMD:allin(playerid, params[])
 {

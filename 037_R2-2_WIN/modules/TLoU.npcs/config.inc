@@ -30,6 +30,7 @@
 #define		PATHFINDER_MAX_STEPS	    (50)
 
 #define     MAX_FCNPCS                  (1)
+#define     MAX_NPC_TYPES               (4)
 
 stock const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
 {
@@ -42,7 +43,7 @@ stock const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
     PED_DAM_STOMACH_FRMBK, PED_DAM_STOMACH_FRMFT, PED_DAM_STOMACH_FRMLT, PED_DAM_STOMACH_FRMRT
 };
 
-stock const NpcIdleAnims[5] =
+stock const NpcIdleAnimsList[5] =
 {
     PED_FLEE_LKAROUND_01,
     PED_DAM_ARML_FRMFT,
@@ -58,60 +59,76 @@ stock const NpcAttackAnims[3] =
     PED_SHOVE_PARTIAL  
 };
 
-stock const Float:NpcDamageValues[4] =
+stock const Float:NpcDamageValues[MAX_NPC_TYPES] =
 {
-    // Runner, Stalker, Clicker, Bloater
-    5.0, 8.0, 30.0, 100.0
+    5.0, 
+    8.0, 
+    30.0, 
+    100.0
 };
 
-stock const Float:NpcMovementSpeed[4] =
+stock const Float:NpcMovementSpeed[MAX_NPC_TYPES] =
 {
-    // Runner, Stalker, Clicker, Bloater
-    0.66444, 0.46444, 0.46444, 0.26444
+    0.66444, 
+    0.46444, 
+    0.46444, 
+    0.26444
 };
 
-stock const NpcSkins[15] =
+enum NPC_TYPE
 {
-    // Runner
+    TYPE_RUNNER,
+    TYPE_STALKER,
+    TYPE_CLICKER,
+    TYPE_BLOATER
+};
+
+stock const NpcTypeNames[MAX_NPC_TYPES][8] =
+{
+    "Runner",
+    "Stalker",
+    "Clicker",
+    "Bloater"
+};
+
+stock const NpcSkinIds[15] =
+{
     289, 253, 230, 212, 213, 210, 209, 
-
-    // Stalker
     195, 194, 193, 192, 191, 190,
-
-    // Clicker
     SKIN_CLICKER,
-
-    // Bloater
     5
 };
 
 enum NPC_STATUS
 {
-    NONE,
-    IDLE,
-    CHASE,
-    ATTACK,
-    DISTRACTED,
-    BURNING,
-    STUNNED
-}
+    STATUS_NONE,
+    STATUS_IDLE,
+    STATUS_ROAM,
+    STATUS_CHASE,
+    STATUS_ATTACK,
+    STATUS_DISTRACTED,
+    STATUS_BURNING,
+    STATUS_STUNNED,
+    STATUS_DEAD
+};
 
-enum NPC_TYPE
+enum e_NPC_FLAGS
 {
-    RUNNER,
-    STALKER,
-    CLICKER,
-    BLOATER
+    e_bPlayingAnim,
+    e_bIsUpdateTimerRunning
 }
+new BitArray:eNpcFlag[e_NPC_FLAGS]<MAX_PLAYERS>;
 
 enum e_NPC_DATA
 {
     NPC_TYPE:e_iType,
     NPC_STATUS:e_iCurrentStatus,
 
+    e_iPlayingAnim_Tick,
+    e_iPlayingAnim_Index,
+
     Float:e_fHealth,
-    e_iAnimIdx,
-    e_iAnimTick,
+
     e_iTickCounter_damageAnim,
     Timer:e_iUpdateTimer,
     e_iChasedId,
@@ -122,15 +139,6 @@ enum e_NPC_DATA
     Float:e_fDistractedZ
 }
 new eNpcInfo[MAX_PLAYERS][e_NPC_DATA];
-
-enum e_NPC_FLAGS
-{
-    e_bAnimPlaying,
-    e_bIsBurning,
-    e_bIsStunned,
-    e_bIsUpdateTimerRunning
-}
-new BitArray:eNpcFlag[e_NPC_FLAGS]<MAX_PLAYERS>;
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnGameModeInit --------------------

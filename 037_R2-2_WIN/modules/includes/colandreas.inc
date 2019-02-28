@@ -2,10 +2,11 @@
 // ColAndreas Plugin Include ///////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#if defined COLANDREAS_VERSION
+#if defined COLANDREAS
 	#endinput
 #endif
 #define COLANDREAS_VERSION (10400) //a.b.c 10000*a+100*b+c
+#define COLANDREAS (COLANDREAS_VERSION)
 
 // Default extra ID types
 #define CA_EXTRA_1  0
@@ -39,6 +40,9 @@
 #if !defined INFINITY
 	#define INFINITY (Float:0x7F800000)
 #endif
+
+// Maximum number of raycasts in CA_RayCastMultiLine
+#define MAX_MULTICAST_SIZE 99 
 
 /**--------------------------------------------------------------------------**\
 <summary>
@@ -132,7 +136,7 @@ native CA_RayCastLineExtraID(type, Float:StartX, Float:StartY, Float:StartZ, Flo
 <param name="ModelIDs[]">The object models that the ray collided</param>
 <param name="size = sizeof(retx)">The maximum number of points to collide</param>
 <returns>
-	-1 if the ray collided with more points than than permitted by the `size` parameter
+	-1 if the ray collided with more points than than permitted by the `size` parameter or `size` is higher than MAX_MULTICAST_SIZE value
 	0 if the ray didn't collide with anything
 	The number of points collided
 </returns>
@@ -350,6 +354,19 @@ native CA_DestroyObject(index);
 
 /**--------------------------------------------------------------------------**\
 <summary>
+	CA_IsValidObject
+</summary>
+<param name="index">Checks if an object with the ID provided exists.</param>
+<returns>
+	-1 if the specified model has no collision
+	0 if the object does not exist
+	1 if the object exists
+</returns>
+\**--------------------------------------------------------------------------**/
+native CA_IsValidObject(index);
+
+/**--------------------------------------------------------------------------**\
+<summary>
 	CA_SetObjectPos
 </summary>
 <param name="index">The index of the object to be moved</param>
@@ -397,7 +414,7 @@ static stock CA_ObjectList[MAX_CA_OBJECTS][CAOBJECTINFO];
 	// Static collision object functions (The index is not returned these can not be deleted!)
 	stock CA_CreateDynamicObjectEx_SC(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:streamdistance = STREAMER_OBJECT_SD, Float:drawdistance = STREAMER_OBJECT_DD, worlds[] = { -1 }, interiors[] = { -1 }, players[] = { -1 }, STREAMER_TAG_AREA areas[] = { STREAMER_TAG_AREA -1 }, priority = 0, maxworlds = sizeof worlds, maxinteriors = sizeof interiors, maxplayers = sizeof players, maxareas = sizeof areas)
 	{
-		new id = CreateDynamicObjectEx(modelid, x, y, z, rx, ry, rz, streamdistance, drawdistance, worlds, interiors, players, areas, maxworlds, maxinteriors, maxplayers, maxareas);
+		new id = CreateDynamicObjectEx(modelid, x, y, z, rx, ry, rz, streamdistance, drawdistance, worlds, interiors, players, areas, priority, maxworlds, maxinteriors, maxplayers, maxareas);
 		CA_CreateObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
 		return id;
 	}
@@ -440,7 +457,7 @@ static stock CA_ObjectList[MAX_CA_OBJECTS][CAOBJECTINFO];
 			#else
 				CA_ObjectList[index][ObjectUsed] = true;
 			#endif
-			CA_ObjectList[index][ObjectID] = CreateDynamicObjectEx(modelid, x, y, z, rx, ry, rz, drawdistance, streamdistance, worlds, interiors, players, areas, maxworlds, maxinteriors, maxplayers, maxareas);
+			CA_ObjectList[index][ObjectID] = CreateDynamicObjectEx(modelid, x, y, z, rx, ry, rz, drawdistance, streamdistance, worlds, interiors, players, areas, priority, maxworlds, maxinteriors, maxplayers, maxareas);
 			CA_ObjectList[index][ColdAndreadsID] = CA_CreateObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, true);
 			CA_ObjectList[index][ObjectType] = OBJECT_TYPE_DYNAMIC;
 		}
@@ -756,9 +773,9 @@ stock CA_IsPlayerOnSurface(playerid, Float:tolerance=1.5)
 stock CA_RemoveBarriers()
 {
 	static const BarrierIDS[] = {
-		16439, 16438, 16437, 16436, 4527, 4526, 4525, 4524,
-		4523, 4517, 4516, 4515, 4514, 4513, 4512, 4511, 4510,
-		4509, 4508, 4507, 4506, 4505, 4504, 1662
+		4504, 4505, 4506, 4507, 4508, 4509, 4510, 4511, 4512, 4513,
+		4514, 4515, 4516, 4517, 4518, 4519, 4520, 4521, 4522, 4523,
+		4524, 4525, 4526, 4527, 16436, 16437, 16438, 16439, 1662
  	};
 
  	for(new i = 0; i < sizeof(BarrierIDS); i++)
@@ -823,7 +840,7 @@ stock CA_IsPlayerInWater(playerid, &Float:depth, &Float:playerdepth)
 	new Float:x, Float:y, Float:z, Float:retx[10], Float:rety[10], Float:retz[10], Float: retdist[10], modelids[10];
 	GetPlayerPos(playerid, x, y, z);
 	new collisions = CA_RayCastMultiLine(x, y, z+1000.0, x, y, z-1000.0, retx, rety, retz, retdist, modelids, 10);
-	if(collisions)
+	if(collisions > 0)
 	{
 		for(new i = 0; i < collisions; i++)
 		{

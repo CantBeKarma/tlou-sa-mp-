@@ -6,16 +6,16 @@ FlyBackwardsWhenShot(damagedid)
 //        if(eNpcInfo[damagedid][e_iType] == NPC_TYPE_BLOATER) 
   //          return 1;
 
-        if(FCNPC_GetType(damagedid) == NPC_TYPE:BLOATER)
-        {
-            return 1;
-        }
+        // if(FCNPC_GetType(damagedid) == NPC_TYPE:BLOATER)
+        // {
+        //     return 1;
+        // }
 
-        FCNPC_StopUpdateTimer(damagedid);
+//        FCNPC_StopUpdateTimer(damagedid);
         FCNPC_SetAnimation(damagedid, BASEBALL_BAT_HIT_3, 4.1, 0, 1, 1, 1, 0);
 
-        if(!FCNPC_IsDeadEx(damagedid))
-            defer DelayedTimer_AnimGetUp[1000](damagedid);
+//        if(!FCNPC_IsDeadEx(damagedid))
+        defer DelayedTimer_AnimGetUp[1000](damagedid);
     }
     else 
     {

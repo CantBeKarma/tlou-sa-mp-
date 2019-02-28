@@ -385,16 +385,16 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 	else
 	{
 //		if(eNpcInfo[lookingAt_NpcId][e_iType] == NPC_TYPE_BLOATER)
-		if(FCNPC_GetType(lookingAt_NpcId) == NPC_TYPE:BLOATER)
+		//if(FCNPC_GetType(lookingAt_NpcId) == NPC_TYPE:BLOATER)
 //		|| eNpcInfo[lookingAt_NpcId][e_iCurrentStatus] != NPC_STATUS_IDLE)
-		{
+		//{
 			if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 			{
 				DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
 				Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
 			}
-			return 1;
-		}
+		//	return 1;
+		//}
 
 		GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.3);
 		if(IsPlayerInRangeOfPoint(playerid, 0.6, x, y, z))
