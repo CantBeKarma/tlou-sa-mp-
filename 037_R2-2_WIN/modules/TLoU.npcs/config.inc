@@ -109,12 +109,12 @@ enum NPC_STATUS
     STATUS_DISTRACTED,
     STATUS_BURNING,
     STATUS_STUNNED,
-    STATUS_DEAD
+    STATUS_DEAD,
+    STATUS_PLAYING_ANIM
 };
 
 enum e_NPC_FLAGS
 {
-    e_bPlayingAnim,
     e_bIsUpdateTimerRunning
 }
 new BitArray:eNpcFlag[e_NPC_FLAGS]<MAX_PLAYERS>;

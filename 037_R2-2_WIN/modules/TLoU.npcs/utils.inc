@@ -1,4 +1,15 @@
-//#region Reset/Clear data
+//#region Create/Reset/Clear data
+
+	// Create specified amount of infected based on 'MAX_FCNPCS'
+	FCNPC_CreateInfected()
+	{
+		new npcName[9];
+		for(new i = MAX_PLAYERS-1, maxNpcs = MAX_FCNPCS; maxNpcs > 0; i--, maxNpcs--)
+		{
+			format(npcName, sizeof(npcName), "FCNPC_%d", i);
+			FCNPC_Create(npcName);
+		}
+	}
 
 	// Reset all enum of the NPC data.
 	ResetEnum_eNpcInfo(npcid)
@@ -10,36 +21,10 @@
 	// Reset all enum of the NPC flags.
 	ResetEnum_eNpcFlag(npcid)
 	{
-		Bit_Vet(eNpcFlag[e_bPlayingAnim], npcid);
 		Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 	}
 
-	// Clear NPCs anims and packets data.
-	FCNPC_ClearAnims(npcid)
-	{
-		FCNPC_ResetAnimation(npcid);
-		FCNPC_ClearAnimations(npcid);
-
-		if(FCNPC_IsPlayingAnim(npcid))
-		{
-			eNpcInfo[npcid][e_iPlayingAnim_Tick] = tickCounter;
-			eNpcInfo[npcid][e_iPlayingAnim_Index] = animationid;
-			Bit_Vet(eNpcFlag[e_bPlayingAnim], npcid);
-		}
-	}
-
 //#endregion
-
-// Create specified amount of infected based on 'MAX_FCNPCS'
-FCNPC_CreateInfected()
-{
-	new npcName[9];
-	for(new i = MAX_PLAYERS-1, maxNpcs = MAX_FCNPCS; maxNpcs > 0; i--, maxNpcs--)
-	{
-  		format(npcName, sizeof(npcName), "FCNPC_%d", i);
-		FCNPC_Create(npcName);
-	}
-}
 
 //#region FCNPC : Types and Statuses
 
@@ -102,7 +87,14 @@ FCNPC_CreateInfected()
 			case STATUS_DISTRACTED: {}
 			case STATUS_BURNING: {}
 			case STATUS_STUNNED: {}
-			case STATUS_DEAD: {}
+
+			case STATUS_DEAD:
+			{
+				FCNPC_ClearAnims(npcid);
+				FCNPC_StopUpdateTimer(npcid);
+			}
+
+			case STATUS_PLAYING_ANIM: {}
 		}
 
 		if(status != STATUS_ROAM && status != STATUS_CHASE)
@@ -138,19 +130,6 @@ FCNPC_CreateInfected()
 		FCNPC_SetSkin(npcid, skinid);
 		return skinid;
 	}
-	
-	FCNPC_PlayIdleAnims(npcid)
-	{
-		if(FCNPC_GetStatus(npcid) != NPC_STATUS:STATUS_IDLE)
-		{
-			return;	
-		}
-
-		if(!FCNPC_IsPlayingAnim(npcid))
-		{
-			FCNPC_SetAnimCallback(npcid, NpcIdleAnimsList[random(sizeof(NpcIdleAnimsList))]);
-		}
-	}
 
 //#endregion
 
@@ -174,39 +153,29 @@ FCNPC_CreateInfected()
 	}
 //#endregion
 
-// Custom SetAnimation for FCNPC.
-FCNPC_SetAnimCallback(npcid, animationid)
-{
-	new tickCounter = -11;
-	switch(animationid)
+//#region Animations
+
+	// Custom SetAnimation for FCNPC.
+	FCNPC_SetAnimCallback(npcid, animationid)
 	{
-		case KISSING_GF_CARARGUE_02: 	   	tickCounter = -45;
-		case PED_GETUP: 				   	tickCounter = -16;
-		case PED_FLEE_LKAROUND_01: 	   		tickCounter = -34;
-		case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -35;
-	}
-	
-	eNpcInfo[npcid][e_iPlayingAnim_Tick] = tickCounter;
-	eNpcInfo[npcid][e_iPlayingAnim_Index] = animationid;
-	Bit_Let(eNpcFlag[e_bPlayingAnim], npcid);
-	FCNPC_SetAnimation(npcid, animationid, 4.1, 0, 1, 1, 0, 0);
-}
-
-//#region Utils
-
-	FCNPC_IsBurning(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_BURNING);
-	FCNPC_IsStunned(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
-	FCNPC_IsPlayingAnim(npcid)	return Bit_Get(eNpcFlag[e_bPlayingAnim], npcid);
-	FCNPC_IsTimerRunning(npcid)	return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
-
-	// Stops NPC from moving and clear animations used.
-	FCNPC_StopMoving(npcid)
-	{
-		if(!FCNPC_IsMoving(npcid))
+		if(FCNPC_IsPlayingAnim(npcid) || FCNPC_IsDeadEx(npcid))
+		{
 			return;
+		}
 
-		FCNPC_Stop(npcid);
-		FCNPC_ClearAnims(npcid);
+		new tickCounter = -11;
+		switch(animationid)
+		{
+			case KISSING_GF_CARARGUE_02: 	   	tickCounter = -45;
+			case PED_GETUP: 				   	tickCounter = -20;
+			case PED_FLEE_LKAROUND_01: 	   		tickCounter = -34;
+			case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -35;
+		}
+		
+		eNpcInfo[npcid][e_iPlayingAnim_Tick] = tickCounter;
+		eNpcInfo[npcid][e_iPlayingAnim_Index] = animationid;
+		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_PLAYING_ANIM);
+		FCNPC_SetAnimation(npcid, animationid, 4.1, 0, 1, 1, 0, 0);
 	}
 
 	// Return current FCNPCs animation index.
@@ -220,9 +189,79 @@ FCNPC_SetAnimCallback(npcid, animationid)
 		return -1;
 	}
 
+	// Plays idle anims on NPC.
+	FCNPC_PlayIdleAnims(npcid)
+	{
+		if(!FCNPC_IsIdle(npcid) || FCNPC_IsPlayingAnim(npcid))
+		{
+			return;	
+		}
+		FCNPC_SetAnimCallback(npcid, NpcIdleAnimsList[random(sizeof(NpcIdleAnimsList))]);
+	}
+
+	// Clear NPCs anims and packets data.
+	FCNPC_ClearAnims(npcid)
+	{
+		if(FCNPC_IsPlayingAnim(npcid))
+		{
+			eNpcInfo[npcid][e_iPlayingAnim_Tick] = 0;
+			eNpcInfo[npcid][e_iPlayingAnim_Index] = 0;
+		}
+
+		FCNPC_ResetAnimation(npcid);
+		FCNPC_ClearAnimations(npcid);
+	}
+
 //#endregion
 
+//#region Utils
 
+	FCNPC_IsBurning(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_BURNING);
+	FCNPC_IsStunned(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
+	FCNPC_IsPlayingAnim(npcid)	return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
+	FCNPC_IsIdle(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_IDLE);
+	FCNPC_IsDistracted(npcid)	return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISTRACTED);
+	FCNPC_IsDeadEx(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
+	FCNPC_IsTimerRunning(npcid)	return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
+	FCNPC_GetHealthEx(npcid)	return eNpcInfo[npcid][e_fHealth];
+
+	// Set FCNPC dest. health value (cannot be lower than 0.0).
+	FCNPC_SetHealthEx(npcid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
+	{
+		if(npcid == INVALID_PLAYER_ID || FCNPC_IsDeadEx(npcid))
+		{
+			return;
+		}
+
+		eNpcInfo[npcid][e_fHealth] = (health <= 0.0 ? 0.0 : health);
+
+		if(FCNPC_GetHealthEx(npcid) <= 0.0)
+		{
+			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_DEAD);
+			FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart);
+		}
+	}
+
+	// Stops NPC from moving and clear animations used.
+	FCNPC_StopMoving(npcid)
+	{
+		if(!FCNPC_IsMoving(npcid))
+		{
+			return;
+		}
+
+		FCNPC_Stop(npcid);
+		FCNPC_ClearAnims(npcid);
+	}
+
+	// NPC goes to the specific location with a custom animation of running.
+	FCNPC_GoToWithAnim(npcid, Float:x, Float:y, Float:z, type = FCNPC_MOVE_TYPE_AUTO, Float:speed = FCNPC_MOVE_SPEED_AUTO, mode = FCNPC_MOVE_MODE_AUTO, pathfinding = FCNPC_MOVE_PATHFINDING_AUTO, Float:radius = 0.0, bool:set_angle = true, Float:min_distance = 0.0, stopdelay = 250)
+	{
+		FCNPC_GoTo(npcid, x, y, z, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
+		FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
+	}
+
+//#endregion
 
 
 // // -> Prepare data for NPC on spawn.
@@ -248,30 +287,6 @@ FCNPC_SetAnimCallback(npcid, animationid)
 // }
 
 
-
-
-
-
-	
-
-
-// // Return current FCNPC health.
-// Float:FCNPC_GetHealthEx(npcid)
-// {
-// 	return eNpcInfo[npcid][e_fHealth];
-// }
-
-// // Return whenever NPC is dead.
-// FCNPC_IsDeadEx(npcid)
-// {
-// 	return (FCNPC_GetHealthEx(npcid) <= 0.0);
-// }
-
-// // Set FCNPC dest. health value (cannot be lower than 0.0).
-// FCNPC_SetHealthEx(npcid, Float:health)
-// {
-// 	eNpcInfo[npcid][e_fHealth] = (health <= 0.0 ? 0.0 : health);
-// }
 
 // // Check if NPC is not: stunned, burning, dead and its timer is running.
 // FCNPC_IsAllowedToDoAction(npcid)

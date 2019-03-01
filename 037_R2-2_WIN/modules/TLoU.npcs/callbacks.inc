@@ -48,34 +48,32 @@
 
 //#endregion
 
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //------------------------ FCNPC_OnDeath ------------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart)
-// {
-// 	FCNPC_StopUpdateTimer(npcid);
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------------ FCNPC_OnDeath ------------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart)
+{
+	if(weaponid != WEAPON_MOLOTOV)
+	{
+		switch(bodypart)
+		{
+			case BODY_PART_HEAD: FCNPC_SetAnimation(npcid, PED_KO_SHOT_FACE, 4.1, 0, 1, 1, 1, 0);
+			default:
+			{
+				if(FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3 
+				&& FCNPC_GetAnimationIndex(npcid) != KNIFE_KILL_KNIFE_PED_DAMAGE)
+				{
+					FCNPC_SetAnimation(npcid, PED_KO_SHOT_STOM, 4.1, 0, 1, 1, 1, 0);
+				}
+			}
+		}
+	}
 
-// 	if(weaponid != WEAPON_MOLOTOV)
-// 	{
-// 		switch(bodypart)
-// 		{
-// 			case BODY_PART_HEAD: FCNPC_SetAnimation(npcid, PED_KO_SHOT_FACE, 4.1, 0, 1, 1, 1, 0);
-// 			default:
-// 			{
-// 				if(FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3 
-// 				&& FCNPC_GetAnimationIndex(npcid) != KNIFE_KILL_KNIFE_PED_DAMAGE)
-// 				{
-// 					FCNPC_SetAnimation(npcid, PED_KO_SHOT_STOM, 4.1, 0, 1, 1, 1, 0);
-// 				}
-// 			}
-// 		}
-// 	}
+	defer FCNPC_RespawnDelay(npcid);
 
-// 	defer FCNPC_RespawnDelay(npcid);
-
-// 	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DEATH]: NPC ID: %d | KILLER ID: %d | WEAPON ID: %d | BODYPART: %d", npcid, killerid, weaponid, bodypart);
-// 	return 1;
-// }
+	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DEATH]: NPC ID: %d | KILLER ID: %d | WEAPON ID: %d | BODYPART: %d", npcid, killerid, weaponid, bodypart);
+	return 1;
+}
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- FCNPC_OnInfectedUpdate -------------------
@@ -88,7 +86,6 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 
 		if(FCNPC_GetAnimationIndex(npcid) != eNpcInfo[npcid][e_iPlayingAnim_Index] || eNpcInfo[npcid][e_iPlayingAnim_Tick] >= 0)
 		{
-			Bit_Vet(eNpcFlag[e_bPlayingAnim], npcid);
 			FCNPC_OnAnimFinish(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
 		}
 		return 1;
@@ -130,14 +127,14 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
 	switch(animIdx)
 	{
 		case KNIFE_KILL_KNIFE_PED_DAMAGE: 	FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);		
-		case PED_GETUP:						FCNPC_StartUpdateTimer(npcid);
+		case PED_GETUP:						FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
 		case PED_FLEE_LKAROUND_01:
 		{
-			// if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
-			// {
-			// 	FCNPC_GoTo(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ]+1.0);
-			// 	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
-			// }
+			if(!FCNPC_IsDistracted(npcid))
+			{
+				return 0;
+			}
+			FCNPC_GoToWithAnim(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ]+1.0);
 		}
 	}
 	//printf("FCNPC_OnAnimFinish(%d, %d)", npcid, animIdx);
