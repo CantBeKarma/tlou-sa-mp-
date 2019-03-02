@@ -28,7 +28,7 @@
 
 // -> MODULES
 #include	".\modules\config\main.inc"
-#include    ".\modules\utils\utils.inc"
+#include    ".\modules\utils\main.inc"
 #include	".\modules\TLoU.animations\main.inc"
 #include	".\modules\TLoU.audio\main.inc"
 #include	".\modules\TLoU.backpack\main.inc"
