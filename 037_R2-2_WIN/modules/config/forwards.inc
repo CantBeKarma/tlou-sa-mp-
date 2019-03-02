@@ -71,18 +71,20 @@ forward OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y,
 forward OnNailbombInitiate(nailBmbIdx, throwerid, Float:x, Float:y, Float:z);
 
 forward FCNPC_OnIdle(npcid);
+forward FCNPC_OnRoam(npcid, Float:target_x, Float:target_y, Float:target_z);
 forward FCNPC_OnChasePlayer(npcid, chaseid);
 forward FCNPC_OnChasePlayerByPath(npcid, chaseid, pathid);
 forward FCNPC_OnAttackPlayer(npcid, chaseid, Float:chaseId_oldHealth, Float:chaseId_newHealth);
 forward FCNPC_OnAnimFinish(npcid, animIdx);
+forward FCNPC_OnPlayingAnim(npcid, animIdx);
 forward FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart);
 forward FCNPC_OnBurn(npcid);
 forward FCNPC_OnGetArrowShot(npcid, damagerid);
 forward FCNPC_OnGetShived(npcid, shiverId);
-forward FCNPC_OnGetHitByPlayer(npcid, damagerId, damagerWeaponId, Float:damageAmount);
-forward FCNPC_OnGetShotByPlayer(npcid, damagerId, damagerWeaponId, Float:damageAmount, Float:distance, bodypart);
+forward FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount);
+forward FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount, Float:distanceBetweenPlayers, bodypart);
 forward FCNPC_OnGetDistracted(npcid, Float:distractPointX, Float:distractPointY, Float:distractPointZ);
-forward FCNPC_OnTriggerNailbomb(npcid, throwerid, projid, Float:x, Float:y, Float:z);
+forward FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward FCNPC_OnGetStunnedBySmokeBomb(npcid);
 
 forward OnPlayerLookAtItem(playerid, item_objectId);
