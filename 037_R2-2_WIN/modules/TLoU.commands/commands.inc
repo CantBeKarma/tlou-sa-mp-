@@ -361,6 +361,90 @@ CMD:ambientnoise(playerid, params[])
 //     return 1;
 // }
 
+CMD:npcskin(playerid, params[])
+{
+    new npcid, skinid;
+    if(sscanf(params, "dd", npcid, skinid))return SCM(playerid, -1, "/npcskin [npcid] [skin_id]");
+    {
+        FCNPC_SetSkin(npcid, skinid);
+    }
+    return 1;
+}
+
+new dynamicNpcsCount = 0;
+
+CMD:npc(playerid, params[])
+{
+    new option[32], npcid, NPC_TYPE:type;
+    if(sscanf(params, "s[32]D(-1)D(-1)", option, npcid, _:type))return SCM(playerid, -1, "/npc [create/spawn/type/move]");
+    {
+        if(!strcmp(option, "create", false))
+        {
+            new npcName[32];
+            format(npcName, sizeof(npcName), "FCNPC_Dyn_%d", dynamicNpcsCount);
+            FCNPC_Create(npcName);
+
+            dynamicNpcsCount++;
+            SCMF(playerid, -1, "Created %s", npcName);
+        }
+        else if(!strcmp(option, "spawn", false))
+        {
+            if(npcid == -1 || npcid == INVALID_PLAYER_ID)
+            {
+                SCMF(playerid, -1, "/npc spawn [id]");
+                return 1;
+            }
+
+            new Float:x, Float:y, Float:z;
+            GetPlayerPos(playerid, x, y, z);
+            FCNPC_Spawn(npcid, FCNPC_GetSkin(npcid), x, y, z);
+        }
+        else if(!strcmp(option, "type", false))
+        {
+            if(npcid == -1 || npcid == INVALID_PLAYER_ID)
+            {
+                SCMF(playerid, -1, "/npc spawn [id] [type]");
+                return 1;
+            }
+            else if(_:type == -1)
+            {
+                SCMF(playerid, -1, "/npc spawn [id] [type]");
+                return 1;
+            }
+
+            FCNPC_SetType(npcid, type);
+        }
+        else if(!strcmp(option, "move", false))
+        {
+            if(npcid == -1 || npcid == INVALID_PLAYER_ID)
+            {
+                SCMF(playerid, -1 , "/npc move [id]");
+                return 1;
+            }
+
+            new Float:x, Float:y, Float:z;
+            GetPlayerPos(playerid, x, y, z);
+
+            switch(random(2))
+            {
+                case 0: FCNPC_RunTo(npcid, x, y, z);
+                case 1: FCNPC_WalkTo(npcid, x, y, z);
+            }
+        }
+    }
+    return 1;
+}
+
+CMD:npcstatus(playerid, params[])
+{
+    new npcid, NPC_STATUS:status;
+    if(sscanf(params, "dd", npcid, _:status))return SCM(playerid, -1, "/npcstatus [id] [status]");
+    {
+        FCNPC_SetStatus(npcid, status);
+    }
+    return 1;
+}
+
 CMD:allin(playerid, params[])
 {
     // Ingredients.
