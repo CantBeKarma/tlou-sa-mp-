@@ -1,4 +1,3 @@
-#include  ".\modules\TLoU.textdraws\utils.inc"
 #include  ".\modules\TLoU.textdraws\td_global.inc"
 #include  ".\modules\TLoU.textdraws\td_player.inc"
 #include  ".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"

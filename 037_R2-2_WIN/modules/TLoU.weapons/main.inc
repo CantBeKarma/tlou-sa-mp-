@@ -1,4 +1,3 @@
-#include ".\modules\TLoU.weapons\utils.inc"
 #include ".\modules\TLoU.weapons\aiming.inc"
 #include ".\modules\TLoU.weapons\bow.inc"
 #include ".\modules\TLoU.weapons\shiv.inc"
