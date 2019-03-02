@@ -463,7 +463,16 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
                     DestroyDynamicObject(eProjectileData[projid][e_iNailBmb_ObjectId]);
                 }
                 
-                Iter_Remove(NailBmbsList, projid);
+                // If contains means nailbomb WAS in idle state
+                // else means nailbomb collided while thrown.
+                if(Iter_Contains(NailBmbsList, projid))
+                {
+                    Iter_Remove(NailBmbsList, projid);
+                }
+                else
+                {
+                    ResetProjectileData(projid);
+                }
                 CreateDynamicObject(OBJ_MODEL_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
             }
 
