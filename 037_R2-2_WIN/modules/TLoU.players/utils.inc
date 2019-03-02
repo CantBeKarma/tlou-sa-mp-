@@ -42,12 +42,6 @@ Float:GetPlayerHealthEx(playerid)
 	return eCharsInfo[playerid][e_fHealth];
 }
 
-// Check if player is dead.
-IsPlayerDead(playerid)
-{
-	return (GetPlayerHealthEx(playerid) <= 0.0);
-}
-
 // Set player health (avoid going over 100 health points or lower than 0.0).
 SetPlayerHealthEx(playerid, Float:health)
 {
@@ -89,23 +83,17 @@ function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 	}
 }
 
-// Determines if player is looking at another player.
-IsPlayerLookingAtPlayer(playerid)
-{
-	return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
-}
+//#region Utils
 
-// Checks if player is aiming a weapon
-IsPlayerAimingWeapon(playerid)
-{
-	return Bit_Get(ePlayerFlag[e_bAiming], playerid);
-}
+	IsPlayerDead(playerid)					return (GetPlayerHealthEx(playerid) <= 0.0);
+	IsPlayerStunned(playerid)				return Bit_Get(ePlayerFlag[e_bIsStunned], playerid);
+	IsPlayerHealing(playerid)				return Bit_Get(ePlayerFlag[e_bIsHealing], playerid);
+	IsPlayerLookingAtPlayer(playerid)		return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
+	IsPlayerLookingAtItem(playerid)			return GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID;
+	IsPlayerAimingWeapon(playerid)			return Bit_Get(ePlayerFlag[e_bAiming], playerid);
+	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 
-// Checks if player is currently healing.
-IsPlayerHealing(playerid)
-{
-	return Bit_Get(ePlayerFlag[e_bIsHealing], playerid);
-}
+//#endregion
 
 // Frezee player with timer to unfreeze (optional).
 function FreezePlayer(playerid, bool:camMove, time)
@@ -113,7 +101,7 @@ function FreezePlayer(playerid, bool:camMove, time)
 	if(camMove) TogglePlayerFrozen(playerid, true);
 	else TogglePlayerControllable(playerid, false);
 
-	if(time > 0) SetTimerEx("FreezePlayer", 1000, false, "ddd", playerid, camMove, time - 1);
+	if(time > 0) SetTimerEx("FreezePlayer", 1000, false, "ddd", playerid, camMove, time-1);
 	else if(time == 0) UnfreezePlayer(playerid);
 }
 
@@ -123,21 +111,19 @@ UnfreezePlayer(playerid)
 	TogglePlayerFrozen(playerid, false);
 
 	if(!IsPlayerControllable(playerid))
+	{
 		TogglePlayerControllable(playerid, true);
-}
-
-// Check if player is stunned
-IsPlayerStunned(playerid)
-{
-	return Bit_Get(ePlayerFlag[e_bIsStunned], playerid);
+	}
 }
 
 // Stuns player.
 StunPlayer(playerid)
 {
 	if(IsPlayerStunned(playerid))
+	{
 		return false;
-	    
+	}
+
 	Bit_Let(ePlayerFlag[e_bIsStunned], playerid);
 	OnPlayerGetStunned(playerid);
 	return true;
@@ -146,29 +132,31 @@ StunPlayer(playerid)
 // Enable OnPlayerLookAt callback timer if it isn't running.
 Enable_OnPlayerLookAt(playerid)
 {
+	if(IsPlayerLookingTimerRunning(playerid))
+	{
+		return;
+	}
+
 	EnablePlayerCameraTarget(playerid, true);
 	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 	GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
-	
-	if(!Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid))
-	{
-		Bit_Let(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
-		ePlayerInfo[playerid][e_iTimer_lookingAt] = repeat Timer_OnPlayerIsLooking(playerid);
-	}
+	Bit_Let(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
+	ePlayerInfo[playerid][e_iTimer_lookingAt] = repeat Timer_OnPlayerIsLooking(playerid);
 }
 
 // Disable OnPlayerLookAt callback.
 Disable_OnPlayerLookAt(playerid)
 {
+	if(!IsPlayerLookingTimerRunning(playerid))
+	{
+		return;
+	}
+
 	EnablePlayerCameraTarget(playerid, false);
 	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 	GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
-
-	if(Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid))
-	{
-		Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
-		stop ePlayerInfo[playerid][e_iTimer_lookingAt]; 
-	}
+	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
+	stop ePlayerInfo[playerid][e_iTimer_lookingAt]; 
 
 	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 	{
