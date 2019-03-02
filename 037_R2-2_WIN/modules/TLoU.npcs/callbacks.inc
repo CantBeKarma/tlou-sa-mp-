@@ -10,12 +10,11 @@
 		new bool:sucessfullySetType = bool:FCNPC_SetType(npcid, NPC_TYPE:TYPE_CLICKER);
 		if(!sucessfullySetType)
 		{
-			Log(eLogs[e_Log_Index][LOG_INDEX_NPC], ERROR, "[CREATE]: Couldn't spawn NPC ID: %d", npcid);
+			Log(eLogs[e_Log_Index][LOG_INDEX_NPC], ERROR, "[CREATE]: Couldn't create NPC ID: %d", npcid);
 			return 1;
 		}
 
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[CREATE]: Sucessfully created: NPC ID: %d | TYPE: %d", npcid, _:FCNPC_GetType(npcid));
-		FCNPC_Spawn(npcid, FCNPC_GetSkin(npcid), 2510.5881, -1675.1179, 13.5457);
 		return 1;
 	}
 
@@ -33,6 +32,10 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnSpawn(npcid)
 	{
+		PreloadAnimations(npcid);
+		FCNPC_SetHealthEx(npcid, 100.0);
+		SetPlayerTeam(npcid, FACTION_NONE);
+		
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[SPAWN]: NPC ID: %d", npcid);
 		return 1;
 	}
@@ -42,104 +45,241 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnRespawn(npcid)
 	{
+		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+		FCNPC_SetHealthEx(npcid, 100.0);
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[RESPAWN]: NPC ID: %d", npcid);
+		return 1;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//---------------------- FCNPC_OnDeathEx ------------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart)
+	{
+		defer FCNPC_DelayRespawn(npcid);
+		FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart);
+
+		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DEATH]: NPC ID: %d | KILLER ID: %d | WEAPON ID: %d | BODYPART: %d", npcid, killerid, weaponid, bodypart);
 		return 1;
 	}
 
 //#endregion
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------------ FCNPC_OnDeath ------------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart)
-{
-	if(weaponid != WEAPON_MOLOTOV)
-	{
-		switch(bodypart)
-		{
-			case BODY_PART_HEAD: FCNPC_SetAnimation(npcid, PED_KO_SHOT_FACE, 4.1, 0, 1, 1, 1, 0);
-			default:
-			{
-				if(FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3 
-				&& FCNPC_GetAnimationIndex(npcid) != KNIFE_KILL_KNIFE_PED_DAMAGE)
-				{
-					FCNPC_SetAnimation(npcid, PED_KO_SHOT_STOM, 4.1, 0, 1, 1, 1, 0);
-				}
-			}
-		}
-	}
-
-	defer FCNPC_RespawnDelay(npcid);
-
-	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DEATH]: NPC ID: %d | KILLER ID: %d | WEAPON ID: %d | BODYPART: %d", npcid, killerid, weaponid, bodypart);
-	return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- FCNPC_OnInfectedUpdate -------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 {
-	if(FCNPC_IsPlayingAnim(npcid))
+	switch(FCNPC_GetStatus(npcid))
 	{
-		eNpcInfo[npcid][e_iPlayingAnim_Tick] += 1;
+		case STATUS_IDLE:			FCNPC_OnIdle(npcid);
+		case STATUS_PLAYING_ANIM:	FCNPC_OnPlayingAnim(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
+	}
+	return 0;
+}
 
-		if(FCNPC_GetAnimationIndex(npcid) != eNpcInfo[npcid][e_iPlayingAnim_Index] || eNpcInfo[npcid][e_iPlayingAnim_Tick] >= 0)
+//#region Idle managment callbacks
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------------ FCNPC_OnIdle -------------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnIdle(npcid)
+	{
+		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~IDLE: NPCID (%d)", npcid);
+
+		FCNPC_PlayIdleActions(npcid);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//--------------------- FCNPC_OnPlayingAnim ---------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnPlayingAnim(npcid, animIdx)
+	{
+		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM PLAYING: NPCID (%d)", npcid);
+
+		if(FCNPC_CheckIfAnimationFinished(npcid, animIdx))
 		{
-			FCNPC_OnAnimFinish(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
+			FCNPC_OnAnimFinish(npcid, animIdx);
 		}
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//---------------------- FCNPC_OnAnimFinish ---------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnAnimFinish(npcid, animIdx)
+	{
+		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM FINISH: NPCID (%d)", npcid);
+
+		switch(animIdx)
+		{
+			// Knifed by other player.
+			// case KNIFE_KILL_KNIFE_PED_DAMAGE:
+			// {
+			// 	FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);
+			// }
+
+			// Looking around animation.
+			// (can be set from random anims or played when distracted).
+			// case PED_FLEE_LKAROUND_01:
+			// {
+			// 	if(FCNPC_IsDistracted(npcid))
+			// 	{
+			// 		FCNPC_GoToWithAnim(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ]+1.0);
+			// 	}
+			// }
+
+			default:
+			{
+				FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+			}
+		}
+		//printf("FCNPC_OnAnimFinish(%d, %d)", npcid, animIdx);
 		return 1;
 	}
 
-	switch(FCNPC_GetStatus(npcid))
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------------- FCNPC_OnRoam --------------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnRoam(npcid, Float:target_x, Float:target_y, Float:target_z)
 	{
-		case STATUS_IDLE:	FCNPC_OnIdle(npcid);
-	}
-	return 0;
-}
+		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ROAM: NPCID (%d)", npcid);
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------------ FCNPC_OnIdle -------------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnIdle(npcid)
-{
-	return 0;
-}
-
-
-
-// public FCNPC_OnIdle(npcid)
-// {
-// 	if(!Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
-// 	{
-// 		FCNPC_SetAnimCallback(npcid, NpcIdleAnims[random(sizeof(NpcIdleAnims))]);
-// 	}
-
-// 	//FCNPC_SetAnimationByName(npcid, "TLoU:INF_WALK", 4.1, 1, 1, 1, 1, 1);
-// 	return 1;
-// }
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------------- FCNPC_OnAnimFinish ---------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnAnimFinish(npcid, animIdx)
-{
-	switch(animIdx)
-	{
-		case KNIFE_KILL_KNIFE_PED_DAMAGE: 	FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);		
-		case PED_GETUP:						FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
-		case PED_FLEE_LKAROUND_01:
+		switch(random(2))
 		{
-			if(!FCNPC_IsDistracted(npcid))
-			{
-				return 0;
-			}
-			FCNPC_GoToWithAnim(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ]+1.0);
+			case 0: FCNPC_WalkTo(npcid, target_x, target_y, target_z);
+			case 1:	FCNPC_RunTo(npcid, target_x, target_y, target_z);
 		}
+		return 0;
 	}
-	//printf("FCNPC_OnAnimFinish(%d, %d)", npcid, animIdx);
+
+//#endregion
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------- FCNPC_OnReachDestination ------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnReachDestination(npcid)
+{
+	if(FCNPC_IsRoaming(npcid))
+	{
+		FCNPC_ClearAnims(npcid);
+		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+		return 0;
+	}
+
 	return 1;
 }
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------- FCNPC_OnTriggerNailbomb -------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
+{
+	Audio3D_Play(npcid, AUDIO_NAILBMB_TRIGGER, x, y, z, 10.0);
+	defer OnNailbombExplode(npcid, throwerid, nailBmbIdx, x, y, z);
+    return 0;
+}
+
+//#region Damage managment callbacks
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//---------------------- FCNPC_OnTakeDamage ---------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
+	{
+		if(FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_NONE)
+		{
+			return 0;
+		}
+		
+		if(FCNPC_IsDeadEx(npcid))
+		{
+			FCNPC_PlayDeadAnimIfDead(npcid);
+			return 0;
+		}
+
+		new issuerWeaponId = CurrentPlayerWeaponId[issuerid];
+		new Float:distanceBetweenPlayers = 0.0;
+		new Float:damageAmount = CalculateDamageAmount(issuerid, npcid, issuerWeaponId, distanceBetweenPlayers, bodypart);
+
+		if(IsMeleeWeapon(issuerWeaponId))
+		{
+			FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, damageAmount);
+		}
+		else if(IsBulletWeapon(issuerWeaponId))
+		{
+			FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, damageAmount, distanceBetweenPlayers, bodypart);
+		}
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------- FCNPC_OnGetHitByPlayer --------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount)
+	{
+		if(FCNPC_IsPlayingAnim(npcid))
+		{
+			FCNPC_ClearAnims(npcid);
+		}
+		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount, issuerid, issuerWeaponId);
+
+		if(issuerWeaponId == WEAPON_UNARMED)
+		{
+			return 0;
+		}
+		
+		// Doesn't hide weapon if we are hitting someone.
+		KillTimer(ePlayerInfo[issuerid][e_iTimer_HideHud]);
+		ePlayerInfo[issuerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", issuerid);
+
+		DegradePlayerMeleeWeapon(issuerid, issuerWeaponId);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------ FCNPC_OnGetShotByPlayer --------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount, Float:distanceBetweenPlayers, bodypart)
+	{
+		SCMF(issuerid, -1, "You shot FCNPC (%d) with weapon (%d). Damage done: %f to bodypart: %d on distance: %f", npcid, issuerWeaponId, damageAmount, bodypart, distanceBetweenPlayers);
+
+		ShowPlayerHitMarker(issuerid, bodypart);
+
+		if(bodypart == BODY_PART_HEAD)
+		{
+			if(FCNPC_GetType(npcid) == NPC_TYPE:TYPE_RUNNER
+			|| FCNPC_GetType(npcid) == NPC_TYPE:TYPE_STALKER)
+			{
+				FCNPC_SetHealthEx(npcid, 0.0);
+				return 0;
+			}
+		}
+
+		FCNPC_SetHealthEx(npcid, (FCNPC_GetHealthEx(npcid) - damageAmount), issuerid, issuerWeaponId, bodypart);
+		FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId, distanceBetweenPlayers);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//---------------------- FCNPC_OnGetShived ----------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnGetShived(npcid, shiverId)
+	{
+		SetPlayerWeapon(shiverId, WEAPON_SHIV);
+		ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
+
+		FCNPC_SetHealthEx(npcid, 0.0, shiverId, WEAPON_SHIV);
+	
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(shiverId, x, y, z);
+		Audio3D_Play(shiverId, RandomEx(AUDIO_CLICKER_DEATH01, AUDIO_CLICKER_DEATH03), x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
+		return 0;
+	}
+
+//#endregion
+
 
 // 	// if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
 // 	// {
@@ -296,149 +436,6 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
 // }
 
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //---------------------- FCNPC_OnTakeDamage ---------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnTakeDamage(npcid, damagerid, weaponid, bodypart, Float:health_loss)
-// {
-// 	if(FCNPC_IsDeadEx(npcid))
-// 	{
-// 		switch(FCNPC_GetAnimationIndex(npcid))
-// 		{
-// 			case 
-// 				BASEBALL_BAT_HIT_3, 
-// 				PED_KO_SHOT_FACE, 
-// 				KNIFE_KILL_KNIFE_PED_DIE:
-// 				{
-// 					FCNPC_ApplyAnimation(npcid, "PED", "FLOOR_HIT", 4.1, 0, 1, 1, 1, 0);
-// 				}
-
-// 			default: FCNPC_ApplyAnimation(npcid, "PED", "FLOOR_HIT_F", 4.1, 0, 1, 1, 1, 0);
-// 		}
-// 		return 0;
-// 	}
-	
-// 	new 
-//         Float:damageAmount = 0.0,
-// 		damagerWeaponId = CurrentPlayerWeaponId[damagerid];
-
-//     if(IsMeleeWeapon(damagerWeaponId))
-//     {
-//         damageAmount = PlayerWeaponBodyDamage[damagerid];
-//         FCNPC_OnGetHitByPlayer(npcid, damagerid, damagerWeaponId, damageAmount);
-//     }
-// 	else if(IsBulletWeapon(damagerWeaponId))
-// 	{
-// 		damageAmount = (bodypart == BODY_PART_HEAD) ? (PlayerWeaponHeadDamage[damagerid]) : (PlayerWeaponBodyDamage[damagerid]);
-
-// 		new	Float:distance = GetDistanceBetweenPlayers(damagerid, npcid);
-// 		if(distance > REDUCE_DAMAGE_AMOUNT_DISTANCE && damagerWeaponId != WEAPON_RIFLE)
-// 			damageAmount = (damageAmount / 2);
-
-// 		FCNPC_OnGetShotByPlayer(npcid, damagerid, damagerWeaponId, damageAmount, distance, bodypart);
-// 	}
-
-// 	if(FCNPC_IsDeadEx(npcid))
-// 	{
-// 		FCNPC_OnDeathEx(npcid, damagerid, weaponid, bodypart);
-// 	}
-// 	return 0;
-// }
-
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //------------------- FCNPC_OnGetHitByPlayer --------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnGetHitByPlayer(npcid, damagerId, damagerWeaponId, Float:damageAmount)
-// {
-// 	if(damagerWeaponId != WEAPON_UNARMED)
-// 	{
-// 		// Doesn't hide weapon if we are hitting someone.
-// 		KillTimer(ePlayerInfo[damagerId][e_iTimer_HideHud]);
-// 		ePlayerInfo[damagerId][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", damagerId);
-
-// 		// Durability logic (reduce upgraded durability or basic one?)
-// 		new newMeleeDurability = (IsPlayerMeleeUpgraded[damagerId]) ? (GetPlayerMeleeExtCnd[damagerId] - 1) : (GetPlayerMeleeCnd[damagerId] - 1);
-// 		HudTd_WeakenMeleeWeapon(damagerId, damagerWeaponId, newMeleeDurability);
-
-// 		// Removes melee weapon if broke.
-// 		if(newMeleeDurability <= 0)
-// 		{
-// 			if(!IsPlayerMeleeUpgraded[damagerId]) RemovePlayerWeapon(damagerId, damagerWeaponId);
-// 			else
-// 			{
-// 				HudTd_HideMeleeUpgradedBars(damagerId, damagerWeaponId);
-// 				IsPlayerMeleeUpgraded[damagerId] = false;
-
-// 				if(damagerWeaponId == WEAPON_SCISSOR_PIPE)
-// 				{
-// 					GetPlayerMelee[damagerId] = WEAPON_PIPE;
-// 					SetPlayerWeapon(damagerId, GetPlayerMelee[damagerId], GetPlayerMeleeCnd[damagerId]);
-// 				}
-// 			}
-// 		}
-// 	}
-
-//     // Reduced damaged npc health.
-// 	FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount);
-// 	return 0;
-// }
-
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //------------------ FCNPC_OnGetShotByPlayer --------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnGetShotByPlayer(npcid, damagerId, damagerWeaponId, Float:damageAmount, Float:distance, bodypart)
-// {
-// 	SCMF(damagerId, -1, "You shot FCNPC (%d) with weapon (%d). Damage done: %f to bodypart: %d on distance: %f", npcid, damagerWeaponId, damageAmount, bodypart, distance);
-// 	FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount);
-// 	ShowPlayerHitMarker(damagerId, bodypart);
-
-// 	if((GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) >= TICK_RATE_DAM_ANIM)
-// 	{
-// 		FCNPC_ResetAnimation(npcid);
-// 		switch(bodypart)
-// 		{
-// 			case BODY_PART_LEFT_ARM:  FCNPC_SetAnimation(npcid, NpcDamageAnims[random(3)], 4.1, 0, 1, 1, 0, 0);
-// 			case BODY_PART_RIGHT_ARM: FCNPC_SetAnimation(npcid, NpcDamageAnims[random(3) + 3], 4.1, 0, 1, 1, 0, 0);
-// 			case BODY_PART_LEFT_LEG:  FCNPC_SetAnimation(npcid, NpcDamageAnims[random(3) + 6], 4.1, 0, 1, 1, 0, 0);
-// 			case BODY_PART_RIGHT_LEG: FCNPC_SetAnimation(npcid, NpcDamageAnims[random(3) + 9], 4.1, 0, 1, 1, 0, 0);
-// 			case BODY_PART_TORSO:
-// 			{
-// 				if(damagerWeaponId == WEAPON_SHOTGUN && distance <= SHOTGUN_TORSO_SHOT_DISTANCE) FlyBackwardsWhenShot(npcid);
-// 				else FCNPC_SetAnimation(npcid, NpcDamageAnims[random(4) + 12], 4.1, 0, 1, 1, 0, 0);
-// 			}
-
-// 			case BODY_PART_HEAD:
-// 			{
-// 				if(eNpcInfo[npcid][e_iType] == NPC_TYPE_RUNNER || eNpcInfo[npcid][e_iType] == NPC_TYPE_STALKER) 
-// 					FCNPC_SetHealthEx(npcid, 0.0);
-// 			}
-// 		}
-// 	}
-// 	eNpcInfo[npcid][e_iTickCounter_damageAnim] = GetTickCount();
-// 	return 0;
-// }
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------------- FCNPC_OnGetShived ----------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnGetShived(npcid, shiverId)
-{
-// 	FCNPC_OnDeathEx(npcid, shiverId, WEAPON_SHIV, BODY_PART_TORSO);
-
-// 	new Float:x, Float:y, Float:z;
-// 	GetPlayerPos(shiverId, x, y, z);
-
-// 	// Clicker's death sound effect.
-// 	//new audioIdx = Audio3D_Stream(shiverId, SFX_ClickerShivDeaths[random(sizeof(SFX_ClickerShivDeaths))], x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
-// 	Audio3D_Play(shiverId, RandomEx(AUDIO_CLICKER_DEATH01, AUDIO_CLICKER_DEATH03), x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
-
-// 	HidePlayerWeapon(shiverId);
-// 	FCNPC_SetAnimCallback(npcid, KNIFE_KILL_KNIFE_PED_DAMAGE);
-// 	ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
-// 	SPAO(shiverId, ITEM_MODEL_SHIV);
- 	return 0;
-}
-
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // //--------------------- FCNPC_OnGetArrowShot --------------------
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // public FCNPC_OnGetArrowShot(npcid, damagerid)
@@ -467,21 +464,6 @@ public FCNPC_OnGetShived(npcid, shiverId)
 // 	}
 // 	SPAO(npcid, OBJECT_MODEL_BURNING);
 // 	return 0;
-// }
-
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //------------------- FCNPC_OnReachDestination ------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnReachDestination(npcid)
-// {
-// 	switch(eNpcInfo[npcid][e_iCurrentStatus])
-// 	{
-// 		case NPC_STATUS_DISTRACTED:
-// 		{
-// 			FCNPC_ClearAnims(npcid);
-// 			FCNPC_StartUpdateTimer(npcid);
-// 		}
-// 	}
 // }
 
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -650,11 +632,6 @@ public FCNPC_OnGetShived(npcid, shiverId)
 // 	FCNPC_StartUpdateTimer(npcid);	
 // 	return 0;
 // }
-
-public FCNPC_OnTriggerNailbomb(npcid, throwerid, projid, Float:x, Float:y, Float:z)
-{
-    return 0;
-}
 
 // public FCNPC_OnGetStunnedBySmokeBomb(npcid)
 // {
