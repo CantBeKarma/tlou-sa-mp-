@@ -28,14 +28,15 @@ FlyBackwardsWhenShot(damagedid)
 }
 
 // Plays damage animations on player.
-PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, Float:distance)
+PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, Float:distanceBetweenPlayers)
 {
-    if(IsPlayerUnableToPerformAction(damagedId))
+    if(IsPlayerUnableToPerformAction(damagedId)
+    || (GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
+    {
         return;
-
-    if((GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
-        return;
-
+    }
+    ePlayerInfo[damagedId][e_iTickCounter_damageAnim] = GetTickCount();
+        
     switch(bodypart)
     {
         case BODY_PART_LEFT_ARM:  ApplyAnimation(damagedId, "PED", DamageAnimations[random(3)], 4.1, 0, 1, 1, 0, 0);
@@ -44,7 +45,7 @@ PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, Float:distance)
         case BODY_PART_RIGHT_LEG: ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 9], 4.1, 0, 1, 1, 0, 0);
         case BODY_PART_TORSO:
         {
-            if(issuerWeaponId == WEAPON_SHOTGUN && distance <= SHOTGUN_TORSO_SHOT_DISTANCE)
+            if(issuerWeaponId == WEAPON_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
             {
                 FlyBackwardsWhenShot(damagedId);
             }
@@ -54,5 +55,53 @@ PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, Float:distance)
             }
         }
     }
-    ePlayerInfo[damagedId][e_iTickCounter_damageAnim] = GetConnectedTime(damagedId);
+}
+
+// Calculates damage that player is going to cause to another player
+// Optional param: bodypart.
+Float:CalculateDamageAmount(damagerid, targetid, damagerWeaponId, &Float:distanceBetweenPlayers, bodypart = -1)
+{
+    if(IsMeleeWeapon(damagerWeaponId))
+    {
+        return PlayerWeaponBodyDamage[damagerid];
+    }
+
+    new Float:damageAmount = (bodypart == BODY_PART_HEAD) ? (PlayerWeaponHeadDamage[damagerid]) : (PlayerWeaponBodyDamage[damagerid]);
+
+	distanceBetweenPlayers = GetDistanceBetweenPlayers(damagerid, targetid);
+	if(distanceBetweenPlayers > REDUCE_DAMAGE_AMOUNT_DISTANCE && damagerWeaponId != WEAPON_RIFLE)
+	{
+		damageAmount = (damageAmount / 2);
+	}
+	return damageAmount;
+}
+
+// Reduces condition of player's melee weapon by one.
+DegradePlayerMeleeWeapon(playerid, weaponid)
+{
+	// Durability logic (reduce upgraded durability or basic one?)
+	new newMeleeDurability = (IsPlayerMeleeUpgraded[playerid]) ? (GetPlayerMeleeExtCnd[playerid]-1) : (GetPlayerMeleeCnd[playerid]-1);
+	HudTd_UpdateMeleeWeaponCND(playerid, weaponid, newMeleeDurability);
+
+	if(newMeleeDurability > 0)
+    {
+        return;
+    }
+
+    // Removes melee weapon if broke.
+    if(!IsPlayerMeleeUpgraded[playerid])
+    {
+        RemovePlayerWeapon(playerid, weaponid);
+        return;
+    }
+
+    // If melee is upgraded - remove its upgraded feature and hide bars of it.
+    IsPlayerMeleeUpgraded[playerid] = false;
+    HudTd_HideMeleeUpgradedBars(playerid, weaponid);
+
+    if(weaponid == WEAPON_SCISSOR_PIPE)
+    {
+        GetPlayerMelee[playerid] = WEAPON_PIPE;
+        SetPlayerWeapon(playerid, GetPlayerMelee[playerid], GetPlayerMeleeCnd[playerid]);
+    }
 }
