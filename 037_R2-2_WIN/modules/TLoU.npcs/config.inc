@@ -3,11 +3,7 @@
 // NPCs Configuration.
 #define     TIMER_FCNPC_RESPAWN         (1000 * 5)
 #define     TIMER_FCNPC_UPDATE          (200)
-
-#define     NPC_TYPE_RUNNER             (0)
-#define		NPC_TYPE_STALKER			(1)
-#define     NPC_TYPE_CLICKER            (2)
-#define		NPC_TYPE_BLOATER			(3)
+#define     TICK_RATE_FCNPC_IDLE        (1000 * 6)
 
 #define     RANGE_NPC_CHASE_BY_PATH     (30.0)
 #define		RANGE_NPC_CHASE		        (10.0)
@@ -18,18 +14,12 @@
 #define		NPC_RUN_OFFSET				(0.9)
 #define		NPC_ATTACK_DELAY			(500)
 
-#define     NPC_STATUS_IDLE             (0)
-#define     NPC_STATUS_CHASING          (1)
-#define     NPC_STATUS_ATTACKING        (2)
-#define     NPC_STATUS_DISTRACTED       (3)
-#define     NPC_STATUS_CHASING_BY_PATH  (4)
-
 #define		PATHFINDER_Z_DIFF	    	(1.1)
 #define		PATHFINDER_STEP_SIZE    	(1)
 #define		PATHFINDER_STEP_LIMIT	    (-1)
 #define		PATHFINDER_MAX_STEPS	    (50)
 
-#define     MAX_FCNPCS                  (1)
+#define     MAX_FCNPCS                  (10)
 #define     MAX_NPC_TYPES               (4)
 
 stock const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
@@ -113,12 +103,6 @@ enum NPC_STATUS
     STATUS_PLAYING_ANIM
 };
 
-enum e_NPC_FLAGS
-{
-    e_bIsUpdateTimerRunning
-}
-new BitArray:eNpcFlag[e_NPC_FLAGS]<MAX_PLAYERS>;
-
 enum e_NPC_DATA
 {
     NPC_TYPE:e_iType,
@@ -129,16 +113,24 @@ enum e_NPC_DATA
 
     Float:e_fHealth,
 
-    e_iTickCounter_damageAnim,
-    Timer:e_iUpdateTimer,
     e_iChasedId,
     FCNPC_MovePathId,
 
     Float:e_fDistractedX,
     Float:e_fDistractedY,
-    Float:e_fDistractedZ
+    Float:e_fDistractedZ,
+
+    Timer:e_iUpdateTimer,
+    e_iTickCounter_damageAnim,
+    e_iTickCounter_IdleActions
 }
 new eNpcInfo[MAX_PLAYERS][e_NPC_DATA];
+
+enum e_NPC_FLAGS
+{
+    e_bIsUpdateTimerRunning
+}
+new BitArray:eNpcFlag[e_NPC_FLAGS]<MAX_PLAYERS>;
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnGameModeInit --------------------
@@ -148,7 +140,7 @@ hook OnGameModeInit()
     SendRconCommandf("maxnpc %d", MAX_FCNPCS);
 
     Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "Creating FCNPCs...");
-    FCNPC_CreateInfected();
+    //FCNPC_CreateInfected();
     return 1;
 }
 
