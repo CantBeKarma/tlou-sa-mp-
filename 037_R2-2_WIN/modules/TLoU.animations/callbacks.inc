@@ -69,7 +69,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		// When player shived NPC/Player (Remove Shiv model from hand).
 		case KNIFE_KILL_KNIFE_PLAYER:
 		{
-			RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+			HidePlayerWeapon(playerid);
 		}
 
 		// Player got stunned by smoke bomb.
