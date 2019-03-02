@@ -32,14 +32,20 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(PRESSED(KEY_FIRE))
 	{
-		if(IsPlayerAllowedToShiv(playerid))
+		if(!IsPlayerAllowedToShiv(playerid))
 		{
-			new shivedId = GetPlayerFocusedPlayerId(playerid);
+			return 1;
+		}
 
-			if(IsPlayerNPC(shivedId))
-				FCNPC_OnGetShived(shivedId, playerid);
-			else
-				OnPlayerShivPlayer(playerid, shivedId);
+		new shivedId = GetPlayerFocusedPlayerId(playerid);
+
+		if(IsPlayerNPC(shivedId))
+		{
+			FCNPC_OnGetShived(shivedId, playerid);
+		}
+		else
+		{
+			OnPlayerShivPlayer(playerid, shivedId);
 		}
 	}
 	return 1;

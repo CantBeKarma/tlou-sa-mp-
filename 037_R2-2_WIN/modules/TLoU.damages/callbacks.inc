@@ -88,32 +88,13 @@ public OnPlayerDamageHimself(playerid, Float:damageAmount)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount)
 {
-	if(issuerWeaponId != WEAPON_UNARMED)
+	if(issuerWeaponId == WEAPON_UNARMED)
 	{
 		// Doesn't hide weapon if we are hitting someone.
 		KillTimer(ePlayerInfo[issuerId][e_iTimer_HideHud]);
 		ePlayerInfo[issuerId][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", issuerId);
 
-		// Durability logic (reduce upgraded durability or basic one?)
-		new newMeleeDurability = (IsPlayerMeleeUpgraded[issuerId]) ? (GetPlayerMeleeExtCnd[issuerId] - 1) : (GetPlayerMeleeCnd[issuerId] - 1);
-		HudTd_WeakenMeleeWeapon(issuerId, issuerWeaponId, newMeleeDurability);
-
-		// Removes melee weapon if broke.
-		if(newMeleeDurability <= 0)
-		{
-			if(!IsPlayerMeleeUpgraded[issuerId]) RemovePlayerWeapon(issuerId, issuerWeaponId);
-			else
-			{
-				HudTd_HideMeleeUpgradedBars(issuerId, issuerWeaponId);
-				IsPlayerMeleeUpgraded[issuerId] = false;
-
-				if(issuerWeaponId == WEAPON_SCISSOR_PIPE)
-				{
-					GetPlayerMelee[issuerId] = WEAPON_PIPE;
-					SetPlayerWeapon(issuerId, GetPlayerMelee[issuerId], GetPlayerMeleeCnd[issuerId]);
-				}
-			}
-		}
+        DegradePlayerMeleeWeapon(issuerId, issuerWeaponId);
 	}
 
     // Reduced damaged npc health.

@@ -205,15 +205,21 @@ HudTd_DisplayMeleeWeaponBars(playerid, weaponId)
 }
 
 // HUD : Update certain bar of the melee weapon (reduct it from the condition of the melee).
-HudTd_WeakenMeleeWeapon(playerid, weaponId, tdIdx)
+HudTd_UpdateMeleeWeaponCND(playerid, weaponId, tdIdx)
 {
     if(!IsMeleeWeapon(weaponId) || weaponId == WEAPON_UNARMED)
+    {
         return;
+    }
 
     if(!IsPlayerMeleeUpgraded[playerid]) 
+    {
         SetPlayerWeaponAmmo(playerid, weaponId, tdIdx);
+    }
     else
+    {
         GetPlayerMeleeExtCnd[playerid] = tdIdx;
+    }
 
     switch(weaponId)
     {

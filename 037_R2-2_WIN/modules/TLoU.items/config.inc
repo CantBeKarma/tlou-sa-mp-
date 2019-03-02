@@ -63,8 +63,8 @@ enum e_ITEM_DATA
     e_iItem_AudioPickupId,
     e_iItem_SA_WeaponId,
 
-    Float:e_iItem_HeadDmg,
     Float:e_iItem_BodyDmg,
+    Float:e_iItem_HeadDmg,
 
     e_iItem_CraftItemId,
     e_iItem_CraftIngrRequired1,

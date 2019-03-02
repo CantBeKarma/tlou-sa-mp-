@@ -141,39 +141,39 @@ ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Fl
     return 0;
 }
 
+//#region Utils
+
 // Return either if is player looking at the item or not.
-IsPlayerLookingAtItem(playerid)
-{
-    return GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID;
-}
 
-// Check if player is full on the specified ingredient.
-IsPlayerFullOnIngr(playerid, ingrId)
-{
-    return Craft_IngrAmount(playerid, ingrId) >= 300;
-}
+    // Check if player is full on the specified ingredient.
+    IsPlayerFullOnIngr(playerid, ingrId)
+    {
+        return Craft_IngrAmount(playerid, ingrId) >= 300;
+    }
 
-// Check if player has a melee weapon (any or a specific one).
-IsPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
-{
-	new playerMelee = GetPlayerMelee[playerid];
+    // Check if player has a melee weapon (any or a specific one).
+    IsPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
+    {
+        new playerMelee = GetPlayerMelee[playerid];
 
-    if(meleeId == NO_MELEE)
-        return (playerMelee != NO_MELEE && GetPlayerMeleeCnd[playerid] > 0);
-    else
-	    return (playerMelee == meleeId && GetPlayerMeleeCnd[playerid] > 0);
-}
+        if(meleeId == NO_MELEE)
+            return (playerMelee != NO_MELEE && GetPlayerMeleeCnd[playerid] > 0);
+        else
+            return (playerMelee == meleeId && GetPlayerMeleeCnd[playerid] > 0);
+    }
 
-// Check if player has a throwable item (any or a specific one).
-IsPlayerGotThrowableItem(playerid, throwableId = NO_THROWABLE)
-{
-    new playerThrowable = GetPlayerThrowable[playerid];
+    // Check if player has a throwable item (any or a specific one).
+    IsPlayerGotThrowableItem(playerid, throwableId = NO_THROWABLE)
+    {
+        new playerThrowable = GetPlayerThrowable[playerid];
 
-    if(throwableId == NO_THROWABLE)
-        return (playerThrowable != NO_THROWABLE && GetPlayerWeaponAmmo(playerid, playerThrowable) > 0);
-    else
-	    return (playerThrowable == throwableId && GetPlayerWeaponAmmo(playerid, playerThrowable) > 0);
-}
+        if(throwableId == NO_THROWABLE)
+            return (playerThrowable != NO_THROWABLE && GetPlayerWeaponAmmo(playerid, playerThrowable) > 0);
+        else
+            return (playerThrowable == throwableId && GetPlayerWeaponAmmo(playerid, playerThrowable) > 0);
+    }
+
+//#endregion
 
 // Set player ingredient amount to dest. value.
 SetPlayerIngrAmount(playerid, ingrId, amount)

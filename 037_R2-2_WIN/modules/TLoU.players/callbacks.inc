@@ -63,8 +63,6 @@ hook OnPlayerSpawn(playerid)
 	SCMF(playerid, -1, "Check: /icmd createitem and dialog responses");
 	SCMF(playerid, -1, "Check: /checkzdiff");
 	SCMF(playerid, -1, "Check: Don't allow fake shooting when out of ammo (you need another player to test this!)");
-	SCMF(playerid, -1, "Check: CHAT!");
-	SCMF(playerid, -1, "Start using some SVN/Issues log or whatever.");
 	
 	new Float:charHealth = GetPlayerHealthEx(playerid);
 	SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
@@ -324,7 +322,6 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerLookAtPlayer(playerid, lookingAt_playerId)
 {
-	// If no shivs - don't show SHIV label.
 	if(GetPlayerShivs[playerid] <= 0)
 	{
 		return 1;
@@ -338,21 +335,31 @@ public OnPlayerLookAtPlayer(playerid, lookingAt_playerId)
 		interiorId = GetPlayerInterior(playerid);
 
 	// If player is stunned - other players are allowed to shiv that player from any angle.
-	if(Bit_Get(ePlayerFlag[e_bIsStunned], lookingAt_playerId))
+	if(IsPlayerStunned(lookingAt_playerId))
 	{
-		if(!IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-			ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_playerId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
-	}
-	// If player isn't stunned but the other player is behind him.
-	else
-	{
-		GetXYBehindPlayer(lookingAt_playerId, x, y, -1.3);
-		if(IsPlayerInRangeOfPoint(playerid, 0.6, x, y, z))
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
-			if(!IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-				ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_playerId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
+			return 1;
 		}
+
+		ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", \
+															COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_playerId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
+
+		Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
+		return 1;
 	}
+
+	// If player isn't stunned but the other player is behind him.
+	GetXYBehindPlayer(lookingAt_playerId, x, y, -1.3);
+	if(!IsPlayerInRangeOfPoint(playerid, 0.6, x, y, z)
+	|| IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+	{
+		return 1;
+	}
+
+	ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", \
+														COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_playerId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
+
 	Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
 	return 0;
 }
@@ -362,9 +369,19 @@ public OnPlayerLookAtPlayer(playerid, lookingAt_playerId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 {
-	// If no shivs - don't show SHIV label.
-	if(GetPlayerShivs[playerid] <= 0)
+	if(GetPlayerShivs[playerid] <= 0 || FCNPC_GetType(lookingAt_NpcId) == NPC_TYPE:TYPE_BLOATER)
 	{
+		return 1;
+	}
+
+	// If NPC isn't in IDLE state, playing anims or stunned.
+	if(!FCNPC_IsIdle(lookingAt_NpcId) && !FCNPC_IsPlayingAnim(lookingAt_NpcId) && !FCNPC_IsStunned(lookingAt_NpcId))
+	{
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+			Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
+		}
 		return 1;
 	}
 
@@ -375,34 +392,32 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 		virtualWorld = GetPlayerVirtualWorld(playerid),
 		interiorId = GetPlayerInterior(playerid);
 
-	// If NPC is stunned - other players are allowed to shiv that NPC.
+	// If NPC is stunned show the shiv label from any angle.
 	if(FCNPC_IsStunned(lookingAt_NpcId))
 	{
-		if(!IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-			ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
-	}
-	// If NPC isn't stunned (is IDLE and not a Bloater) and other player is behind him.
-	else
-	{
-//		if(eNpcInfo[lookingAt_NpcId][e_iType] == NPC_TYPE_BLOATER)
-		//if(FCNPC_GetType(lookingAt_NpcId) == NPC_TYPE:BLOATER)
-//		|| eNpcInfo[lookingAt_NpcId][e_iCurrentStatus] != NPC_STATUS_IDLE)
-		//{
-			if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-			{
-				DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-				Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
-			}
-		//	return 1;
-		//}
-
-		GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.3);
-		if(IsPlayerInRangeOfPoint(playerid, 0.6, x, y, z))
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
-			if(!IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-				ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
+			return 1;
 		}
+
+		ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", \
+														COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
+
+		Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
+		return 1;
 	}
+
+	GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.3);
+	if(!IsPlayerInRangeOfPoint(playerid, 0.6, x, y, z)
+	|| IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+	{
+		return 1;
+	}
+
+	SCMF_ALL(-1, "Creating your label");
+	ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", \
+														COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
+
 	Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
 	return 0;
 }

@@ -22,8 +22,10 @@ Audio_StopEx(playerid)
 Audio3D_Play(playerid, audioid, Float:x, Float:y, Float:z, Float:distance, bool:ppause = false, bool:loop = false, bool:downmix = false)
 {
     if(Iter_Alloc(iAudioHandle3D<playerid>) == INVALID_ITERATOR_SLOT)
+    {
         return INVALID_ITERATOR_SLOT;
-
+    }
+    
     new audioHandle = Iter_Add(iAudioHandle3D<playerid>, Audio_Play(playerid, audioid, ppause, loop, downmix));
     Audio_Set3DPosition(playerid, audioHandle, x, y, z, distance);
     return audioHandle;

@@ -50,7 +50,10 @@ Backpack_ResizeSelectBox(playerid)
 // Perform anim. with camera backpack opening.
 Perform_BackpackOpening(playerid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid)) return 1;
+    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid))
+    {
+        return 1;
+    }
 
     // If HUD background is flashing - disable it while backpack is opened.
     if(Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid))

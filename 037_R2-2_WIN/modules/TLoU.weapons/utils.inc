@@ -221,7 +221,10 @@ ResetEnum_ePlayerWeapon(playerid)
 			PlayerWeaponBodyDamage[playerid] = eItemsData[weapon_itemId][e_iItem_BodyDmg];
 			PlayerWeaponHeadDamage[playerid] = eItemsData[weapon_itemId][e_iItem_HeadDmg];
 
-			if(IsMeleeWeapon(weaponId)) GivePlayerWeapon(playerid, weaponId, 1);
+			if(IsMeleeWeapon(weaponId))
+			{
+				GivePlayerWeapon(playerid, weaponId, 1);
+			}
 			else if(IsBulletWeapon(weaponId))
 			{
 				GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
