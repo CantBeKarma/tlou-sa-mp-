@@ -3,10 +3,11 @@
 #include ".\modules\TLoU.audio\utils.inc"
 #include ".\modules\TLoU.backpack\utils.inc"
 #include ".\modules\TLoU.characters\utils.inc"
-#include ".\modules\TLoU.damages\utils.inc"
+
 #include ".\modules\TLoU.fire\utils.inc"
 #include ".\modules\TLoU.items\utils.inc"
 #include ".\modules\TLoU.npcs\utils.inc"
+#include ".\modules\TLoU.damages\utils.inc"
 #include ".\modules\TLoU.players\utils.inc"
 #include ".\modules\TLoU.registerLogin\utils.inc"
 #include ".\modules\TLoU.textdraws\utils.inc"
