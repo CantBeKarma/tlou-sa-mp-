@@ -120,6 +120,10 @@ enum e_NPC_DATA
     Float:e_fDistractedY,
     Float:e_fDistractedZ,
 
+    e_iRoamAreaId,
+    Float:e_iRoamAreaCenterX,
+    Float:e_iRoamAreaCenterY,
+
     Timer:e_iUpdateTimer,
     e_iTickCounter_damageAnim,
     e_iTickCounter_IdleActions

@@ -66,7 +66,7 @@
 	}
 
 	// Set NPC a new status.
-	FCNPC_SetStatus(npcid, NPC_STATUS:status)
+	FCNPC_SetStatus(npcid, NPC_STATUS:status, Float:roamX = 0.0, Float:roamY = 0.0)
 	{
 		if(FCNPC_GetStatus(npcid) == status)
 		{
@@ -93,14 +93,25 @@
 			case STATUS_ROAM:
 			{
 				new Float:x, Float:y, Float:z;
-				FCNPC_GetPosition(npcid, x, y, z);
-				FCNPC_OnRoam(npcid, (x + random(2)), (y + random(2)), z);
+				if(floatcmp(roamX, 0.0) == 0 && floatcmp(roamY, 0.0) == 0)
+				{
+					FCNPC_GetPosition(npcid, x, y, z);
+					roamX = x;
+					roamY = y;
+				}
+				
+				FCNPC_OnRoam(npcid, (roamX + random(2)), (roamY + random(2)), z);
 			}
 
 			case STATUS_CHASE: {}
 			case STATUS_ATTACK: {}
 			case STATUS_DISTRACTED: {}
-			case STATUS_BURNING: {}
+			
+			case STATUS_BURNING:
+			{
+				FCNPC_OnStartBurning(npcid);
+			}
+
 			case STATUS_STUNNED: {}
 
 			case STATUS_DEAD:
@@ -157,9 +168,10 @@
 //#region Animations
 
 	// Custom SetAnimation for FCNPC.
-	FCNPC_SetAnimCallback(npcid, animationid)
+	FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 	{
-		if(FCNPC_IsPlayingAnim(npcid) || FCNPC_IsDeadEx(npcid))
+		if(FCNPC_IsDeadEx(npcid) && animationid != KNIFE_KILL_KNIFE_PED_DAMAGE // Is dead and not playing 'knifed' animation.
+		|| FCNPC_IsDeadEx(npcid) && animationid != BASEBALL_BAT_HIT_3) // Is dead and not playing 'fly back' animation when shot by shotgun.
 		{
 			return;
 		}
@@ -167,17 +179,20 @@
 		new tickCounter = -11;
 		switch(animationid)
 		{
-			case KISSING_GF_CARARGUE_02: 	   	tickCounter = -40;
-			case PED_GETUP: 				   	tickCounter = -20;
-			case PED_FLEE_LKAROUND_01: 	   		tickCounter = -30;
-			case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -35;
+			// IDLE
+			case KISSING_GF_CARARGUE_02: 	   	tickCounter = -20; 
+			case PED_FLEE_LKAROUND_01: 	   		tickCounter = -15;
+			
+			case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -30; // KNIFED
+			case BASEBALL_BAT_HIT_3:			tickCounter = -8;  // SHOT BY SHOTGUN
+			case PED_GETUP: 				   	tickCounter = -4;  // GET UP
 		}
 		
-		FCNPC_ClearAnims(npcid);
+		//FCNPC_ClearAnims(npcid);
 		eNpcInfo[npcid][e_iPlayingAnim_Tick] = tickCounter;
 		eNpcInfo[npcid][e_iPlayingAnim_Index] = animationid;
 		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_PLAYING_ANIM);
-		FCNPC_SetAnimation(npcid, animationid, 4.1, 0, 1, 1, 0, 0);
+		FCNPC_SetAnimation(npcid, animationid, 4.1, 0, 1, 1, freeze, 0);
 	}
 
 	// Return current FCNPCs animation index.
@@ -234,6 +249,12 @@
 		if(weaponid == WEAPON_SHIV)
 		{
 			FCNPC_SetAnimCallback(npcid, KNIFE_KILL_KNIFE_PED_DAMAGE);
+			return;
+		}
+
+		if(weaponid == WEAPON_MOLOTOV)
+		{
+			FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 0, 1, 1, 1, 0);
 			return;
 		}
 
@@ -312,6 +333,32 @@
 		{
 			eNpcInfo[npcid][e_iPlayingAnim_Tick]++;
 			return false;
+		}
+	}
+
+//#endregion
+
+//#region Areas managment
+
+	// Create NPC roam area.
+	CreateNpcRoamArea(npcid)
+	{
+		new Float:x, Float:y, Float:z;
+		FCNPC_GetPosition(npcid, x, y, z);
+
+		eNpcInfo[npcid][e_iRoamAreaId] = CreateDynamicCircle(x, y, 10.0);
+		eNpcInfo[npcid][e_iRoamAreaCenterX] = x;
+		eNpcInfo[npcid][e_iRoamAreaCenterY] = y;
+	}
+
+	// Destroy NPC roam area.
+	DestroyNpcRoamArea(npcid)
+	{
+		if(IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
+		{
+			DestroyDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]);
+			eNpcInfo[npcid][e_iRoamAreaCenterX] = 0.0;
+			eNpcInfo[npcid][e_iRoamAreaCenterY] = 0.0;
 		}
 	}
 
@@ -410,6 +457,19 @@
 		return skinid;
 	}
 
+	// Check if FCNPC is in a fire area.
+	FCNPC_IsInFireArea(npcid, areaid)
+	{
+		foreach(new i : ServerFires)
+		{
+			if(areaid == eFireData[i][e_iFireAreaId])
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 //#endregion
 
 
@@ -445,16 +505,6 @@
 // 		&& !FCNPC_IsBurning(npcid) 
 // 		&& !FCNPC_IsDeadEx(npcid) 
 // 		&& FCNPC_IsTimerRunning(npcid);
-// }
-
-// // Put NPC in a fire state.
-// FCNPC_SetOnFire(npcid)
-// {
-// 	if(!FCNPC_IsTimerRunning(npcid) || FCNPC_IsBurning(npcid))
-// 		return;
-
-// 	Bit_Let(eNpcFlag[e_bIsBurning], npcid);
-// 	FCNPC_OnBurn(npcid);
 // }
 
 // // Puts NPC in a stunned state.
