@@ -137,9 +137,14 @@ public OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------- OnMolotovExplode --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnMolotovExplode(projid, throwerid, Float:x, Float:y, Float:z)
+public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 {
     CreateProjectileDestroyEffect(WEAPON_MOLOTOV, projid, x, y, z);
+
+    if(IsPlayerNPC(hitid) && !FCNPC_IsBurning(hitid))
+    {
+        FCNPC_SetStatus(hitid, NPC_STATUS:STATUS_BURNING);
+    }
 
     // foreach(new npcid : FCNPC)
     // {
@@ -264,7 +269,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 
             case WEAPON_MOLOTOV:
             {
-                OnMolotovExplode(projid, throwerid, x, y, z);
+                OnMolotovExplode(projid, throwerid, (type == PROJECTILE_COLLIDE_PLAYER) ? (extraid) : (INVALID_PLAYER_ID), x, y, z);
             }
 
             case WEAPON_SMOKE_BOMB:
@@ -442,13 +447,13 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     }
 
     // Creates projectile destroy effect based on the weaponId.
-    CreateProjectileDestroyEffect(weaponId, projid, Float:x, Float:y, Float:z)
+    CreateProjectileDestroyEffect(weaponId, projid, Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_ID)
     {
         switch(weaponId)
         {
             case WEAPON_MOLOTOV:
             {
-                CreateFire(x, y, z);
+                CreateFire(x, y, z, throwerid);
             }
 
             case WEAPON_NAIL_BOMB:
