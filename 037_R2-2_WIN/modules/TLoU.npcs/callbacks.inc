@@ -1,5 +1,25 @@
+#include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
 
 //#region Main initiation FCNPC callbacks
+
+
+	hook OnPlayerEnterDynArea(playerid, areaid)
+	{
+		if(IsPlayerNPC(playerid))
+		{
+			FCNPC_OnEnterDynArea(playerid, areaid);
+		}
+		return 0;
+	}
+
+	hook OnPlayerLeaveDynArea(playerid, areaid)
+	{
+		if(IsPlayerNPC(playerid))
+		{
+			FCNPC_OnLeaveDynArea(playerid, areaid);
+		}
+		return 0;
+	}
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//----------------------- FCNPC_OnCreate ------------------------
@@ -35,6 +55,8 @@
 		PreloadAnimations(npcid);
 		FCNPC_SetHealthEx(npcid, 100.0);
 		SetPlayerTeam(npcid, FACTION_NONE);
+
+		CreateNpcRoamArea(npcid);
 		
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[SPAWN]: NPC ID: %d", npcid);
 		return 1;
@@ -45,8 +67,12 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnRespawn(npcid)
 	{
+		FCNPC_ClearAnims(npcid);
+		RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
 		FCNPC_SetHealthEx(npcid, 100.0);
+		CreateNpcRoamArea(npcid);
+
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[RESPAWN]: NPC ID: %d", npcid);
 		return 1;
 	}
@@ -56,8 +82,10 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart)
 	{
-		defer FCNPC_DelayRespawn(npcid);
+		DestroyNpcRoamArea(npcid);
 		FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart);
+
+		defer FCNPC_DelayRespawn(npcid);
 
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DEATH]: NPC ID: %d | KILLER ID: %d | WEAPON ID: %d | BODYPART: %d", npcid, killerid, weaponid, bodypart);
 		return 1;
@@ -70,10 +98,17 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 {
+	if(!IsPlayerInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]))
+	{
+		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_iRoamAreaCenterX], eNpcInfo[npcid][e_iRoamAreaCenterY]);
+		return 0;
+	}
+
 	switch(FCNPC_GetStatus(npcid))
 	{
 		case STATUS_IDLE:			FCNPC_OnIdle(npcid);
 		case STATUS_PLAYING_ANIM:	FCNPC_OnPlayingAnim(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
+		case STATUS_BURNING:		FCNPC_OnBurning(npcid);
 	}
 	return 0;
 }
@@ -115,20 +150,16 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 		switch(animIdx)
 		{
 			// Knifed by other player.
-			// case KNIFE_KILL_KNIFE_PED_DAMAGE:
-			// {
-			// 	FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);
-			// }
+			case KNIFE_KILL_KNIFE_PED_DAMAGE:
+			{
+				FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);
+			}
 
-			// Looking around animation.
-			// (can be set from random anims or played when distracted).
-			// case PED_FLEE_LKAROUND_01:
-			// {
-			// 	if(FCNPC_IsDistracted(npcid))
-			// 	{
-			// 		FCNPC_GoToWithAnim(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ]+1.0);
-			// 	}
-			// }
+			// Shot in stomach by shotgun (flew back on impact).
+			case BASEBALL_BAT_HIT_3:
+			{
+				FCNPC_SetAnimCallback(npcid, PED_GETUP);
+			}
 
 			default:
 			{
@@ -144,7 +175,7 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnRoam(npcid, Float:target_x, Float:target_y, Float:target_z)
 	{
-		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ROAM: NPCID (%d)", npcid);
+		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ROAM: NPCID (%d)", npcid);
 
 		switch(random(2))
 		{
@@ -275,6 +306,69 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		new Float:x, Float:y, Float:z;
 		GetPlayerPos(shiverId, x, y, z);
 		Audio3D_Play(shiverId, RandomEx(AUDIO_CLICKER_DEATH01, AUDIO_CLICKER_DEATH03), x, y, z, DIST3D_CLICKER_SHIVED, .downmix = true);
+		return 0;
+	}
+
+//#endregion
+
+//#region Area managment
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//-------------------- FCNPC_OnEnterDynArea ---------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnEnterDynArea(npcid, areaid)
+	{
+		if(FCNPC_IsDeadEx(npcid))
+		{
+			return 1;
+		}
+
+		if(FCNPC_IsInFireArea(npcid, areaid))
+		{
+			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_BURNING);
+		}
+
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//--------------------- FCNPC_OnLeaveDynArea --------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnLeaveDynArea(npcid, areaid)
+	{
+		if(FCNPC_IsDeadEx(npcid) || FCNPC_IsBurning(npcid))
+		{
+			return 1;
+		}
+
+		if(areaid == eNpcInfo[npcid][e_iRoamAreaId])
+		{
+			SCMF_ALL(-1, "NPCID: %d left its roam area. Heading back!", npcid);
+			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_iRoamAreaCenterX], eNpcInfo[npcid][e_iRoamAreaCenterY]);
+		}
+		return 0;
+	}
+
+//#endregion
+
+//#region Burn managment callbacks
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//--------------------- FCNPC_OnStartBurning --------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnStartBurning(npcid)
+	{
+		SPAO(npcid, OBJECT_MODEL_BURNING);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//---------------------- FCNPC_OnBurning ------------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnBurning(npcid)
+	{
+		FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 1, 1, 1, 0, 0);
+		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - 10.0, .weaponid = WEAPON_MOLOTOV);
 		return 0;
 	}
 
@@ -451,20 +545,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 // 	return 1;
 // }
 
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //------------------------ FCNPC_OnBurn -------------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnBurn(npcid)
-// {
-// 	if(eNpcInfo[npcid][e_iType] == NPC_TYPE_BLOATER) { }
-// 	else
-// 	{
-// 		FCNPC_SetAnimation(npcid, PED_KO_SHOT_FRONT, 4.1, 0, 1, 1, 1, 0);
-// 		FCNPC_OnDeathEx(npcid, INVALID_PLAYER_ID, WEAPON_MOLOTOV, BODY_PART_TORSO);
-// 	}
-// 	SPAO(npcid, OBJECT_MODEL_BURNING);
-// 	return 0;
-// }
+
 
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // //------------------------ FCNPC_OnUpdate -----------------------

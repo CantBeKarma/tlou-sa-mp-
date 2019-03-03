@@ -65,7 +65,7 @@ forward OnPlayerDropNailbomb(playerid);
 forward OnPlayerTriggerNailbomb(triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward OnPlayerGetStunned(playerid);
 
-forward OnMolotovExplode(projid, throwerid, Float:x, Float:y, Float:z);
+forward OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z);
 forward OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z);
 forward OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, Float:z);
 forward OnNailbombInitiate(nailBmbIdx, throwerid, Float:x, Float:y, Float:z);
@@ -78,7 +78,8 @@ forward FCNPC_OnAttackPlayer(npcid, chaseid, Float:chaseId_oldHealth, Float:chas
 forward FCNPC_OnAnimFinish(npcid, animIdx);
 forward FCNPC_OnPlayingAnim(npcid, animIdx);
 forward FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart);
-forward FCNPC_OnBurn(npcid);
+forward FCNPC_OnStartBurning(npcid);
+forward FCNPC_OnBurning(npcid);
 forward FCNPC_OnGetArrowShot(npcid, damagerid);
 forward FCNPC_OnGetShived(npcid, shiverId);
 forward FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount);
@@ -86,6 +87,8 @@ forward FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmo
 forward FCNPC_OnGetDistracted(npcid, Float:distractPointX, Float:distractPointY, Float:distractPointZ);
 forward FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward FCNPC_OnGetStunnedBySmokeBomb(npcid);
+forward FCNPC_OnEnterDynArea(npcid, areaid);
+forward FCNPC_OnLeaveDynArea(npcid, areaid);
 
 forward OnPlayerLookAtItem(playerid, item_objectId);
 forward OnPlayerPickUpItem(playerid, item_objectId);
