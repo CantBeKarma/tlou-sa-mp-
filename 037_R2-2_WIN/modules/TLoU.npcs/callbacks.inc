@@ -327,7 +327,6 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		{
 			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_BURNING);
 		}
-
 		return 0;
 	}
 
