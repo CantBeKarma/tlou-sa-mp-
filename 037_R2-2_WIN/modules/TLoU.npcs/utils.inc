@@ -73,7 +73,9 @@
 			return true;
 		}
 
-		if(FCNPC_IsDeadEx(npcid) && status != NPC_STATUS:STATUS_IDLE)
+		if(FCNPC_IsDeadEx(npcid) && status != NPC_STATUS:STATUS_IDLE
+		|| FCNPC_IsBurning(npcid) && status == NPC_STATUS:STATUS_STUNNED
+		|| FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_NONE && status != NPC_STATUS:STATUS_IDLE)
 		{
 			return false;
 		}
@@ -100,7 +102,7 @@
 					roamY = y;
 				}
 				
-				FCNPC_OnRoam(npcid, (roamX + random(2)), (roamY + random(2)), z);
+				FCNPC_OnRoam(npcid, (roamX + random(2) + 1.0), (roamY + random(2) + 1.0), z);
 			}
 
 			case STATUS_CHASE: {}
@@ -112,7 +114,19 @@
 				FCNPC_OnStartBurning(npcid);
 			}
 
-			case STATUS_STUNNED: {}
+			case STATUS_STUNNED:
+			{
+				// THIS NEED REWORDS. NO MORE WAIT_MS
+				FCNPC_OnGetStunned(npcid);
+
+				FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
+				//wait_ms(3000);
+
+				FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
+				//wait_ms(2000);
+
+				FCNPC_OnShakeOffStun(npcid);
+			}
 
 			case STATUS_DEAD:
 			{
@@ -170,18 +184,22 @@
 	// Custom SetAnimation for FCNPC.
 	FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 	{
-		if(FCNPC_IsDeadEx(npcid) && animationid != KNIFE_KILL_KNIFE_PED_DAMAGE // Is dead and not playing 'knifed' animation.
-		|| FCNPC_IsDeadEx(npcid) && animationid != BASEBALL_BAT_HIT_3) // Is dead and not playing 'fly back' animation when shot by shotgun.
+		if(FCNPC_IsDeadEx(npcid) && animationid != KNIFE_KILL_KNIFE_PED_DAMAGE) // Is dead and not playing 'knifed' animation.
+		{
+			return;
+		} 
+		
+		if(FCNPC_IsDeadEx(npcid) && animationid != BASEBALL_BAT_HIT_3) // Is dead and not playing 'fly back' animation when shot by shotgun.
 		{
 			return;
 		}
 
-		new tickCounter = -11;
+		new tickCounter = -6;
 		switch(animationid)
 		{
 			// IDLE
-			case KISSING_GF_CARARGUE_02: 	   	tickCounter = -20; 
-			case PED_FLEE_LKAROUND_01: 	   		tickCounter = -15;
+			case KISSING_GF_CARARGUE_02: 	   	tickCounter = -10; 
+			case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10;
 			
 			case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -30; // KNIFED
 			case BASEBALL_BAT_HIT_3:			tickCounter = -8;  // SHOT BY SHOTGUN
@@ -505,32 +523,6 @@
 // 		&& !FCNPC_IsBurning(npcid) 
 // 		&& !FCNPC_IsDeadEx(npcid) 
 // 		&& FCNPC_IsTimerRunning(npcid);
-// }
-
-// // Puts NPC in a stunned state.
-// FCNPC_Stun(npcid)
-// {
-// 	if(!FCNPC_IsTimerRunning(npcid) || FCNPC_IsStunned(npcid) || FCNPC_IsDeadEx(npcid))
-// 		return false;
-
-// 	Bit_Let(eNpcFlag[e_bIsStunned], npcid);
-
-// 	FCNPC_OnGetStunnedBySmokeBomb(npcid);
-// 	FCNPC_StopUpdateTimer(npcid);
-
-// 	FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
-// 	wait_ms(3000);
-
-// 	FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
-// 	wait_ms(2000);
-	
-// 	if(!FCNPC_IsDeadEx(npcid))
-// 	{
-// 		FCNPC_ClearAnims(npcid);
-// 		FCNPC_StartUpdateTimer(npcid);
-// 	}
-// 	Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
-// 	return true;
 // }
 
 // // Put NPC in the chase state after given playerid (chaseid).

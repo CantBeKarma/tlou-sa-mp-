@@ -373,6 +373,24 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 
 //#endregion
 
+//#region Stunned states callbacks
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//---------------------- FCNPC_OnGetStunned ---------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnGetStunned(npcid)
+	{
+		return 0;
+	}
+
+	forward FCNPC_OnShakeOffStun(npcid);
+	public FCNPC_OnShakeOffStun(npcid)
+	{
+		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+		return 0;
+	}
+
+//#endregion
 
 // 	// if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
 // 	// {
@@ -551,25 +569,6 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // public FCNPC_OnUpdate(npcid)
 // {
-// 	// Checks if NPCs animation has finished.
-// 	if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
-// 	{
-// 		eNpcInfo[npcid][e_iAnimTick] += 1;
-// 		if(FCNPC_GetAnimationIndex(npcid) != eNpcInfo[npcid][e_iAnimIdx] || eNpcInfo[npcid][e_iAnimTick] >= 0)
-// 		{
-// 			Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);
-// 			FCNPC_OnAnimFinish(npcid, eNpcInfo[npcid][e_iAnimIdx]);
-// 		}
-// 	}
-
-// 	// Detects if NPC got into fire area.
-// 	foreach(new i : ServerFires)
-// 	{
-// 		if(IsPlayerInRangeOfPoint(npcid, FIRE_RANGE + 1.5, eFireData[i][e_fFirePos_X], eFireData[i][e_fFirePos_Y], eFireData[i][e_fFirePos_Z]))
-// 		{
-// 			FCNPC_SetOnFire(npcid);
-// 		}
-// 	}
 
 // 	// Detects if NPC got shot by player's arrow.
 // 	foreach(new playerid : Player)
@@ -710,10 +709,5 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 // {
 // 	FCNPC_DestroyMovePath(pathid);
 // 	FCNPC_StartUpdateTimer(npcid);	
-// 	return 0;
-// }
-
-// public FCNPC_OnGetStunnedBySmokeBomb(npcid)
-// {
 // 	return 0;
 // }
