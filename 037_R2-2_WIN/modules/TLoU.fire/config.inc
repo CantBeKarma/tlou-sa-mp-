@@ -22,7 +22,8 @@ enum e_FIRE_DATA
     Float:e_fFirePos_X,
     Float:e_fFirePos_Y,
     Float:e_fFirePos_Z,
-    e_iFireAreaId
+    e_iFireAreaId,
+    e_iFireCreatorId
 }
 new eFireData[MAX_POSSIBLE_FIRES][e_FIRE_DATA];
 

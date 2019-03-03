@@ -1,5 +1,5 @@
 // Function creates a fire objects and configures settings.
-CreateFire(Float:x, Float:y, Float:z)
+CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
 {
     new fireId = Iter_Alloc(ServerFires);
     if(fireId == INVALID_ITERATOR_SLOT)
@@ -26,6 +26,7 @@ CreateFire(Float:x, Float:y, Float:z)
 
         eFireData[fireId][e_iFireObjectId][i] = CreateDynamicObject(FIRE_MODEL_ID, eFireData[fireId][e_fFirePos_X], eFireData[fireId][e_fFirePos_Y], eFireData[fireId][e_fFirePos_Z], 0.0, 0.0, 0.0);
         eFireData[fireId][e_iFireAreaId] = CreateDynamicCircle(eFireData[fireId][e_fFirePos_X], eFireData[fireId][e_fFirePos_Y], FIRE_RANGE);
+        eFireData[fireId][e_iFireCreatorId] = fireCreatorId;
     }
 
     foreach(new playerid : Player)
