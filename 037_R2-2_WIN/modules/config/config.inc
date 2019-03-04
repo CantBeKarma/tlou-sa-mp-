@@ -9,6 +9,7 @@
 #define		MAX_PATHFINDER_THREADS	(1) // = MAX_FCNPCS (CHANGE WHEN NECESSARY SINCE I CAN'T ACCESS IT!)
 
 // ON-CLIENT DISPLAY SETTINGS
+//#define		USE_VPS
 #define     SAMP_VERSION            "0.3.7-R3"
 
 #define     GAMEMODE_HOST           "The Last of Us (SA-MP)"
@@ -128,9 +129,9 @@ hook OnGameModeInit()
 
 	Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "Setting up server display settings on SA-MP Client. Please wait...");
 
-	#if defined USE_MYSQL_VPS
+	#if defined USE_VPS
  
-		SendRconCommand("hostname "GAMEMODE_HOST"");
+		//SendRconCommand("hostname "GAMEMODE_HOST"");
 	    SendRconCommand("game modetext "GAMEMODE_MODE"");
 	   	SendRconCommand("mapname "GAMEMODE_AREA"");
 	   	SendRconCommand("weburl "GAMEMODE_WEBURL"");
