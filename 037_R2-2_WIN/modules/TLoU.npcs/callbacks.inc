@@ -402,10 +402,19 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 
 //#endregion
 
-// 	// if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_DISTRACTED)
-// 	// {
-// 	// 	return 1;
-// 	// }
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------- FCNPC_OnGetDistracted ---------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnGetDistracted(npcid, Float:x, Float:y, Float:z)
+{
+	DestroyNpcRoamArea(npcid);
+	FCNPC_SetAnimCallback(npcid, PED_FLEE_LKAROUND_01);
+
+	eNpcInfo[npcid][e_fDistractedX] = x;
+	eNpcInfo[npcid][e_fDistractedY] = y;
+	eNpcInfo[npcid][e_fDistractedZ] = z;
+	return 0;
+}
 
 // 	foreach(new chaseid : Player)
 // 	{
@@ -542,18 +551,6 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 // 		}
 // 	}
 // 	return 0;
-// }
-
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //------------------- FCNPC_OnGetDistracted ---------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnGetDistracted(npcid, Float:distractPointX, Float:distractPointY, Float:distractPointZ)
-// {
-// 	eNpcInfo[npcid][e_fDistractedX] = distractPointX;
-// 	eNpcInfo[npcid][e_fDistractedY] = distractPointY;
-// 	eNpcInfo[npcid][e_fDistractedZ] = distractPointZ;
-// 	FCNPC_SetAnimCallback(npcid, PED_FLEE_LKAROUND_01);
-//     return 0;
 // }
 
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

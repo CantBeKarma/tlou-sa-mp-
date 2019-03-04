@@ -73,15 +73,11 @@
 			return true;
 		}
 
-		if(FCNPC_IsDeadEx(npcid) && status != NPC_STATUS:STATUS_IDLE
-		|| FCNPC_IsBurning(npcid) && status == NPC_STATUS:STATUS_STUNNED
-		|| FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_NONE && status != NPC_STATUS:STATUS_IDLE)
+		if(FCNPC_IsDeadEx(npcid) && status != NPC_STATUS:STATUS_NONE
+		|| FCNPC_IsNpcDisabled(npcid) && status != NPC_STATUS:STATUS_IDLE)
 		{
 			return false;
 		}
-
-		eNpcInfo[npcid][e_iCurrentStatus] = status;
-		SCMF_ALL(-1, "Setting status: %d", _:status);
 
 		switch(status)
 		{
@@ -107,7 +103,28 @@
 
 			case STATUS_CHASE: {}
 			case STATUS_ATTACK: {}
-			case STATUS_DISTRACTED: {}
+			case STATUS_DISTRACTED:
+			{
+				if(FCNPC_IsBurning(npcid) || FCNPC_IsStunned(npcid))
+				{
+					return false;
+				}
+
+				if(floatcmp(roamX, 0.0) == 0 && floatcmp(roamY, 0.0) == 0)
+				{
+					return false;
+				}
+
+				new Float:z;
+				FCNPC_GetPosition(npcid, z, z, z);
+				
+				if(!IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, roamX, roamY, z))
+				{
+					return false;
+				}
+
+				FCNPC_OnGetDistracted(npcid, roamX, roamY, z);
+			}
 			
 			case STATUS_BURNING:
 			{
@@ -116,6 +133,11 @@
 
 			case STATUS_STUNNED:
 			{
+				if(FCNPC_IsBurning(npcid))
+				{
+					return false;
+				}
+
 				FCNPC_OnGetStunned(npcid);
 			}
 
@@ -137,6 +159,10 @@
 		{
 			FCNPC_StartUpdateTimer(npcid);
 		}
+
+
+		eNpcInfo[npcid][e_iCurrentStatus] = status;
+		SCMF_ALL(-1, "Setting status: %d", _:status);
 		return true;
 	}
 
@@ -377,6 +403,7 @@
 
 //#region Utils
 
+	FCNPC_IsNpcDisabled(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_IDLE);
 	FCNPC_IsBurning(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_BURNING);
 	FCNPC_IsStunned(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
 	FCNPC_IsPlayingAnim(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
@@ -481,7 +508,7 @@
 		return false;
 	}
 	
-	// Prepares FCNPC for (re)spawn (first spawn or not supported).
+	// Prepares FCNPC for (re)spawn (first spawn or not are both supported).
 	FCNPC_PrepareForSpawn(npcid, bool:firstSpawn = false)
 	{
 		if(firstSpawn)
@@ -492,41 +519,16 @@
 		else if(!firstSpawn)
 		{
 			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 		}
 
 		FCNPC_ClearAnims(npcid);
-		RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 
 		FCNPC_SetHealthEx(npcid, 100.0);
 		CreateNpcRoamArea(npcid);
 	}
 
 //#endregion
-
-
-// // -> Prepare data for NPC on spawn.
-// FCNPC_ResetAllData(npcid)
-// {
-// 	ResetEnum_eNpcInfo(npcid);
-// 	ResetEnum_eNpcFlag(npcid);
-
-// 	FCNPC_ClearAnims(npcid);
-//     FCNPC_SetInterior(npcid, 0);
-// 	FCNPC_SetVirtualWorld(npcid, 0);
-// 	FCNPC_SetStatus(npcid, NPC_STATUS:IDLE);
-
-// 	SetPlayerTeam(npcid, FACTION_NONE);
-// 	RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
-
-// 	// if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]))
-// 	// {
-// 	// 	FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
-// 	// }
-
-// 	Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[RESET] Data has been reset for NPC ID: %d", npcid);
-// }
-
-
 
 // // Check if NPC is not: stunned, burning, dead and its timer is running.
 // FCNPC_IsAllowedToDoAction(npcid)
@@ -579,86 +581,4 @@
 
 // 	PathFinder_FindWay(npcid, npcPosX, npcPosY, chasePosX, chasePosY, PATHFINDER_Z_DIFF, PATHFINDER_STEP_SIZE, PATHFINDER_STEP_LIMIT, PATHFINDER_MAX_STEPS);
 // 	return 0;
-// }
-
-// // Distract NPC (force it to go to the specific location).
-// FCNPC_Distract(npcid, Float:x, Float:y, Float:z, bool:force = false)
-// {
-// 	if(!FCNPC_IsAllowedToDoAction(npcid) || !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
-// 	{
-// 		return 1;
-// 	}
-
-// 	if(force)
-// 	{
-// 		FCNPC_StopUpdateTimer(npcid);
-// //		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_DISTRACTED;
-// 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
-// 		FCNPC_OnGetDistracted(npcid, x, y, z);
-// 		return 0;
-// 	}
-
-// //    if (eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_IDLE)
-// //    || (eNpcInfo[npcid][e_iType] == NPC_TYPE_CLICKER && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING)
-// //	|| (eNpcInfo[npcid][e_iType] == NPC_TYPE_CLICKER && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH))
-//    // {
-// 		FCNPC_StopUpdateTimer(npcid, true);
-// //        eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_DISTRACTED;
-
-// 		FCNPC_OnGetDistracted(npcid, x, y, z);
-// 	//}
-// 	return 0;
-// }
-
-// // Start NPC update timer.
-// FCNPC_StartUpdateTimer(npcid)
-// {
-// 	if(FCNPC_IsTimerRunning(npcid))
-// 		return;
-
-// 	SCMF_ALL(-1, "NPC timer started");
-// //	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
-
-// 	Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
-// 	eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
-
-// 	if(FCNPC_IsStunned(npcid))
-// 		Bit_Vet(eNpcFlag[e_bIsStunned], npcid);
-	
-// 	if(FCNPC_IsBurning(npcid))
-// 		Bit_Vet(eNpcFlag[e_bIsBurning], npcid);
-
-// 	if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
-// 		Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);
-// }
-
-// // Stop NPC update timer.
-// FCNPC_StopUpdateTimer(npcid, bool:force = false)
-// {
-// 	if(force)
-// 	{
-// 		stop eNpcInfo[npcid][e_iUpdateTimer];
-// 		FCNPC_Stop(npcid);
-// 		FCNPC_ClearAnims(npcid);
-// 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
-// //		eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
-// 	}
-
-// 	if(!FCNPC_IsTimerRunning(npcid))
-// 		return;
-		
-// 	SCMF_ALL(-1, "NPC timer stopped");
-// 	stop eNpcInfo[npcid][e_iUpdateTimer];
-// //	eNpcInfo[npcid][e_iCurrentStatus] = NPC_STATUS_IDLE;
-
-// 	if(Bit_Get(eNpcFlag[e_bAnimPlaying], npcid))
-// 		Bit_Vet(eNpcFlag[e_bAnimPlaying], npcid);
-
-// 	if(FCNPC_IsMoving(npcid))
-// 	{
-// 		FCNPC_Stop(npcid);
-// 		FCNPC_ClearAnims(npcid);
-// 	}
-
-// 	Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 // }
