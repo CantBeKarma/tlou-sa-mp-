@@ -161,6 +161,23 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 				FCNPC_SetAnimCallback(npcid, PED_GETUP);
 			}
 
+			case PED_GAS_CWR:
+			{
+				if(FCNPC_IsStunned(npcid))
+				{
+					FCNPC_SetAnimCallback(npcid, PED_IDLE_TIRED);
+				}
+			}
+
+			case PED_IDLE_TIRED:
+			{
+				if(FCNPC_IsStunned(npcid))
+				{
+					FCNPC_OnShakeOffStun(npcid);
+					FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+				}
+			}
+
 			default:
 			{
 				FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
@@ -383,7 +400,9 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		return 0;
 	}
 
-	forward FCNPC_OnShakeOffStun(npcid);
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//--------------------- FCNPC_OnShakeOffStun --------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnShakeOffStun(npcid)
 	{
 		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);

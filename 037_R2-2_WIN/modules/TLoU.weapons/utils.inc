@@ -1,8 +1,8 @@
 // Clearing weapons data for player.
 ResetEnum_ePlayerWeapon(playerid)
 {
-    static sBlank[e_PLAYER_WEAPONS_DATA];
-    ePlayerWeapon[playerid] = sBlank;
+	static sBlank[e_PLAYER_WEAPONS_DATA];
+	ePlayerWeapon[playerid] = sBlank;
 
 	print("ResetEnum_ePlayerWeapon");
 }
@@ -35,7 +35,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		{
 			TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][0]);
 			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][1]);
-		}	
+		}
 	}
 
 	// Hide player custom-crosshair.
@@ -51,7 +51,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		if(!IsPlayerAimingWeapon(playerid))
 			return;
 
-		if(bodypart == BODY_PART_HEAD) 
+		if(bodypart == BODY_PART_HEAD)
 		{
 			TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Aim][2]);
 			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][3]);

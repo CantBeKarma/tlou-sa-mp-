@@ -102,7 +102,7 @@
 					roamY = y;
 				}
 				
-				FCNPC_OnRoam(npcid, (roamX + random(2) + 1.0), (roamY + random(2) + 1.0), z);
+				FCNPC_OnRoam(npcid, (roamX + random(2) + 0.5), (roamY + random(2) + 0.5), z);
 			}
 
 			case STATUS_CHASE: {}
@@ -116,16 +116,13 @@
 
 			case STATUS_STUNNED:
 			{
-				// THIS NEED REWORDS. NO MORE WAIT_MS
 				FCNPC_OnGetStunned(npcid);
+				FCNPC_SetAnimCallback(npcid, PED_GAS_CWR);
 
-				FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
+				//FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
 				//wait_ms(3000);
-
-				FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
+				//FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
 				//wait_ms(2000);
-
-				FCNPC_OnShakeOffStun(npcid);
 			}
 
 			case STATUS_DEAD:
@@ -184,12 +181,8 @@
 	// Custom SetAnimation for FCNPC.
 	FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 	{
-		if(FCNPC_IsDeadEx(npcid) && animationid != KNIFE_KILL_KNIFE_PED_DAMAGE) // Is dead and not playing 'knifed' animation.
-		{
-			return;
-		} 
-		
-		if(FCNPC_IsDeadEx(npcid) && animationid != BASEBALL_BAT_HIT_3) // Is dead and not playing 'fly back' animation when shot by shotgun.
+		if(FCNPC_IsDeadEx(npcid) && animationid != KNIFE_KILL_KNIFE_PED_DAMAGE // Is dead and not playing 'knifed' animation.
+		|| FCNPC_IsDeadEx(npcid) && animationid != BASEBALL_BAT_HIT_3) // Is dead and not playing 'fly back' animation when shot by shotgun.
 		{
 			return;
 		}
@@ -201,6 +194,8 @@
 			case KISSING_GF_CARARGUE_02: 	   	tickCounter = -10; 
 			case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10;
 			
+			case PED_GAS_CWR:					tickCounter = -4;  // STUNNED
+			case PED_IDLE_TIRED:				tickCounter = -4;  // STUNNED
 			case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -30; // KNIFED
 			case BASEBALL_BAT_HIT_3:			tickCounter = -8;  // SHOT BY SHOTGUN
 			case PED_GETUP: 				   	tickCounter = -4;  // GET UP
@@ -209,7 +204,11 @@
 		//FCNPC_ClearAnims(npcid);
 		eNpcInfo[npcid][e_iPlayingAnim_Tick] = tickCounter;
 		eNpcInfo[npcid][e_iPlayingAnim_Index] = animationid;
-		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_PLAYING_ANIM);
+
+		if(!FCNPC_IsStunned(npcid))
+		{
+			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_PLAYING_ANIM);		
+		}
 		FCNPC_SetAnimation(npcid, animationid, 4.1, 0, 1, 1, freeze, 0);
 	}
 

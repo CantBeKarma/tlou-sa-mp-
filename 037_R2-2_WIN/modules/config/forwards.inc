@@ -87,6 +87,7 @@ forward FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmo
 forward FCNPC_OnGetDistracted(npcid, Float:distractPointX, Float:distractPointY, Float:distractPointZ);
 forward FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward FCNPC_OnGetStunned(npcid);
+forward FCNPC_OnShakeOffStun(npcid);
 forward FCNPC_OnEnterDynArea(npcid, areaid);
 forward FCNPC_OnLeaveDynArea(npcid, areaid);
 
