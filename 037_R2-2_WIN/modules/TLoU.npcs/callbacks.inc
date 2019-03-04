@@ -63,7 +63,6 @@
 	public FCNPC_OnRespawn(npcid)
 	{
 		FCNPC_PrepareForSpawn(npcid);
-
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[RESPAWN]: NPC ID: %d", npcid);
 		return 1;
 	}
@@ -75,7 +74,6 @@
 	{
 		DestroyNpcRoamArea(npcid);
 		FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart);
-
 		defer FCNPC_DelayRespawn(npcid);
 
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DEATH]: NPC ID: %d | KILLER ID: %d | WEAPON ID: %d | BODYPART: %d", npcid, killerid, weaponid, bodypart);
@@ -292,7 +290,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 			if(FCNPC_GetType(npcid) == NPC_TYPE:TYPE_RUNNER
 			|| FCNPC_GetType(npcid) == NPC_TYPE:TYPE_STALKER)
 			{
-				FCNPC_SetHealthEx(npcid, 0.0);
+				FCNPC_SetHealthEx(npcid, 0.0, issuerid, issuerWeaponId, bodypart);
 				return 0;
 			}
 		}
@@ -327,7 +325,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnEnterDynArea(npcid, areaid)
 	{
-		if(FCNPC_IsDeadEx(npcid))
+		if(FCNPC_IsDeadEx(npcid) || FCNPC_IsBurning(npcid))
 		{
 			return 1;
 		}
@@ -376,7 +374,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	public FCNPC_OnBurning(npcid)
 	{
 		FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 1, 1, 1, 0, 0);
-		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - 10.0, .weaponid = WEAPON_MOLOTOV);
+		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - FIRE_DAMAGE_AMOUNT, .weaponid = WEAPON_MOLOTOV);
 		return 0;
 	}
 
