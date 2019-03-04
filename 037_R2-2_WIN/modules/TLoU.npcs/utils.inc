@@ -117,12 +117,6 @@
 			case STATUS_STUNNED:
 			{
 				FCNPC_OnGetStunned(npcid);
-				FCNPC_SetAnimCallback(npcid, PED_GAS_CWR);
-
-				//FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
-				//wait_ms(3000);
-				//FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
-				//wait_ms(2000);
 			}
 
 			case STATUS_DEAD:
@@ -485,6 +479,26 @@
 			}
 		}
 		return false;
+	}
+	
+	// Prepares FCNPC for (re)spawn (first spawn or not supported).
+	FCNPC_PrepareForSpawn(npcid, bool:firstSpawn = false)
+	{
+		if(firstSpawn)
+		{
+			PreloadAnimations(npcid);
+			SetPlayerTeam(npcid, FACTION_NONE);
+		}
+		else if(!firstSpawn)
+		{
+			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+		}
+
+		FCNPC_ClearAnims(npcid);
+		RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
+
+		FCNPC_SetHealthEx(npcid, 100.0);
+		CreateNpcRoamArea(npcid);
 	}
 
 //#endregion

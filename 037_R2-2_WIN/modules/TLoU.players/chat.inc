@@ -32,7 +32,7 @@ hook OnPlayerText(playerid, text[])
 			strcpy(msgType, "asks", sizeof(msgType));
 			msgDistance = 10.0;
 		}
-		else if(strfind(text, "!", true, msgLength) != -1)
+		else if(strfind(text, "!!", true, msgLength) != -1)
 		{
 			strcpy(msgType, "shouts", sizeof(msgType));
 			msgDistance = 25.0;

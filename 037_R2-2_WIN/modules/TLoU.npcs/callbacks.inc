@@ -38,9 +38,9 @@
 		return 1;
 	}
 
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//-------------------- FCNPC_OnDestroy --------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------------- FCNPC_OnDestroy -----------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnDestroy(npcid)
 	{
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[DESTROY]: NPC ID: %d", npcid);
@@ -52,12 +52,7 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnSpawn(npcid)
 	{
-		PreloadAnimations(npcid);
-		FCNPC_SetHealthEx(npcid, 100.0);
-		SetPlayerTeam(npcid, FACTION_NONE);
-
-		CreateNpcRoamArea(npcid);
-		
+		FCNPC_PrepareForSpawn(npcid, .firstSpawn = true);
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[SPAWN]: NPC ID: %d", npcid);
 		return 1;
 	}
@@ -67,11 +62,7 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnRespawn(npcid)
 	{
-		FCNPC_ClearAnims(npcid);
-		RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
-		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
-		FCNPC_SetHealthEx(npcid, 100.0);
-		CreateNpcRoamArea(npcid);
+		FCNPC_PrepareForSpawn(npcid);
 
 		Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "[RESPAWN]: NPC ID: %d", npcid);
 		return 1;
@@ -98,12 +89,6 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 {
-	if(!IsPlayerInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]))
-	{
-		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_iRoamAreaCenterX], eNpcInfo[npcid][e_iRoamAreaCenterY]);
-		return 0;
-	}
-
 	switch(FCNPC_GetStatus(npcid))
 	{
 		case STATUS_IDLE:			FCNPC_OnIdle(npcid);
@@ -202,29 +187,36 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 		return 0;
 	}
 
-//#endregion
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------- FCNPC_OnReachDestination ------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnReachDestination(npcid)
-{
-	if(FCNPC_IsRoaming(npcid))
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------- FCNPC_OnReachDestination ------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnReachDestination(npcid)
 	{
-		FCNPC_ClearAnims(npcid);
-		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
-		return 0;
+		if(FCNPC_IsRoaming(npcid))
+		{
+			FCNPC_ClearAnims(npcid);
+
+			if(!IsPlayerInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]))
+			{
+				FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_iRoamAreaCenterX], eNpcInfo[npcid][e_iRoamAreaCenterY]);
+				return 0;
+			}
+
+			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+			return 0;
+		}
+
+		return 1;
 	}
 
-	return 1;
-}
+//#endregion
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------- FCNPC_OnTriggerNailbomb -------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
 {
-	Audio3D_Play(npcid, AUDIO_NAILBMB_TRIGGER, x, y, z, 10.0);
+	Audio3D_Play(throwerid, AUDIO_NAILBMB_TRIGGER, x, y, z, 10.0);
 	defer OnNailbombExplode(npcid, throwerid, nailBmbIdx, x, y, z);
     return 0;
 }
@@ -397,6 +389,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnGetStunned(npcid)
 	{
+		FCNPC_SetAnimCallback(npcid, PED_GAS_CWR);
 		return 0;
 	}
 
