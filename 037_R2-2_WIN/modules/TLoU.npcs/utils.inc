@@ -74,7 +74,7 @@
 		}
 
 		if(FCNPC_IsDeadEx(npcid) && status != NPC_STATUS:STATUS_NONE
-		|| FCNPC_IsNpcDisabled(npcid) && status != NPC_STATUS:STATUS_IDLE)
+		&& FCNPC_IsNpcDisabled(npcid) && status != NPC_STATUS:STATUS_IDLE)
 		{
 			return false;
 		}
@@ -220,6 +220,8 @@
 			case BASEBALL_BAT_HIT_3:			tickCounter = -8;  // SHOT BY SHOTGUN
 			case PED_GETUP: 				   	tickCounter = -4;  // GET UP
 		}
+
+		SCMF_ALL(-1, "Anim callback | tickcounter = %d", tickCounter);
 		
 		//FCNPC_ClearAnims(npcid);
 		eNpcInfo[npcid][e_iPlayingAnim_Tick] = tickCounter;

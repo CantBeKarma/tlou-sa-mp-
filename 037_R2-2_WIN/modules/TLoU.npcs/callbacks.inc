@@ -161,6 +161,14 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 				}
 			}
 
+			case PED_FLEE_LKAROUND_01:
+			{
+				if(FCNPC_IsDistracted(npcid))
+				{
+					FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY]);
+				}
+			}
+
 			default:
 			{
 				FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);

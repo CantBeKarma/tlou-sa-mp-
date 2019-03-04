@@ -123,14 +123,15 @@ public OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, 
         SCMF(throwerid, -1, "You hitted NPCID: %d with throwable!", hitid);
     }
 
-    // foreach(new npcid : FCNPC)
-    // {
-    //     if(npcid == hitid)
-    //         continue;
+    foreach(new npcid : FCNPC)
+    {
+        if(npcid == hitid)
+        {
+            continue;
+        }
 
-    //     if(FCNPC_Distract(npcid, x, y, z) == 1)
-    //         continue;
-    // }
+        FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_DISTRACTED, x, y);
+    }
     return 0;
 }
 
