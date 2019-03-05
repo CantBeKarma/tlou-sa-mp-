@@ -398,31 +398,36 @@ function HudTd_Bg_RedToBlack(playerid, Float:amount)
 // HUD : Switch colors from RED <-> DARK RED (if wounded) of the hud background.
 function HudTd_Bg_FlashRed(playerid, colorId, Float:amount)
 {
-    if(Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid))
+    if(!Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid))
     {
-        if(GetPlayerHealthEx(playerid) <= 30.0)
-        {
-            new color;
-            switch(colorId)
-            {
-                case 0:color = InterpolateColors(COLOR_RED, COLOR_DARK_RED, amount);
-                case 1:color = InterpolateColors(COLOR_DARK_RED, COLOR_RED, amount);
-            }
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg], color);
-            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+        return;
+    }
 
-            if(amount < 1.0) 
-                SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, colorId, amount += 0.1);
-            else 
-                SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, (colorId == 0) ? (1) : (0), 0.0);
+    if(GetPlayerHealthEx(playerid) <= 30.0)
+    {
+        new color;
+        switch(colorId)
+        {
+            case 0:color = InterpolateColors(COLOR_RED, COLOR_DARK_RED, amount);
+            case 1:color = InterpolateColors(COLOR_DARK_RED, COLOR_RED, amount);
+        }
+        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg], color);
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+
+        if(amount < 1.0)
+        {
+            SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, colorId, amount += 0.1);
         }
         else
         {
-            Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
-            HudTd_Bg_RedToBlack(playerid, 0.0);
-
-            KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
-            ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
+            SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, (colorId == 0) ? (1) : (0), 0.0);
         }
+        return;
     }
+
+    Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+    HudTd_Bg_RedToBlack(playerid, 0.0);
+
+    KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
+    ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
 }
