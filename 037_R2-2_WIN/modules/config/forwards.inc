@@ -12,6 +12,7 @@ forward OnPlayerShivPlayer(playerid, shivedId);
 forward OnPlayerDamageHimself(playerid, Float:damageAmount);
 forward OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount);
 forward OnPlayerShootPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount, Float:distance, bodypart);
+forward OnPlayerGetAttackedByNpc(playerid, npcid);
 
 forward OnPlayerHoldingKey(playerid, key);
 forward OnPlayerReleaseKey(playerid, key, holding_time);

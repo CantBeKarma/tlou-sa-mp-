@@ -31,10 +31,7 @@
 //#region FCNPC : Types management
 
 	// Get the type of an NPC.
-	NPC_TYPE:FCNPC_GetType(npcid)
-	{
-		return eNpcInfo[npcid][e_iType];
-	}
+	NPC_TYPE:FCNPC_GetType(npcid) return eNpcInfo[npcid][e_iType];
 
 	// Set NPC to the specific type and change its skin automatically.
 	FCNPC_SetType(npcid, NPC_TYPE:type)
@@ -60,10 +57,7 @@
 //#region FCNPC : Status management
 
 	// Get the current status of an NPC.
-	NPC_STATUS:FCNPC_GetStatus(npcid)
-	{
-		return eNpcInfo[npcid][e_iCurrentStatus];
-	}
+	NPC_STATUS:FCNPC_GetStatus(npcid) return eNpcInfo[npcid][e_iCurrentStatus];
 
 	// Set NPC a new status.
 	FCNPC_SetStatus(npcid, NPC_STATUS:status, Float:roamX = 0.0, Float:roamY = 0.0, chaseId = INVALID_PLAYER_ID)
@@ -97,8 +91,6 @@
 					roamX = x;
 					roamY = y;
 				}
-
-				SCMF_ALL(-1, "Going to: %f | %f | %f", roamX, roamY, z);
 				
 				FCNPC_OnRoam(npcid, (roamX + random(2) + 0.5), (roamY + random(2) + 0.5), z);
 			}
@@ -106,13 +98,14 @@
 			case STATUS_CHASE: {}
 			case STATUS_ATTACK:
 			{
-				if(chaseId == INVALID_PLAYER_ID
-				|| IsPlayerDead(chaseId))
+				
+				if(FCNPC_IsBurning(npcid) || FCNPC_IsStunned(npcid))
 				{
 					return false;
 				}
 
-				if(FCNPC_IsBurning(npcid) || FCNPC_IsStunned(npcid))
+				if(chaseId == INVALID_PLAYER_ID
+				|| IsPlayerDead(chaseId))
 				{
 					return false;
 				}
@@ -176,7 +169,6 @@
 		{
 			FCNPC_StartUpdateTimer(npcid);
 		}
-
 
 		eNpcInfo[npcid][e_iCurrentStatus] = status;
 		SCMF_ALL(-1, "Setting status: %d", _:status);
@@ -399,6 +391,11 @@
 	// Create NPC roam area.
 	CreateNpcRoamArea(npcid)
 	{
+		if(IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
+		{
+			return;
+		}
+
 		new Float:x, Float:y, Float:z;
 		FCNPC_GetPosition(npcid, x, y, z);
 
@@ -410,12 +407,14 @@
 	// Destroy NPC roam area.
 	DestroyNpcRoamArea(npcid)
 	{
-		if(IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
+		if(!IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
 		{
-			DestroyDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]);
-			eNpcInfo[npcid][e_iRoamAreaCenterX] = 0.0;
-			eNpcInfo[npcid][e_iRoamAreaCenterY] = 0.0;
+			return;
 		}
+
+		DestroyDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]);
+		eNpcInfo[npcid][e_iRoamAreaCenterX] = 0.0;
+		eNpcInfo[npcid][e_iRoamAreaCenterY] = 0.0;
 	}
 
 //#endregion
@@ -549,45 +548,49 @@
 
 //#endregion
 
-// // Put NPC in the chase state after given playerid (chaseid).
-// FCNPC_ChasePlayer(npcid, chaseid)
-// {
-// 	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]))
-// 	{
-// 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
-// 	}
+//#region OLD movement code
 
-// 	FCNPC_SetStatus(npcid, NPC_STATUS:CHASE);
+	// // Put NPC in the chase state after given playerid (chaseid).
+	// FCNPC_ChasePlayer(npcid, chaseid)
+	// {
+	// 	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]))
+	// 	{
+	// 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
+	// 	}
 
-// 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
-// 	{
-// 		eNpcInfo[npcid][e_iChasedId] = chaseid;
-// 	}
+	// 	FCNPC_SetStatus(npcid, NPC_STATUS:CHASE);
 
-// 	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
+	// 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
+	// 	{
+	// 		eNpcInfo[npcid][e_iChasedId] = chaseid;
+	// 	}
 
-// 	new npcType = FCNPC_GetType(npcid);
-// 	FCNPC_GoToPlayer(npcid, chaseid, MOVE_TYPE_AUTO, NpcMovementSpeed[npcType], false, NPC_RUN_OFFSET, true);
-// 	FCNPC_OnChasePlayer(npcid, chaseid);
-// }
+	// 	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
 
-// // Put NPC in the chase state by path to the specific point (not using native GoTo).
-// FCNPC_ChasePlayerByPath(npcid, chaseid)
-// {
-// //	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]) && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH)
-// //		return 1;
+	// 	new npcType = FCNPC_GetType(npcid);
+	// 	FCNPC_GoToPlayer(npcid, chaseid, MOVE_TYPE_AUTO, NpcMovementSpeed[npcType], false, NPC_RUN_OFFSET, true);
+	// 	FCNPC_OnChasePlayer(npcid, chaseid);
+	// }
 
-// 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
-// 		eNpcInfo[npcid][e_iChasedId] = chaseid;
-	
-// 	static Float:z;
+	// // Put NPC in the chase state by path to the specific point (not using native GoTo).
+	// FCNPC_ChasePlayerByPath(npcid, chaseid)
+	// {
+	// //	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]) && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH)
+	// //		return 1;
 
-// 	new Float:npcPosX, Float:npcPosY;
-// 	FCNPC_GetPosition(npcid, npcPosX, npcPosY, z);
-	
-// 	new Float:chasePosX, Float:chasePosY;
-// 	GetPlayerPos(chaseid, chasePosX, chasePosY, z);
+	// 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
+	// 		eNpcInfo[npcid][e_iChasedId] = chaseid;
+		
+	// 	static Float:z;
 
-// 	PathFinder_FindWay(npcid, npcPosX, npcPosY, chasePosX, chasePosY, PATHFINDER_Z_DIFF, PATHFINDER_STEP_SIZE, PATHFINDER_STEP_LIMIT, PATHFINDER_MAX_STEPS);
-// 	return 0;
-// }
+	// 	new Float:npcPosX, Float:npcPosY;
+	// 	FCNPC_GetPosition(npcid, npcPosX, npcPosY, z);
+		
+	// 	new Float:chasePosX, Float:chasePosY;
+	// 	GetPlayerPos(chaseid, chasePosX, chasePosY, z);
+
+	// 	PathFinder_FindWay(npcid, npcPosX, npcPosY, chasePosX, chasePosY, PATHFINDER_Z_DIFF, PATHFINDER_STEP_SIZE, PATHFINDER_STEP_LIMIT, PATHFINDER_MAX_STEPS);
+	// 	return 0;
+	// }
+
+//#endregion

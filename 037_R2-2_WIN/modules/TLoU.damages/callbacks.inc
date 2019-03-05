@@ -95,3 +95,19 @@ public OnPlayerShootPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmou
     PlayPlayerDamageAnimations(damagedId, bodypart, issuerId, issuerWeaponId, distance);
     return 1;
 }
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//----------------- OnPlayerGetAttackedByNpc --------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerGetAttackedByNpc(playerid, npcid)
+{
+	new bool:success = PlayPlayerDamageAnimations(playerid, .issuerId = npcid);
+
+    if(!success)
+    {
+        return 1;
+    }
+
+	SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - NpcDamageValues[_:FCNPC_GetType(npcid)]);
+	return 0;
+}

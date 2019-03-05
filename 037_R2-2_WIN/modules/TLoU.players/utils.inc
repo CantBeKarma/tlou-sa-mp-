@@ -32,12 +32,13 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsBurning], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
+	Bit_Vet(ePlayerFlag[e_bIsDead], playerid);
 
 	print("ResetBits_ePlayerFlag");
 }
 
 // Get player health value.
-Float:GetPlayerHealthEx(playerid)		return eCharsInfo[playerid][e_fHealth];
+Float:GetPlayerHealthEx(playerid) return eCharsInfo[playerid][e_fHealth];
 
 // Set player health (avoid going over 100 health points or lower than 0.0).
 SetPlayerHealthEx(playerid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
@@ -54,6 +55,7 @@ SetPlayerHealthEx(playerid, Float:health, killerid = INVALID_PLAYER_ID, weaponid
 
 	if(GetPlayerHealthEx(playerid) <= 0.0)
 	{
+		Bit_Let(ePlayerFlag[e_bIsDead], playerid);
 		OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
 	}	
 }
@@ -69,8 +71,10 @@ AdjustPlayerHealthBar(playerid)
 function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 {
 	if(!IsPlayerHealing(playerid))
+	{
 		return;
-
+	}
+	
 	if(IsPlayerHoldingKey(playerid, KEY_FIRE))
 	{
 		new Float:currentHealth = GetPlayerHealthEx(playerid);
@@ -96,7 +100,7 @@ function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 
 //#region Utils
 
-	IsPlayerDead(playerid)					return (GetPlayerHealthEx(playerid) <= 0.0);
+	IsPlayerDead(playerid)					return Bit_Get(ePlayerFlag[e_bIsDead], playerid);
 	IsPlayerStunned(playerid)				return Bit_Get(ePlayerFlag[e_bIsStunned], playerid);
 	IsPlayerHealing(playerid)				return Bit_Get(ePlayerFlag[e_bIsHealing], playerid);
 	IsPlayerLookingAtPlayer(playerid)		return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
