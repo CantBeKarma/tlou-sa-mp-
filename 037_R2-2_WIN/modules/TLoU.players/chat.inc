@@ -3,16 +3,22 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerText(playerid, text[])
 {
-	if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) 
-		|| TextHasRestrictedCharacters(text)
-		|| IsPlayerUsingAnim(playerid, ANIM_COLLECTION_SWIM_UNDERWATER) 
-		|| IsPlayerDead(playerid))
+	if(!IsPlayerLoged(playerid)
+	|| IsPlayerDead(playerid)
+	|| IsPlayerUsingAnim(playerid, ANIM_COLLECTION_SWIM_UNDERWATER))
 	{
 	    return 0;
 	}
 
+	if(TextHasRestrictedCharacters(text))
+	{
+		SendChatMessage(playerid, COLOR_RED, "WARNING: Invalid characters in text!");
+		return 0;
+	}
+
 	if(strlen(text) < 1 || strlen(text) > 128)
 	{
+		SendChatMessage(playerid, COLOR_RED, "WARNING: Invalid message length!");
 	    return 0;
 	}
 
@@ -107,8 +113,6 @@ MovePlayerChatLinesUpByOne(playerid, bool:splitInTwoLines = false)
 // Custom send message which sends message in the chat panel
 SendChatMessage(playerid, color, text[])
 {
-	//print("SendChatMessage - START");
-
 	new 
 		firstChatLineIdx = INVALID_ITERATOR_SLOT,
 		secondChatLineIdx = INVALID_ITERATOR_SLOT,
@@ -117,30 +121,22 @@ SendChatMessage(playerid, color, text[])
 		bool:splitInTwoLines = (strlen(text) > 64) ? true : false;
 
 	firstChatLineIdx = Iter_Alloc(PlayerChatMessages<playerid>);
-	//printf("Iter_Alloc: firstChatLineIdx = %d", firstChatLineIdx);
 
 	if(splitInTwoLines)
 	{
 		secondChatLineIdx = Iter_Alloc(PlayerChatMessages<playerid>);
 		SplitStringIntoTwoStrings(text, msgPartOne, msgPartTwo, 63, true);
-
-		//printf("Iter_Alloc: secondChatLineIdx = %d", secondChatLineIdx);
-
-		//print(msgPartOne);
-		//print(msgPartTwo);
 	}
 
 	// Chat isn't full.
 	if(firstChatLineIdx != INVALID_ITERATOR_SLOT)
 	{
-		//print("Chat is NOT full.");
 		// If my new chat line is split into two lines and script has allocated
 		// my new message Idx on the last one (9).
 		// We need to move all the chat lines up, so we got enough space for two lines
 		// and send my new splitted message in the beginning lines (Idx: 0 & 1).
 		if(splitInTwoLines && firstChatLineIdx == 9)
 		{
-			//print("firstChatLineIdx is 9 and my message is supposed to be split into two.");
 			firstChatLineIdx = 1;
 			MovePlayerChatLinesUpByOne(playerid, true);
 		}
@@ -148,27 +144,20 @@ SendChatMessage(playerid, color, text[])
 	// Chat is full | Move all messages up by one.
 	else
 	{
-		//printf("Chat is full.");
 		firstChatLineIdx = MovePlayerChatLinesUpByOne(playerid, splitInTwoLines);
-		//printf("firstChatLineIdx = %d", firstChatLineIdx);
 	}
 
 	// Actual message formatting and showing.
 	if(!splitInTwoLines)
 	{
-		//printf("Not splitting. Simple message");
 		FormatChatMessage(playerid, firstChatLineIdx, color, text);
 	}
 	else
 	{
-		//printf("Message is split. Sending two textdraws.");
-
 		if(firstChatLineIdx == 1 && strlen(PlayerCustomChatTextString[playerid][9]) > 0)
 		{
-			//printf("First condition passed.");
 			if(strfind(PlayerCustomChatTextString[playerid][firstChatLineIdx], "...") != -1)
 			{
-				//printf("Current message at index '1' has '...' - I need to move my msgs up again.");
 				MovePlayerChatLinesUpByOne(playerid);
 				MovePlayerChatLinesUpByOne(playerid);
 			}
@@ -178,8 +167,6 @@ SendChatMessage(playerid, color, text[])
 		}
 		else
 		{
-			//printf("Second condition passed.");
-			
 			FormatChatMessage(playerid, firstChatLineIdx, color, msgPartTwo);
 			FormatChatMessage(playerid, secondChatLineIdx, color, msgPartOne);
 		}
@@ -218,7 +205,9 @@ SetPlayerChatPosition(playerid, CP_POSITION:positionType)
 SetPlayerChatPanelAlignment(playerid, CP_ALIGNMENT:alignType)
 {
 	if(alignType == CP_ALIGN_UNKNOWN)
+	{
 		return;
+	}
 
 	for(new i = 0; i != MAX_CHAT_LINES; i++)
 	{

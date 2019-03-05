@@ -74,22 +74,10 @@ function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 	{
 		return;
 	}
-	
+
 	if(IsPlayerHoldingKey(playerid, KEY_FIRE))
 	{
-		new Float:currentHealth = GetPlayerHealthEx(playerid);
-		if(currentHealth >= 100.0 || currentHealth >= destHealth)
-		{
-			Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
-			OnPlayerHealed(playerid, oldHealth, currentHealth);
-		}
-		else
-		{
-			new healSpeed = (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (500) : (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (300) : (100);
-			SetPlayerHealthEx(playerid, currentHealth + 2.0);
-
-			SetTimerEx("HealMyself", healSpeed, false, "dff", playerid, oldHealth, destHealth);
-		}
+		OnPlayerIsHealing(playerid, oldHealth, destHealth);
 	}
 	else
 	{
@@ -107,17 +95,34 @@ function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 	IsPlayerLookingAtItem(playerid)			return GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID;
 	IsPlayerAimingWeapon(playerid)			return Bit_Get(ePlayerFlag[e_bAiming], playerid);
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
+	IsPlayerLogged(playerid)				return Bit_Get(ePlayerFlag[e_bLogged], playerid);
+	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
+	IsPlayerCacheLoaded(playerid)			return Bit_Get(ePlayerFlag[e_bCacheLoaded], playerid);
 
 //#endregion
 
 // Frezee player with timer to unfreeze (optional).
 function FreezePlayer(playerid, bool:camMove, time)
 {
-	if(camMove) TogglePlayerFrozen(playerid, true);
-	else TogglePlayerControllable(playerid, false);
+	if(camMove)
+	{
+		TogglePlayerFrozen(playerid, true);
+	}
+	else
+	{
+		TogglePlayerControllable(playerid, false);
+	}
 
-	if(time > 0) SetTimerEx("FreezePlayer", 1000, false, "ddd", playerid, camMove, time-1);
-	else if(time == 0) UnfreezePlayer(playerid);
+	if(time == 0)
+	{
+		UnfreezePlayer(playerid);
+		return;
+	}
+	
+	if(time > 0)
+	{
+		SetTimerEx("FreezePlayer", 1000, false, "ddd", playerid, camMove, time-1);
+	}
 }
 
 // Unfreeze player if necessary.
@@ -182,6 +187,11 @@ Disable_OnPlayerLookAt(playerid)
 // Main-menu theme with The Last of Us logo + prompt.
 ConnectionIntroProcedure(playerid)
 {
+	if(IsPlayerLogged(playerid))
+	{
+		return;
+	}
+
     wait_ms(1000);
     PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Logo]);
 
@@ -198,6 +208,11 @@ ConnectionIntroProcedure(playerid)
 // Play that procedure when player dies.
 PlayDeathProcedureForPlayer(playerid)
 {
+	if(!IsPlayerDead(playerid))
+	{
+		return;
+	}
+
 	Audio_PlayEx(playerid, AUDIO_DEATH_SFX);
 	wait_ms(1200);
 

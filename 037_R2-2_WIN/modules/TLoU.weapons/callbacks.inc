@@ -27,7 +27,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             {
                 if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < 100.0)
                 {
-                    Bit_Let(ePlayerFlag[e_bIsHealing], playerid);
                     OnPlayerStartedHealing(playerid);
                 }
             }

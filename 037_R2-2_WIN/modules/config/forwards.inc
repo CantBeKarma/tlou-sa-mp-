@@ -1,6 +1,8 @@
 forward OnPlayerCrouchBug(playerid);
 forward OnPlayerBunnyHop(playerid);
 forward OnPlayerAnimFinish(playerid, animIdx);
+forward OnPlayerFirstSpawn(playerid);
+forward OnPlayerRespawn(playerid);
 forward OnPlayerPrepareToSign(playerid);
 forward OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart);
 forward OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId);
