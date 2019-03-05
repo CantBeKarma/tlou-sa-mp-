@@ -271,10 +271,10 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount)
 	{
-		if(FCNPC_IsPlayingAnim(npcid))
-		{
-			FCNPC_ClearAnims(npcid);
-		}
+		// if(FCNPC_IsPlayingAnim(npcid))
+		// {
+		FCNPC_ClearAnims(npcid);
+		//}
 		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount, issuerid, issuerWeaponId);
 
 		if(issuerWeaponId == WEAPON_UNARMED)

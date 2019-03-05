@@ -50,13 +50,13 @@ Backpack_ResizeSelectBox(playerid)
 // Perform anim. with camera backpack opening.
 Perform_BackpackOpening(playerid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid))
+    if(!IsPlayerLogged(playerid))
     {
         return 1;
     }
 
     // If HUD background is flashing - disable it while backpack is opened.
-    if(Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid))
+    if(IsPlayerHudFlashing(playerid))
     {
         Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
     }
@@ -73,7 +73,10 @@ Perform_BackpackOpening(playerid)
 // Perform anim. with camera backpack closing.
 Perform_BackpackClosing(playerid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid)) return 1;
+    if(!IsPlayerLogged(playerid))
+    {
+        return 1;
+    }
     
     // If HUD was flashing before using backpack - enable HUD flash again.
     if(eCharsInfo[playerid][e_fHealth] <= 30.0)

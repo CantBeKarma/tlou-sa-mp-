@@ -84,7 +84,7 @@ public OnPlayerFirstSpawn(playerid)
 public OnPlayerRespawn(playerid)
 {
 	Bit_Vet(ePlayerFlag[e_bIsDead], playerid);
-	
+
 	SCMF(playerid, -1, "Check: /icmd createitem and dialog responses");
 	SCMF(playerid, -1, "Check: /checkzdiff");
 	SCMF(playerid, -1, "Check: Don't allow fake shooting when out of ammo (you need another player to test this!)");
@@ -318,7 +318,7 @@ hook OnPlayerUpdate(playerid)
 		if(newHealth <= 30.0)
 		{
 			// Flash HUD background if health is lower than 30.0.
-			if(!Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid))
+			if(!IsPlayerHudFlashing(playerid))
 			{
 				Bit_Let(ePlayerFlag[e_bIsHudBgFlashing], playerid);
 				HudTd_Bg_FlashRed(playerid, 0, 0.0);
