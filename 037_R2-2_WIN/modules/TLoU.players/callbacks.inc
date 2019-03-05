@@ -235,7 +235,7 @@ hook OnPlayerUpdate(playerid)
 		KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
 		Audio_PlayEx(playerid, AUDIO_BANDAGE_USE, .loop = true);
 
-		new Float:oldHealth = GetPlayerHealthEx(playerid),
+		new Float:oldHealth = GetPlayerHealthEx(playerid);
 		new Float:destHealth = oldHealth + 20.0;
 
 		Bit_Let(ePlayerFlag[e_bIsHealing], playerid);
@@ -247,7 +247,6 @@ hook OnPlayerUpdate(playerid)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//------------------ OnPlayerIsHealing --------------------
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	forward OnPlayerIsHealing(playerid, Float:oldHealth, Float:destHealth);
 	public OnPlayerIsHealing(playerid, Float:oldHealth, Float:destHealth)
 	{
 		new Float:currentHealth = GetPlayerHealthEx(playerid);
@@ -506,7 +505,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 	
-	if(!Bit_Get(ePlayerFlag[e_bHoldingKey], playerid) && !IsPlayerAimingWeapon(playerid))
+	if(!Bit_Get(ePlayerFlag[e_bHoldingKey], playerid)
+	&& !IsPlayerAimingWeapon(playerid) && IsPlayerLogged(playerid)
+	&& !IsPlayerDead(playerid) && !IsPlayerStunned(playerid))
 	{
 		Bit_Let(ePlayerFlag[e_bHoldingKey], playerid);
 		ePlayerInfo[playerid][e_iTickCounter_holdingKey] = GetConnectedTime(playerid);

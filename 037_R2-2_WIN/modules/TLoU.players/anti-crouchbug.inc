@@ -15,12 +15,14 @@ public OnPlayerCrouchBug(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)	
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
-        return 1;
+    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || IsPlayerDead(playerid))
+	{
+		return 1;
+	}
 
 	if(PRESSED(KEY_CROUCH))
 	{
-		if(Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid) 
+		if(IsPlayerCrouchBugging(playerid)
 		&& (GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_crouchBug]) < TICK_RATE_CBUG)
 		{
             OnPlayerCrouchBug(playerid);

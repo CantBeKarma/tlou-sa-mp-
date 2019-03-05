@@ -42,33 +42,46 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
 timer DestroyFire[FIRE_DESTROY_DELAY](fireId)
 {
     if(Iter_Contains(ServerFires, fireId))
+    {
         Iter_Remove(ServerFires, fireId);
+    }
 
     if(IsValidDynamicArea(eFireData[fireId][e_iFireAreaId]))
+    {
         DestroyDynamicArea(eFireData[fireId][e_iFireAreaId]); 
+    }
 
     for(new i = 0; i != MAX_FIRES_PER_MOLOTOV; i++)
     {
         if(!IsValidDynamicObject(eFireData[fireId][e_iFireObjectId][i]))
+        {
             break;
-
+        }
         DestroyDynamicObject(eFireData[fireId][e_iFireObjectId][i]);
     }
 }
 
-// Check if player is burning.
-IsPlayerBurning(playerid) 
+// Check if player's area is fire area.
+IsPlayerInFireArea(playerid, playerAreaId)
 {
-    return Bit_Get(ePlayerFlag[e_bIsBurning], playerid);
+    foreach(new i : ServerFires)
+    {
+        if(playerAreaId == eFireData[i][e_iFireAreaId])
+        {
+            return IsPlayerInDynamicArea(playerid, i);
+        }
+    }
+    return false;
 }
 
 // Puts player on fire state.
 SetPlayerOnFire(playerid)
 {
     if(IsPlayerBurning(playerid))
+    {
         return;
+    }
 
-    SPAO(playerid, OBJECT_MODEL_BURNING);
     Bit_Let(ePlayerFlag[e_bIsBurning], playerid);
     OnPlayerStartBurning(playerid);
 }

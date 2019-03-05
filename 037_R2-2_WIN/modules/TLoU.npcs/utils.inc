@@ -514,11 +514,11 @@
 	}
 
 	// Check if FCNPC is in a fire area.
-	FCNPC_IsInFireArea(npcid, playerAreaId)
+	FCNPC_IsInFireArea(npcid, npcAreaId)
 	{
 		foreach(new i : ServerFires)
 		{
-			if(playerAreaId == eFireData[i][e_iFireAreaId])
+			if(npcAreaId == eFireData[i][e_iFireAreaId])
 			{
 				return IsPlayerInDynamicArea(npcid, i);
 			}

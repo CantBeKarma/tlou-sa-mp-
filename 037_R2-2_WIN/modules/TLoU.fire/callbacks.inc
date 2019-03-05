@@ -19,14 +19,16 @@ public OnPlayerBurn(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartBurning(playerid)
 {
+    SPAO(playerid, OBJECT_MODEL_BURNING);
     Disable_OnPlayerLookAt(playerid);
 
     if(IsPlayerUsingWeaponMenu(playerid))
     {
         HideWeaponMenu(playerid);
     }
+
     HidePlayerWeapon(playerid);
-    HideBackpack(playerid, true);
+    HideBackpack(playerid, .forceClose = true);
     return 0;
 }
 
@@ -45,19 +47,14 @@ public OnPlayerStopBurning(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
-        return 1;
+    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || IsPlayerBurning(playerid))
+	{
+		return 1;
+	}
 
-    if(IsPlayerBurning(playerid))
-        return 1;
-
-    foreach(new i : ServerFires)
+    if(IsPlayerInFireArea(playerid, areaid))
     {
-        if(areaid == eFireData[i][e_iFireAreaId])
-        {
-            SetPlayerOnFire(playerid);
-            break;
-        }
+        SetPlayerOnFire(playerid);
     }
     return 1;
 }
@@ -67,11 +64,10 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
-        return 1;
-    
-    if(!IsPlayerBurning(playerid))
-        return 1;
+    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || !IsPlayerBurning(playerid))
+	{
+		return 1;
+	}
         
     foreach(new i : ServerFires)
     {

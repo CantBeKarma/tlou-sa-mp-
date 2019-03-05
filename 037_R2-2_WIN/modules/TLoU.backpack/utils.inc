@@ -148,8 +148,10 @@ ShowBackpack(playerid, category)
 HideBackpack(playerid, forceClose = false)
 {
     if(!IsPlayerUsingBackpack(playerid))
+    {
         return;
-        
+    }
+
     if(!forceClose)
     {
         if(IsPlayerCrafting(playerid) || IsPlayerUpgradingSkill(playerid)

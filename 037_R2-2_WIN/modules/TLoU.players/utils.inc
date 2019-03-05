@@ -37,67 +37,73 @@ ResetBits_ePlayerFlag(playerid)
 	print("ResetBits_ePlayerFlag");
 }
 
-// Get player health value.
-Float:GetPlayerHealthEx(playerid) return eCharsInfo[playerid][e_fHealth];
+//#region Health managment utils
 
-// Set player health (avoid going over 100 health points or lower than 0.0).
-SetPlayerHealthEx(playerid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
-{
-	if(playerid == INVALID_PLAYER_ID || IsPlayerDead(playerid))
+	// Get player health value.
+	Float:GetPlayerHealthEx(playerid) return eCharsInfo[playerid][e_fHealth];
+
+	// Set player health (avoid going over 100 health points or lower than 0.0).
+	SetPlayerHealthEx(playerid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
 	{
-		return;
+		if(playerid == INVALID_PLAYER_ID || IsPlayerDead(playerid))
+		{
+			return;
+		}
+
+		new Float:oldHealth = eCharsInfo[playerid][e_fHealth];
+		new Float:newHealth = eCharsInfo[playerid][e_fHealth] = (health <= 0.0 ? 0.0 : health >= 100.0 ? 100.0 : health);
+
+		OnPlayerHealthChange(playerid, oldHealth, newHealth);
+
+		if(GetPlayerHealthEx(playerid) <= 0.0)
+		{
+			Bit_Let(ePlayerFlag[e_bIsDead], playerid);
+			OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
+		}	
 	}
 
-	new Float:oldHealth = eCharsInfo[playerid][e_fHealth];
-	new Float:newHealth = eCharsInfo[playerid][e_fHealth] = (health <= 0.0 ? 0.0 : health >= 100.0 ? 100.0 : health);
-
-	OnPlayerHealthChange(playerid, oldHealth, newHealth);
-
-	if(GetPlayerHealthEx(playerid) <= 0.0)
+	// Changes player health bar length
+	// (calculates its length so it doesn't go over its limit).
+	AdjustPlayerHealthBar(playerid)
 	{
-		Bit_Let(ePlayerFlag[e_bIsDead], playerid);
-		OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
-	}	
-}
-
-// Changes player health bar length
-// (calculates its length so it doesn't go over its limit).
-AdjustPlayerHealthBar(playerid)
-{
-	PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status], pb_percent(528.9, 35.3, 100.0, GetPlayerHealthEx(playerid)), 0.0);
-}
-
-// (recursive) Function which makes player heal himself with a medkit.
-function HealMyself(playerid, Float:oldHealth, Float:destHealth)
-{
-	if(!IsPlayerHealing(playerid))
-	{
-		return;
+		PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status], pb_percent(528.9, 35.3, 100.0, GetPlayerHealthEx(playerid)), 0.0);
 	}
 
-	if(IsPlayerHoldingKey(playerid, KEY_FIRE))
+	// (recursive) Function which makes player heal himself with a medkit.
+	function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 	{
-		OnPlayerIsHealing(playerid, oldHealth, destHealth);
+		if(!IsPlayerHealing(playerid))
+		{
+			return;
+		}
+
+		if(IsPlayerHoldingKey(playerid, KEY_FIRE))
+		{
+			OnPlayerIsHealing(playerid, oldHealth, destHealth);
+		}
+		else
+		{
+			Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
+			OnPlayerCanceledHealing(playerid, oldHealth);
+		}
 	}
-	else
-	{
-		Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
-		OnPlayerCanceledHealing(playerid, oldHealth);
-	}
-}
+
+//#endregion
 
 //#region Utils
 
 	IsPlayerDead(playerid)					return Bit_Get(ePlayerFlag[e_bIsDead], playerid);
 	IsPlayerStunned(playerid)				return Bit_Get(ePlayerFlag[e_bIsStunned], playerid);
+	IsPlayerBurning(playerid) 				return Bit_Get(ePlayerFlag[e_bIsBurning], playerid);
 	IsPlayerHealing(playerid)				return Bit_Get(ePlayerFlag[e_bIsHealing], playerid);
 	IsPlayerLookingAtPlayer(playerid)		return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
 	IsPlayerLookingAtItem(playerid)			return GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID;
 	IsPlayerAimingWeapon(playerid)			return Bit_Get(ePlayerFlag[e_bAiming], playerid);
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	IsPlayerLogged(playerid)				return Bit_Get(ePlayerFlag[e_bLogged], playerid);
-	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
 	IsPlayerCacheLoaded(playerid)			return Bit_Get(ePlayerFlag[e_bCacheLoaded], playerid);
+	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
+	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
 
 //#endregion
 

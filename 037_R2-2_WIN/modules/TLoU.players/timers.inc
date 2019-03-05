@@ -1,25 +1,24 @@
 // Timer which calls an animation of getting up. 
 timer DelayedTimer_AnimGetUp[TIMER_GETUP_DELAY](playerid)
 {
-    if(Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid))
+	if(IsPlayerCrouchBugging(playerid))
     {
         Bit_Vet(ePlayerFlag[e_bDoingCrouchBug], playerid);
     }
 
-    if(IsPlayerNPC(playerid)) {}
-//		FCNPC_SetAnimCallback(playerid, PED_GETUP); // Start UpdateTimer when anim. finishes.
-	else 
-		ApplyAnimation(playerid, "PED", "GETUP", 4.1, 0, 1, 1, 0, 0);
+	ApplyAnimation(playerid, "PED", "GETUP", 4.1, 0, 1, 1, 0, 0);
 }
 
 // Enable player jump action (anti-bunny hopping).
 timer DelayedTimer_EnableJumping[TIMER_BUNNYHOP_DELAY](playerid)
 {
-	if(Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid))
+	if(!IsPlayerBunnyHopping(playerid))
 	{
-		Bit_Vet(ePlayerFlag[e_bDoingBunnyHop], playerid);
-		TogglePlayerAction(playerid, PLAYER_ACTION_JUMP, true);
+		return;
 	}
+
+	Bit_Vet(ePlayerFlag[e_bDoingBunnyHop], playerid);
+	TogglePlayerAction(playerid, PLAYER_ACTION_JUMP, true);
 }
 
 // Check for how long player's been holding key for.
