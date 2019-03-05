@@ -97,6 +97,8 @@
 					roamX = x;
 					roamY = y;
 				}
+
+				SCMF_ALL(-1, "Going to: %f | %f | %f", roamX, roamY, z);
 				
 				FCNPC_OnRoam(npcid, (roamX + random(2) + 0.5), (roamY + random(2) + 0.5), z);
 			}

@@ -110,6 +110,47 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 	}
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------------- FCNPC_OnRoam --------------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnRoam(npcid, Float:target_x, Float:target_y, Float:target_z)
+	{
+		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ROAM: NPCID (%d)", npcid);
+
+		switch(random(2))
+		{
+			case 0: FCNPC_WalkTo(npcid, target_x, target_y, target_z);
+			case 1:	FCNPC_RunTo(npcid, target_x, target_y, target_z);
+		}
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------- FCNPC_OnReachDestination ------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnReachDestination(npcid)
+	{
+		if(FCNPC_IsRoaming(npcid))
+		{
+			FCNPC_ClearAnims(npcid);
+
+			if(!IsPlayerInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]))
+			{
+				FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_iRoamAreaCenterX], eNpcInfo[npcid][e_iRoamAreaCenterY]);
+				return 0;
+			}
+
+			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+			return 0;
+		}
+
+		return 1;
+	}
+
+//#endregion
+
+//#region Animation callbacks
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//--------------------- FCNPC_OnPlayingAnim ---------------------
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnPlayingAnim(npcid, animIdx)
@@ -165,6 +206,7 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 			{
 				if(FCNPC_IsDistracted(npcid))
 				{
+					SCMF_ALL(-1, "I was distracted. Finished animation, so time to roam to the specific location");
 					FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY]);
 				}
 			}
@@ -175,43 +217,6 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 			}
 		}
 		//printf("FCNPC_OnAnimFinish(%d, %d)", npcid, animIdx);
-		return 1;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//----------------------- FCNPC_OnRoam --------------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public FCNPC_OnRoam(npcid, Float:target_x, Float:target_y, Float:target_z)
-	{
-		GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ROAM: NPCID (%d)", npcid);
-
-		switch(random(2))
-		{
-			case 0: FCNPC_WalkTo(npcid, target_x, target_y, target_z);
-			case 1:	FCNPC_RunTo(npcid, target_x, target_y, target_z);
-		}
-		return 0;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//------------------- FCNPC_OnReachDestination ------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public FCNPC_OnReachDestination(npcid)
-	{
-		if(FCNPC_IsRoaming(npcid))
-		{
-			FCNPC_ClearAnims(npcid);
-
-			if(!IsPlayerInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]))
-			{
-				FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_ROAM, eNpcInfo[npcid][e_iRoamAreaCenterX], eNpcInfo[npcid][e_iRoamAreaCenterY]);
-				return 0;
-			}
-
-			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
-			return 0;
-		}
-
 		return 1;
 	}
 
