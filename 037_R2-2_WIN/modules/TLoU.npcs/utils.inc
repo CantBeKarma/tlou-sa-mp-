@@ -329,7 +329,7 @@
 	}
 
 	// Plays damage animations on NPC when shot.
-	FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId, Float:distanceBetweenPlayers)
+	FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
 	{
 		if(FCNPC_IsDeadEx(npcid)
 		|| (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
@@ -531,16 +531,6 @@
 	}
 
 //#endregion
-
-// // Check if NPC is not: stunned, burning, dead and its timer is running.
-// FCNPC_IsAllowedToDoAction(npcid)
-// {
-// 	return
-// 		!FCNPC_IsStunned(npcid) 
-// 		&& !FCNPC_IsBurning(npcid) 
-// 		&& !FCNPC_IsDeadEx(npcid) 
-// 		&& FCNPC_IsTimerRunning(npcid);
-// }
 
 // // Put NPC in the chase state after given playerid (chaseid).
 // FCNPC_ChasePlayer(npcid, chaseid)

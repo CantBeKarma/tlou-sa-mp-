@@ -324,6 +324,17 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		return 0;
 	}
 
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//--------------------- FCNPC_OnGetArrowShot --------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnGetArrowShot(npcid, damagerid)
+	{
+		ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
+		FCNPC_PlayDamageAnimation(npcid, BODY_PART_TORSO);
+		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - PlayerWeaponBodyDamage[damagerid], damagerid, WEAPON_BOW);
+		return 1;
+	}
+
 //#endregion
 
 //#region Area managment
@@ -424,55 +435,6 @@ public FCNPC_OnGetDistracted(npcid, Float:x, Float:y, Float:z)
 	return 0;
 }
 
-// 	foreach(new chaseid : Player)
-// 	{
-// 		if(!Bit_Get(ePlayerFlag[e_bLogged], chaseid) || IsPlayerDead(chaseid)
-// 		|| IsPlayerCrouched(chaseid))// && eNpcInfo[npcid][e_iCurrentStatus] != NPC_STATUS_CHASING)
-// 		{
-// 			continue;
-// 		}
-
-// 		// If NPC is in the IDLE state and player is close enough to chase him
-// 		// but also player is above or below NPC on certain distance
-// 		// NPC ignores that player.
-// 		new Float:distanceToPlayer = GetDistanceBetweenPlayers(npcid, chaseid);
-// //		if(eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_IDLE)
-// //		{
-// 			if(distanceToPlayer <= RANGE_NPC_CHASE || (distanceToPlayer <= RANGE_NPC_CHASE_BY_PATH && distanceToPlayer > RANGE_NPC_CHASE))
-// 			{
-// 				new Float:chasePosZ;
-// 				GetPlayerPos(chaseid, chasePosZ, chasePosZ, chasePosZ);
-
-// 				new Float:npcPosZ;
-// 				FCNPC_GetPosition(npcid, npcPosZ, npcPosZ, npcPosZ);
-
-// 				if(!CompareZ(chasePosZ, npcPosZ, RANGE_Z_DIFF_CHASE) || IsPlayerUsingAnim(chaseid, ANIM_COLLECTION_CLIMB))
-// 				{
-// 					continue;
-// 				}
-// 			}
-// //		}
-
-// 		if(distanceToPlayer <= RANGE_NPC_ATTACK)
-// 		{
-// 			FCNPC_AttackPlayer(npcid, chaseid);
-// 		}
-// 		else if(distanceToPlayer <= RANGE_NPC_CHASE)
-// 		{
-// 			FCNPC_ChasePlayer(npcid, chaseid);
-// 		}
-// 		else if(distanceToPlayer <= RANGE_NPC_CHASE_BY_PATH && distanceToPlayer > RANGE_NPC_CHASE)
-// 		{
-// 			FCNPC_ChasePlayerByPath(npcid, chaseid);
-// 		}
-// 		else
-// 		{
-// 			FCNPC_OnIdle(npcid);
-// 		}
-// 	}
-// 	return 0;
-// }
-
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // //--------------------- FCNPC_OnChasePlayer ---------------------
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -561,51 +523,38 @@ public FCNPC_OnGetDistracted(npcid, Float:x, Float:y, Float:z)
 // 	return 0;
 // }
 
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //--------------------- FCNPC_OnGetArrowShot --------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnGetArrowShot(npcid, damagerid)
-// {
-// 	ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
-// 	FCNPC_ApplyAnimation(npcid, "PED", "HIT_GUN_BUTT", 4.1, 0, 1, 1, 0, 350);
-// 	FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - PlayerWeaponBodyDamage[damagerid]);
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------------ FCNPC_OnUpdate -----------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnUpdate(npcid)
+{
+	if(FCNPC_IsDeadEx(npcid))
+	{
+		return 1;
+	}
 
-// 	if(FCNPC_IsDeadEx(npcid))
-// 	{
-// 		FCNPC_OnDeathEx(npcid, damagerid, WEAPON_BOW, BODY_PART_TORSO);
-// 	}
-// 	return 1;
-// }
+	foreach(new playerid : Player)
+	{
+		if(!IsValidDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]) 
+		|| IsDynamicObjectMoving(ePlayerWeapon[playerid][e_iArrowObjectId]))
+		{
+			continue;
+		}
 
+		new Float:x, Float:y, Float:z;
+		GetDynamicObjectPos(ePlayerWeapon[playerid][e_iArrowObjectId], x, y, z);
 
+		if(!IsPlayerInRangeOfPoint(npcid, ARROW_RANGE_DAMAGE, x, y, z))
+		{
+			continue;
+		}
 
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //------------------------ FCNPC_OnUpdate -----------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnUpdate(npcid)
-// {
-
-// 	// Detects if NPC got shot by player's arrow.
-// 	foreach(new playerid : Player)
-// 	{
-// 		if(IsValidDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]) && IsDynamicObjectMoving(ePlayerWeapon[playerid][e_iArrowObjectId]))
-// 		{
-// 			new Float:x, Float:y, Float:z;
-// 			GetDynamicObjectPos(ePlayerWeapon[playerid][e_iArrowObjectId], x, y, z);
-
-// 			if(IsPlayerInRangeOfPoint(npcid, ARROW_RANGE_DAMAGE, x, y, z))
-// 			{
-// 				if(!FCNPC_IsDeadEx(npcid))
-// 				{
-// 					DestroyDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]);
-// 					FCNPC_OnGetArrowShot(npcid, playerid);
-// 					break;
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return 1;
-// }
+		DestroyDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]);
+		FCNPC_OnGetArrowShot(npcid, playerid);
+		break;
+	}
+	return 1;
+}
 
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // //----------------------- OnPathCalculated ----------------------
