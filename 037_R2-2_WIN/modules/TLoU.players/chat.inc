@@ -3,7 +3,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerText(playerid, text[])
 {
-	if(!IsPlayerLoged(playerid)
+	if(!IsPlayerLogged(playerid)
 	|| IsPlayerDead(playerid)
 	|| IsPlayerUsingAnim(playerid, ANIM_COLLECTION_SWIM_UNDERWATER))
 	{

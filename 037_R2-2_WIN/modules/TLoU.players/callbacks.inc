@@ -83,6 +83,8 @@ public OnPlayerFirstSpawn(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerRespawn(playerid)
 {
+	Bit_Vet(ePlayerFlag[e_bIsDead], playerid);
+	
 	SCMF(playerid, -1, "Check: /icmd createitem and dialog responses");
 	SCMF(playerid, -1, "Check: /checkzdiff");
 	SCMF(playerid, -1, "Check: Don't allow fake shooting when out of ammo (you need another player to test this!)");

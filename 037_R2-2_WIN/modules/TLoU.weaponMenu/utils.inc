@@ -194,6 +194,11 @@ ShowWeaponMenu(playerid)
 // Hide player's weapon menu.
 HideWeaponMenu(playerid)
 {
+    if(!IsPlayerUsingWeaponMenu(playerid))
+    {
+        return;
+    }
+    
     TdHideForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
     TdHideForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);

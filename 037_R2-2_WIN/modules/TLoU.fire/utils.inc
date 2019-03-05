@@ -82,19 +82,20 @@ SetPlayerOnFire(playerid)
         return;
     }
 
+    SPAO(playerid, OBJECT_MODEL_BURNING);
     Bit_Let(ePlayerFlag[e_bIsBurning], playerid);
-    OnPlayerStartBurning(playerid);
 }
 
 // Puts the fire out of player.
 function PutOutFireOnPlayer(playerid, delay)
 {
     if(!IsPlayerBurning(playerid))
+    {
         return;
+    }
 
     if(delay > 0)
     {
-        OnPlayerBurn(playerid);
         SetTimerEx("PutOutFireOnPlayer", FIRE_DAMAGE_RATE, false, "dd", playerid, delay-1);
     }
     else

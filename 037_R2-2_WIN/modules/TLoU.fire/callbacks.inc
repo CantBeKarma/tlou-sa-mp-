@@ -1,34 +1,66 @@
 #include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------------- OnPlayerBurn ---------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerBurn(playerid)
-{
-    SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - FIRE_DAMAGE_AMOUNT);
+//#region Fire areas callbacks
 
-    if(IsPlayerDead(playerid))
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //---------------- OnPlayerEnterDynamicArea ---------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    hook OnPlayerEnterDynArea(playerid, areaid)
     {
-        OnPlayerDeathEx(playerid, INVALID_PLAYER_ID, WEAPON_FIRE, BODY_PART_TORSO);
+        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || IsPlayerBurning(playerid))
+        {
+            return 1;
+        }
+
+        if(IsPlayerInFireArea(playerid, areaid))
+        {
+            SetPlayerOnFire(playerid);
+            OnPlayerStartBurning(playerid, eFireData[areaid][e_iFireCreatorId]);
+        }
+        return 1;
     }
-    return 0;
-}
+
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //---------------- OnPlayerLeaveDynamicArea ---------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    hook OnPlayerLeaveDynArea(playerid, areaid)
+    {
+        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || !IsPlayerBurning(playerid))
+        {
+            return 1;
+        }
+
+        if(IsPlayerInFireArea(playerid, areaid))
+        {
+            PutOutFireOnPlayer(playerid, FIRE_PUT_OUT_DELAY);
+        }
+        return 1;
+    }
+
+//#endregion
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnPlayerStartBurning -----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStartBurning(playerid)
+public OnPlayerStartBurning(playerid, fireCreatorId)
 {
-    SPAO(playerid, OBJECT_MODEL_BURNING);
     Disable_OnPlayerLookAt(playerid);
 
-    if(IsPlayerUsingWeaponMenu(playerid))
-    {
-        HideWeaponMenu(playerid);
-    }
-
+    HideWeaponMenu(playerid);
     HidePlayerWeapon(playerid);
     HideBackpack(playerid, .forceClose = true);
+
+    KillTimer(ePlayerInfo[playerid][e_iTimer_Burning]);
+    ePlayerInfo[playerid][e_iTimer_Burning] = SetTimerEx("OnPlayerBurn", FIRE_DAMAGE_RATE, true, "dd", playerid, fireCreatorId);
+    return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//---------------------- OnPlayerBurn ---------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerBurn(playerid, fireCreatorId)
+{
+    SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - FIRE_DAMAGE_AMOUNT, fireCreatorId, WEAPON_MOLOTOV);
     return 0;
 }
 
@@ -37,47 +69,16 @@ public OnPlayerStartBurning(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStopBurning(playerid)
 {
+    KillTimer(ePlayerInfo[playerid][e_iTimer_Burning]);
+
+    if(IsPlayerDead(playerid))
+    {
+        return 1;
+    }
+    
     Enable_OnPlayerLookAt(playerid);
     RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- OnPlayerEnterDynamicArea ---------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnPlayerEnterDynArea(playerid, areaid)
-{
-    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || IsPlayerBurning(playerid))
-	{
-		return 1;
-	}
-
-    if(IsPlayerInFireArea(playerid, areaid))
-    {
-        SetPlayerOnFire(playerid);
-    }
-    return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- OnPlayerLeaveDynamicArea ---------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnPlayerLeaveDynArea(playerid, areaid)
-{
-    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || !IsPlayerBurning(playerid))
-	{
-		return 1;
-	}
-        
-    foreach(new i : ServerFires)
-    {
-        if(areaid == eFireData[i][e_iFireAreaId])
-        {
-            PutOutFireOnPlayer(playerid, FIRE_PUT_OUT_DELAY);
-            break;
-        }
-    }
-    return 1;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

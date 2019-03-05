@@ -13,8 +13,8 @@
 
 // Other.
 #define     FIRE_RANGE              (3.3)
-#define     FIRE_DAMAGE_AMOUNT      (5.0)
-#define     FIRE_DAMAGE_RATE        (1000)
+#define     FIRE_DAMAGE_AMOUNT      (2.0)
+#define     FIRE_DAMAGE_RATE        (200)
 
 enum e_FIRE_DATA
 {
