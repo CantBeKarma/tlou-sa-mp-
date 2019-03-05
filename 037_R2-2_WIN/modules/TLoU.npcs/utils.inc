@@ -66,7 +66,7 @@
 	}
 
 	// Set NPC a new status.
-	FCNPC_SetStatus(npcid, NPC_STATUS:status, Float:roamX = 0.0, Float:roamY = 0.0)
+	FCNPC_SetStatus(npcid, NPC_STATUS:status, Float:roamX = 0.0, Float:roamY = 0.0, chaseId = INVALID_PLAYER_ID)
 	{
 		if(FCNPC_GetStatus(npcid) == status)
 		{
@@ -104,7 +104,22 @@
 			}
 
 			case STATUS_CHASE: {}
-			case STATUS_ATTACK: {}
+			case STATUS_ATTACK:
+			{
+				if(chaseId == INVALID_PLAYER_ID
+				|| IsPlayerDead(chaseId))
+				{
+					return false;
+				}
+
+				if(FCNPC_IsBurning(npcid) || FCNPC_IsStunned(npcid))
+				{
+					return false;
+				}
+
+				eNpcInfo[npcid][e_iChaseId] = chaseId;
+			}
+
 			case STATUS_DISTRACTED:
 			{
 				if(FCNPC_IsBurning(npcid) || FCNPC_IsStunned(npcid))

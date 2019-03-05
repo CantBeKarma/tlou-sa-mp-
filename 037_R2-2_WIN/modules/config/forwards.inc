@@ -74,7 +74,7 @@ forward FCNPC_OnIdle(npcid);
 forward FCNPC_OnRoam(npcid, Float:target_x, Float:target_y, Float:target_z);
 forward FCNPC_OnChasePlayer(npcid, chaseid);
 forward FCNPC_OnChasePlayerByPath(npcid, chaseid, pathid);
-forward FCNPC_OnAttackPlayer(npcid, chaseid, Float:chaseId_oldHealth, Float:chaseId_newHealth);
+forward FCNPC_OnAttackPlayer(npcid, chaseid);
 forward FCNPC_OnAnimFinish(npcid, animIdx);
 forward FCNPC_OnPlayingAnim(npcid, animIdx);
 forward FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart);

@@ -92,6 +92,7 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 		case STATUS_IDLE:			FCNPC_OnIdle(npcid);
 		case STATUS_PLAYING_ANIM:	FCNPC_OnPlayingAnim(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
 		case STATUS_BURNING:		FCNPC_OnBurning(npcid);
+		case STATUS_ATTACK:			FCNPC_OnAttackPlayer(npcid, eNpcInfo[npcid][e_iChaseId]);
 	}
 	return 0;
 }
@@ -440,6 +441,8 @@ public FCNPC_OnGetDistracted(npcid, Float:x, Float:y, Float:z)
 	return 0;
 }
 
+
+
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // //--------------------- FCNPC_OnChasePlayer ---------------------
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -488,45 +491,21 @@ public FCNPC_OnGetDistracted(npcid, Float:x, Float:y, Float:z)
 // 	return 0;
 // }
 
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //--------------------- FCNPC_OnAttackPlayer --------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnAttackPlayer(npcid, chaseid, Float:chaseId_oldHealth, Float:chaseId_newHealth)
-// {
-// 	// If player run away from NPC...
-// 	if(GetDistanceBetweenPlayers(npcid, chaseid) > RANGE_NPC_ATTACK)
-// 	{
-// 		FCNPC_StartUpdateTimer(npcid);
-// 		return 1;
-// 	}
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//--------------------- FCNPC_OnAttackPlayer --------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnAttackPlayer(npcid, chaseid)
+{
+	if(GetDistanceBetweenPlayers(npcid, chaseid) > RANGE_NPC_ATTACK)
+	{
+		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+		return 1;
+	}
 
-// 	//SetPlayerHealthEx(chaseid, chaseId_newHealth);
-
-// 	// Anims.
-// 	if(IsPlayerUsingAnim(chaseid, ANIM_COLLECTION_CLIMB))
-// 		return 1;
-
-// 	if(IsBulletWeapon(CurrentPlayerWeaponId[chaseid]))
-// 	{
-// 		switch(random(2))
-// 		{
-// 			case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
-// 			case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
-// 		}
-// 	}
-// 	else
-// 	{
-// 		if(random(2) == 1)
-// 		{
-// 			switch(random(2))
-// 			{
-// 				case 0: ApplyCallbackAnim(chaseid, "PED", "HIT_BACK");
-// 				case 1: ApplyCallbackAnim(chaseid, "PED", "HIT_BEHIND");
-// 			}
-// 		}
-// 	}
-// 	return 0;
-// }
+	PlayPlayerDamageAnimations(chaseid, .issuerId = npcid);
+	SetPlayerHealthEx(chaseid, GetPlayerHealthEx(chaseid) - NpcDamageValues[_:FCNPC_GetType(npcid)]);
+	return 0;
+}
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------------ FCNPC_OnUpdate -----------------------

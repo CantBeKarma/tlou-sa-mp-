@@ -113,7 +113,7 @@ enum e_NPC_DATA
 
     Float:e_fHealth,
 
-    e_iChasedId,
+    e_iChaseId,
     FCNPC_MovePathId,
 
     Float:e_fDistractedX,

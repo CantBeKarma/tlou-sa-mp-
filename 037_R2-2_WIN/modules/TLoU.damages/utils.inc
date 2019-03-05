@@ -22,15 +22,24 @@ FlyBackwardsWhenShot(damagedid)
 }
 
 // Plays damage animations on player.
-PlayPlayerDamageAnimations(damagedId, bodypart, issuerWeaponId, Float:distanceBetweenPlayers)
+PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLAYER_ID, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
 {
     if(IsPlayerUnableToPerformAction(damagedId)
     || (GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
     {
         return;
     }
+
     ePlayerInfo[damagedId][e_iTickCounter_damageAnim] = GetTickCount();
-        
+
+    if(IsPlayerNPC(issuerId))
+    {
+        ApplyAnimation(damagedId, "PED", \
+            (random(2) == 0) ? ("HIT_BACK") : ("HIT_BEHIND"), \
+                4.1, 0, 1, 1, 0, 0);
+        return;
+    }
+
     switch(bodypart)
     {
         case BODY_PART_LEFT_ARM:  ApplyAnimation(damagedId, "PED", DamageAnimations[random(3)], 4.1, 0, 1, 1, 0, 0);
