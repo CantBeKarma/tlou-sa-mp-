@@ -36,7 +36,7 @@ ClearAnims(playerid)
 }
 
 // Does a reload animation for player on the specified weapon type.
-PerformReloadAnimation(playerid, weaponId)
+PlayPlayerReloadAnim(playerid, weaponId)
 {
     switch(weaponId)
     {
@@ -68,6 +68,114 @@ PerformReloadAnimation(playerid, weaponId)
             }
     }
 }
+
+// Plays damage animations on player.
+PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLAYER_ID, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
+{
+    if(IsPlayerUnableToPerformAction(damagedId)
+    || (GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
+    {
+        return;
+    }
+
+    ePlayerInfo[damagedId][e_iTickCounter_damageAnim] = GetTickCount();
+
+    if(IsPlayerNPC(issuerId))
+    {
+        ApplyAnimation(damagedId, "PED", \
+            (random(2) == 0) ? ("HIT_BACK") : ("HIT_BEHIND"), \
+                4.1, 0, 1, 1, 0, 0);
+        return;
+    }
+
+    switch(bodypart)
+    {
+        case BODY_PART_LEFT_ARM:  ApplyAnimation(damagedId, "PED", DamageAnimations[random(3)], 4.1, 0, 1, 1, 0, 0);
+        case BODY_PART_RIGHT_ARM: ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 3], 4.1, 0, 1, 1, 0, 0);
+        case BODY_PART_LEFT_LEG:  ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 6], 4.1, 0, 1, 1, 0, 0);
+        case BODY_PART_RIGHT_LEG: ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 9], 4.1, 0, 1, 1, 0, 0);
+        case BODY_PART_TORSO:
+        {
+            if(issuerWeaponId == WEAPON_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
+            {
+                FlyBackwardsWhenShot(damagedId);
+            }
+            else
+            {
+                ApplyAnimation(damagedId, "PED", DamageAnimations[random(4) + 12], 4.1, 0, 1, 1, 0, 0);
+            }
+        }
+    }
+}
+
+// Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
+PlayDeathAnimation(playerid, bodypart)
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+	{
+		switch(bodypart)
+		{
+			case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
+			default:
+			{
+				// If player wasn't killed stealthly or 
+				// shot in stomach by shotgun (Flew backwards)
+				if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
+				&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
+				{
+					ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
+				}
+			}
+		}
+	}
+	else
+	{
+		new 
+			vehicleid = GetPlayerVehicleID(playerid),
+			modelid = GetVehicleModel(vehicleid);
+
+		switch(modelid)
+		{
+			case 448, 461, 462, 463, 468, 471, 481, 509, 510, 521, 522, 523, 581, 586: 
+			{
+				new Float:x, Float:y, Float:z;
+				GetVehiclePos(vehicleid, x, y, z);
+				RemovePlayerFromVehicle(playerid);
+				SetPlayerPos(playerid, x, y, z);
+				ApplyAnimation(playerid, "PED", "BIKE_FALL_OFF", 4.0, 0, 1, 1, 0, 0, 1);
+			}
+
+			default:
+				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+		}
+	}
+}
+
+// Applies player dead animation when dead body attacked.
+PlayPlayerDeadAnimIfDead(playerid)
+{
+    if(!IsPlayerDead(playerid))
+    {
+        return;
+    }
+
+    switch(GetPlayerAnimationIndex(playerid))
+    {
+        case 
+            BASEBALL_BAT_HIT_3, 
+            PED_KO_SHOT_FACE,
+            KNIFE_KILL_KNIFE_PED_DIE:
+            {
+                ApplyAnimation(playerid, "PED", "FLOOR_HIT", 4.1, 0, 1, 1, 1, 0, 1);
+            }
+
+        default: 
+        {
+            ApplyAnimation(playerid, "PED", "FLOOR_HIT_F", 4.1, 0, 1, 1, 1, 0, 1);
+        }
+    }
+}
+
 
 // Actions in which player can't do some stuff (e.g. opening backpack, equipping last weapon and other).
 IsPlayerUnableToPerformAction(playerid)

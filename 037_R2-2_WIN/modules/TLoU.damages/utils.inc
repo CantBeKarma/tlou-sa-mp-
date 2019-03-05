@@ -21,45 +21,6 @@ FlyBackwardsWhenShot(damagedid)
     return 0;
 }
 
-// Plays damage animations on player.
-PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLAYER_ID, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
-{
-    if(IsPlayerUnableToPerformAction(damagedId)
-    || (GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
-    {
-        return;
-    }
-
-    ePlayerInfo[damagedId][e_iTickCounter_damageAnim] = GetTickCount();
-
-    if(IsPlayerNPC(issuerId))
-    {
-        ApplyAnimation(damagedId, "PED", \
-            (random(2) == 0) ? ("HIT_BACK") : ("HIT_BEHIND"), \
-                4.1, 0, 1, 1, 0, 0);
-        return;
-    }
-
-    switch(bodypart)
-    {
-        case BODY_PART_LEFT_ARM:  ApplyAnimation(damagedId, "PED", DamageAnimations[random(3)], 4.1, 0, 1, 1, 0, 0);
-        case BODY_PART_RIGHT_ARM: ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 3], 4.1, 0, 1, 1, 0, 0);
-        case BODY_PART_LEFT_LEG:  ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 6], 4.1, 0, 1, 1, 0, 0);
-        case BODY_PART_RIGHT_LEG: ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 9], 4.1, 0, 1, 1, 0, 0);
-        case BODY_PART_TORSO:
-        {
-            if(issuerWeaponId == WEAPON_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
-            {
-                FlyBackwardsWhenShot(damagedId);
-            }
-            else
-            {
-                ApplyAnimation(damagedId, "PED", DamageAnimations[random(4) + 12], 4.1, 0, 1, 1, 0, 0);
-            }
-        }
-    }
-}
-
 // Calculates damage that player is going to cause to another player
 // Optional param: bodypart.
 Float:CalculateDamageAmount(damagerid, targetid, damagerWeaponId, &Float:distanceBetweenPlayers, bodypart = -1)

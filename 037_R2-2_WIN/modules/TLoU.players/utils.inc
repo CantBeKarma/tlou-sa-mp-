@@ -213,49 +213,6 @@ HideDeathProcedureTds(playerid)
 	PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][1]);
 }
 
-// Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
-PlayDeathAnimation(playerid, bodypart)
-{
-	if(!IsPlayerInAnyVehicle(playerid))
-	{
-		switch(bodypart)
-		{
-			case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
-			default:
-			{
-				// If player wasn't killed stealthly or 
-				// shot in stomach by shotgun (Flew backwards)
-				if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
-				&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
-				{
-					ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
-				}
-			}
-		}
-	}
-	else
-	{
-		new 
-			vehicleid = GetPlayerVehicleID(playerid),
-			modelid = GetVehicleModel(vehicleid);
-
-		switch(modelid)
-		{
-			case 448, 461, 462, 463, 468, 471, 481, 509, 510, 521, 522, 523, 581, 586: 
-			{
-				new Float:x, Float:y, Float:z;
-				GetVehiclePos(vehicleid, x, y, z);
-				RemovePlayerFromVehicle(playerid);
-				SetPlayerPos(playerid, x, y, z);
-				ApplyAnimation(playerid, "PED", "BIKE_FALL_OFF", 4.0, 0, 1, 1, 0, 0, 1);
-			}
-
-			default:
-				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
-		}
-	}
-}
-
 // Force change the old holding key to the specified key definition.
 ForceChangeHoldingKeyDef(playerid, key)
 {
