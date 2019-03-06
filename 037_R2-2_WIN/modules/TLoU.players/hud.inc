@@ -19,12 +19,12 @@ ShowHud(playerid)
 
     // Weapon HUD showing is being done inside 'SetPlayerWeapon' !
 
-    KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
-    ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
+    stop ePlayerInfo[playerid][e_iTimer_HideHud];
+    defer HideHud(playerid);
 }
 
 // HUD : Hiding
-function HideHud(playerid)
+timer HideHud[TIMER_HIDE_HUD](playerid)
 {
     if(!IsHudVisibleForPlayer(playerid))
     {
@@ -440,6 +440,6 @@ function HudTd_Bg_FlashRed(playerid, colorId, Float:amount)
     Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
     HudTd_Bg_RedToBlack(playerid, 0.0);
 
-    KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
-    ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
+    stop ePlayerInfo[playerid][e_iTimer_HideHud];
+    defer HideHud(playerid);
 }

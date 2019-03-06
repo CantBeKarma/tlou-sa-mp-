@@ -231,7 +231,7 @@ hook OnPlayerUpdate(playerid)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerStartedHealing(playerid)
 	{
-		KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
+		stop ePlayerInfo[playerid][e_iTimer_HideHud];
 		Audio_PlayEx(playerid, AUDIO_BANDAGE_USE, .loop = true);
 
 		new Float:oldHealth = GetPlayerHealthEx(playerid);
@@ -273,7 +273,7 @@ hook OnPlayerUpdate(playerid)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerCanceledHealing(playerid, Float:oldHealth)
 	{
-		ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
+		defer HideHud(playerid);
 
 		Audio_StopEx(playerid);
 
@@ -287,7 +287,7 @@ hook OnPlayerUpdate(playerid)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerHealed(playerid, Float:oldHealth, Float:newHealth)
 	{
-		ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
+		defer HideHud(playerid);
 
 		Audio_StopEx(playerid);
 		Audio_PlayEx(playerid, AUDIO_BANDAGE_FINISH);

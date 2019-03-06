@@ -74,8 +74,8 @@ public OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount
     }
     
     // Doesn't hide weapon if we are hitting someone.
-    KillTimer(ePlayerInfo[issuerId][e_iTimer_HideHud]);
-    ePlayerInfo[issuerId][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", issuerId);
+    stop ePlayerInfo[issuerId][e_iTimer_HideHud];
+    defer HideHud(issuerId);
 
     DegradePlayerMeleeWeapon(issuerId, issuerWeaponId);    
 	return 0;

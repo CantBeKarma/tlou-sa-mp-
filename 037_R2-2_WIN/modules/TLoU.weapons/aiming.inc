@@ -69,7 +69,7 @@ public OnPlayerTryAimingWeapon(playerid, weaponId)
 	{
 		ShowPlayerCrosshair(playerid);
 		Disable_OnPlayerLookAt(playerid);
-		KillTimer(ePlayerInfo[playerid][e_iTimer_HideHud]);
+		stop ePlayerInfo[playerid][e_iTimer_HideHud];
 	}
 	return 0;
 }
@@ -119,7 +119,7 @@ public OnPlayerAimsWeapon(playerid, weaponId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStopAimingWeapon(playerid)
 {
-	ePlayerInfo[playerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", playerid);
+	defer HideHud(playerid);
 	
 	HidePlayerCrosshair(playerid);
 	HidePlayerHitMarker(playerid);

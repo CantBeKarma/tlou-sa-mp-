@@ -283,8 +283,8 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		}
 		
 		// Doesn't hide weapon if we are hitting someone.
-		KillTimer(ePlayerInfo[issuerid][e_iTimer_HideHud]);
-		ePlayerInfo[issuerid][e_iTimer_HideHud] = SetTimerEx("HideHud", TIMER_HIDE_HUD, false, "d", issuerid);
+		stop ePlayerInfo[issuerid][e_iTimer_HideHud];
+		defer HideHud(issuerid);
 
 		DegradePlayerMeleeWeapon(issuerid, issuerWeaponId);
 		return 0;
