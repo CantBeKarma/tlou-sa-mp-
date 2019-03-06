@@ -438,8 +438,10 @@ ResetEnum_ePlayerWeapon(playerid)
 	SetPlayerLastWeapon(playerid)
 	{
 		// If player's current weapon isn't melee (hands or melee weapon).
-		if(!IsMeleeWeapon(CurrentPlayerWeaponId[playerid])) 
+		if(!IsMeleeWeapon(CurrentPlayerWeaponId[playerid]))
+		{
 			return;
+		}
 
 		// If player uses backpack animations / or doing other actions.
 		if(GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 

@@ -56,7 +56,6 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerDamageHimself(playerid, Float:damageAmount)
 {
-    SCMF(playerid, -1, "Damaged myself! DamageAmount: %f", damageAmount);
     SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - damageAmount);
     return 1;
 }

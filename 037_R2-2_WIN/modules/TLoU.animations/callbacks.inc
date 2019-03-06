@@ -33,13 +33,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		case BOMBER_BOM_PLANT_2IDLE:
 		{
 			Enable_OnPlayerLookAt(playerid);
-
-			new 
-				lastWeaponId = LastPlayerWeaponId[playerid],
-				lastWeaponAmmo = GetPlayerWeaponAmmo(playerid, lastWeaponId);
-
-			if(lastWeaponId != WEAPON_UNARMED && lastWeaponAmmo > 0)
-				SetPlayerWeapon(playerid, lastWeaponId, lastWeaponAmmo);
+			SetPlayerLastWeapon(playerid);
 		}
 
 		// Projectile has been thrown.
