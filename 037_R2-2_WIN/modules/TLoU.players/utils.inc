@@ -242,10 +242,12 @@ HideDeathProcedureTds(playerid)
 // Force change the old holding key to the specified key definition.
 ForceChangeHoldingKeyDef(playerid, key)
 {
-	if(Bit_Get(ePlayerFlag[e_bHoldingKey], playerid))
+	if(!Bit_Get(ePlayerFlag[e_bHoldingKey], playerid))
 	{
-		stop ePlayerInfo[playerid][e_iTimer_holdingKey];
-		ePlayerInfo[playerid][e_iTickCounter_holdingKey] = GetConnectedTime(playerid);
-		ePlayerInfo[playerid][e_iTimer_holdingKey] = repeat Callback_HoldKeyTimer(playerid, key);
+		return;
 	}
+
+	stop ePlayerInfo[playerid][e_iTimer_holdingKey];
+	ePlayerInfo[playerid][e_iTickCounter_holdingKey] = GetConnectedTime(playerid);
+	ePlayerInfo[playerid][e_iTimer_holdingKey] = repeat Callback_HoldKeyTimer(playerid, key);
 }

@@ -5,9 +5,11 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerUpdate(playerid)
 {
-	if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid))
-		return 0;
-
+    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
+    {
+        return 0;
+    }
+	
 	// Aiming.
 	if(IsPlayerHoldingKey(playerid, KEY_AIM))
 	{

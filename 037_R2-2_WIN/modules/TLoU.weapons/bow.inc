@@ -75,9 +75,11 @@ hook OnPlayerHoldingKey(playerid, key)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
+    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
+    {
         return 1;
-	
+    }
+
 	if(PRESSED(KEY_FIRE))
 	{
 		if(IsPlayerAimingWeapon(playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
@@ -125,8 +127,10 @@ hook OnDynamicObjectMoved(objectid)
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerUpdate(playerid)
 {
-	if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid))
-		return 0;
+    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
+    {
+        return 0;
+    }
 
 	if(IsValidDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]) && IsDynamicObjectMoving(ePlayerWeapon[playerid][e_iArrowObjectId]))
 	{

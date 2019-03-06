@@ -1,7 +1,7 @@
 // Save player's data
 function SavePlayerData(playerid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid))
+    if(!IsPlayerLogged(playerid))
     {
         return 1;
     }

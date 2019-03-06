@@ -3,11 +3,13 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public Audio_OnClientConnect(playerid)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid))
+    if(IsPalyerLogged(playerid))
     {
-        Audio_PlayStreamed(playerid, "http://localhost/TLoU/ambient_noise/TLoU_MainMenu.mp3");
-        ConnectionIntroProcedure(playerid);
+        return 1;
     }
+
+    Audio_PlayStreamed(playerid, "http://localhost/TLoU/ambient_noise/TLoU_MainMenu.mp3");
+    ConnectionIntroProcedure(playerid);
 	return 1;
 }
 
@@ -24,16 +26,6 @@ public Audio_OnTransferFile(playerid, file[], current, total, result)
     {
         PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_LoadingProgress], "Done!");
         Delay_PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_LoadingProgress], 3);
-    }
-    return 1;
-}
-
-CMD:checkiter(playerid, params[])
-{
-    SCMF(playerid, -1, "Iters in my iAudioHandle3D:");
-    foreach(new iter : iAudioHandle3D<playerid>)
-    {
-        SCMF(playerid, -1, "%d", iter);
     }
     return 1;
 }

@@ -331,8 +331,10 @@ public OnItemUpdate(updateItemUid, newItemId, newItemAmount, newMeleeExtCnd, Flo
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-    if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid)) 
+    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
+    {
         return 1;
+    }
     
     if(PRESSED(KEY_NO))
     {

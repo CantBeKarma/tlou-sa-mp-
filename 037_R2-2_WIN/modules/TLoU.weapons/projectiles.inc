@@ -81,8 +81,10 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
-        if(!Bit_Get(ePlayerFlag[e_bLogged], playerid) || !IsPlayerControllable(playerid))
+        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
+        {
             return 1;
+        }
         
         if(newkeys & KEY_FIRE)
         {
