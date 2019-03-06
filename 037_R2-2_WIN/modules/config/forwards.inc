@@ -25,7 +25,6 @@ forward OnPlayerCanceledHealing(playerid, Float:oldHealth);
 forward OnPlayerHealed(playerid, Float:oldHealth, Float:newHealth);
 forward OnPlayerHealthChange(playerid, Float:oldHealth, Float:newHealth);
 
-forward OnPlayerBurn(playerid, fireCreatorId);
 forward OnPlayerStartBurning(playerid, fireCreatorId);
 forward OnPlayerStopBurning(playerid);
 

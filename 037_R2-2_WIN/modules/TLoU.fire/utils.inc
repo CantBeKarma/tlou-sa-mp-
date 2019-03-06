@@ -75,7 +75,7 @@ IsPlayerInFireArea(playerid, playerAreaId)
 }
 
 // Puts player on fire state.
-SetPlayerOnFire(playerid)
+SetPlayerOnFire(playerid, fireCreatorId = INVALID_PLAYER_ID)
 {
     if(IsPlayerBurning(playerid))
     {
@@ -84,6 +84,7 @@ SetPlayerOnFire(playerid)
 
     SPAO(playerid, OBJECT_MODEL_BURNING);
     Bit_Let(ePlayerFlag[e_bIsBurning], playerid);
+    OnPlayerStartBurning(playerid, fireCreatorId);
 }
 
 // Puts the fire out of player.

@@ -58,7 +58,7 @@
 		e_iGuid,
 		e_sName[MAX_PLAYER_NAME],
 		Timer:e_iTimer_HideHud,
-		e_iTimer_Burning,
+		Timer:e_iTimer_Burning,
 
 		e_iAnimIdx,
 		Timer:e_iTimer_holdingKey,

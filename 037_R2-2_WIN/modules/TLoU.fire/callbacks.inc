@@ -14,8 +14,9 @@
 
         if(IsPlayerInFireArea(playerid, areaid))
         {
-            SetPlayerOnFire(playerid);
-            OnPlayerStartBurning(playerid, eFireData[areaid][e_iFireCreatorId]);
+            SCMF(playerid, -1, "I'm in the fire area!");
+
+            SetPlayerOnFire(playerid, eFireData[areaid][e_iFireCreatorId]);
         }
         return 1;
     }
@@ -32,6 +33,7 @@
 
         if(IsPlayerInFireArea(playerid, areaid))
         {
+            SCMF(playerid, -1, "I left fire area!");
             PutOutFireOnPlayer(playerid, FIRE_PUT_OUT_DELAY);
         }
         return 1;
@@ -44,21 +46,22 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartBurning(playerid, fireCreatorId)
 {
+    SCMF(playerid, -1, "I began burning...");
+
     Disable_OnPlayerLookAt(playerid);
 
     HideWeaponMenu(playerid);
     HidePlayerWeapon(playerid);
     HideBackpack(playerid, .forceClose = true);
 
-    KillTimer(ePlayerInfo[playerid][e_iTimer_Burning]);
-    ePlayerInfo[playerid][e_iTimer_Burning] = SetTimerEx("OnPlayerBurn", FIRE_DAMAGE_RATE, true, "dd", playerid, fireCreatorId);
+    ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, fireCreatorId);
     return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //---------------------- OnPlayerBurn ---------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerBurn(playerid, fireCreatorId)
+timer OnPlayerBurn[FIRE_DAMAGE_RATE](playerid, fireCreatorId)
 {
     SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - FIRE_DAMAGE_AMOUNT, fireCreatorId, WEAPON_MOLOTOV);
     return 0;
@@ -69,8 +72,9 @@ public OnPlayerBurn(playerid, fireCreatorId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStopBurning(playerid)
 {
-    KillTimer(ePlayerInfo[playerid][e_iTimer_Burning]);
-
+    stop ePlayerInfo[playerid][e_iTimer_Burning];
+    SCMF(playerid, -1, "I have finished burning.");
+    
     if(IsPlayerDead(playerid))
     {
         return 1;
