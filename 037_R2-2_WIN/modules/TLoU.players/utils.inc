@@ -61,7 +61,7 @@ ResetBits_ePlayerFlag(playerid)
 			{
 				stop ePlayerInfo[playerid][e_iTimer_Burning];
 			}
-			
+
 			Bit_Let(ePlayerFlag[e_bIsDead], playerid);
 			OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
 		}	
@@ -101,8 +101,6 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerStunned(playerid)				return Bit_Get(ePlayerFlag[e_bIsStunned], playerid);
 	IsPlayerBurning(playerid) 				return Bit_Get(ePlayerFlag[e_bIsBurning], playerid);
 	IsPlayerHealing(playerid)				return Bit_Get(ePlayerFlag[e_bIsHealing], playerid);
-	IsPlayerLookingAtPlayer(playerid)		return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
-	IsPlayerLookingAtItem(playerid)			return GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID;
 	IsPlayerAimingWeapon(playerid)			return Bit_Get(ePlayerFlag[e_bAiming], playerid);
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	IsPlayerLogged(playerid)				return Bit_Get(ePlayerFlag[e_bLogged], playerid);
@@ -110,7 +108,11 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
 	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
 	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+	IsPlayerPlayingCallbackAnim(playerid)	return Bit_Get(ePlayerFlag[e_bAnimPlaying], playerid);
 	IsPlayerCrouched(playerid)				return GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK;
+	IsPlayerLookingAtPlayer(playerid)		return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
+	IsPlayerLookingAtItem(playerid)			return GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID;
+	IsPlayerAllowedToShiv(playerid)			return IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid);
 
 //#endregion
 

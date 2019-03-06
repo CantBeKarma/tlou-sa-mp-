@@ -5,7 +5,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerUpdate(playerid)
 {
-    if(Bit_Get(ePlayerFlag[e_bAnimPlaying], playerid))
+    if(IsPlayerPlayingCallbackAnim(playerid))
 	{
 		new currentAnimIdx = GetPlayerAnimationIndex(playerid);
 		if(currentAnimIdx != ePlayerInfo[playerid][e_iAnimIdx])

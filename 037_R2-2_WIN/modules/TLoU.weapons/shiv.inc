@@ -15,10 +15,9 @@ public OnPlayerShivPlayer(playerid, shivedId)
 
 	HidePlayerWeapon(playerid);
 	ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PLAYER");
-	ApplyCallbackAnim(shivedId, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
 
-	OnPlayerDeathEx(shivedId, playerid, WEAPON_SHIV, BODY_PART_TORSO);
 	SPAO(playerid, ITEM_MODEL_SHIV);
+	SetPlayerHealthEx(shivedId, 0.0, playerid, WEAPON_SHIV);
 	return 0;
 }
 
@@ -51,10 +50,4 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 	return 1;
-}
-
-// Check if player is allowed to shiv (see's a SHIV label)
-IsPlayerAllowedToShiv(playerid)
-{
-	return IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid);
 }

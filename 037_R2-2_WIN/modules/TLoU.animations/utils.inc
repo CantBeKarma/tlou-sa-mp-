@@ -19,14 +19,16 @@ function PreloadAnimations(playerid)
 // Apply player animation with OnPlayerAnimFinished callback.
 ApplyCallbackAnim(playerid, animlib[], animname[])
 {
-	if(!Bit_Get(ePlayerFlag[e_bAnimPlaying], playerid))
+	if(IsPlayerPlayingCallbackAnim(playerid))
 	{
-		ApplyAnimation(playerid, animlib, animname, 4.1, 0, 1, 1, 0, 0);
-
-		wait_ms(150);
-		Bit_Let(ePlayerFlag[e_bAnimPlaying], playerid);
-		ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
+		return;
 	}
+
+	ApplyAnimation(playerid, animlib, animname, 4.1, 0, 1, 1, 0, 0);
+
+	wait_ms(150);
+	Bit_Let(ePlayerFlag[e_bAnimPlaying], playerid);
+	ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
 }
 
 // Clear animations using other anim.
@@ -115,6 +117,12 @@ PlayDeathAnimation(playerid, bodypart, weaponid)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
+		if(weaponid == WEAPON_SHIV)
+		{
+			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
+			return;
+		}
+
 		if(weaponid == WEAPON_MOLOTOV)
 		{
 			ApplyAnimation(playerid, "PED", "PED_KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
