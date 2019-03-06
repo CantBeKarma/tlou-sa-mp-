@@ -141,20 +141,17 @@ hook OnPlayerUpdate(playerid)
 	// Thanks to YSF and new function "SetPlayerSyncKeys" I am able to sync all the keys that player 
 	// presses but KEY_FIRE. So that way people won't see "fake-shooting" when player is out of ammo for the weapon.
     if(IsPlayerAimingWeapon(playerid)
-    && IsBulletWeapon(CurrentPlayerWeaponId[playerid]) && CurrentPlayerWeaponClipSize[playerid] <= 0)
+    && IsBulletWeapon(CurrentPlayerWeaponId[playerid]) 
+	&& CurrentPlayerWeaponClipSize[playerid] <= 0)
     {
-		new keys, updown, leftright;
-		GetPlayerKeys(playerid, keys, updown, leftright);
-		SetPlayerSyncKeys(playerid, keys & ~KEY_FIRE, updown, leftright);
+		DesynchronizePlayerKey(playerid, KEY_FIRE);
     }
 
 	// If player is bunny hopping, he doesn't see jumping animation when pressing
 	// jump key but other player's do, so below code doesn't synchronize player jumping key.
 	if(IsPlayerBunnyHopping(playerid))
 	{
-		new keys, updown, leftright;
-		GetPlayerKeys(playerid, keys, updown, leftright);
-		SetPlayerSyncKeys(playerid, keys & ~KEY_JUMP, updown, leftright);
+		DesynchronizePlayerKey(playerid, KEY_JUMP);
 	}
  
 //#region walking when A/W/S/D | custom-walking

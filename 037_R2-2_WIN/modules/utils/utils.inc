@@ -34,14 +34,18 @@ RandomEx(min, max)
 	return random(max - min) + min;
 }
 
+// Stops syncing a key for specific player when function is called.
+DesynchronizePlayerKey(playerid, keyDef)
+{
+	new keys, updown, leftright;
+	GetPlayerKeys(playerid, keys, updown, leftright);
+	SetPlayerSyncKeys(playerid, keys & ~keyDef, updown, leftright);
+}
+
 // Extends GetPlayerSkin default function.
 GetPlayerSkinEx(playerid)
 {
-	// if(GetPlayerSkin(playerid) == eCharsInfo[playerid][e_iSkinId])
-	// {
 	return eCharsInfo[playerid][e_iSkinId];
-	// }
-	// return -1;
 }
 
 // Extends SetPlayerSkin default function.
@@ -77,11 +81,7 @@ SplitStringIntoTwoStrings(string[],
 
 	if(useDotContinuation)
 	{
-		strins(stringPartOne, dotContinuation, 63, stringPartOneSize);
-	}
-
-	if(useDotContinuation)
-	{
+		strins(stringPartOne, dotContinuation, splitPointNumber-1, stringPartOneSize);
 		strins(stringPartTwo, dotContinuation, 0, stringPartTwoSize);
 	}
 }
@@ -106,11 +106,11 @@ substr(const sSource[], iStart, iLength = sizeof sSource)
 
 #if !defined strcpy
 
-stock strcpy(dest[], src[], sz=sizeof(dest))
-{
-	dest[0] = 0;	
-	return strcat(dest, src, sz);
-}
+	stock strcpy(dest[], src[], sz=sizeof(dest))
+	{
+		dest[0] = 0;	
+		return strcat(dest, src, sz);
+	}
 
 #endif
 
@@ -131,12 +131,6 @@ DisableDefaultAmbientNoise(playerid)
 	return PlayerPlaySound(playerid, 1, 0.0, 0.0, 0.0);
 }
 
-// Helper : checking if player is in a ducked mode or not (crouching).
-IsPlayerCrouched(playerid)
-{
-	return GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK;
-}
-
 // Get player's IP.
 forward [16]GetPlayerIpAddress(playerid);
 stock GetPlayerIpAddress(playerid)
@@ -151,12 +145,6 @@ stock GetPlayerIpAddress(playerid)
     #emit STACK 16
     #emit RETN
 }
-// GetPlayerIpAddress(playerid)
-// {
-// 	new address[16];
-//     GetPlayerIp(playerid, address, sizeof(address));
-// 	return address;
-// }
 
 // Fade player screen
 function FadePlayerScreen(playerid, type)

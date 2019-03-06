@@ -105,6 +105,7 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
 	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
 	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+	IsPlayerCrouched(playerid)				return GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK;
 
 //#endregion
 

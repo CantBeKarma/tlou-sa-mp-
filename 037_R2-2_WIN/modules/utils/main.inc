@@ -3,7 +3,6 @@
 #include ".\modules\TLoU.audio\utils.inc"
 #include ".\modules\TLoU.backpack\utils.inc"
 #include ".\modules\TLoU.characters\utils.inc"
-
 #include ".\modules\TLoU.fire\utils.inc"
 #include ".\modules\TLoU.items\utils.inc"
 #include ".\modules\TLoU.npcs\utils.inc"
