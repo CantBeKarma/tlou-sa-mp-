@@ -122,7 +122,7 @@ public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
 	FreezePlayer(playerid, true, -1);
 	HidePlayerWeapon(playerid);
 	Disable_OnPlayerLookAt(playerid);
-	PlayDeathAnimation(playerid, bodypart);
+	PlayDeathAnimation(playerid, bodypart, weaponid);
 	PlayDeathProcedureForPlayer(playerid);
     return 1;
 }

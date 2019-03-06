@@ -111,10 +111,16 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
 }
 
 // Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
-PlayDeathAnimation(playerid, bodypart)
+PlayDeathAnimation(playerid, bodypart, weaponid)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
+		if(weaponid == WEAPON_MOLOTOV)
+		{
+			ApplyAnimation(playerid, "PED", "PED_KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
+			return;
+		}
+
 		switch(bodypart)
 		{
 			case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
@@ -129,27 +135,24 @@ PlayDeathAnimation(playerid, bodypart)
 				}
 			}
 		}
+		return;
+	}
+
+	new 
+		vehicleid = GetPlayerVehicleID(playerid),
+		modelid = GetVehicleModel(vehicleid);
+
+	if(IsVehicleModelBike(modelid))
+	{
+		new Float:x, Float:y, Float:z;
+		GetVehiclePos(vehicleid, x, y, z);
+		RemovePlayerFromVehicle(playerid);
+		SetPlayerPos(playerid, x, y, z);
+		ApplyAnimation(playerid, "PED", "BIKE_FALL_OFF", 4.0, 0, 1, 1, 0, 0, 1);
 	}
 	else
 	{
-		new 
-			vehicleid = GetPlayerVehicleID(playerid),
-			modelid = GetVehicleModel(vehicleid);
-
-		switch(modelid)
-		{
-			case 448, 461, 462, 463, 468, 471, 481, 509, 510, 521, 522, 523, 581, 586: 
-			{
-				new Float:x, Float:y, Float:z;
-				GetVehiclePos(vehicleid, x, y, z);
-				RemovePlayerFromVehicle(playerid);
-				SetPlayerPos(playerid, x, y, z);
-				ApplyAnimation(playerid, "PED", "BIKE_FALL_OFF", 4.0, 0, 1, 1, 0, 0, 1);
-			}
-
-			default:
-				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
-		}
+		ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
 	}
 }
 

@@ -57,6 +57,11 @@ ResetBits_ePlayerFlag(playerid)
 
 		if(GetPlayerHealthEx(playerid) <= 0.0)
 		{
+			if(weaponid == WEAPON_MOLOTOV)
+			{
+				stop ePlayerInfo[playerid][e_iTimer_Burning];
+			}
+			
 			Bit_Let(ePlayerFlag[e_bIsDead], playerid);
 			OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
 		}	

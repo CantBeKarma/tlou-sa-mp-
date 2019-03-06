@@ -303,6 +303,19 @@ MoveCameraNextToPlayer(playerid, Float:distance, Float:offset, move_time, Float:
     InterpolateCameraPos(playerid, X, Y, Z, newX, newY, Z, move_time, CAMERA_MOVE);
 }
 
+// Check if specified vehicle model is a (motor/quad) bike.
+IsVehicleModelBike(model)
+{
+	switch(model)
+	{
+		case 448, 461, 462, 463, 468, 471, 481, 509, 510, 521, 522, 523, 581, 586:
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 // Get XY coords in front of a player with certain distance.
 Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
 {

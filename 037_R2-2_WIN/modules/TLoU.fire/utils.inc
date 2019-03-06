@@ -88,20 +88,14 @@ SetPlayerOnFire(playerid, fireCreatorId = INVALID_PLAYER_ID)
 }
 
 // Puts the fire out of player.
-function PutOutFireOnPlayer(playerid, delay)
+timer PutOutFireOnPlayer[FIRE_PUT_OUT_DELAY](playerid)
 {
     if(!IsPlayerBurning(playerid))
     {
         return;
     }
 
-    if(delay > 0)
-    {
-        SetTimerEx("PutOutFireOnPlayer", FIRE_DAMAGE_RATE, false, "dd", playerid, delay-1);
-    }
-    else
-    {
-        OnPlayerStopBurning(playerid);
-        Bit_Vet(ePlayerFlag[e_bIsBurning], playerid);
-    }
+    RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+    Bit_Vet(ePlayerFlag[e_bIsBurning], playerid);
+    OnPlayerStopBurning(playerid);
 }

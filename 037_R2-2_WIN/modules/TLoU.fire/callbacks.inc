@@ -34,7 +34,7 @@
         if(IsPlayerInFireArea(playerid, areaid))
         {
             SCMF(playerid, -1, "I left fire area!");
-            PutOutFireOnPlayer(playerid, FIRE_PUT_OUT_DELAY);
+            defer PutOutFireOnPlayer(playerid);
         }
         return 1;
     }
@@ -81,7 +81,6 @@ public OnPlayerStopBurning(playerid)
     }
     
     Enable_OnPlayerLookAt(playerid);
-    RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     return 0;
 }
 
