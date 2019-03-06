@@ -3,7 +3,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public Audio_OnClientConnect(playerid)
 {
-    if(IsPalyerLogged(playerid))
+    if(IsPlayerLogged(playerid))
     {
         return 1;
     }
