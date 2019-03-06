@@ -5,8 +5,8 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
     if(fireId == INVALID_ITERATOR_SLOT)
         return 1;
 
-    new rand = RandomEx(MIN_FIRES_PER_MOLOTOV, MAX_FIRES_PER_MOLOTOV);
-    for(new i = 0; i != rand; i++)
+    new firesAmount = RandomEx(MIN_FIRES_PER_MOLOTOV, MAX_FIRES_PER_MOLOTOV);
+    for(new i = 0; i != firesAmount; i++)
     {
         if(i == 0)
         {
@@ -25,7 +25,7 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
         eFireData[fireId][e_fFirePos_Z] = z - 2.5;
 
         eFireData[fireId][e_iFireObjectId][i] = CreateDynamicObject(FIRE_MODEL_ID, eFireData[fireId][e_fFirePos_X], eFireData[fireId][e_fFirePos_Y], eFireData[fireId][e_fFirePos_Z], 0.0, 0.0, 0.0);
-        eFireData[fireId][e_iFireAreaId] = CreateDynamicCircle(eFireData[fireId][e_fFirePos_X], eFireData[fireId][e_fFirePos_Y], FIRE_RANGE);
+        eFireData[fireId][e_iFireAreaId] = CreateDynamicSphere(x, y, z, FIRE_RANGE);
         eFireData[fireId][e_iFireCreatorId] = fireCreatorId;
     }
 
