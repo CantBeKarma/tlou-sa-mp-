@@ -123,7 +123,7 @@ PlayDeathAnimation(playerid, bodypart, weaponid)
 			return;
 		}
 
-		if(weaponid == WEAPON_MOLOTOV)
+		if(weaponid == WEAPON_MOLOTOV || weaponid == WEAPON_COLLISION)
 		{
 			ApplyAnimation(playerid, "PED", "PED_KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
 			return;
@@ -198,7 +198,7 @@ IsPlayerUnableToPerformAction(playerid)
         || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_SWIM)
         || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_JUMP)
         || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_FALL)
-		//|| IsPlayerDead(playerid)
+		|| IsPlayerDead(playerid)
 		|| IsPlayerBurning(playerid)
 		|| IsPlayerStunned(playerid)
     ;
