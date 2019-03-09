@@ -7,16 +7,14 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     hook OnPlayerEnterDynArea(playerid, areaid)
     {
-        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || IsPlayerBurning(playerid))
+        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
         {
             return 1;
         }
 
-        if(IsPlayerInFireArea(playerid, areaid))
+        if(IsPlayerInFireArea(areaid))
         {
-            SCMF(playerid, -1, "I'm in the fire area!");
-
-            SetPlayerOnFire(playerid, eFireData[areaid][e_iFireCreatorId]);
+            SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_BURNING);
         }
         return 1;
     }
@@ -31,9 +29,8 @@
             return 1;
         }
 
-        if(IsPlayerInFireArea(playerid, areaid))
+        if(IsPlayerInFireArea(areaid))
         {
-            SCMF(playerid, -1, "I left fire area!");
             defer PutOutFireOnPlayer(playerid);
         }
         return 1;
@@ -46,14 +43,13 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartBurning(playerid, fireCreatorId)
 {
-    SCMF(playerid, -1, "I began burning...");
-
     Disable_OnPlayerLookAt(playerid);
 
     HideWeaponMenu(playerid);
     HidePlayerWeapon(playerid);
     HideBackpack(playerid, .forceClose = true);
 
+    SPAO(playerid, OBJECT_MODEL_BURNING);
     ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, fireCreatorId);
     return 0;
 }
@@ -63,6 +59,12 @@ public OnPlayerStartBurning(playerid, fireCreatorId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 timer OnPlayerBurn[FIRE_DAMAGE_RATE](playerid, fireCreatorId)
 {
+    if(!IsPlayerBurning(playerid))
+    {
+        stop ePlayerInfo[playerid][e_iTimer_Burning];
+        return 1;
+    }
+
     SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - FIRE_DAMAGE_AMOUNT, fireCreatorId, WEAPON_MOLOTOV);
     return 0;
 }
@@ -73,13 +75,14 @@ timer OnPlayerBurn[FIRE_DAMAGE_RATE](playerid, fireCreatorId)
 public OnPlayerStopBurning(playerid)
 {
     stop ePlayerInfo[playerid][e_iTimer_Burning];
-    SCMF(playerid, -1, "I have finished burning.");
+    RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     
     if(IsPlayerDead(playerid))
     {
         return 1;
     }
     
+    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
     Enable_OnPlayerLookAt(playerid);
     return 0;
 }
@@ -89,6 +92,10 @@ public OnPlayerStopBurning(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnGameModeExit()
 {
+    foreach(new fireId : ServerFires)
+    {
+        DestroyFire(fireId);
+    }
     Iter_Clear(ServerFires);
     return 1;
 }

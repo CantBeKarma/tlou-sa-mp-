@@ -5,14 +5,14 @@
 #define     MAX_FIRES_PER_MOLOTOV   (5)
 
 // Fire delay configurations.
-#define     FIRE_DESTROY_DELAY      (60000)
-#define     FIRE_PUT_OUT_DELAY      (10)
+#define     FIRE_DESTROY_DELAY      (60 * 1000)
+#define     FIRE_PUT_OUT_DELAY      (5 * 1000)
 
 // Fire model.
 #define     FIRE_MODEL_ID           (18689)
 
 // Other.
-#define     FIRE_RANGE              (5.0)
+#define     FIRE_RANGE              (3.5)
 #define     FIRE_DAMAGE_AMOUNT      (2.0)
 #define     FIRE_DAMAGE_RATE        (200)
 
