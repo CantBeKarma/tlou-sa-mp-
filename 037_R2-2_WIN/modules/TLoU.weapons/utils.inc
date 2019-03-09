@@ -435,8 +435,8 @@ ResetEnum_ePlayerWeapon(playerid)
 	}
 
 	// Gives player his last used weapon (used for instant equips).
-	SetPlayerLastWeapon(playerid)
-	{
+	function SetPlayerLastWeapon(playerid)
+	{		
 		// If player's current weapon isn't melee (hands or melee weapon).
 		if(!IsMeleeWeapon(CurrentPlayerWeaponId[playerid]))
 		{

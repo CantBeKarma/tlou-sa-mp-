@@ -67,6 +67,7 @@ forward OnPlayerThrowProjectile(playerid, weaponId);
 forward OnPlayerDropNailbomb(playerid);
 forward OnPlayerTriggerNailbomb(triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward OnPlayerGetStunned(playerid);
+forward OnPlayerShakeOffStun(playerid);
 
 forward OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z);
 forward OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z);

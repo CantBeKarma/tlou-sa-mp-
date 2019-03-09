@@ -29,13 +29,6 @@ public OnPlayerAnimFinish(playerid, animIdx)
 
 	switch(animIdx)
 	{
-		// Backpack has been closed.
-		case BOMBER_BOM_PLANT_2IDLE:
-		{
-			Enable_OnPlayerLookAt(playerid);
-			SetPlayerLastWeapon(playerid);
-		}
-
 		// Projectile has been thrown.
 		case GRENADE_WEAPON_THROW:
 		{
@@ -65,23 +58,6 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		{
 			HidePlayerWeapon(playerid);
 		}
-
-		// Player got stunned by smoke bomb.
-		// case PED_GAS_CWR:
-		// {
-		// 	if(IsPlayerStunned(playerid))
-		// 		ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
-		// }
-
-		// // Not stunned anymore.
-		// case PED_IDLE_TIRED:
-		// {
-		// 	if(IsPlayerStunned(playerid))
-		// 	{
-		// 		Enable_OnPlayerLookAt(playerid);
-		// 		Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
-		// 	}
-		// }
 	}
 	return 1;
 }

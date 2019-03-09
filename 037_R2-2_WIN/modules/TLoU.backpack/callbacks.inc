@@ -57,9 +57,7 @@ public OnPlayerOpenBackpack(playerid, category)
 public OnPlayerCloseBackpack(playerid)
 {
     ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening] = GetConnectedTime(playerid);
-    
-    Enable_OnPlayerLookAt(playerid);
-    Perform_BackpackClosing(playerid);
+    CallLocalFunction(#Perform_BackpackClosing, "d", playerid);
     return 1;
 }
 
@@ -75,15 +73,19 @@ public OnPlayerUseBackpack(playerid, category, keys)
             new oldSelection = Craft_GetSelection(playerid);
             if(keys == KEY_UP)
             {
-                if(Craft_GetSelection(playerid) == CRAFT_ITEM_MELEE) 
+                if(Craft_GetSelection(playerid) == CRAFT_ITEM_MELEE)
+                {
                     return;
+                }
                 
                 Craft_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
-                if(Craft_GetSelection(playerid) == CRAFT_ITEM_SMOKE_BOMB) 
+                if(Craft_GetSelection(playerid) == CRAFT_ITEM_SMOKE_BOMB)
+                {
                     return;
+                }
                 
                 Craft_GetSelection(playerid) += 1;
             }

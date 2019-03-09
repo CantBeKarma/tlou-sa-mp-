@@ -97,7 +97,7 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 	return 0;
 }
 
-//#region Idle managment callbacks
+//#region Idle management callbacks
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//------------------------ FCNPC_OnIdle -------------------------
@@ -186,23 +186,6 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 				FCNPC_SetAnimCallback(npcid, PED_GETUP);
 			}
 
-			case PED_GAS_CWR:
-			{
-				if(FCNPC_IsStunned(npcid))
-				{
-					FCNPC_SetAnimCallback(npcid, PED_IDLE_TIRED);
-				}
-			}
-
-			case PED_IDLE_TIRED:
-			{
-				if(FCNPC_IsStunned(npcid))
-				{
-					FCNPC_OnShakeOffStun(npcid);
-					FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
-				}
-			}
-
 			case PED_FLEE_LKAROUND_01:
 			{
 				if(FCNPC_IsDistracted(npcid))
@@ -233,7 +216,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
     return 0;
 }
 
-//#region Damage managment callbacks
+//#region Damage management callbacks
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//---------------------- FCNPC_OnTakeDamage ---------------------
@@ -283,8 +266,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		}
 		
 		// Doesn't hide weapon if we are hitting someone.
-		stop ePlayerInfo[issuerid][e_iTimer_HideHud];
-		defer HideHud(issuerid);
+		RestartHideHudTimer(issuerid);
 
 		DegradePlayerMeleeWeapon(issuerid, issuerWeaponId);
 		return 0;
@@ -343,7 +325,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 
 //#endregion
 
-//#region Area managment
+//#region Area management
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//-------------------- FCNPC_OnEnterDynArea ---------------------
@@ -382,7 +364,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 
 //#endregion
 
-//#region Burn managment callbacks
+//#region Burn management callbacks
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//--------------------- FCNPC_OnStartBurning --------------------
@@ -412,7 +394,13 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnGetStunned(npcid)
 	{
-		FCNPC_SetAnimCallback(npcid, PED_GAS_CWR);
+		FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
+		wait_ms(3000);
+
+		FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
+		wait_ms(2000);
+
+		FCNPC_OnShakeOffStun(npcid);
 		return 0;
 	}
 

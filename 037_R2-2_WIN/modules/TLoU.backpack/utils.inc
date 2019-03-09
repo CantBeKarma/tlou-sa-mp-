@@ -71,11 +71,11 @@ Perform_BackpackOpening(playerid)
 }
 
 // Perform anim. with camera backpack closing.
-Perform_BackpackClosing(playerid)
+function Perform_BackpackClosing(playerid)
 {
     if(!IsPlayerLogged(playerid))
     {
-        return 1;
+        return;
     }
     
     // If HUD was flashing before using backpack - enable HUD flash again.
@@ -88,9 +88,12 @@ Perform_BackpackClosing(playerid)
     ShowHud(playerid);
     SetCameraBehindPlayer(playerid);
     AttachBackpackToPlayer(playerid);
-    ApplyCallbackAnim(playerid, "BOMBER", "BOM_PLANT_2IDLE"); // ApplyCallbackAnim function because giving player's back his Last weapon used once animation finishes.
     Audio_PlayEx(playerid, AUDIO_BP_CLOSE);
-    return 0;
+    ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 0);
+
+    wait_ms(1300);
+    CallLocalFunction(#Enable_OnPlayerLookAt, "d", playerid);
+	CallLocalFunction(#SetPlayerLastWeapon, "d", playerid);
 }
 
 // Change the colors of WRENCH and SUPPLEMENT icons in the navigation menu.

@@ -83,8 +83,6 @@ public OnPlayerFirstSpawn(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerRespawn(playerid)
 {
-	Bit_Vet(ePlayerFlag[e_bIsDead], playerid);
-
 	SCMF(playerid, -1, "Check: /icmd createitem and dialog responses");
 	SCMF(playerid, -1, "Check: /checkzdiff");
 	SCMF(playerid, -1, "Check: Don't allow fake shooting when out of ammo (you need another player to test this!)");
@@ -96,10 +94,15 @@ public OnPlayerRespawn(playerid)
 	Enable_OnPlayerLookAt(playerid);
 	AttachBackpackToPlayer(playerid);
 
-	HideDeathProcedureTds(playerid);
+	if(IsPlayerDead(playerid))
+	{
+		HideDeathProcedureTds(playerid);
+	}
 
 	wait_ms(150);
 	FadePlayerScreen(playerid, FADE_OUT);
+
+	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 	return 0;
 }
 
@@ -112,6 +115,8 @@ public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
 	{
 		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s [%d] has killed himself", \
 				PlayerName(playerid), playerid);
+
+		weaponid = WEAPON_COLLISION;
 	}
 	else
 	{
@@ -130,7 +135,7 @@ public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnPlayerUpdate --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnPlayerUpdate(playerid)
+hook OnPlayerUpdate@000(playerid)
 {
     if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
 	{
@@ -224,7 +229,7 @@ hook OnPlayerUpdate(playerid)
 	return 1;
 }
 
-//#region Health managment callbacks
+//#region Health management callbacks
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//----------------- OnPlayerStartedHealing ----------------
@@ -237,7 +242,6 @@ hook OnPlayerUpdate(playerid)
 		new Float:oldHealth = GetPlayerHealthEx(playerid);
 		new Float:destHealth = oldHealth + 20.0;
 
-		Bit_Let(ePlayerFlag[e_bIsHealing], playerid);
 		HealMyself(playerid, oldHealth, destHealth);
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_LOOP", 4.0, 1, 0, 0, 0, 0);
 		return 0;
@@ -251,7 +255,6 @@ hook OnPlayerUpdate(playerid)
 		new Float:currentHealth = GetPlayerHealthEx(playerid);
 		if(currentHealth >= 100.0 || currentHealth >= destHealth)
 		{
-			Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
 			OnPlayerHealed(playerid, oldHealth, currentHealth);
 		}
 		else
@@ -273,10 +276,10 @@ hook OnPlayerUpdate(playerid)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerCanceledHealing(playerid, Float:oldHealth)
 	{
-		defer HideHud(playerid);
+		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+		ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
 
 		Audio_StopEx(playerid);
-
 		SetPlayerHealthEx(playerid, oldHealth);
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 1);
 		return 0;
@@ -287,7 +290,8 @@ hook OnPlayerUpdate(playerid)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerHealed(playerid, Float:oldHealth, Float:newHealth)
 	{
-		defer HideHud(playerid);
+		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+		ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
 
 		Audio_StopEx(playerid);
 		Audio_PlayEx(playerid, AUDIO_BANDAGE_FINISH);
@@ -460,27 +464,37 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 
 //#endregion
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------ OnPlayerGetStunned -------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerGetStunned(playerid)
-{
-    Disable_OnPlayerLookAt(playerid);
-    //ApplyCallbackAnim(playerid, "PED", "GAS_CWR");
+//#region Stunned management callbacks
 
-	ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
-	wait_ms(3000);
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------ OnPlayerGetStunned -------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerGetStunned(playerid)
+	{
+		Disable_OnPlayerLookAt(playerid);
 
-	//ApplyCallbackAnim(playerid, "PED", "IDLE_TIRED");
-	ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
-	wait_ms(2000);
+		ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
+		wait_ms(3000);
 
-	ClearAnims(playerid);
+		ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
+		wait_ms(2000);
 
-	Enable_OnPlayerLookAt(playerid);
-	Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
-    return 0;
-}
+		OnPlayerShakeOffStun(playerid);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------- OnPlayerShakeOffStun ------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerShakeOffStun(playerid)
+	{
+		ClearAnims(playerid);
+		Enable_OnPlayerLookAt(playerid);
+		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+		return 0;
+	}
+
+//#endregion
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------- OnPlayerKeyStateChange ----------------

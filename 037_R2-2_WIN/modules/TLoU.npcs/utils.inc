@@ -148,7 +148,7 @@
 					return false;
 				}
 
-				FCNPC_OnGetStunned(npcid);
+				CallLocalFunction("FCNPC_OnGetStunned", "d", npcid);
 			}
 
 			case STATUS_DEAD:
@@ -386,7 +386,7 @@
 
 //#endregion
 
-//#region Areas managment
+//#region Areas management
 
 	// Create NPC roam area.
 	CreateNpcRoamArea(npcid)
