@@ -1,16 +1,16 @@
 { 
-  "version": "2.0.0",  
-  "type": "shell",
-  "args": ["${relativeFile}", "'-(+'", "'-;+'", "-d3"],
+    "version": "2.0.0",  
+    "type": "shell",
+    "args": ["${relativeFile}", "'-(+'", "'-;+'", "-d3"],
 
-  "windows":  
-  {  
-      "command": "${workspaceRoot}\\pawno\\pawncc.exe"
-  },
+    "windows":  
+    {
+        "command": "${workspaceRoot}\\pawno\\pawncc.exe"
+    },
 
-  "group": 
-  {
-      "kind": "build",
-      "isDefault": true
-  },
+    "group": 
+    {
+        "kind": "build",
+        "isDefault": true
+    },
 }
