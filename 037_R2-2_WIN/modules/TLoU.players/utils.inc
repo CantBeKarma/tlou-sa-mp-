@@ -29,15 +29,48 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
-	Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
-	Bit_Vet(ePlayerFlag[e_bIsBurning], playerid);
-	Bit_Vet(ePlayerFlag[e_bIsStunned], playerid);
-	Bit_Vet(ePlayerFlag[e_bIsDead], playerid);
 
 	print("ResetBits_ePlayerFlag");
 }
 
-//#region Health managment utils
+//#region Status management
+
+PLAYER_STATUS:GetPlayerStatus(playerid)	return ePlayerInfo[playerid][e_iCurrentStatus];
+
+SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
+{
+	if(GetPlayerStatus(playerid) == status
+	|| IsPlayerDead(playerid))
+	{
+		return;
+	}
+
+	switch(status)
+	{
+		case PLAYER_STATUS_NONE: { }
+
+		case PLAYER_STATUS_STUNNED:
+		{
+			if(IsPlayerBurning(playerid))
+			{
+				return;
+			}
+
+			CallLocalFunction("OnPlayerGetStunned", "d", playerid);
+		}
+
+		case PLAYER_STATUS_BURNING:
+		{
+			OnPlayerStartBurning(playerid, statusIssuerId);
+		}
+	}
+
+	ePlayerInfo[playerid][e_iCurrentStatus] = status;
+}
+
+//#endregion
+
+//#region Health management utils
 
 	// Get player health value.
 	Float:GetPlayerHealthEx(playerid) return eCharsInfo[playerid][e_fHealth];
@@ -62,7 +95,7 @@ ResetBits_ePlayerFlag(playerid)
 				stop ePlayerInfo[playerid][e_iTimer_Burning];
 			}
 
-			Bit_Let(ePlayerFlag[e_bIsDead], playerid);
+			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_DEAD);
 			OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
 		}	
 	}
@@ -88,7 +121,6 @@ ResetBits_ePlayerFlag(playerid)
 		}
 		else
 		{
-			Bit_Vet(ePlayerFlag[e_bIsHealing], playerid);
 			OnPlayerCanceledHealing(playerid, oldHealth);
 		}
 	}
@@ -97,10 +129,11 @@ ResetBits_ePlayerFlag(playerid)
 
 //#region Utils
 
-	IsPlayerDead(playerid)					return Bit_Get(ePlayerFlag[e_bIsDead], playerid);
-	IsPlayerStunned(playerid)				return Bit_Get(ePlayerFlag[e_bIsStunned], playerid);
-	IsPlayerBurning(playerid) 				return Bit_Get(ePlayerFlag[e_bIsBurning], playerid);
-	IsPlayerHealing(playerid)				return Bit_Get(ePlayerFlag[e_bIsHealing], playerid);
+	IsPlayerBurning(playerid) 				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_BURNING);
+	IsPlayerStunned(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_STUNNED);
+	IsPlayerDead(playerid)					return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_DEAD);
+	IsPlayerHealing(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_HEALING);
+
 	IsPlayerAimingWeapon(playerid)			return Bit_Get(ePlayerFlag[e_bAiming], playerid);
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	IsPlayerLogged(playerid)				return Bit_Get(ePlayerFlag[e_bLogged], playerid);
@@ -115,6 +148,13 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerAllowedToShiv(playerid)			return IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid);
 
 //#endregion
+
+// Stops HideHud timer and starts it again.
+RestartHideHudTimer(playerid)
+{
+    stop ePlayerInfo[playerid][e_iTimer_HideHud];
+    ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
+}
 
 // Frezee player with timer to unfreeze (optional).
 function FreezePlayer(playerid, bool:camMove, time)
@@ -151,21 +191,8 @@ UnfreezePlayer(playerid)
 	}
 }
 
-// Stuns player.
-StunPlayer(playerid)
-{
-	if(IsPlayerStunned(playerid))
-	{
-		return false;
-	}
-
-	Bit_Let(ePlayerFlag[e_bIsStunned], playerid);
-	OnPlayerGetStunned(playerid);
-	return true;
-}
-
 // Enable OnPlayerLookAt callback timer if it isn't running.
-Enable_OnPlayerLookAt(playerid)
+function Enable_OnPlayerLookAt(playerid)
 {
 	if(IsPlayerLookingTimerRunning(playerid))
 	{

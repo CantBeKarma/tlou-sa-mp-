@@ -445,6 +445,16 @@ CMD:npcstatus(playerid, params[])
     return 1;
 }
 
+CMD:mystatus(playerid, params[])
+{
+    new PLAYER_STATUS:status;
+    if(sscanf(params, "d", _:status))return SCM(playerid, -1, "/mystatus [status]");
+    {
+        SetPlayerStatus(playerid, status);
+    }
+    return 1;
+}
+
 CMD:allin(playerid, params[])
 {
     // Ingredients.

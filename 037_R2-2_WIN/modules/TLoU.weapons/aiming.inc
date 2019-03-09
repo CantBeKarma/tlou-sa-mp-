@@ -119,7 +119,7 @@ public OnPlayerAimsWeapon(playerid, weaponId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStopAimingWeapon(playerid)
 {
-	defer HideHud(playerid);
+	ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
 	
 	HidePlayerCrosshair(playerid);
 	HidePlayerHitMarker(playerid);

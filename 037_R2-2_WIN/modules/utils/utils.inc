@@ -563,7 +563,7 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
         }
         else
         {
-            StunPlayer(i);
+			SetPlayerStatus(i, PLAYER_STATUS:PLAYER_STATUS_STUNNED);
         }
     }
 }

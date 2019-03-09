@@ -60,6 +60,8 @@
 		Timer:e_iTimer_HideHud,
 		Timer:e_iTimer_Burning,
 
+		PLAYER_STATUS:e_iCurrentStatus,
+
 		e_iAnimIdx,
 		Timer:e_iTimer_holdingKey,
 
@@ -95,12 +97,21 @@
 		e_bLookingAtTimerRunning,
 		e_bIsUpgradingSkill,
 		e_bIsHudBgFlashing,
-		e_bIsHealing,
-		e_bIsBurning,
-		e_bIsStunned,
-		e_bIsDead
 	}
 	new BitArray:ePlayerFlag[e_PLAYER_FLAGS]<MAX_PLAYERS>;
+
+//#endregion
+
+//#region Player statuses
+
+	enum PLAYER_STATUS
+	{
+		PLAYER_STATUS_NONE,
+		PLAYER_STATUS_BURNING,
+		PLAYER_STATUS_STUNNED,
+		PLAYER_STATUS_HEALING,
+		PLAYER_STATUS_DEAD
+	};
 
 //#endregion
 

@@ -18,9 +18,7 @@ ShowHud(playerid)
     PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status]);
 
     // Weapon HUD showing is being done inside 'SetPlayerWeapon' !
-
-    stop ePlayerInfo[playerid][e_iTimer_HideHud];
-    defer HideHud(playerid);
+    RestartHideHudTimer(playerid);
 }
 
 // HUD : Hiding
@@ -440,6 +438,5 @@ function HudTd_Bg_FlashRed(playerid, colorId, Float:amount)
     Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
     HudTd_Bg_RedToBlack(playerid, 0.0);
 
-    stop ePlayerInfo[playerid][e_iTimer_HideHud];
-    defer HideHud(playerid);
+    RestartHideHudTimer(playerid);
 }
