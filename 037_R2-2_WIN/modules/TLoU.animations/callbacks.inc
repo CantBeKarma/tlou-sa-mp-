@@ -10,7 +10,6 @@ hook OnPlayerUpdate(playerid)
 		new currentAnimIdx = GetPlayerAnimationIndex(playerid);
 		if(currentAnimIdx != ePlayerInfo[playerid][e_iAnimIdx])
 		{
-			Bit_Vet(ePlayerFlag[e_bAnimPlaying], playerid);
 			OnPlayerAnimFinish(playerid, ePlayerInfo[playerid][e_iAnimIdx]);
 			ePlayerInfo[playerid][e_iAnimIdx] = 0;
 		}
@@ -59,6 +58,11 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		case KNIFE_KILL_KNIFE_PLAYER:
 		{
 			HidePlayerWeapon(playerid);
+		}
+
+		default:
+		{
+			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
 	}
 	return 1;

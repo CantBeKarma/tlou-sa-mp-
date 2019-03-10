@@ -19,7 +19,6 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bLogged], playerid);
 	Bit_Vet(ePlayerFlag[e_bDoingCrouchBug], playerid);
 	Bit_Vet(ePlayerFlag[e_bDoingBunnyHop], playerid);
-	Bit_Vet(ePlayerFlag[e_bAnimPlaying], playerid);
 	Bit_Vet(ePlayerFlag[e_bCacheLoaded], playerid);
 	Bit_Vet(ePlayerFlag[e_bHoldingKey], playerid);
 	Bit_Vet(ePlayerFlag[e_bKeyPress], playerid);
@@ -192,7 +191,8 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	IsPlayerUsingBackpack(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
 	IsPlayerUsingWeaponMenu(playerid)		return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_WEAPMENU);
 	IsPlayerAimingWeapon(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_AIMING);
-
+	IsPlayerPlayingCallbackAnim(playerid)	return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_PLAYING_ANIM);
+	
 	IsPlayerCrafting(playerid)				return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
 	IsPlayerUpgradingSkill(playerid)		return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 	IsPlayerCrouched(playerid)				return (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK);
@@ -206,13 +206,16 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
 	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
 	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
-	IsPlayerPlayingCallbackAnim(playerid)	return Bit_Get(ePlayerFlag[e_bAnimPlaying], playerid);
 
 //#endregion
 
 // Stops HideHud timer and starts it again.
 RestartHideHudTimer(playerid)
 {
+	if(IsPlayerAimingWeapon(playerid))
+	{
+		return;
+	}
     stop ePlayerInfo[playerid][e_iTimer_HideHud];
     ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
 }

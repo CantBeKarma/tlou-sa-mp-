@@ -87,7 +87,6 @@
 		e_bLogged,
 		e_bDoingCrouchBug,
 		e_bDoingBunnyHop,
-		e_bAnimPlaying,
 		e_bCacheLoaded,
 		e_bHoldingKey,
 		e_bKeyPress,
@@ -112,6 +111,7 @@
 		PLAYER_STATUS_BURNING,
 		PLAYER_STATUS_STUNNED,
 		PLAYER_STATUS_HEALING,
+		PLAYER_STATUS_PLAYING_ANIM,
 		PLAYER_STATUS_DEAD
 	};
 

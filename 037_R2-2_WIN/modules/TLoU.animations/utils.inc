@@ -27,7 +27,7 @@ ApplyCallbackAnim(playerid, animlib[], animname[])
 	ApplyAnimation(playerid, animlib, animname, 4.1, 0, 1, 1, 0, 0);
 
 	wait_ms(150);
-	Bit_Let(ePlayerFlag[e_bAnimPlaying], playerid);
+	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_PLAYING_ANIM);
 	ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
 }
 
