@@ -45,9 +45,6 @@ public OnPlayerOpenBackpack(playerid, category)
     Disable_OnPlayerLookAt(playerid);
     Perform_BackpackOpening(playerid);
     ShowBackpackCategory(playerid, category);
-    Key_BackpackMenu(playerid);
-
-    SCMF(playerid, -1, "OnPlayerOpenBackpack(%d, %d)", playerid, category);
     return 1;
 }
 
@@ -58,8 +55,6 @@ public OnPlayerCloseBackpack(playerid)
 {
     ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening] = GetConnectedTime(playerid);
     CLF(#Perform_BackpackClosing, "d", playerid);
-
-    SCMF(playerid, -1, "OnPlayerCloseBackpack(%d", playerid);
     return 1;
 }
 

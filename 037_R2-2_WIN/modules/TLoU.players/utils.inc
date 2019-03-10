@@ -63,6 +63,17 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 				
 				OnPlayerCloseBackpack(playerid);
 			}
+
+			if(IsPlayerUsingWeaponMenu(playerid))
+			{
+				new bool:successfullyClosed = HideWeaponMenu(playerid);
+				if(!successfullyClosed)
+				{
+					return;
+				}
+
+				OnPlayerCloseWeaponMenu(playerid);
+			}
 		}
 
 		case PLAYER_STATUS_USING_BACKPACK:
@@ -74,6 +85,22 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 			}
 
 			OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
+		}
+
+		case PLAYER_STATUS_USING_WEAPMENU:
+		{
+			if(IsPlayerUsingBackpack(playerid))
+			{
+				return;
+			}
+
+			new bool:successfullyOpened = ShowWeaponMenu(playerid);
+			if(!successfullyOpened)
+			{
+				return;
+			}
+
+			OnPlayerOpenWeaponMenu(playerid);
 		}
 
 		case PLAYER_STATUS_STUNNED:
@@ -93,6 +120,15 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	}
 
 	ePlayerInfo[playerid][e_iCurrentStatus] = status;
+
+	if(status == PLAYER_STATUS_USING_BACKPACK)
+	{
+		Key_BackpackMenu(playerid);
+	}
+	else if(status == PLAYER_STATUS_USING_WEAPMENU)
+	{
+		Key_WeaponMenu(playerid);
+	}
 }
 
 //#endregion
@@ -161,6 +197,8 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	IsPlayerDead(playerid)					return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_DEAD);
 	IsPlayerHealing(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_HEALING);
 	IsPlayerUsingBackpack(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
+	IsPlayerUsingWeaponMenu(playerid)		return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_WEAPMENU);
+
 	IsPlayerCrafting(playerid)				return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
 	IsPlayerUpgradingSkill(playerid)		return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 	IsPlayerCrouched(playerid)				return (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK);

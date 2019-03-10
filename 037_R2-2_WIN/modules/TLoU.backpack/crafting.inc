@@ -114,7 +114,7 @@ hook OnPlayerHoldingKey(playerid, key)
                 oldselection = Craft_GetSelection(playerid),
                 newSelection = Craft_GetSelection(playerid) = iter;
 
-            HideWeaponMenu(playerid);
+            SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
             PlayerBackpackCategory(playerid) = BACKPACK_CATEGORY_CRAFTING;
             SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
             CraftTd_HighlightSelection(playerid, newSelection, oldselection);

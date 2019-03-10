@@ -45,7 +45,6 @@ public OnPlayerStartBurning(playerid, fireCreatorId)
 {
     Disable_OnPlayerLookAt(playerid);
 
-    HideWeaponMenu(playerid);
     HidePlayerWeapon(playerid);
     SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE, fireCreatorId);
 

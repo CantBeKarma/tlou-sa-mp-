@@ -10,7 +10,6 @@ public OnPlayerOpenWeaponMenu(playerid)
 
     WeapMenuTd_DisplayWeapsAndAmmo(playerid);
     CraftTd_CheckWhatsToCraft(playerid);
-    Key_WeaponMenu(playerid);
     return 1;
 }
 
@@ -203,16 +202,17 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         {
             if(GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_2IDLE 
             && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_IN
-            && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_LOOP
-            && !IsPlayerUsingBackpack(playerid) && !IsPlayerAimingWeapon(playerid))
+            && GetPlayerAnimationIndex(playerid) != BOMBER_BOM_PLANT_LOOP)
             {
-                ShowWeaponMenu(playerid);
+                SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_USING_WEAPMENU);
             }
         }
         else 
         {
             if(!IsPlayerSwitchingWeapons(playerid))
-                HideWeaponMenu(playerid);
+            {
+                SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+            }
         }
     }
     return 1;

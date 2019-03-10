@@ -82,7 +82,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         // Hide weapon menu and start aiming (doesn't apply when player is switching weapons).
         if(IsPlayerUsingWeaponMenu(playerid) && !IsPlayerSwitchingWeapons(playerid))
         {
-            HideWeaponMenu(playerid);
+            SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
         }
 
         // If player doesn't have any weapon equipped (or has melee)

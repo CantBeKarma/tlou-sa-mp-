@@ -268,7 +268,7 @@ SetPlayerItemAmount(playerid, itemId, amount, meleeUpgradedCnd = 0)
     if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
     {
         if(IsMeleeWeapon(weaponId)) CraftTd_UpdateViewingItem(playerid, CRAFT_ITEM_MELEE);
-        else if(!IsBulletWeapon(weaponId)) CraftTd_UpdateItemAmount(playerid, eItemsData[itemId][e_iItem_CraftItemId], calcAmount);
+        else if(!IsBulletWeapon(weaponId)) CraftTd_UpdateItemAmount(playerid, eItemsData[itemId][e_iItem_CraftItemId], calcAmount); // Need to add a validation for nailbomb (projetiles weapons???)
     }
     else
     {

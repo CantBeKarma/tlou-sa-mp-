@@ -9,12 +9,6 @@ ResetEnum_ePlayerWeapMenu(playerid)
     print("ResetEnum_ePlayerWeapMenu");
 }
 
-// Check if is player using weapon menu.
-IsPlayerUsingWeaponMenu(playerid)
-{
-    return IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
-}
-
 // Check if player is switching weapons.
 IsPlayerSwitchingWeapons(playerid)
 {
@@ -180,23 +174,24 @@ WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH)
 }
         
 // Show player weapon menu.
-ShowWeaponMenu(playerid)
+bool:ShowWeaponMenu(playerid)
 {
     if(IsPlayerUnableToPerformAction(playerid))
-        return;
+    {
+        return false;
+    }
 
     TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
     TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
-
-    OnPlayerOpenWeaponMenu(playerid);
+    return true;
 }
 
 // Hide player's weapon menu.
-HideWeaponMenu(playerid)
+bool:HideWeaponMenu(playerid)
 {
     if(!IsPlayerUsingWeaponMenu(playerid))
     {
-        return;
+        return false;
     }
     
     TdHideForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
@@ -209,13 +204,16 @@ HideWeaponMenu(playerid)
         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
 
         if(tdIdx < 2)
+        {
             PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][tdIdx]);
+        }
 
         if(tdIdx < 4)
+        {
             PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][tdIdx]);
+        }
     }
-
-    OnPlayerCloseWeaponMenu(playerid);
+    return true;
 }
 
 // Display weapons in the weapon menu based on player's ammo and weapons that player have.
