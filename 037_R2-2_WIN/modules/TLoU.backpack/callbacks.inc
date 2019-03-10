@@ -27,9 +27,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
     if(PRESSED(KEY_AIM))
     {
-        SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+        if(IsPlayerUsingBackpack(playerid))
+        {
+            SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+        }
     }
-
     return 1;
 }
 
@@ -38,7 +40,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerOpenBackpack(playerid, category)
 {
-    PlayerBackpackCategory(playerid) = category;
     ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening] = GetConnectedTime(playerid);
     
     Disable_OnPlayerLookAt(playerid);
@@ -153,28 +154,31 @@ public OnPlayerUseBackpack(playerid, category, keys)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerSwitchBpCtgry(playerid, leftRight)
 {
-    new oldCategory = PlayerBackpackCategory(playerid);
+    new 
+        newCategory = -1,
+        oldCategory = PlayerBackpackCategory(playerid);
+
     if(leftRight == KEY_LEFT)
     {
         if(PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING) 
+        {
             return;
+        }
 
-        PlayerBackpackCategory(playerid) -= 1;
-
+        newCategory = PlayerBackpackCategory(playerid) -= 1;
         Audio_PlayEx(playerid, AUDIO_NAVI_LEFT);
     }
     else if(leftRight == KEY_RIGHT)
     {
         if(PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES)
+        {
             return;
+        }
 
-        PlayerBackpackCategory(playerid) += 1;
-
+        newCategory = PlayerBackpackCategory(playerid) += 1;
         Audio_PlayEx(playerid, AUDIO_NAVI_RIGHT);
     }
 
     HideBackpackCategory(playerid, oldCategory);
-
-    new newCategory = PlayerBackpackCategory(playerid);
     ShowBackpackCategory(playerid, newCategory);    
 }

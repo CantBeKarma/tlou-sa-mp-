@@ -83,7 +83,7 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 				return;
 			}
 
-			CLF("OnPlayerGetStunned", "d", playerid);
+			CLF(#OnPlayerGetStunned, "d", playerid);
 		}
 
 		case PLAYER_STATUS_BURNING:

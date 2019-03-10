@@ -148,7 +148,7 @@
 					return false;
 				}
 
-				CLF("FCNPC_OnGetStunned", "d", npcid);
+				CLF(#FCNPC_OnGetStunned, "d", npcid);
 			}
 
 			case STATUS_DEAD:
