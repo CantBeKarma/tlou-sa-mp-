@@ -75,6 +75,7 @@
 	#define     SCMF             		SendClientMessagef
 	#define		SCM_ALL					SendClientMessageToAll
 	#define		SCMF_ALL				SendClientMessageToAllf
+	#define		CLF						CallLocalFunction
 	//#define     SPAO              		SetPlayerAttachedObject
 
 	#define 	PRESSED(%0) 			(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))

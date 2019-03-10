@@ -115,52 +115,52 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
 // Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
 PlayDeathAnimation(playerid, bodypart, weaponid)
 {
-	if(!IsPlayerInAnyVehicle(playerid))
+	if(IsPlayerInAnyVehicle(playerid))
 	{
-		if(weaponid == WEAPON_SHIV)
-		{
-			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
-			return;
-		}
+		new 
+			vehicleid = GetPlayerVehicleID(playerid),
+			modelid = GetVehicleModel(vehicleid);
 
-		if(weaponid == WEAPON_MOLOTOV || weaponid == WEAPON_COLLISION)
+		if(IsVehicleModelBike(modelid))
 		{
-			ApplyAnimation(playerid, "PED", "PED_KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
-			return;
+			new Float:x, Float:y, Float:z;
+			GetVehiclePos(vehicleid, x, y, z);
+			RemovePlayerFromVehicle(playerid);
+			SetPlayerPos(playerid, x, y, z);
+			ApplyAnimation(playerid, "PED", "BIKE_FALL_OFF", 4.1, 0, 1, 1, 1, 0, 1);
 		}
-
-		switch(bodypart)
+		else
 		{
-			case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
-			default:
-			{
-				// If player wasn't killed stealthly or 
-				// shot in stomach by shotgun (Flew backwards)
-				if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
-				&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
-				{
-					ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
-				}
-			}
+			ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.1, 0, 1, 1, 1, 0, 1);
 		}
 		return;
 	}
 
-	new 
-		vehicleid = GetPlayerVehicleID(playerid),
-		modelid = GetVehicleModel(vehicleid);
-
-	if(IsVehicleModelBike(modelid))
+	if(weaponid == WEAPON_SHIV)
 	{
-		new Float:x, Float:y, Float:z;
-		GetVehiclePos(vehicleid, x, y, z);
-		RemovePlayerFromVehicle(playerid);
-		SetPlayerPos(playerid, x, y, z);
-		ApplyAnimation(playerid, "PED", "BIKE_FALL_OFF", 4.0, 0, 1, 1, 0, 0, 1);
+		ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
+		return;
 	}
-	else
+
+	if(weaponid == WEAPON_MOLOTOV || weaponid == WEAPON_COLLISION)
 	{
-		ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+		ApplyAnimation(playerid, "PED", "KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
+		return;
+	}
+
+	switch(bodypart)
+	{
+		case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
+		default:
+		{
+			// If player wasn't killed stealthly or 
+			// shot in stomach by shotgun (Flew backwards)
+			if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
+			&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
+			{
+				ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
+			}
+		}
 	}
 }
 

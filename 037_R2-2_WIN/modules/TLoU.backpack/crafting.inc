@@ -104,20 +104,21 @@ hook OnPlayerHoldingKey(playerid, key)
                 case WEAPON_MENU_V_SMOKE_BOMB:  iter = WEAPON_SLOT_SMOKE_BOMB;
             }
 
-            if(iter == -1)
-                return 1;
-
-            if(Iter_Contains(ItemsToCraft<playerid>, iter))
+            if(iter == -1
+            || !Iter_Contains(ItemsToCraft<playerid>, iter))
             {
-                new 
-                    oldselection = Craft_GetSelection(playerid),
-                    newSelection = Craft_GetSelection(playerid) = iter;
-
-                HideWeaponMenu(playerid);
-                ShowBackpack(playerid, BACKPACK_CATEGORY_CRAFTING);
-                CraftTd_HighlightSelection(playerid, newSelection, oldselection);
-                Backpack_MoveSelectBox(playerid, eBackpack_CraftItemsData[newSelection][e_fSelBoxX], eBackpack_CraftItemsData[newSelection][e_fSelBoxY]);
+                return 1;
             }
+
+            new 
+                oldselection = Craft_GetSelection(playerid),
+                newSelection = Craft_GetSelection(playerid) = iter;
+
+            HideWeaponMenu(playerid);
+            PlayerBackpackCategory(playerid) = BACKPACK_CATEGORY_CRAFTING;
+            SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
+            CraftTd_HighlightSelection(playerid, newSelection, oldselection);
+            Backpack_MoveSelectBox(playerid, eBackpack_CraftItemsData[newSelection][e_fSelBoxX], eBackpack_CraftItemsData[newSelection][e_fSelBoxY]);
         }
     }
 	return 0;

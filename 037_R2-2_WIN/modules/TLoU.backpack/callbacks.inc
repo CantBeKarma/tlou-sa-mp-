@@ -12,25 +12,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     
     if(PRESSED(KEY_NO))
     {
-        // Backpack opening/closing.
         if(!IsPlayerCrafting(playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
         {
-            if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid) 
-                && GetPlayerSpeed(playerid) <= 0.0 && !IsPlayerLookingAtItem(playerid))
+            if(!IsPlayerUsingBackpack(playerid) && !IsPlayerLookingAtItem(playerid))
             {
-                ShowBackpack(playerid, PlayerBackpackCategory(playerid));
+                SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
             }
             else if(IsPlayerUsingBackpack(playerid))
             {
-                HideBackpack(playerid);
+                SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
             }
         }
     }
 
     if(PRESSED(KEY_AIM))
     {
-        // Backpack closing.
-        HideBackpack(playerid);
+        SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
     }
 
     return 1;
@@ -48,6 +45,8 @@ public OnPlayerOpenBackpack(playerid, category)
     Perform_BackpackOpening(playerid);
     ShowBackpackCategory(playerid, category);
     Key_BackpackMenu(playerid);
+
+    SCMF(playerid, -1, "OnPlayerOpenBackpack(%d, %d)", playerid, category);
     return 1;
 }
 
@@ -57,7 +56,9 @@ public OnPlayerOpenBackpack(playerid, category)
 public OnPlayerCloseBackpack(playerid)
 {
     ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening] = GetConnectedTime(playerid);
-    CallLocalFunction(#Perform_BackpackClosing, "d", playerid);
+    CLF(#Perform_BackpackClosing, "d", playerid);
+
+    SCMF(playerid, -1, "OnPlayerCloseBackpack(%d", playerid);
     return 1;
 }
 

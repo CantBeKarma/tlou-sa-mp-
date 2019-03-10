@@ -93,10 +93,10 @@
 		e_bHoldingKey,
 		e_bKeyPress,
 		e_bIsCrafting,
+		e_bIsUpgradingSkill,
 		e_bIsSwitchingWeapons,
 		e_bLookingAtTimerRunning,
-		e_bIsUpgradingSkill,
-		e_bIsHudBgFlashing,
+		e_bIsHudBgFlashing
 	}
 	new BitArray:ePlayerFlag[e_PLAYER_FLAGS]<MAX_PLAYERS>;
 
@@ -107,6 +107,7 @@
 	enum PLAYER_STATUS
 	{
 		PLAYER_STATUS_NONE,
+		PLAYER_STATUS_USING_BACKPACK,
 		PLAYER_STATUS_BURNING,
 		PLAYER_STATUS_STUNNED,
 		PLAYER_STATUS_HEALING,

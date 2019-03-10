@@ -83,26 +83,20 @@ public OnPlayerFirstSpawn(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerRespawn(playerid)
 {
-	SCMF(playerid, -1, "Check: /icmd createitem and dialog responses");
-	SCMF(playerid, -1, "Check: /checkzdiff");
-	SCMF(playerid, -1, "Check: Don't allow fake shooting when out of ammo (you need another player to test this!)");
-
-	new Float:charHealth = GetPlayerHealthEx(playerid);
-	SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
-
-	UnfreezePlayer(playerid);
-	Enable_OnPlayerLookAt(playerid);
-	AttachBackpackToPlayer(playerid);
-
 	if(IsPlayerDead(playerid))
 	{
 		HideDeathProcedureTds(playerid);
 	}
+	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+
+	new Float:charHealth = GetPlayerHealthEx(playerid);
+	SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
+	AttachBackpackToPlayer(playerid);
 
 	wait_ms(150);
-	FadePlayerScreen(playerid, FADE_OUT);
-
-	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+	CLF(#FadePlayerScreen, "dd", playerid, FADE_OUT);
+	Enable_OnPlayerLookAt(playerid);
+	UnfreezePlayer(playerid);
 	return 0;
 }
 

@@ -27,13 +27,13 @@ timer Callback_HoldKeyTimer[100](playerid, key)
 	if(IsPlayerHoldingKey(playerid, key))
 	{
 		Bit_Let(ePlayerFlag[e_bKeyPress], playerid);
-		CallLocalFunction("OnPlayerHoldingKey", "dd", playerid, key);
+		CLF("OnPlayerHoldingKey", "dd", playerid, key);
 	}
     else 
     {
         if(Bit_Get(ePlayerFlag[e_bKeyPress], playerid))
        	{
-			CallLocalFunction("OnPlayerReleaseKey", "ddd", playerid, key, GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey]);
+			CLF("OnPlayerReleaseKey", "ddd", playerid, key, GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey]);
        	}
         stop ePlayerInfo[playerid][e_iTimer_holdingKey];
 

@@ -30,8 +30,8 @@ Task:LoadCache(playerid)
     // ShowBackpack(playerid, BACKPACK_CATEGORY_CRAFTING); 
     // wait_ms(300);
 
-    //HideBackpack(playerid);
-    //wait_ms(100);
+    // HideBackpack(playerid);
+    // wait_ms(100);
 
     Bit_Let(ePlayerFlag[e_bCacheLoaded], playerid);
 }

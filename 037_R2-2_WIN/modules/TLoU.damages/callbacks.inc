@@ -28,7 +28,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
         return 1;
     }
     
-    HideBackpack(playerid);
+    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE, issuerid);
 
     if(issuerid == INVALID_PLAYER_ID)
     {

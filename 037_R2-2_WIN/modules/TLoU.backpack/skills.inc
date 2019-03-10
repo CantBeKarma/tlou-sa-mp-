@@ -80,12 +80,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     return 1;
 }
 
-// Check if player is upgrading a skill.
-IsPlayerUpgradingSkill(playerid)
-{
-    return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
-}
-
 // Sets player certain level for the specified skillId.
 Skill_SetLevel(playerid, skillId, level)
 {

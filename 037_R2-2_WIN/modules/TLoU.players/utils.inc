@@ -39,15 +39,42 @@ PLAYER_STATUS:GetPlayerStatus(playerid)	return ePlayerInfo[playerid][e_iCurrentS
 
 SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
 {
-	if(GetPlayerStatus(playerid) == status
-	|| IsPlayerDead(playerid))
+	if(GetPlayerStatus(playerid) == status)
+	{
+		return;
+	}
+
+	if(IsPlayerDead(playerid) && status != PLAYER_STATUS_NONE)
 	{
 		return;
 	}
 
 	switch(status)
 	{
-		case PLAYER_STATUS_NONE: { }
+		case PLAYER_STATUS_NONE:
+		{
+			if(IsPlayerUsingBackpack(playerid))
+			{
+				new bool:successfullyClosed = HideBackpack(playerid, (statusIssuerId != INVALID_PLAYER_ID) ? (true) : (false));
+				if(!successfullyClosed)
+				{
+					return;
+				}
+				
+				OnPlayerCloseBackpack(playerid);
+			}
+		}
+
+		case PLAYER_STATUS_USING_BACKPACK:
+		{
+			new bool:successfullyOpened = ShowBackpack(playerid);
+			if(!successfullyOpened)
+			{
+				return;
+			}
+
+			OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
+		}
 
 		case PLAYER_STATUS_STUNNED:
 		{
@@ -56,7 +83,7 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 				return;
 			}
 
-			CallLocalFunction("OnPlayerGetStunned", "d", playerid);
+			CLF("OnPlayerGetStunned", "d", playerid);
 		}
 
 		case PLAYER_STATUS_BURNING:
@@ -133,6 +160,13 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	IsPlayerStunned(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_STUNNED);
 	IsPlayerDead(playerid)					return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_DEAD);
 	IsPlayerHealing(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_HEALING);
+	IsPlayerUsingBackpack(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
+	IsPlayerCrafting(playerid)				return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
+	IsPlayerUpgradingSkill(playerid)		return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
+	IsPlayerCrouched(playerid)				return (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK);
+	IsPlayerLookingAtPlayer(playerid)		return (GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID);
+	IsPlayerLookingAtItem(playerid)			return (GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID);
+	IsPlayerAllowedToShiv(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid));
 
 	IsPlayerAimingWeapon(playerid)			return Bit_Get(ePlayerFlag[e_bAiming], playerid);
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
@@ -142,10 +176,6 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
 	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
 	IsPlayerPlayingCallbackAnim(playerid)	return Bit_Get(ePlayerFlag[e_bAnimPlaying], playerid);
-	IsPlayerCrouched(playerid)				return GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK;
-	IsPlayerLookingAtPlayer(playerid)		return GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID;
-	IsPlayerLookingAtItem(playerid)			return GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID;
-	IsPlayerAllowedToShiv(playerid)			return IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid);
 
 //#endregion
 

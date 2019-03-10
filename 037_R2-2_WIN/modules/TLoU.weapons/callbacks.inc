@@ -144,7 +144,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
         newAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
         newClipAmmo = CurrentPlayerWeaponClipSize[playerid];
 
-    CallLocalFunction("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
+    CLF("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
 	return 0;
 }
 
