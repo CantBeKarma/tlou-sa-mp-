@@ -59,14 +59,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                     if(newWeaponId == 0) Audio_PlayEx(playerid, AUDIO_WEAP_NOAMMO);
                     else
                     {
-                        if(currentWeaponId != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN)
-                        {
-                            // This function is going to be called only if player keeps aiming
-                            // It is needed here because of different crosshairs for shotgun and other weapons
-                            // and when weapon changes automatically with "GetFirstWeaponWithAmmo"
-                            ShowPlayerCrosshair(playerid, .forceUpdate = true);
-                        }
-
                         ApplyAnimation(playerid, "TLoU", "WEAPON_SWITCH", 4.1, 0, 1, 1, 0, 0);
                         SetPlayerWeapon(playerid, newWeaponId, GetPlayerWeaponAmmo(playerid, newWeaponId));
                         TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
@@ -218,6 +210,14 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
     }
     else
     {
+        if(oldWeaponId != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN && IsPlayerAimingWeapon(playerid))
+        {
+            // This function is going to be called only if player keeps aiming
+            // It is needed here because of different crosshairs for shotgun and other weapons
+            // and when weapon changes automatically with "GetFirstWeaponWithAmmo"
+            ShowPlayerCrosshair(playerid, .forceUpdate = true);
+        }
+
 		ShowHud(playerid);
         
         HudTd_DisplayMeleeWeaponBars(playerid, newWeaponId);
