@@ -73,6 +73,7 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 					OnPlayerCloseWeaponMenu(playerid);
 				}
 			}
+			RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 		}
 
 		case PLAYER_STATUS_USING_BACKPACK:
