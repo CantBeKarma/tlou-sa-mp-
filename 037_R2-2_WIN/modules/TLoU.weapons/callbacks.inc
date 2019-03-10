@@ -118,6 +118,14 @@ public OnPlayerStopAimingBulletWeapon(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
 {
+    if(GetObjectModel(objectid) == -1)
+    {
+        new nailBmbIdx = FindNailbombIdx(objectid);
+        if(nailBmbIdx != INVALID_ITERATOR_SLOT)
+        {
+            OnNailbombExplode(playerid, playerid, nailBmbIdx, x, y, z);
+        }
+    }
     return 1;
 }
 

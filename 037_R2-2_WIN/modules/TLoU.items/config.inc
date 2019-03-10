@@ -17,7 +17,7 @@
     // -> Craftable
     #define     ITEM_MODEL_SHIV         (15071)
     #define     ITEM_MODEL_MEDKIT       (15072)
-    #define     ITEM_MODEL_BOMB         (342)
+    #define     ITEM_MODEL_BOMB         (15111)
     #define     ITEM_MODEL_MOLOTOV      (344)
     #define     ITEM_MODEL_SMKBMB       (343)
 

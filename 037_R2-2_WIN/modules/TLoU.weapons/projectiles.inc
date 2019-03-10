@@ -449,6 +449,19 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         }
     }
 
+    // Finds Nailbomb Index based on its objectid.
+    FindNailbombIdx(objectid)
+    {
+        foreach(new nailBmbIdx : NailBmbsList)
+        {
+            if(objectid == eProjectileData[nailBmbIdx][e_iNailBmb_ObjectId])
+            {
+                return nailBmbIdx;
+            }
+        }
+        return INVALID_ITERATOR_SLOT;
+    }
+
     // Creates projectile destroy effect based on the weaponId.
     CreateProjectileDestroyEffect(weaponId, projid, Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_ID)
     {
