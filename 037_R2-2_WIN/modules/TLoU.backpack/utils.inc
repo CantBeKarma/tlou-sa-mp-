@@ -121,7 +121,7 @@ UpdateNavItemsColors(playerid)
 // (each category is split in 'ShowBackpackCategory' function).
 bool:ShowBackpack(playerid)
 {
-    if(IsPlayerUnableToPerformAction(playerid)
+    if(IsPlayerUnableToPerformAction(playerid) || IsPlayerAimingWeapon(playerid)
     || IsPlayerUsingWeaponMenu(playerid) || GetPlayerSpeed(playerid) > 0.0)
     {
         return false;

@@ -40,7 +40,7 @@ public OnPlayerShotArrow(playerid)
 	{
 		if(IsPlayerAimingWeapon(playerid))
 		{
-			Bit_Vet(ePlayerFlag[e_bAiming], playerid);
+			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 			OnPlayerStopAimingWeapon(playerid);
 		}
 	}

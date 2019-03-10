@@ -28,8 +28,7 @@ hook OnPlayerUpdate(playerid)
 	{
 		if(IsPlayerAimingWeapon(playerid))
 		{
-			Bit_Vet(ePlayerFlag[e_bAiming], playerid);
-			OnPlayerStopAimingWeapon(playerid);
+			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
 	}
 	return 1;
@@ -41,12 +40,14 @@ hook OnPlayerUpdate(playerid)
 public OnPlayerTryAimingWeapon(playerid, weaponId)
 {
 	if(IsPlayerUnableToPerformAction(playerid))
+	{
 		return 1;
+	}
 
 	// Bullet weapons.
 	if(IsBulletWeapon(weaponId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	{
-		Bit_Let(ePlayerFlag[e_bAiming], playerid);
+		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 		OnPlayerStartAimingBulletWeapon(playerid);
 	}
 
@@ -55,12 +56,12 @@ public OnPlayerTryAimingWeapon(playerid, weaponId)
 	{
 		if(weaponId == WEAPON_BOW)
 		{
-			Bit_Let(ePlayerFlag[e_bAiming], playerid);
+			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingBow(playerid);
 		}
 		else if(IsProjectileWeapon(weaponId) || IsThrowableWeapon(weaponId))
 		{
-			Bit_Let(ePlayerFlag[e_bAiming], playerid);
+			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingProjectile(playerid, weaponId);
 		}
 	}

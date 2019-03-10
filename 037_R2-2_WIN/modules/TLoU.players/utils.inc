@@ -19,7 +19,6 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bLogged], playerid);
 	Bit_Vet(ePlayerFlag[e_bDoingCrouchBug], playerid);
 	Bit_Vet(ePlayerFlag[e_bDoingBunnyHop], playerid);
-	Bit_Vet(ePlayerFlag[e_bAiming], playerid);
 	Bit_Vet(ePlayerFlag[e_bAnimPlaying], playerid);
 	Bit_Vet(ePlayerFlag[e_bCacheLoaded], playerid);
 	Bit_Vet(ePlayerFlag[e_bHoldingKey], playerid);
@@ -53,6 +52,11 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	{
 		case PLAYER_STATUS_NONE:
 		{
+			if(IsPlayerAimingWeapon(playerid))
+			{
+				OnPlayerStopAimingWeapon(playerid);
+			}
+
 			if(IsPlayerUsingBackpack(playerid))
 			{
 				new bool:successfullyClosed = HideBackpack(playerid, (statusIssuerId != INVALID_PLAYER_ID) ? (true) : (false));
@@ -98,6 +102,8 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 				return;
 			}
 		}
+
+		case PLAYER_STATUS_AIMING: {}
 
 		case PLAYER_STATUS_STUNNED:
 		{
@@ -185,6 +191,7 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	IsPlayerHealing(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_HEALING);
 	IsPlayerUsingBackpack(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
 	IsPlayerUsingWeaponMenu(playerid)		return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_WEAPMENU);
+	IsPlayerAimingWeapon(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_AIMING);
 
 	IsPlayerCrafting(playerid)				return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
 	IsPlayerUpgradingSkill(playerid)		return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
@@ -193,7 +200,6 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	IsPlayerLookingAtItem(playerid)			return (GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID);
 	IsPlayerAllowedToShiv(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid));
 
-	IsPlayerAimingWeapon(playerid)			return Bit_Get(ePlayerFlag[e_bAiming], playerid);
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	IsPlayerLogged(playerid)				return Bit_Get(ePlayerFlag[e_bLogged], playerid);
 	IsPlayerCacheLoaded(playerid)			return Bit_Get(ePlayerFlag[e_bCacheLoaded], playerid);

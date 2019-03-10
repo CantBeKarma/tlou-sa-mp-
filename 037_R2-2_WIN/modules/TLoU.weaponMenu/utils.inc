@@ -176,7 +176,7 @@ WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH)
 // Show player weapon menu.
 bool:ShowWeaponMenu(playerid)
 {
-    if(IsPlayerUnableToPerformAction(playerid))
+    if(IsPlayerUnableToPerformAction(playerid) || IsPlayerAimingWeapon(playerid))
     {
         return false;
     }

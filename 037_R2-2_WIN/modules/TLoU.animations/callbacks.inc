@@ -35,13 +35,15 @@ public OnPlayerAnimFinish(playerid, animIdx)
 			if(GetPlayerWeaponAmmo(playerid, CurrentPlayerWeaponId[playerid]) > 0)
 			{
 				if(IsPlayerAimingWeapon(playerid))
+				{
 					ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
+				}
 			}
 			else
 			{
 				if(IsPlayerAimingWeapon(playerid))
 				{
-					Bit_Vet(ePlayerFlag[e_bAiming], playerid);
+					SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 					OnPlayerStopAimingWeapon(playerid);
 				}
 			}
