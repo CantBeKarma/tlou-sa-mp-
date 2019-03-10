@@ -107,6 +107,7 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	{
 		if(playerid == INVALID_PLAYER_ID || IsPlayerDead(playerid))
 		{
+			SCMF(playerid, -1, "Test commit here");
 			return;
 		}
 
