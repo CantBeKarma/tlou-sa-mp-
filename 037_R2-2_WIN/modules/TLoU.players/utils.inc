@@ -56,35 +56,31 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 			if(IsPlayerUsingBackpack(playerid))
 			{
 				new bool:successfullyClosed = HideBackpack(playerid, (statusIssuerId != INVALID_PLAYER_ID) ? (true) : (false));
-				if(!successfullyClosed)
+				if(successfullyClosed)
 				{
-					return;
+					OnPlayerCloseBackpack(playerid);
 				}
-				
-				OnPlayerCloseBackpack(playerid);
 			}
 
 			if(IsPlayerUsingWeaponMenu(playerid))
 			{
 				new bool:successfullyClosed = HideWeaponMenu(playerid);
-				if(!successfullyClosed)
+				if(successfullyClosed)
 				{
-					return;
+					OnPlayerCloseWeaponMenu(playerid);
 				}
-
-				OnPlayerCloseWeaponMenu(playerid);
 			}
 		}
 
 		case PLAYER_STATUS_USING_BACKPACK:
 		{
 			new bool:successfullyOpened = ShowBackpack(playerid);
-			if(!successfullyOpened)
+			if(successfullyOpened)
 			{
+				ePlayerInfo[playerid][e_iCurrentStatus] = status;
+				OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
 				return;
 			}
-
-			OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
 		}
 
 		case PLAYER_STATUS_USING_WEAPMENU:
@@ -95,12 +91,12 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 			}
 
 			new bool:successfullyOpened = ShowWeaponMenu(playerid);
-			if(!successfullyOpened)
+			if(successfullyOpened)
 			{
+				ePlayerInfo[playerid][e_iCurrentStatus] = status;
+				OnPlayerOpenWeaponMenu(playerid);
 				return;
 			}
-
-			OnPlayerOpenWeaponMenu(playerid);
 		}
 
 		case PLAYER_STATUS_STUNNED:
@@ -120,15 +116,6 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
 	}
 
 	ePlayerInfo[playerid][e_iCurrentStatus] = status;
-
-	if(status == PLAYER_STATUS_USING_BACKPACK)
-	{
-		Key_BackpackMenu(playerid);
-	}
-	else if(status == PLAYER_STATUS_USING_WEAPMENU)
-	{
-		Key_WeaponMenu(playerid);
-	}
 }
 
 //#endregion

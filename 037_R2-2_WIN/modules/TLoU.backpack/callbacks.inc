@@ -45,6 +45,7 @@ public OnPlayerOpenBackpack(playerid, category)
     Disable_OnPlayerLookAt(playerid);
     Perform_BackpackOpening(playerid);
     ShowBackpackCategory(playerid, category);
+    Key_BackpackMenu(playerid);
     return 1;
 }
 

@@ -10,6 +10,7 @@ public OnPlayerOpenWeaponMenu(playerid)
 
     WeapMenuTd_DisplayWeapsAndAmmo(playerid);
     CraftTd_CheckWhatsToCraft(playerid);
+    Key_WeaponMenu(playerid);
     return 1;
 }
 
