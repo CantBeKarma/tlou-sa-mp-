@@ -18,8 +18,8 @@
     #define     ITEM_MODEL_SHIV         (15071)
     #define     ITEM_MODEL_MEDKIT       (15072)
     #define     ITEM_MODEL_BOMB         (15111)
-    #define     ITEM_MODEL_MOLOTOV      (344)
-    #define     ITEM_MODEL_SMKBMB       (343)
+    #define     ITEM_MODEL_MOLOTOV      (15112)
+    #define     ITEM_MODEL_SMKBMB       (15113)
 
     // -> Ingredients
     #define     ITEM_MODEL_BLADE        (15073)
