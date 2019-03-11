@@ -66,7 +66,7 @@ GetPlayerSpeed(playerid)
 }
 
 // Splits string into two strings based on the split point number position (can use dot Continuation symbols too).
-SplitStringIntoTwoStrings(string[], 
+SplitStringIntoTwoStrings(const string[], 
 	stringPartOne[], 
 	stringPartTwo[], 
 	splitPointNumber = 64, 
