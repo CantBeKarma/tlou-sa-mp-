@@ -73,7 +73,11 @@ ResetBits_ePlayerFlag(playerid)
 						OnPlayerCloseWeaponMenu(playerid);
 					}
 				}
-				//RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+
+				if(IsPlayerBurning(playerid))
+				{
+					RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+				}
 			}
 
 			case PLAYER_STATUS_USING_BACKPACK:

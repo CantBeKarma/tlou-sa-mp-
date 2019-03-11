@@ -71,7 +71,6 @@ timer OnPlayerBurn[FIRE_DAMAGE_RATE](playerid, fireCreatorId)
 public OnPlayerStopBurning(playerid)
 {
     stop ePlayerInfo[playerid][e_iTimer_Burning];
-    RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     
     if(IsPlayerDead(playerid))
     {
