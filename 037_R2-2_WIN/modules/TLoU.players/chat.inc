@@ -52,66 +52,41 @@ hook OnPlayerText(playerid, text[])
 
 	new msgFormat[170];
 	format(msgFormat, sizeof(msgFormat), "%s %s: %c%s%c", PlayerName(playerid), msgType, toupper(text[0]), text[1], punctuation);
-	ProxMessage(msgDistance, playerid, msgFormat);
+	SendFadingMessage(playerid, msgDistance, COLOR_CHAT_FADE_FROM, COLOR_CHAT_FADE_TO, msgFormat);
 
 	Log(eLogs[e_Log_Index][LOG_INDEX_CHAT], INFO, msgFormat);
 	return 1; 
 }
 
 // Send message based on distance to nearby players.
-ProxMessage(Float:msgDistance, senderId, message[])
+SendFadingMessage(playerid, Float:range, start_colour, end_colour, const message[])
 {
-    new Float:distance;
-	foreach(new playerId : Player)
+    if (!IsPlayerConnected(playerid) || range < 0.0) 
 	{
-	    if((GetPlayerVirtualWorld(playerId) == GetPlayerVirtualWorld(senderId)) && (GetPlayerInterior(playerId) == GetPlayerInterior(senderId)))
-    	{
-            distance = GetDistanceBetweenPlayers(senderId, playerId);
+        return 0;
+    }
 
-            if(distance < (msgDistance / 16.0))		SendChatMessage(playerId, 0xE6E6E6E6, message);
-            else if(distance < (msgDistance / 8.0))	SendChatMessage(playerId, 0xC8C8C8C8, message);
-            else if(distance < (msgDistance / 4.0))	SendChatMessage(playerId, 0xAAAAAAAA, message);
-            else if(distance < (msgDistance / 2.0))	SendChatMessage(playerId, 0x8C8C8C8C, message);
-            else if(distance <  msgDistance)		SendChatMessage(playerId, 0x6E6E6E6E, message);
-		}
-	}
-}
+    new 
+		Float:ratio, Float:x, Float:y, Float:z, 
+		vw = GetPlayerVirtualWorld(playerid),
+		int = GetPlayerInterior(playerid);
 
-// Format custom chat message.
-FormatChatMessage(playerid, chatLineIdx, color, const text[])
-{
-	format(PlayerCustomChatTextString[playerid][chatLineIdx], 128, "%s", text);
-	PlayerTextDrawColor     (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], color);
-	PlayerTextDrawSetString (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], PlayerCustomChatTextString[playerid][chatLineIdx]);
-}
+    GetPlayerPos(playerid, x, y, z);
 
-// Rotate all the current chat lines and texts upwards by one.
-MovePlayerChatLinesUpByOne(playerid, bool:splitInTwoLines = false)
-{
-	foreach(new msgIdx : Reverse(PlayerChatMessages<playerid>))
+    foreach (new i : Player) 
 	{
-		// If my new message is split into two lines and my iterator is at
-		// index message of 1 (0, 1...)
-		if(splitInTwoLines && msgIdx == 1)
+        if (GetPlayerVirtualWorld(i) != vw || GetPlayerInterior(i) != int || (ratio = (GetPlayerDistanceFromPoint(i, x, y, z) / range)) > 1.0) 
 		{
-			break;
-		}
+            continue;
+        }
 
-		// Get each line: index and color below current (for example (9) index gets (8) data)
-		new lineBelowIdx = msgIdx-1;
-		if(lineBelowIdx <= -1)
-			break;
-
-		new lineBelowColor = PlayerTextDrawGetColor(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][lineBelowIdx]);
-
-		// Format current msgIdx (9) with message color of msgIdx below (8) and change the message string of current (9) to message string below (8).
-		FormatChatMessage(playerid, msgIdx, lineBelowColor, PlayerCustomChatTextString[playerid][lineBelowIdx]);
-	}
-	return (splitInTwoLines) ? (1) : (0);
+		SendChatMessage(i, InterpolateColours(start_colour, end_colour, ratio), message);
+    }
+    return 1;
 }
 
 // Custom send message which sends message in the chat panel
-SendChatMessage(playerid, color, text[])
+SendChatMessage(playerid, color, const text[])
 {
 	new 
 		firstChatLineIdx = INVALID_ITERATOR_SLOT,
@@ -174,47 +149,84 @@ SendChatMessage(playerid, color, text[])
 	ShowChatPanel(playerid);
 }
 
-// Changes player's chat position (4 options to pick from).
-SetPlayerChatPosition(playerid, CP_POSITION:positionType)
+// Format custom chat message.
+FormatChatMessage(playerid, chatLineIdx, color, const text[])
 {
-	new 
-		Float:chatPosTopStart_Y = 2.5,
-		Float:chatPosBottomStart_Y = 430.0;
+	format(PlayerCustomChatTextString[playerid][chatLineIdx], 128, "%s", text);
+	PlayerTextDrawColor     (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], color);
+	PlayerTextDrawSetString (playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][chatLineIdx], PlayerCustomChatTextString[playerid][chatLineIdx]);
+}
 
-	for(new i = 0; i != MAX_CHAT_LINES; i++)
+// Rotate all the current chat lines and texts upwards by one.
+MovePlayerChatLinesUpByOne(playerid, bool:splitInTwoLines = false)
+{
+	foreach(new msgIdx : Reverse(PlayerChatMessages<playerid>))
 	{
-		switch(positionType)
+		// If my new message is split into two lines and my iterator is at
+		// index message of 1 (0, 1...)
+		if(splitInTwoLines && msgIdx == 1)
 		{
-			case CP_POS_TOP_LEFT:
-			{
-				PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosTopStart_Y);
-				chatPosTopStart_Y += 10.0;
-			}
+			break;
+		}
 
-			case CP_POS_BOTTOM_LEFT:
+		// Get each line: index and color below current (for example (9) index gets (8) data)
+		new lineBelowIdx = msgIdx-1;
+		if(lineBelowIdx <= -1)
+			break;
+
+		new lineBelowColor = PlayerTextDrawGetColor(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][lineBelowIdx]);
+
+		// Format current msgIdx (9) with message color of msgIdx below (8) and change the message string of current (9) to message string below (8).
+		FormatChatMessage(playerid, msgIdx, lineBelowColor, PlayerCustomChatTextString[playerid][lineBelowIdx]);
+	}
+	return (splitInTwoLines) ? (1) : (0);
+}
+
+//#region Chat position & Alignment
+
+	// Changes player's chat position (4 options to pick from).
+	SetPlayerChatPosition(playerid, CP_POSITION:positionType)
+	{
+		new 
+			Float:chatPosTopStart_Y = 2.5,
+			Float:chatPosBottomStart_Y = 430.0;
+
+		for(new i = 0; i != MAX_CHAT_LINES; i++)
+		{
+			switch(positionType)
 			{
-				PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosBottomStart_Y);
-				chatPosBottomStart_Y -= 10.0;
+				case CP_POS_TOP_LEFT:
+				{
+					PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosTopStart_Y);
+					chatPosTopStart_Y += 10.0;
+				}
+
+				case CP_POS_BOTTOM_LEFT:
+				{
+					PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], 15.0, chatPosBottomStart_Y);
+					chatPosBottomStart_Y -= 10.0;
+				}
 			}
 		}
-	}
-	ShowChatPanel(playerid);
-}
-
-// Align player chat to his needs (left/right/center).
-SetPlayerChatPanelAlignment(playerid, CP_ALIGNMENT:alignType)
-{
-	if(alignType == CP_ALIGN_UNKNOWN)
-	{
-		return;
+		ShowChatPanel(playerid);
 	}
 
-	for(new i = 0; i != MAX_CHAT_LINES; i++)
+	// Align player chat to his needs (left/right/center).
+	SetPlayerChatPanelAlignment(playerid, CP_ALIGNMENT:alignType)
 	{
-		PlayerTextDrawAlignment(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], _:alignType);
+		if(alignType == CP_ALIGN_UNKNOWN)
+		{
+			return;
+		}
+
+		for(new i = 0; i != MAX_CHAT_LINES; i++)
+		{
+			PlayerTextDrawAlignment(playerid, ePlayerTextDrawInfo[playerid][e_ChatLines][i], _:alignType);
+		}
+		ShowChatPanel(playerid);
 	}
-	ShowChatPanel(playerid);
-}
+
+//#endregion
 
 // Show player his chat panel.
 ShowChatPanel(playerid)
