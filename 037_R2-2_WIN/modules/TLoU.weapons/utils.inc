@@ -344,13 +344,19 @@ ResetEnum_ePlayerWeapon(playerid)
 	RemovePlayerWeapon(playerid, weaponId)
 	{
 		if(!HasPlayerWeapon(playerid, weaponId))
+		{
 			return;
+		}
 
 		if(CurrentPlayerWeaponId[playerid] == weaponId)
+		{
 			HidePlayerWeapon(playerid);
+		}
 
 		if(LastPlayerWeaponId[playerid] == weaponId)
+		{
 			LastPlayerWeaponId[playerid] = GetFirstWeaponWithAmmo(playerid);
+		}
 
 		switch(weaponId)
 		{
@@ -375,10 +381,14 @@ ResetEnum_ePlayerWeapon(playerid)
 		ePlayerWeapon[playerid][e_iWeaponsAmmo][weaponSlot] = 0;
 
 		if(IsMeleeWeapon(weaponId))
+		{
 			HudTd_UpdateMelee(playerid);
+		}
 
 		if(weaponId == WEAPON_SHIV)
+		{
 			HudTd_UpdateShivs(playerid);
+		}
 	}
 
 	// Reloads player's weapon
