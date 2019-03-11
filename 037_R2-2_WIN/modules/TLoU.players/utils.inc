@@ -33,96 +33,112 @@ ResetBits_ePlayerFlag(playerid)
 
 //#region Status management
 
-PLAYER_STATUS:GetPlayerStatus(playerid)	return ePlayerInfo[playerid][e_iCurrentStatus];
+	PLAYER_STATUS:GetPlayerStatus(playerid)	return ePlayerInfo[playerid][e_iCurrentStatus];
 
-SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
-{
-	if(GetPlayerStatus(playerid) == status)
+	SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
 	{
-		return;
-	}
-
-	if(IsPlayerDead(playerid) && status != PLAYER_STATUS_NONE)
-	{
-		return;
-	}
-
-	switch(status)
-	{
-		case PLAYER_STATUS_NONE:
+		if(GetPlayerStatus(playerid) == status)
 		{
-			if(IsPlayerAimingWeapon(playerid))
+			return;
+		}
+
+		if(IsPlayerDead(playerid) && status != PLAYER_STATUS_NONE)
+		{
+			return;
+		}
+
+		switch(status)
+		{
+			case PLAYER_STATUS_NONE:
 			{
-				OnPlayerStopAimingWeapon(playerid);
+				if(IsPlayerAimingWeapon(playerid))
+				{
+					OnPlayerStopAimingWeapon(playerid);
+				}
+
+				if(IsPlayerUsingBackpack(playerid))
+				{
+					new bool:successfullyClosed = HideBackpack(playerid, (statusIssuerId != INVALID_PLAYER_ID) ? (true) : (false));
+					if(successfullyClosed)
+					{
+						OnPlayerCloseBackpack(playerid);
+					}
+				}
+
+				if(IsPlayerUsingWeaponMenu(playerid))
+				{
+					new bool:successfullyClosed = HideWeaponMenu(playerid);
+					if(successfullyClosed)
+					{
+						OnPlayerCloseWeaponMenu(playerid);
+					}
+				}
+				//RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 			}
 
-			if(IsPlayerUsingBackpack(playerid))
+			case PLAYER_STATUS_USING_BACKPACK:
 			{
-				new bool:successfullyClosed = HideBackpack(playerid, (statusIssuerId != INVALID_PLAYER_ID) ? (true) : (false));
-				if(successfullyClosed)
+				new bool:successfullyOpened = ShowBackpack(playerid);
+				if(successfullyOpened)
 				{
-					OnPlayerCloseBackpack(playerid);
+					ePlayerInfo[playerid][e_iCurrentStatus] = status;
+					OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
+					return;
 				}
 			}
 
-			if(IsPlayerUsingWeaponMenu(playerid))
+			case PLAYER_STATUS_USING_WEAPMENU:
 			{
-				new bool:successfullyClosed = HideWeaponMenu(playerid);
-				if(successfullyClosed)
+				if(IsPlayerUsingBackpack(playerid))
 				{
-					OnPlayerCloseWeaponMenu(playerid);
+					return;
+				}
+
+				new bool:successfullyOpened = ShowWeaponMenu(playerid);
+				if(successfullyOpened)
+				{
+					ePlayerInfo[playerid][e_iCurrentStatus] = status;
+					OnPlayerOpenWeaponMenu(playerid);
+					return;
 				}
 			}
-			RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
-		}
 
-		case PLAYER_STATUS_USING_BACKPACK:
-		{
-			new bool:successfullyOpened = ShowBackpack(playerid);
-			if(successfullyOpened)
+			case PLAYER_STATUS_AIMING: {}
+
+			case PLAYER_STATUS_STUNNED:
 			{
-				ePlayerInfo[playerid][e_iCurrentStatus] = status;
-				OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
-				return;
+				if(IsPlayerBurning(playerid))
+				{
+					return;
+				}
+
+				CLF(#OnPlayerGetStunned, "d", playerid);
+			}
+
+			case PLAYER_STATUS_BURNING:
+			{
+				OnPlayerStartBurning(playerid, statusIssuerId);
 			}
 		}
 
-		case PLAYER_STATUS_USING_WEAPMENU:
+		if(status == PLAYER_STATUS_BURNING
+		|| status == PLAYER_STATUS_STUNNED
+		|| status == PLAYER_STATUS_AIMING
+		|| status == PLAYER_STATUS_USING_BACKPACK
+		|| status == PLAYER_STATUS_USING_WEAPMENU
+		|| status == PLAYER_STATUS_DEAD
+		|| status == PLAYER_STATUS_HEALING)
 		{
-			if(IsPlayerUsingBackpack(playerid))
-			{
-				return;
-			}
-
-			new bool:successfullyOpened = ShowWeaponMenu(playerid);
-			if(successfullyOpened)
-			{
-				ePlayerInfo[playerid][e_iCurrentStatus] = status;
-				OnPlayerOpenWeaponMenu(playerid);
-				return;
-			}
+			Disable_OnPlayerLookAt(playerid);
 		}
 
-		case PLAYER_STATUS_AIMING: {}
-
-		case PLAYER_STATUS_STUNNED:
+		if(status == PLAYER_STATUS_NONE)
 		{
-			if(IsPlayerBurning(playerid))
-			{
-				return;
-			}
-
-			CLF(#OnPlayerGetStunned, "d", playerid);
+			Enable_OnPlayerLookAt(playerid);
 		}
 
-		case PLAYER_STATUS_BURNING:
-		{
-			OnPlayerStartBurning(playerid, statusIssuerId);
-		}
+		ePlayerInfo[playerid][e_iCurrentStatus] = status;
 	}
-
-	ePlayerInfo[playerid][e_iCurrentStatus] = status;
-}
 
 //#endregion
 

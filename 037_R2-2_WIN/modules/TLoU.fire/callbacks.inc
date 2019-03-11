@@ -43,11 +43,8 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartBurning(playerid, fireCreatorId)
 {
-    Disable_OnPlayerLookAt(playerid);
-
     HidePlayerWeapon(playerid);
     HideBackpack(playerid, .forceClose = true);
-    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE, fireCreatorId);
 
     SPAO(playerid, OBJECT_MODEL_BURNING);
     ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, fireCreatorId);
@@ -83,7 +80,6 @@ public OnPlayerStopBurning(playerid)
     }
     
     SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
-    Enable_OnPlayerLookAt(playerid);
     return 0;
 }
 

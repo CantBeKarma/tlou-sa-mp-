@@ -6,7 +6,6 @@ public OnPlayerOpenWeaponMenu(playerid)
     WeapMenu_GetSelectionV(playerid) = WeapMenu_GetSelectionH(playerid) = -1;
     
     FreezePlayer(playerid, true, -1);
-    Disable_OnPlayerLookAt(playerid);
 
     WeapMenuTd_DisplayWeapsAndAmmo(playerid);
     CraftTd_CheckWhatsToCraft(playerid);
@@ -22,7 +21,6 @@ public OnPlayerCloseWeaponMenu(playerid)
     WeapMenu_GetSelectionV(playerid) = WeapMenu_GetSelectionH(playerid) = -1;
 
     UnfreezePlayer(playerid);
-    Enable_OnPlayerLookAt(playerid);
     return 1;
 }
 

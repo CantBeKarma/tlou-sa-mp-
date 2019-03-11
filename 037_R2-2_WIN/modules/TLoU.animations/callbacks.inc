@@ -43,7 +43,6 @@ public OnPlayerAnimFinish(playerid, animIdx)
 				if(IsPlayerAimingWeapon(playerid))
 				{
 					SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
-					OnPlayerStopAimingWeapon(playerid);
 				}
 			}
 		}

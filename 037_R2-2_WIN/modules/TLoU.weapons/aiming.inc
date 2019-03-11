@@ -69,7 +69,6 @@ public OnPlayerTryAimingWeapon(playerid, weaponId)
 	if(IsPlayerAimingWeapon(playerid))
 	{
 		ShowPlayerCrosshair(playerid);
-		Disable_OnPlayerLookAt(playerid);
 		stop ePlayerInfo[playerid][e_iTimer_HideHud];
 	}
 	return 0;
@@ -124,7 +123,6 @@ public OnPlayerStopAimingWeapon(playerid)
 	
 	HidePlayerCrosshair(playerid);
 	HidePlayerHitMarker(playerid);
-	Enable_OnPlayerLookAt(playerid);
 	SetPlayerDrunkLevel(playerid, 0);
 
 	new currentWeaponId = CurrentPlayerWeaponId[playerid];

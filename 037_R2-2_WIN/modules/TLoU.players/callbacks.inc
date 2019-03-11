@@ -95,7 +95,6 @@ public OnPlayerRespawn(playerid)
 
 	wait_ms(150);
 	CLF(#FadePlayerScreen, "dd", playerid, FADE_OUT);
-	Enable_OnPlayerLookAt(playerid);
 	UnfreezePlayer(playerid);
 	return 0;
 }
@@ -120,7 +119,6 @@ public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
 
 	FreezePlayer(playerid, true, -1);
 	HidePlayerWeapon(playerid);
-	Disable_OnPlayerLookAt(playerid);
 	PlayDeathAnimation(playerid, bodypart, weaponid);
 	PlayDeathProcedureForPlayer(playerid);
     return 1;
@@ -465,8 +463,6 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerGetStunned(playerid)
 	{
-		Disable_OnPlayerLookAt(playerid);
-
 		ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
 		wait_ms(3000);
 
@@ -483,7 +479,6 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 	public OnPlayerShakeOffStun(playerid)
 	{
 		ClearAnims(playerid);
-		Enable_OnPlayerLookAt(playerid);
 		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		return 0;
 	}

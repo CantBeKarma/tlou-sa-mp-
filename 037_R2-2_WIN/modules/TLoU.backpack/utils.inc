@@ -82,7 +82,6 @@ function Perform_BackpackClosing(playerid)
     // if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid))
     // {
     wait_ms(1200);
-    CLF(#Enable_OnPlayerLookAt, "d", playerid);
     CLF(#SetPlayerLastWeapon, "d", playerid);
     //}
 }

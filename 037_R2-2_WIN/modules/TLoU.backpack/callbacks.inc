@@ -42,7 +42,6 @@ public OnPlayerOpenBackpack(playerid, category)
 {
     ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening] = GetConnectedTime(playerid);
     
-    Disable_OnPlayerLookAt(playerid);
     Perform_BackpackOpening(playerid);
     ShowBackpackCategory(playerid, category);
     Key_BackpackMenu(playerid);
