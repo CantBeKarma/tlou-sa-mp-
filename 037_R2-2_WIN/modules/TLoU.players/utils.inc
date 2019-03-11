@@ -125,18 +125,11 @@ ResetBits_ePlayerFlag(playerid)
 			}
 		}
 
-		if(status == PLAYER_STATUS_BURNING
-		|| status == PLAYER_STATUS_STUNNED
-		|| status == PLAYER_STATUS_AIMING
-		|| status == PLAYER_STATUS_USING_BACKPACK
-		|| status == PLAYER_STATUS_USING_WEAPMENU
-		|| status == PLAYER_STATUS_DEAD
-		|| status == PLAYER_STATUS_HEALING)
+		if(status != PLAYER_STATUS_NONE)
 		{
 			Disable_OnPlayerLookAt(playerid);
 		}
-
-		if(status == PLAYER_STATUS_NONE)
+		else
 		{
 			Enable_OnPlayerLookAt(playerid);
 		}
