@@ -113,7 +113,7 @@ SendChatMessage(playerid, color, const text[])
 		if(splitInTwoLines && firstChatLineIdx == 9)
 		{
 			firstChatLineIdx = 1;
-			MovePlayerChatLinesUpByOne(playerid, true);
+			MovePlayerChatLinesUpByOne(playerid, splitInTwoLines);
 		}
 	}
 	// Chat is full | Move all messages up by one.

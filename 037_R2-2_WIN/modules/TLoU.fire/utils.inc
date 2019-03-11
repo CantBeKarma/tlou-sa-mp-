@@ -11,6 +11,11 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
     {
         fireId = Iter_Alloc(ServerFires);
         Iter_Remove(ServerFires, 0);
+
+        if(fireId == INVALID_ITERATOR_SLOT)
+        {
+            return 1;
+        }
     }
 
     new firesCount = RandomEx(MIN_FIRES_PER_MOLOTOV, MAX_FIRES_PER_MOLOTOV);
