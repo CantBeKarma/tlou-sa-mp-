@@ -142,7 +142,7 @@ public OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 {
-    CreateProjectileDestroyEffect(WEAPON_MOLOTOV, projid, x, y, z);
+    CreateProjectileDestroyEffect(WEAPON_MOLOTOV, projid, x, y, z, throwerid);
 
     if(IsPlayerNPC(hitid) && !FCNPC_IsBurning(hitid))
     {
