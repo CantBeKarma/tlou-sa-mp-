@@ -44,7 +44,6 @@
 public OnPlayerStartBurning(playerid, fireCreatorId)
 {
     HidePlayerWeapon(playerid);
-    HideBackpack(playerid, .forceClose = true);
 
     SPAO(playerid, OBJECT_MODEL_BURNING);
     ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, fireCreatorId);
