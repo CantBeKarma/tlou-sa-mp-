@@ -175,6 +175,8 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         {
             SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + HEAL_ITEM_RECOVER_HP);
         }
+        
+        DestroyItem(item_objectId);
         return 0;
     }
 
