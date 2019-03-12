@@ -152,7 +152,7 @@ ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Fl
     }
 
     // Check if player has a melee weapon (any or a specific one).
-    IsPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
+    HasPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
     {
         new playerMelee = GetPlayerMelee[playerid];
 
@@ -163,7 +163,7 @@ ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Fl
     }
 
     // Check if player has a throwable item (any or a specific one).
-    IsPlayerGotThrowableItem(playerid, throwableId = NO_THROWABLE)
+    HasPlayerGotThrowableItem(playerid, throwableId = NO_THROWABLE)
     {
         new playerThrowable = GetPlayerThrowable[playerid];
 
@@ -236,7 +236,7 @@ SetPlayerItemAmount(playerid, itemId, amount, meleeUpgradedCnd = 0)
 
         // If trying to give melee weapon and player 
         // already had a melee weapon - remove ownership of it from DB.
-        if(IsPlayerGotMeleeWeapon(playerid))
+        if(HasPlayerGotMeleeWeapon(playerid))
         {
             new playerMeleeId = GetPlayerMelee[playerid];
             for(new i = 0; i != MAX_ITEMS_DATA; i++)

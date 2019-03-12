@@ -475,21 +475,20 @@ ResetEnum_ePlayerWeapon(playerid)
 	{
 		if(IsPlayerAllowedToShiv(playerid))
 		{
-			SCMF(playerid, -1, "Player is allowed to shiv. I won't equip a melee weapon.");
 			HidePlayerWeapon(playerid);
 			return 1;
 		}
 
 		new weaponId = 
 			(
-				  IsPlayerGotMeleeWeapon(playerid) ? GetPlayerMelee[playerid]
-				: IsPlayerGotThrowableItem(playerid) ? GetPlayerThrowable[playerid]
-				: (NO_MELEE)
+				  HasPlayerGotMeleeWeapon(playerid) ? GetPlayerMelee[playerid]
+				: HasPlayerGotThrowableItem(playerid) ? GetPlayerThrowable[playerid]
+				: (WEAPON_UNARMED)
 			);
 
 		SCMF(playerid, -1, "Melee weaponId: %d", weaponId);
 
-		if(weaponId == NO_MELEE) HidePlayerWeapon(playerid);
+		if(weaponId == WEAPON_UNARMED) HidePlayerWeapon(playerid);
 		else
 		{
 			new durability = (weaponId == GetPlayerMelee[playerid] ? GetPlayerMeleeCnd[playerid] : 1);
