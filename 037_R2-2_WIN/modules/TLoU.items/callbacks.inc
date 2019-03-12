@@ -352,7 +352,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     if(PRESSED(KEY_NO))
     {
         if(IsPlayerLookingAtItem(playerid))
+        {
             OnPlayerPickUpItem(playerid, GetPlayerFocusedObjectId(playerid));
+        }
     }
 	return 1;
 }
