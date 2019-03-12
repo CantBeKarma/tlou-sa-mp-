@@ -117,38 +117,12 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             {
                 OnPlayerPickUpHealItem(playerid, itemId, itemAmount);
             }
+
+            case ITEM_TYPE_MELEE:
+            {
+                OnPlayerPickUpMeleeItem(playerid, itemUid, itemId, itemAmount, itemMeleeUpgradedCnd, x, y, z, virtualWorld, interiorId);
+            }
         }
-
-
-
-            // case ITEM_TYPE_MELEE:
-            // {
-            //     new playerMeleeWeapon = GetPlayerMelee[playerid];
-
-            //     // If player has some melee weapon already - drop it on the ground.
-            //     if(playerMeleeWeapon != NO_MELEE)
-            //     {
-            //         for(new i = 0; i != MAX_ITEMS_DATA; i++)
-            //         {
-            //             if(playerMeleeWeapon != eItemsData[i][e_iItem_SA_WeaponId])
-            //                 continue;
-
-            //             calcItemId_idxValue = i;
-            //             shouldUpdateObject = true;
-            //             calcAmount = GetPlayerMeleeCnd[playerid];
-
-            //             if(IsPlayerMeleeUpgraded[playerid]) 
-            //                 calcMeleeExtCnd = GetPlayerMeleeExtCnd[playerid];
-                            
-            //             break;
-            //         }
-            //     }
-
-            //     SetPlayerItemAmount(playerid, itemId, itemAmount, itemMeleeUpgradedCnd);
-
-            //     if(CurrentPlayerWeaponId[playerid] == playerMeleeWeapon && playerMeleeWeapon != NO_MELEE)
-            //         SetPlayerMeleeWeapon(playerid);
-            // }
 
             // case ITEM_TYPE_THROWABLE:
             // {
@@ -288,12 +262,58 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         {
             SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + HEAL_ITEM_RECOVER_HP);
         }
+        return 0;
+    }
+
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //---------------- OnPlayerPickUpMeleeItem ----------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpMeleeItem(playerid, itemUid, itemId, meleeCnd, meleeExtCnd, Float:x, Float:y, Float:z, virtualWorld, interiorId)
+    {
+        new playerMeleeWeapon = GetPlayerMelee[playerid];
+        
+        // If player has some melee weapon already - drop it on the ground.
+        if(playerMeleeWeapon != NO_MELEE)
+        {
+            new playerMeleeItemIdx = FindMeleeWeaponItemIdx(playerMeleeWeapon);
+            if(playerMeleeItemIdx != -1)
+            {
+                new playerMeleeCnd = GetPlayerMeleeCnd[playerid];
+                new playerMeleeExtCnd = (IsPlayerMeleeUpgraded[playerid] ? GetPlayerMeleeExtCnd[playerid] : 0);
+
+                CreateOrUpdateItem(playerMeleeItemIdx, playerMeleeCnd, playerMeleeExtCnd, playerid, \
+                        .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
+                        .update = true, .updateItemUid = itemUid);
+            }
+        }
+
+        SetPlayerItemAmount(playerid, itemId, meleeCnd, meleeExtCnd);
+
+        // If player currently has melee weapon equipped > Hide it.
+        if(CurrentPlayerWeaponId[playerid] == playerMeleeWeapon && playerMeleeWeapon != NO_MELEE)
+        {
+            HidePlayerWeapon(playerid);
+        }
+        return 0;
     }
 
     // CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
     //         itemTitle[] = "", innerMsg[] = "", Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
 
 //#endregion
+
+
+FindMeleeWeaponItemIdx(weaponid)
+{
+    for(new i = 0; i != MAX_ITEMS_DATA; i++)
+    {
+        if(weaponid == eItemsData[i][e_iItem_SA_WeaponId])
+        {
+            return i;
+        }
+    }
+    return -1;
+}
 
 //#region Items management callbacks (Create/Destroy/Update)
 
