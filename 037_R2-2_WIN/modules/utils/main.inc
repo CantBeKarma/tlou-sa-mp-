@@ -5,6 +5,7 @@
 #include ".\modules\TLoU.characters\utils.inc"
 #include ".\modules\TLoU.fire\utils.inc"
 #include ".\modules\TLoU.items\utils.inc"
+#include ".\modules\TLoU.objects\utils.inc"
 #include ".\modules\TLoU.npcs\utils.inc"
 #include ".\modules\TLoU.damages\utils.inc"
 #include ".\modules\TLoU.weaponMenu\utils.inc"
