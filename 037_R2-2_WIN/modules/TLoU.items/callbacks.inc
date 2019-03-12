@@ -122,39 +122,12 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             {
                 OnPlayerPickUpMeleeItem(playerid, itemUid, itemId, itemAmount, itemMeleeUpgradedCnd, x, y, z, virtualWorld, interiorId);
             }
-        }
 
-            // case ITEM_TYPE_THROWABLE:
-            // {
-            //     new playerThrowable = GetPlayerThrowable[playerid];
-            //     if(HasPlayerGotThrowableItem(playerid, itemWeaponId)) 
-            //         return 1;
-
-            //     // If player has some throwable already - drop it on the ground.
-            //     if(playerThrowable != NO_THROWABLE && GetPlayerWeaponAmmo(playerid, playerThrowable) > 0)
-            //     {
-            //         for(new i = 0; i != MAX_ITEMS_DATA; i++)
-            //         {
-            //             if(playerThrowable != eItemsData[i][e_iItem_SA_WeaponId])
-            //                 continue;
-
-            //             calcItemId_idxValue = i;
-            //             shouldUpdateObject = true;
-            //             calcAmount = 1;
-            //             break;
-            //         }
-            //     }
-
-            //     // If player currently uses throwable item.
-            //     if(IsThrowableWeapon(CurrentPlayerWeaponId[playerid])) SetPlayerWeapon(playerid, itemWeaponId);
-            //     else
-            //     {
-            //         if(LastPlayerWeaponId[playerid] == playerThrowable)
-            //             LastPlayerWeaponId[playerid] = itemWeaponId;
-            //     }
+            case ITEM_TYPE_THROWABLE:
+            {
                 
-            //     SetPlayerItemAmount(playerid, itemId, 1);
-            // }
+            }
+        }
 
             // case ITEM_TYPE_WEAPON, ITEM_TYPE_AMMO:
             // {
@@ -275,7 +248,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         // If player has some melee weapon already - drop it on the ground.
         if(playerMeleeWeapon != NO_MELEE)
         {
-            new playerMeleeItemIdx = FindMeleeWeaponItemIdx(playerMeleeWeapon);
+            new playerMeleeItemIdx = FindItemIdxByWeaponId(playerMeleeWeapon);
             if(playerMeleeItemIdx != -1)
             {
                 new playerMeleeCnd = GetPlayerMeleeCnd[playerid];
@@ -297,13 +270,54 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         return 0;
     }
 
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //-------------- OnPlayerPickUpThrowableItem --------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpThrowableItem(playerid, itemUid, itemId, Float:x, Float:y, Float:z, virtualWorld, interiorId)
+    {
+        new itemWeaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
+
+        if(HasPlayerGotThrowableItem(playerid, itemWeaponId))
+        {
+            return 1;
+        }
+
+        new playerThrowable = GetPlayerThrowable[playerid];
+        
+        // If player has some throwable already - drop it on the ground.
+        if(HasPlayerGotThrowableItem(playerid))
+        {
+            new playerThrowableItemIdx = FindItemIdxByWeaponId(playerThrowable);
+
+            if(playerThrowableItemIdx != -1)
+            {
+                CreateOrUpdateItem(playerThrowableItemIdx, 1, .creatorId = playerid, \
+                        .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
+                        .update = true, .updateItemUid = itemUid);
+            }
+        }
+
+        SetPlayerItemAmount(playerid, itemId, 1);
+
+        // If player currently uses throwable item.
+        if(IsThrowableWeapon(CurrentPlayerWeaponId[playerid]))
+        {
+            SetPlayerWeapon(playerid, itemWeaponId);
+        }
+        else if(LastPlayerWeaponId[playerid] == playerThrowable)
+        {
+            LastPlayerWeaponId[playerid] = itemWeaponId;                
+        }
+        return 0;
+    }
+
+
     // CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
     //         itemTitle[] = "", innerMsg[] = "", Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
 
 //#endregion
 
-
-FindMeleeWeaponItemIdx(weaponid)
+FindItemIdxByWeaponId(weaponid)
 {
     for(new i = 0; i != MAX_ITEMS_DATA; i++)
     {
