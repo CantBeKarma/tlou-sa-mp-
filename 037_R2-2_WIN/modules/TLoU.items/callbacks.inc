@@ -89,101 +89,40 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         new 
             itemUid = eObjData[e_iObj_Uid],
             itemId = eObjData[e_iObj_ItemId],
+            itemType = eItemsData[itemId][e_iItem_Type],
             itemAmount = eObjData[e_iObj_ItemAmount],
             itemMeleeUpgradedCnd = eObjData[e_iObj_MeleeUpgradedCnd],
-            itemType = eItemsData[itemId][e_iItem_Type],
-            itemModel = eItemsData[itemId][e_iItem_ModelId],
-            itemWeaponId = (itemType == ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId],
             Float:x = eObjData[e_fObj_X], 
             Float:y = eObjData[e_fObj_Y], 
             Float:z = eObjData[e_fObj_Z],
             virtualWorld = eObjData[e_iObj_Vw],
             interiorId = eObjData[e_iObj_Int];
 
-        new 
-            calcAmount,
-            calcMeleeExtCnd,
-            calcItemId_idxValue,
-            bool:shouldUpdateObject;
-
         switch(itemType)
         {
-            case ITEM_TYPE_INGREDIENT:
-            {
-                OnPlayerPickUpIngredient(playerid, itemUid, itemId, itemAmount, x, y, z, virtualWorld, interiorId);
-            }
+            case ITEM_TYPE_INGREDIENT:  OnPlayerPickUpIngredient(playerid, itemUid, itemId, itemAmount, x, y, z, virtualWorld, interiorId, item_objectId);
+            case ITEM_TYPE_HEAL:        OnPlayerPickUpHealItem(playerid, itemId, itemAmount, item_objectId);
+            case ITEM_TYPE_MELEE:       OnPlayerPickUpMeleeItem(playerid, itemUid, itemId, itemAmount, itemMeleeUpgradedCnd, x, y, z, virtualWorld, interiorId, item_objectId);
+            case ITEM_TYPE_THROWABLE:   OnPlayerPickUpThrowableItem(playerid, itemUid, itemId, x, y, z, virtualWorld, interiorId, item_objectId);
 
-            case ITEM_TYPE_HEAL:
+            case 
+                ITEM_TYPE_WEAPON, 
+                ITEM_TYPE_AMMO:
             {
-                OnPlayerPickUpHealItem(playerid, itemId, itemAmount);
-            }
-
-            case ITEM_TYPE_MELEE:
-            {
-                OnPlayerPickUpMeleeItem(playerid, itemUid, itemId, itemAmount, itemMeleeUpgradedCnd, x, y, z, virtualWorld, interiorId);
-            }
-
-            case ITEM_TYPE_THROWABLE:
-            {
-                
-            }
+                OnPlayerPickUpWeaponOrAmmo(playerid, itemUid, itemId, itemAmount, x, y, z, virtualWorld, interiorId, item_objectId);
+            } 
         }
 
-            // case ITEM_TYPE_WEAPON, ITEM_TYPE_AMMO:
-            // {
-                // if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId)) 
-                //     return 1;
-
-                // calcAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
-                // SetPlayerItemAmount(playerid, itemId, calcAmount);
-
-                // // If player extended ammo for weapon - recreate same item with leftover ammo.
-                // if(IsBulletWeapon(itemWeaponId) || itemWeaponId == WEAPON_BOW)
-                // {
-                //     new playerWeapon_MaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, itemWeaponId);
-                //     if(playerWeapon_MaxAmmo == 0)
-                //         return 1;
-                        
-                //     if(calcAmount > playerWeapon_MaxAmmo)
-                //     {
-                //         shouldUpdateObject = true;
-                //         calcItemId_idxValue = itemId;
-                //         calcAmount = calcAmount - playerWeapon_MaxAmmo;
-                //     }
-                // }
-            //}
-
-            //#region collectibles
-                // case ITEM_TYPE_COLLECTIBLE:
-                // {
-                //     SCMF(playerid, -1, "My iter count: %d", Iter_Count(ArtifactsOwned<playerid>));
-                //     SCMF(playerid, -1, "Trying to pick up UID: %d", itemUid);
-                //     Iter_Add(ArtifactsOwned<playerid>, itemUid);
-                //     SCMF(playerid, -1, "My iter count: %d", Iter_Count(ArtifactsOwned<playerid>));
-                    
-                //     strcpy(ePlayerBpInfo[playerid][e_iColl_ArtifTitle], eObjData[e_sObj_Title]);
-                //     strcpy(ePlayerBpInfo[playerid][e_iColl_ArtifInnerMsg], eObjData[e_sObj_InnerMessage]);
-                // }
-            //#endregion
-        //}
-
         if(eItemsData[itemId][e_iItem_AudioPickupId] != -1)
+        {
             Audio_PlayEx(playerid, eItemsData[itemId][e_iItem_AudioPickupId]);
+        }
 
         if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
         {
             GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
             DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
         }
-
-        DestroyItem(item_objectId, shouldUpdateObject);
-
-        // if(shouldUpdateObject)
-        // {
-        //     CreateOrUpdateItem(calcItemId_idxValue, calcAmount, calcMeleeExtCnd, playerid, \
-        //                         .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
-        //                             .update = true, .updateItemUid = itemUid);
-        // }
 
         ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);
         return 0;
@@ -192,7 +131,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerPickUpIngredient ---------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerPickUpIngredient(playerid, itemUid, itemId, itemAmount, Float:x, Float:y, Float:z, virtualWorld, interiorId)
+    public OnPlayerPickUpIngredient(playerid, itemUid, itemId, itemAmount, Float:x, Float:y, Float:z, virtualWorld, interiorId, item_objectId)
     {
         // itemId = ingredientId (this is the ONLY case!)
         if(IsPlayerFullOnIngr(playerid, itemId))
@@ -201,9 +140,12 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         }
         
         new calcAmount = Craft_IngrAmount(playerid, itemId) + itemAmount;
-        SetPlayerItemAmount(playerid, itemId, calcAmount);
+        new bool:update = (calcAmount > 300);
 
-        if(calcAmount > 300)
+        SetPlayerItemAmount(playerid, itemId, calcAmount);
+        
+        DestroyItem(item_objectId, update);
+        if(update)
         {
             CreateOrUpdateItem(itemId, .itemAmount = (calcAmount - 300), .creatorId = playerid, \
                     .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
@@ -215,11 +157,9 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //----------------- OnPlayerPickUpHealItem ----------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerPickUpHealItem(playerid, itemId, itemAmount)
+    public OnPlayerPickUpHealItem(playerid, itemId, itemAmount, item_objectId)
     {
-        new itemType = eItemsData[itemId][e_iItem_Type];
-        new itemModel = itemModel = eItemsData[itemId][e_iItem_ModelId];
-        new itemWeaponId = (itemType == ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId];
+        new itemWeaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
 
         if(itemWeaponId == WEAPON_MEDKIT)
         {
@@ -241,12 +181,13 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerPickUpMeleeItem ----------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerPickUpMeleeItem(playerid, itemUid, itemId, meleeCnd, meleeExtCnd, Float:x, Float:y, Float:z, virtualWorld, interiorId)
+    public OnPlayerPickUpMeleeItem(playerid, itemUid, itemId, meleeCnd, meleeExtCnd, Float:x, Float:y, Float:z, virtualWorld, interiorId, item_objectId)
     {
         new playerMeleeWeapon = GetPlayerMelee[playerid];
+        new bool:update = (playerMeleeWeapon != NO_MELEE);
         
-        // If player has some melee weapon already - drop it on the ground.
-        if(playerMeleeWeapon != NO_MELEE)
+        DestroyItem(item_objectId, update);
+        if(update)
         {
             new playerMeleeItemIdx = FindItemIdxByWeaponId(playerMeleeWeapon);
             if(playerMeleeItemIdx != -1)
@@ -273,7 +214,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //-------------- OnPlayerPickUpThrowableItem --------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerPickUpThrowableItem(playerid, itemUid, itemId, Float:x, Float:y, Float:z, virtualWorld, interiorId)
+    public OnPlayerPickUpThrowableItem(playerid, itemUid, itemId, Float:x, Float:y, Float:z, virtualWorld, interiorId, item_objectId)
     {
         new itemWeaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
 
@@ -283,9 +224,10 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         }
 
         new playerThrowable = GetPlayerThrowable[playerid];
-        
-        // If player has some throwable already - drop it on the ground.
-        if(HasPlayerGotThrowableItem(playerid))
+        new bool:update = (HasPlayerGotThrowableItem(playerid));
+
+        DestroyItem(item_objectId, update);
+        if(update)
         {
             new playerThrowableItemIdx = FindItemIdxByWeaponId(playerThrowable);
 
@@ -307,6 +249,43 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         else if(LastPlayerWeaponId[playerid] == playerThrowable)
         {
             LastPlayerWeaponId[playerid] = itemWeaponId;                
+        }
+        return 0;
+    }
+
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //--------------- OnPlayerPickUpWeaponOrAmmo --------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpWeaponOrAmmo(playerid, itemUid, itemId, itemAmount, Float:x, Float:y, Float:z, virtualWorld, interiorId, item_objectId)
+    {
+        new itemType = eItemsData[itemId][e_iItem_Type];
+        new itemModel = itemModel = eItemsData[itemId][e_iItem_ModelId];
+        new itemWeaponId = (itemType == ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId];
+
+        if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId))
+        {
+            return 1;
+        }
+
+        new calcAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
+        SetPlayerItemAmount(playerid, itemId, calcAmount);
+
+        if(IsBulletWeapon(itemWeaponId) || itemWeaponId == WEAPON_BOW)
+        {
+            new playerWeapon_MaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, itemWeaponId);
+            if(playerWeapon_MaxAmmo == 0)
+            {
+                return 1;
+            }
+
+            new bool:update = (calcAmount > playerWeapon_MaxAmmo);
+            DestroyItem(item_objectId, update);
+            if(update)
+            {
+                CreateOrUpdateItem(itemId, (calcAmount - playerWeapon_MaxAmmo), .creatorId = playerid, \
+                        .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
+                        .update = true, .updateItemUid = itemUid);
+            }
         }
         return 0;
     }

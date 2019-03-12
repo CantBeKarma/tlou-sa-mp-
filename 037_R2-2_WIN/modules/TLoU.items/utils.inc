@@ -152,7 +152,7 @@ ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Fl
     }
 
     // Check if player has a melee weapon (any or a specific one).
-    HasPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
+    bool:HasPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
     {
         new playerMelee = GetPlayerMelee[playerid];
 
@@ -163,7 +163,7 @@ ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Fl
     }
 
     // Check if player has a throwable item (any or a specific one).
-    HasPlayerGotThrowableItem(playerid, throwableId = NO_THROWABLE)
+    bool:HasPlayerGotThrowableItem(playerid, throwableId = NO_THROWABLE)
     {
         new playerThrowable = GetPlayerThrowable[playerid];
 
