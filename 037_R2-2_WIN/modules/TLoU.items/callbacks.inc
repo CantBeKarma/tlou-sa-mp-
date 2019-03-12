@@ -41,7 +41,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     switch(itemType)
     {
         case ITEM_TYPE_HEAL:        format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (GetPlayerWeaponAmmo(playerid, itemWeaponId) >= MAX_AMOUNT_MEDKIT ? "\n{FF0000}(FULL)" : ""));
-        case ITEM_TYPE_THROWABLE:   format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (IsPlayerGotThrowableItem(playerid, itemWeaponId) ? "\n{FF0000}(FULL)" : ""));
+        case ITEM_TYPE_THROWABLE:   format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (HasPlayerGotThrowableItem(playerid, itemWeaponId) ? "\n{FF0000}(FULL)" : ""));
         case ITEM_TYPE_COLLECTIBLE: format(labelStr, sizeof(labelStr), "%s", eObjData[e_sObj_Title]);
 
         case ITEM_TYPE_MELEE:
@@ -76,255 +76,280 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 	return 0;
 }
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------ OnPlayerPickUpItem -------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerPickUpItem(playerid, item_objectId)
-{
-    Streamer_GetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
-    new 
-        itemUid = eObjData[e_iObj_Uid],
-        itemId = eObjData[e_iObj_ItemId],
-        itemAmount = eObjData[e_iObj_ItemAmount],
-        itemMeleeUpgradedCnd = eObjData[e_iObj_MeleeUpgradedCnd],
-        itemType = eItemsData[itemId][e_iItem_Type],
-        itemModel = eItemsData[itemId][e_iItem_ModelId],
-        itemWeaponId = (itemType == ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId];
+//#region PickUp management callbacks (specific items type and main PickUp Item callback)
 
-    new 
-        calcAmount,
-        calcMeleeExtCnd,
-        calcItemId_idxValue,
-        bool:shouldUpdateObject;
-
-    switch(itemType)
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //------------------ OnPlayerPickUpItem -------------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpItem(playerid, item_objectId)
     {
-        case ITEM_TYPE_INGREDIENT:
-        {
-            // itemId = ingredientId (this is the ONLY case!)
-            if(IsPlayerFullOnIngr(playerid, itemId)) 
-                return 1;
-            
-            calcAmount = Craft_IngrAmount(playerid, itemId) + itemAmount;
-            SetPlayerItemAmount(playerid, itemId, calcAmount);
+        Streamer_GetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
-            if(calcAmount > 300)
-            {
-                shouldUpdateObject = true;
-                calcItemId_idxValue = itemId;
-                calcAmount = calcAmount - 300;
-            }
-        }
-
-        case ITEM_TYPE_HEAL:
-        {
-            if(itemWeaponId == WEAPON_MEDKIT)
-            {
-                if(IsPlayerWeaponFullOnAmmo(playerid, WEAPON_MEDKIT))
-                    return 1;
-
-                calcAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
-                SetPlayerItemAmount(playerid, itemId, calcAmount);
-            }
-            else
-            {
-                SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + 5.0);
-            }
-        }
-
-        case ITEM_TYPE_MELEE:
-        {
-            new playerMeleeWeapon = GetPlayerMelee[playerid];
-
-            // If player has some melee weapon already - drop it on the ground.
-            if(playerMeleeWeapon != NO_MELEE)
-            {
-                for(new i = 0; i != MAX_ITEMS_DATA; i++)
-                {
-                    if(playerMeleeWeapon != eItemsData[i][e_iItem_SA_WeaponId])
-                        continue;
-
-                    calcItemId_idxValue = i;
-                    shouldUpdateObject = true;
-                    calcAmount = GetPlayerMeleeCnd[playerid];
-
-                    if(IsPlayerMeleeUpgraded[playerid]) 
-                        calcMeleeExtCnd = GetPlayerMeleeExtCnd[playerid];
-                        
-                    break;
-                }
-            }
-
-            SetPlayerItemAmount(playerid, itemId, itemAmount, itemMeleeUpgradedCnd);
-
-            if(CurrentPlayerWeaponId[playerid] == playerMeleeWeapon && playerMeleeWeapon != NO_MELEE)
-                SetPlayerMeleeWeapon(playerid);
-        }
-
-        case ITEM_TYPE_THROWABLE:
-        {
-            new playerThrowable = GetPlayerThrowable[playerid];
-            if(IsPlayerGotThrowableItem(playerid, itemWeaponId)) 
-                return 1;
-
-            // If player has some throwable already - drop it on the ground.
-            if(playerThrowable != NO_THROWABLE && GetPlayerWeaponAmmo(playerid, playerThrowable) > 0)
-            {
-                for(new i = 0; i != MAX_ITEMS_DATA; i++)
-                {
-                    if(playerThrowable != eItemsData[i][e_iItem_SA_WeaponId])
-                        continue;
-
-                    calcItemId_idxValue = i;
-                    shouldUpdateObject = true;
-                    calcAmount = 1;
-                    break;
-                }
-            }
-
-            // If player currently uses throwable item.
-            if(IsThrowableWeapon(CurrentPlayerWeaponId[playerid])) SetPlayerWeapon(playerid, itemWeaponId);
-            else
-            {
-                if(LastPlayerWeaponId[playerid] == playerThrowable)
-                    LastPlayerWeaponId[playerid] = itemWeaponId;
-            }
-            
-            SetPlayerItemAmount(playerid, itemId, 1);
-        }
-
-        case ITEM_TYPE_WEAPON, ITEM_TYPE_AMMO:
-        {
-            if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId)) 
-                return 1;
-
-            calcAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
-            SetPlayerItemAmount(playerid, itemId, calcAmount);
-
-            // If player extended ammo for weapon - recreate same item with leftover ammo.
-            if(IsBulletWeapon(itemWeaponId) || itemWeaponId == WEAPON_BOW)
-            {
-                new playerWeapon_MaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, itemWeaponId);
-                if(playerWeapon_MaxAmmo == 0)
-                    return 1;
-                    
-                if(calcAmount > playerWeapon_MaxAmmo)
-                {
-                    shouldUpdateObject = true;
-                    calcItemId_idxValue = itemId;
-                    calcAmount = calcAmount - playerWeapon_MaxAmmo;
-                }
-            }
-        }
-
-        //#region collectibles
-            // case ITEM_TYPE_COLLECTIBLE:
-            // {
-            //     SCMF(playerid, -1, "My iter count: %d", Iter_Count(ArtifactsOwned<playerid>));
-            //     SCMF(playerid, -1, "Trying to pick up UID: %d", itemUid);
-            //     Iter_Add(ArtifactsOwned<playerid>, itemUid);
-            //     SCMF(playerid, -1, "My iter count: %d", Iter_Count(ArtifactsOwned<playerid>));
-                
-            //     strcpy(ePlayerBpInfo[playerid][e_iColl_ArtifTitle], eObjData[e_sObj_Title]);
-            //     strcpy(ePlayerBpInfo[playerid][e_iColl_ArtifInnerMsg], eObjData[e_sObj_InnerMessage]);
-            // }
-        //#endregion
-    }
-
-    if(eItemsData[itemId][e_iItem_AudioPickupId] != -1)
-        Audio_PlayEx(playerid, eItemsData[itemId][e_iItem_AudioPickupId]);
-
-    if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-    {
-        GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
-        DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-    }
-
-    DestroyItem(item_objectId, shouldUpdateObject);
-
-    if(shouldUpdateObject)
-    {
         new 
-            Float:x = eObjData[e_fObj_X], Float:y = eObjData[e_fObj_Y], Float:z = eObjData[e_fObj_Z],
-            virtualWorld = eObjData[e_iObj_Vw], interiorId = eObjData[e_iObj_Int];
+            itemUid = eObjData[e_iObj_Uid],
+            itemId = eObjData[e_iObj_ItemId],
+            itemAmount = eObjData[e_iObj_ItemAmount],
+            itemMeleeUpgradedCnd = eObjData[e_iObj_MeleeUpgradedCnd],
+            itemType = eItemsData[itemId][e_iItem_Type],
+            itemModel = eItemsData[itemId][e_iItem_ModelId],
+            itemWeaponId = (itemType == ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId],
+            Float:x = eObjData[e_fObj_X], 
+            Float:y = eObjData[e_fObj_Y], 
+            Float:z = eObjData[e_fObj_Z],
+            virtualWorld = eObjData[e_iObj_Vw],
+            interiorId = eObjData[e_iObj_Int];
 
-        CreateOrUpdateItem(calcItemId_idxValue, calcAmount, calcMeleeExtCnd, playerid, \
-                            .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
-                                .update = true, .updateItemUid = itemUid);
+        new 
+            calcAmount,
+            calcMeleeExtCnd,
+            calcItemId_idxValue,
+            bool:shouldUpdateObject;
+
+        switch(itemType)
+        {
+            case ITEM_TYPE_INGREDIENT:
+            {
+                OnPlayerPickUpIngredient(playerid, itemUid, itemId, itemAmount, x, y, z, virtualWorld, interiorId);
+            }
+        }
+
+            // case ITEM_TYPE_HEAL:
+            // {
+            //     if(itemWeaponId == WEAPON_MEDKIT)
+            //     {
+            //         if(IsPlayerWeaponFullOnAmmo(playerid, WEAPON_MEDKIT))
+            //             return 1;
+
+            //         calcAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
+            //         SetPlayerItemAmount(playerid, itemId, calcAmount);
+            //     }
+            //     else
+            //     {
+            //         SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + 5.0);
+            //     }
+            // }
+
+            // case ITEM_TYPE_MELEE:
+            // {
+            //     new playerMeleeWeapon = GetPlayerMelee[playerid];
+
+            //     // If player has some melee weapon already - drop it on the ground.
+            //     if(playerMeleeWeapon != NO_MELEE)
+            //     {
+            //         for(new i = 0; i != MAX_ITEMS_DATA; i++)
+            //         {
+            //             if(playerMeleeWeapon != eItemsData[i][e_iItem_SA_WeaponId])
+            //                 continue;
+
+            //             calcItemId_idxValue = i;
+            //             shouldUpdateObject = true;
+            //             calcAmount = GetPlayerMeleeCnd[playerid];
+
+            //             if(IsPlayerMeleeUpgraded[playerid]) 
+            //                 calcMeleeExtCnd = GetPlayerMeleeExtCnd[playerid];
+                            
+            //             break;
+            //         }
+            //     }
+
+            //     SetPlayerItemAmount(playerid, itemId, itemAmount, itemMeleeUpgradedCnd);
+
+            //     if(CurrentPlayerWeaponId[playerid] == playerMeleeWeapon && playerMeleeWeapon != NO_MELEE)
+            //         SetPlayerMeleeWeapon(playerid);
+            // }
+
+            // case ITEM_TYPE_THROWABLE:
+            // {
+            //     new playerThrowable = GetPlayerThrowable[playerid];
+            //     if(HasPlayerGotThrowableItem(playerid, itemWeaponId)) 
+            //         return 1;
+
+            //     // If player has some throwable already - drop it on the ground.
+            //     if(playerThrowable != NO_THROWABLE && GetPlayerWeaponAmmo(playerid, playerThrowable) > 0)
+            //     {
+            //         for(new i = 0; i != MAX_ITEMS_DATA; i++)
+            //         {
+            //             if(playerThrowable != eItemsData[i][e_iItem_SA_WeaponId])
+            //                 continue;
+
+            //             calcItemId_idxValue = i;
+            //             shouldUpdateObject = true;
+            //             calcAmount = 1;
+            //             break;
+            //         }
+            //     }
+
+            //     // If player currently uses throwable item.
+            //     if(IsThrowableWeapon(CurrentPlayerWeaponId[playerid])) SetPlayerWeapon(playerid, itemWeaponId);
+            //     else
+            //     {
+            //         if(LastPlayerWeaponId[playerid] == playerThrowable)
+            //             LastPlayerWeaponId[playerid] = itemWeaponId;
+            //     }
+                
+            //     SetPlayerItemAmount(playerid, itemId, 1);
+            // }
+
+            // case ITEM_TYPE_WEAPON, ITEM_TYPE_AMMO:
+            // {
+                // if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId)) 
+                //     return 1;
+
+                // calcAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
+                // SetPlayerItemAmount(playerid, itemId, calcAmount);
+
+                // // If player extended ammo for weapon - recreate same item with leftover ammo.
+                // if(IsBulletWeapon(itemWeaponId) || itemWeaponId == WEAPON_BOW)
+                // {
+                //     new playerWeapon_MaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, itemWeaponId);
+                //     if(playerWeapon_MaxAmmo == 0)
+                //         return 1;
+                        
+                //     if(calcAmount > playerWeapon_MaxAmmo)
+                //     {
+                //         shouldUpdateObject = true;
+                //         calcItemId_idxValue = itemId;
+                //         calcAmount = calcAmount - playerWeapon_MaxAmmo;
+                //     }
+                // }
+            //}
+
+            //#region collectibles
+                // case ITEM_TYPE_COLLECTIBLE:
+                // {
+                //     SCMF(playerid, -1, "My iter count: %d", Iter_Count(ArtifactsOwned<playerid>));
+                //     SCMF(playerid, -1, "Trying to pick up UID: %d", itemUid);
+                //     Iter_Add(ArtifactsOwned<playerid>, itemUid);
+                //     SCMF(playerid, -1, "My iter count: %d", Iter_Count(ArtifactsOwned<playerid>));
+                    
+                //     strcpy(ePlayerBpInfo[playerid][e_iColl_ArtifTitle], eObjData[e_sObj_Title]);
+                //     strcpy(ePlayerBpInfo[playerid][e_iColl_ArtifInnerMsg], eObjData[e_sObj_InnerMessage]);
+                // }
+            //#endregion
+        //}
+
+        if(eItemsData[itemId][e_iItem_AudioPickupId] != -1)
+            Audio_PlayEx(playerid, eItemsData[itemId][e_iItem_AudioPickupId]);
+
+        if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+        {
+            GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
+            DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+        }
+
+        DestroyItem(item_objectId, shouldUpdateObject);
+
+        // if(shouldUpdateObject)
+        // {
+        //     CreateOrUpdateItem(calcItemId_idxValue, calcAmount, calcMeleeExtCnd, playerid, \
+        //                         .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
+        //                             .update = true, .updateItemUid = itemUid);
+        // }
+
+        ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);
+        return 0;
     }
 
-    ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);
-    return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- OnItemCreate ----------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnItemCreate(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
-{
-    new objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
-
-    if(creatorId != INVALID_PLAYER_ID)
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //---------------- OnPlayerPickUpIngredient ---------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpIngredient(playerid, itemUid, itemId, itemAmount, Float:x, Float:y, Float:z, virtualWorld, interiorId)
     {
-        Streamer_Update(creatorId, STREAMER_TYPE_OBJECT);
+        // itemId = ingredientId (this is the ONLY case!)
+        if(IsPlayerFullOnIngr(playerid, itemId))
+        {
+            return 1;
+        }
+        
+        new calcAmount = Craft_IngrAmount(playerid, itemId) + itemAmount;
+        SetPlayerItemAmount(playerid, itemId, calcAmount);
+
+        if(calcAmount > 300)
+        {
+            CreateOrUpdateItem(itemId, .itemAmount = (calcAmount - 300), .creatorId = playerid, \
+                    .x = x, .y = y, .z = z, .virtualWorld = virtualWorld, .interiorId = interiorId, \
+                        .update = true, .updateItemUid = itemUid);
+        }
+        return 0;
     }
 
-    eObjData[e_iObj_Uid] = cache_insert_id();
-    eObjData[e_iObj_ItemId] = itemId;
-    eObjData[e_fObj_X] = x;
-    eObjData[e_fObj_Y] = y;
-    eObjData[e_fObj_Z] = z;
-    eObjData[e_iObj_Vw] = virtualWorld;
-    eObjData[e_iObj_Int] = interiorId;
-    eObjData[e_iObj_ItemAmount] = itemAmount;
-    eObjData[e_iObj_MeleeUpgradedCnd] = meleeExtCnd;
-    strcpy(eObjData[e_sObj_Title], itemTitle, sizeof(eObjData[e_sObj_Title]));
-    strcpy(eObjData[e_sObj_InnerMessage], innerMsg, sizeof(eObjData[e_sObj_InnerMessage]));
-    eObjData[e_bObj_Created] = true;
+    // CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
+    //         itemTitle[] = "", innerMsg[] = "", Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
 
-    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
-    return 0;
-}
+//#endregion
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- OnItemDestroy ---------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnItemDestroy(uid_item)
-{
-    DB_DestroyItem(uid_item);
-    return 0;
-}
+//#region Items management callbacks (Create/Destroy/Update)
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- OnItemUpdate ----------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnItemUpdate(updateItemUid, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId)
-{
-    new objectId = CreateDynamicObject(eItemsData[newItemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
-
-    if(updaterId != INVALID_PLAYER_ID)
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //--------------------- OnItemCreate ----------------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnItemCreate(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
     {
-        Streamer_Update(updaterId, STREAMER_TYPE_OBJECT);
-        Streamer_Update(updaterId, STREAMER_TYPE_3D_TEXT_LABEL);
+        new objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+
+        if(creatorId != INVALID_PLAYER_ID)
+        {
+            Streamer_Update(creatorId, STREAMER_TYPE_OBJECT);
+        }
+
+        eObjData[e_iObj_Uid] = cache_insert_id();
+        eObjData[e_iObj_ItemId] = itemId;
+        eObjData[e_fObj_X] = x;
+        eObjData[e_fObj_Y] = y;
+        eObjData[e_fObj_Z] = z;
+        eObjData[e_iObj_Vw] = virtualWorld;
+        eObjData[e_iObj_Int] = interiorId;
+        eObjData[e_iObj_ItemAmount] = itemAmount;
+        eObjData[e_iObj_MeleeUpgradedCnd] = meleeExtCnd;
+        strcpy(eObjData[e_sObj_Title], itemTitle, sizeof(eObjData[e_sObj_Title]));
+        strcpy(eObjData[e_sObj_InnerMessage], innerMsg, sizeof(eObjData[e_sObj_InnerMessage]));
+        eObjData[e_bObj_Created] = true;
+
+        Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
+        return 0;
     }
 
-    eObjData[e_iObj_Uid] = updateItemUid;
-    eObjData[e_iObj_ItemId] = newItemId;
-    eObjData[e_fObj_X] = x;
-    eObjData[e_fObj_Y] = y;
-    eObjData[e_fObj_Z] = z;
-    eObjData[e_iObj_Vw] = virtualWorld;
-    eObjData[e_iObj_Int] = interiorId;
-    eObjData[e_iObj_ItemAmount] = newItemAmount;
-    eObjData[e_iObj_MeleeUpgradedCnd] = newMeleeExtCnd;
-    strcpy(eObjData[e_sObj_Title], "", sizeof(eObjData[e_sObj_Title]));
-    strcpy(eObjData[e_sObj_InnerMessage], "", sizeof(eObjData[e_sObj_InnerMessage]));
-    eObjData[e_bObj_Created] = true;
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //--------------------- OnItemDestroy ---------------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnItemDestroy(uid_item)
+    {
+        DB_DestroyItem(uid_item);
+        return 0;
+    }
 
-    Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
-    return 0;
-}
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //--------------------- OnItemUpdate ----------------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnItemUpdate(updateItemUid, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId)
+    {
+        new objectId = CreateDynamicObject(eItemsData[newItemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+
+        if(updaterId != INVALID_PLAYER_ID)
+        {
+            Streamer_Update(updaterId, STREAMER_TYPE_OBJECT);
+            Streamer_Update(updaterId, STREAMER_TYPE_3D_TEXT_LABEL);
+        }
+
+        eObjData[e_iObj_Uid] = updateItemUid;
+        eObjData[e_iObj_ItemId] = newItemId;
+        eObjData[e_fObj_X] = x;
+        eObjData[e_fObj_Y] = y;
+        eObjData[e_fObj_Z] = z;
+        eObjData[e_iObj_Vw] = virtualWorld;
+        eObjData[e_iObj_Int] = interiorId;
+        eObjData[e_iObj_ItemAmount] = newItemAmount;
+        eObjData[e_iObj_MeleeUpgradedCnd] = newMeleeExtCnd;
+        strcpy(eObjData[e_sObj_Title], "", sizeof(eObjData[e_sObj_Title]));
+        strcpy(eObjData[e_sObj_InnerMessage], "", sizeof(eObjData[e_sObj_InnerMessage]));
+        eObjData[e_bObj_Created] = true;
+
+        Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
+        return 0;
+    }
+
+//#endregion
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------- OnPlayerKeyStateChange ----------------
