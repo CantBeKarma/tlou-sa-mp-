@@ -2,6 +2,7 @@
 #define     MAX_ITEMS_DATA          (27)
 #define     NO_OWNER_UID            (-1)
 #define     ITEM_LABEL_DRAW_DIST    (2.5)
+#define     HEAL_ITEM_RECOVER_HP    (5.0)
 
 // Types of the items available.
 #define     ITEM_TYPE_MELEE         (0)

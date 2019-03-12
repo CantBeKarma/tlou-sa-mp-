@@ -112,23 +112,14 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             {
                 OnPlayerPickUpIngredient(playerid, itemUid, itemId, itemAmount, x, y, z, virtualWorld, interiorId);
             }
+
+            case ITEM_TYPE_HEAL:
+            {
+                OnPlayerPickUpHealItem(playerid, itemId, itemAmount);
+            }
         }
 
-            // case ITEM_TYPE_HEAL:
-            // {
-            //     if(itemWeaponId == WEAPON_MEDKIT)
-            //     {
-            //         if(IsPlayerWeaponFullOnAmmo(playerid, WEAPON_MEDKIT))
-            //             return 1;
 
-            //         calcAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
-            //         SetPlayerItemAmount(playerid, itemId, calcAmount);
-            //     }
-            //     else
-            //     {
-            //         SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + 5.0);
-            //     }
-            // }
 
             // case ITEM_TYPE_MELEE:
             // {
@@ -272,6 +263,31 @@ public OnPlayerLookAtItem(playerid, item_objectId)
                         .update = true, .updateItemUid = itemUid);
         }
         return 0;
+    }
+
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //----------------- OnPlayerPickUpHealItem ----------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpHealItem(playerid, itemId, itemAmount)
+    {
+        new itemType = eItemsData[itemId][e_iItem_Type];
+        new itemModel = itemModel = eItemsData[itemId][e_iItem_ModelId];
+        new itemWeaponId = (itemType == ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId];
+
+        if(itemWeaponId == WEAPON_MEDKIT)
+        {
+            if(IsPlayerWeaponFullOnAmmo(playerid, WEAPON_MEDKIT))
+            {
+                return 1;
+            }
+
+            new calcAmount = GetPlayerWeaponAmmo(playerid, WEAPON_MEDKIT) + itemAmount;
+            SetPlayerItemAmount(playerid, itemId, calcAmount);
+        }
+        else
+        {
+            SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + HEAL_ITEM_RECOVER_HP);
+        }
     }
 
     // CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
