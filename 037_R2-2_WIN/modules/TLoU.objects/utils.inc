@@ -18,7 +18,7 @@ ReadItemRelations(item_objectId, &itemUid, &itemId, &Float:itemPosX, &Float:item
     itemType = eItemsData[itemId][e_iItem_Type];
     itemWeaponId = (itemType == ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId];
 
-    printf("ReadItemRelations values: (%d, %d, %d, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d, %d", item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated, itemModel, itemType, itemWeaponId);
+    printf("ReadItemRelations values: (%d, %d, %d, %f, %f, %f, %d, %d, %d, %d, %d, %d, %d, %d)", item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated, itemModel, itemType, itemWeaponId);
 }
 
 // Reads single item data relation and returns its value to variable sent by reference.
