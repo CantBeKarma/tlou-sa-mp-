@@ -276,7 +276,7 @@ function Enable_OnPlayerLookAt(playerid)
 	{
 		return;
 	}
-
+	
 	EnablePlayerCameraTarget(playerid, true);
 	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 	GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;

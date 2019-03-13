@@ -226,7 +226,7 @@ ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Fl
             {
                 // itemId = ingredientId (this is the ONLY case!)
                 if(IsPlayerFullOnIngr(playerid, itemId)) format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
-                else format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (itemAmount / 100));
+                else format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
             }
 
             case ITEM_TYPE_WEAPON:

@@ -48,8 +48,10 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     else
     {
         if(GetPlayerMelee[playerid] == WEAPON_PIPE)
+        {
             GetPlayerMelee[playerid] = WEAPON_SCISSOR_PIPE;
-
+        }
+        
         new 
             meleeCnd = GetPlayerMeleeCnd[playerid],
             meleeExtCnd = GetMeleeWeapon_Durability(GetPlayerMelee[playerid], true);
@@ -63,7 +65,9 @@ public OnPlayerCraftedItem(playerid, craftItemId)
 
     // Set newly crafted weapon as a last weapon used.
     if(craftItemId != CRAFT_ITEM_SHIV)
-        LastPlayerWeaponId[playerid] = itemWeaponId;
+    {
+        LastPlayerWeaponId[playerid] = itemWeaponId;   
+    }
 
     Audio_StopEx(playerid);
     Audio_PlayEx(playerid, AUDIO_CRAFT_FINISH);
