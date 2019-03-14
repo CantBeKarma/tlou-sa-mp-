@@ -61,13 +61,14 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 	{
 		// Check if player's target objectId is different than the old one
 		// and it has a flag of "item created" inside.
-		if(GetPlayerFocusedObjectId(playerid) != playerTargetObjectId)
-		&& Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, playerTargetObjectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created])
+		if(GetPlayerFocusedObjectId(playerid) != playerTargetObjectId
+		&& Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, playerTargetObjectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
 		{
 			// If player's distance to the item is higher than allowed.
-			new Float:x, Float:y, Float:z;
-			GetDynamicObjectPos(playerTargetObjectId, x, y, z);
-			if(!IsPlayerInRangeOfPoint(playerid, ITEM_LABEL_DRAW_DIST, x, y, z))
+			new Float:x, Float:y, Float:z, vW, intId;
+			ReadItemRelation(playerTargetObjectId, .itemPosX = x, .itemPosY = y, .itemPosZ = z, .itemVw = vW, .itemIntId = intId);
+			if(!IsPlayerInRangeOfPoint(playerid, ITEM_LABEL_DRAW_DIST, x, y, z)
+			|| GetPlayerVirtualWorld(playerid) != vW || GetPlayerInterior(playerid) != intId)
 			{
 				return 1;
 			}
