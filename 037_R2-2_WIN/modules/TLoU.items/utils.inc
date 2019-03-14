@@ -1,172 +1,173 @@
-// Create an item.
-CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
-            itemTitle[] = "", innerMsg[] = "", Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
-{
-    // Shorty crashes when shot (unable to create item).
-    if(itemId == 12)
+//#region Item Create/Update/Destroy/Validate
+
+    // Create an item.
+    CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
+                itemTitle[] = "", innerMsg[] = "", Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
     {
-        return 1;
-    }
-
-    // Unable to create item if item amount is invalid.
-    if(itemAmount <= 0 || meleeExtCnd < 0)
-    {
-        return 1;
-    }
-
-    // Create item at position where the player is if creatorId is specified 
-    // (and it isn't an update of the item).
-    if(creatorId != INVALID_PLAYER_ID && update == false)
-    {
-        GetPlayerPos(creatorId, x, y, z);
-        CA_FindZ_For2DCoord(x, y, z);
-
-        virtualWorld = GetPlayerVirtualWorld(creatorId);
-        interiorId = GetPlayerInterior(creatorId);
-    }
-
-    // Validation position & rotation of the item.
-    new Float:rX, Float:rY, Float:rZ;
-    if(ValidateItemCreation(itemId, itemAmount, meleeExtCnd, z, rX, rY, rZ) == 1)
-    {
-        return 1;
-    }
-
-    if(update)
-    {
-        DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
-    }
-    else
-    {
-        DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
-    }
-    return 0;
-}
-
-// Destroying item (object) and clear its data.
-DestroyItem(item_objectId, bool:update = false)
-{
-    if(!IsValidDynamicObject(item_objectId))
-	{
-        return;
-    }
-
-    if(!update)
-    {
-        OnItemDestroy(eObjData[e_iObj_Uid]);
-    }
-
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Uid]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemId]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_X]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Y]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Z]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Vw]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Int]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemAmount]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_MeleeUpgradedCnd]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_Title]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_InnerMessage]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]);
-
-    DestroyDynamicObject(item_objectId);
-}
-
-// Find item's index in the table by its weapon id.
-FindItemIdxByWeaponId(weaponid)
-{
-    for(new i = 0; i != MAX_ITEMS_DATA; i++)
-    {
-        if(weaponid == eItemsData[i][e_iItem_SA_WeaponId])
+        // Shorty crashes when shot (unable to create item).
+        if(itemId == 12)
         {
-            return i;
+            return 1;
         }
-    }
-    return -1;
-}
 
-// Validates item's creation positions, amounts and conditions.
-ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Float:rY, &Float:rZ)
-{
-    switch(itemId)
-    {
-        // Ingredients.
-        case 0..5:
+        // Unable to create item if item amount is invalid.
+        if(itemAmount <= 0 || meleeExtCnd < 0)
         {
-            // Validate if the specified value is only every 25.
-            if((itemAmount % 25) != 0 || itemAmount <= 0 || itemAmount > 300)
+            return 1;
+        }
+
+        // Create item at position where the player is if creatorId is specified 
+        // (and it isn't an update of the item).
+        if(creatorId != INVALID_PLAYER_ID && update == false)
+        {
+            GetPlayerPos(creatorId, x, y, z);
+            CA_FindZ_For2DCoord(x, y, z);
+
+            virtualWorld = GetPlayerVirtualWorld(creatorId);
+            interiorId = GetPlayerInterior(creatorId);
+        }
+
+        // Validation position & rotation of the item.
+        new Float:rX, Float:rY, Float:rZ;
+        if(ValidateItemCreation(itemId, itemAmount, meleeExtCnd, z, rX, rY, rZ) == 1)
+        {
+            return 1;
+        }
+
+        if(update)
+        {
+            DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
+        }
+        else
+        {
+            DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
+        }
+        return 0;
+    }
+
+    // Destroying item (object) and clear its data.
+    DestroyItem(item_objectId, bool:update = false)
+    {
+        if(!IsValidDynamicObject(item_objectId))
+        {
+            return;
+        }
+
+        if(!update)
+        {
+            OnItemDestroy(eObjData[e_iObj_Uid]);
+        }
+
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Uid]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemId]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_X]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Y]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Z]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Vw]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Int]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemAmount]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_MeleeUpgradedCnd]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_Title]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_InnerMessage]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]);
+
+        DestroyDynamicObject(item_objectId);
+    }
+
+    // Find item's index in the table by its weapon id.
+    FindItemIdxByWeaponId(weaponid)
+    {
+        for(new i = 0; i != MAX_ITEMS_DATA; i++)
+        {
+            if(weaponid == eItemsData[i][e_iItem_SA_WeaponId])
             {
-                return 1;
-            }
-            rZ = float(random(360));
-        }
-
-        // Melee weapons.
-        case 6..9:
-        {
-            new weaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
-            if(meleeExtCnd != 0)
-            {
-                new maxExtCnd = GetMeleeWeapon_Durability(weaponId, true);
-
-                if(meleeExtCnd > maxExtCnd)
-                    meleeExtCnd = maxExtCnd;
-            }
-
-            new meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false);
-
-            if(itemAmount > meleeBasicCnd)
-                itemAmount = meleeBasicCnd;
-
-            rX = 90.0;
-            rY = float(random(360));
-        }
-
-        // Weapons.
-        case 10..15:
-        {
-            rX = 90.0;
-            rY = float(random(360));
-        }
-
-        // Bow, Shiv, Medkit.
-        case 16, 17, 18:
-        {
-            z += 0.06;
-            rZ = float(random(360));
-        }
-
-        // Molotov Cocktail, Nail bomb, Smoke bomb.
-        case 19, 20, 21:
-        {
-            switch(random(2))
-            {
-                case 0:rY = -15;
-                case 1:rX = 90, z += 0.02;
-            }
-            rZ = float(random(360));
-        }
-
-        // Bottle.
-        case 23:
-        {
-            switch(random(2))
-            {
-                case 0: z += 0.1783;
-                case 1: rX = 90.0, rY = float(random(360)), rZ = float(random(360)), z += 0.04;
+                return i;
             }
         }
+        return -1;
     }
-    return 0;
-}
+
+    // Validates item's creation positions, amounts and conditions.
+    ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Float:rY, &Float:rZ)
+    {
+        switch(itemId)
+        {
+            // Ingredients.
+            case 0..5:
+            {
+                // Validate if the specified value is only every 25.
+                if((itemAmount % 25) != 0 || itemAmount <= 0 || itemAmount > 300)
+                {
+                    return 1;
+                }
+                rZ = float(random(360));
+            }
+
+            // Melee weapons.
+            case 6..9:
+            {
+                new weaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
+                if(meleeExtCnd != 0)
+                {
+                    new maxExtCnd = GetMeleeWeapon_Durability(weaponId, true);
+
+                    if(meleeExtCnd > maxExtCnd)
+                        meleeExtCnd = maxExtCnd;
+                }
+
+                new meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false);
+
+                if(itemAmount > meleeBasicCnd)
+                    itemAmount = meleeBasicCnd;
+
+                rX = 90.0;
+                rY = float(random(360));
+            }
+
+            // Weapons.
+            case 10..15:
+            {
+                rX = 90.0;
+                rY = float(random(360));
+            }
+
+            // Bow, Shiv, Medkit.
+            case 16, 17, 18:
+            {
+                z += 0.06;
+                rZ = float(random(360));
+            }
+
+            // Molotov Cocktail, Nail bomb, Smoke bomb.
+            case 19, 20, 21:
+            {
+                switch(random(2))
+                {
+                    case 0:rY = -15;
+                    case 1:rX = 90, z += 0.02;
+                }
+                rZ = float(random(360));
+            }
+
+            // Bottle.
+            case 23:
+            {
+                switch(random(2))
+                {
+                    case 0: z += 0.1783;
+                    case 1: rX = 90.0, rY = float(random(360)), rZ = float(random(360)), z += 0.04;
+                }
+            }
+        }
+        return 0;
+    }
+
+//#endregion
 
 //#region Utils
 
     // Check if player is full on the specified ingredient.
-    IsPlayerFullOnIngr(playerid, ingrId)
-    {
-        return Craft_IngrAmount(playerid, ingrId) >= 300;
-    }
+    IsPlayerFullOnIngr(playerid, ingrId) return Craft_IngrAmount(playerid, ingrId) >= 300;
 
     // Check if player has a melee weapon (any or a specific one).
     bool:HasPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
