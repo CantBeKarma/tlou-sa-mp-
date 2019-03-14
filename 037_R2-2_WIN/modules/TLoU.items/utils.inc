@@ -218,26 +218,48 @@ ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Fl
                 new bool:isItemMeleeUpgraded = (itemExtAmount > 0);
                 format(labelStr, sizeof(labelStr), "%s\n(CND: %d/%d)", eItemsData[itemId][e_sItem_Name], \
                         (isItemMeleeUpgraded) ? (itemAmount + itemExtAmount) : (itemAmount), \
-                        (isItemMeleeUpgraded) ? GetMeleeWeapon_Durability(itemWeaponId, false) + GetMeleeWeapon_Durability(itemWeaponId, true) 
-                        : GetMeleeWeapon_Durability(itemWeaponId, false));
+                        (isItemMeleeUpgraded) ? GetMeleeWeapon_Durability(itemWeaponId, false) + GetMeleeWeapon_Durability(itemWeaponId, true) : GetMeleeWeapon_Durability(itemWeaponId, false));
             }
 
             case ITEM_TYPE_INGREDIENT:
             {
                 // itemId = ingredientId (this is the ONLY case!)
-                if(IsPlayerFullOnIngr(playerid, itemId)) format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
-                else format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
+                if(IsPlayerFullOnIngr(playerid, itemId))
+                {
+                    format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
+                }
+                else 
+                {
+                    format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
+                }
             }
 
             case ITEM_TYPE_WEAPON:
             {
-                if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId)) format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
-                else if(itemModel == ITEM_MODEL_SHIV || itemModel == ITEM_MODEL_BOMB 
-                || itemModel == ITEM_MODEL_MOLOTOV || itemModel == ITEM_MODEL_SMKBMB || itemModel == ITEM_MODEL_ARROW) 
+                if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId))
                 {
-                    format(labelStr, sizeof(labelStr), "%s", eItemsData[itemId][e_sItem_Name]);
+                    format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
                 }
-                else format(labelStr, sizeof(labelStr), "%s\n(ammo: %d)", eItemsData[itemId][e_sItem_Name], floatround(itemAmount));
+                else
+                {
+                    switch(itemModel)
+                    {
+                        case 
+                            ITEM_MODEL_SHIV,
+                            ITEM_MODEL_BOMB,
+                            ITEM_MODEL_MOLOTOV,
+                            ITEM_MODEL_SMKBMB,
+                            ITEM_MODEL_ARROW:
+                            {
+                                format(labelStr, sizeof(labelStr), "%s", eItemsData[itemId][e_sItem_Name]);
+                            }
+                        
+                        default:
+                        {
+                            format(labelStr, sizeof(labelStr), "%s\n(ammo: %d)", eItemsData[itemId][e_sItem_Name], floatround(itemAmount));
+                        }
+                    }
+                }
             }
         }
 
