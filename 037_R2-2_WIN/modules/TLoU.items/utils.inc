@@ -333,14 +333,10 @@ SetPlayerItemAmount(playerid, itemId, amount, meleeUpgradedCnd = 0)
         // already had a melee weapon - remove ownership of it from DB.
         if(HasPlayerGotMeleeWeapon(playerid))
         {
-            new playerMeleeId = GetPlayerMelee[playerid];
-            for(new i = 0; i != MAX_ITEMS_DATA; i++)
+            new playerMeleeItemIdx = FindItemIdxByWeaponId(GetPlayerMelee[playerid]);
+            if(playerMeleeItemIdx != -1)
             {
-                if(eItemsData[i][e_iItem_SA_WeaponId] == playerMeleeId)
-                {
-                    DB_RemovePlayerItem(playerid, i);
-                    break;
-                }
+                DB_RemovePlayerItem(playerid, playerMeleeItemIdx);
             }
         }
     }
