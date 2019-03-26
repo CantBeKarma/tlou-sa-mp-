@@ -185,7 +185,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         {
             HidePlayerWeapon(playerid);
         }
-        return NEXT_ACTION_DESTROY;
+        return nextAction;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
