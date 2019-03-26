@@ -45,15 +45,15 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         switch(itemType)
         {
-            case ITEM_TYPE_INGREDIENT:  OnPlayerPickUpIngredient(playerid, item_objectId, nextAction, newItemAmount);
-            case ITEM_TYPE_HEAL:        OnPlayerPickUpHealItem(playerid, item_objectId, nextAction);
-            case ITEM_TYPE_MELEE:       OnPlayerPickUpMeleeItem(playerid, item_objectId, nextAction, newItemIdx, newItemAmount, newItemExtAmount);
-            case ITEM_TYPE_THROWABLE:   OnPlayerPickUpThrowableItem(playerid, item_objectId, nextAction, newItemIdx);
+            case ITEM_TYPE_INGREDIENT:  nextAction = OnPlayerPickUpIngredient(playerid, item_objectId, newItemAmount);
+            case ITEM_TYPE_HEAL:        nextAction = OnPlayerPickUpHealItem(playerid, item_objectId);
+            case ITEM_TYPE_MELEE:       nextAction = OnPlayerPickUpMeleeItem(playerid, item_objectId, newItemIdx, newItemAmount, newItemExtAmount);
+            case ITEM_TYPE_THROWABLE:   nextAction = OnPlayerPickUpThrowableItem(playerid, item_objectId, newItemIdx);
             case 
                 ITEM_TYPE_WEAPON, 
                 ITEM_TYPE_AMMO:
                 {
-                    OnPlayerPickUpWeaponOrAmmo(playerid, item_objectId, nextAction, newItemAmount);
+                    nextAction = OnPlayerPickUpWeaponOrAmmo(playerid, item_objectId, newItemAmount);
                 }
         }
 
@@ -106,8 +106,8 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerPickUpIngredient ---------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    forward OnPlayerPickUpIngredient(playerid, item_objectId, &nextAction, &newItemAmount);
-    public OnPlayerPickUpIngredient(playerid, item_objectId, &nextAction, &newItemAmount)
+    forward OnPlayerPickUpIngredient(playerid, item_objectId, &newItemAmount);
+    public OnPlayerPickUpIngredient(playerid, item_objectId, &newItemAmount)
     {
         new itemId, itemAmount;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount);
@@ -115,26 +115,25 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         // itemId = ingredientId (this is the ONLY case!)
         if(IsPlayerFullOnIngr(playerid, itemId))
         {
-            nextAction = NEXT_ACTION_NONE;
-            return 1;
+            return NEXT_ACTION_NONE;
         }
         
         newItemAmount = Craft_IngrAmount(playerid, itemId) + itemAmount;
         SetPlayerItemAmount(playerid, itemId, newItemAmount);
 
-        nextAction = (newItemAmount > 300) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
+        new nextAction = (newItemAmount > 300) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
         if(nextAction == NEXT_ACTION_UPDATE)
         {
             newItemAmount = (newItemAmount-300);
         }
-        return 0;
+        return nextAction;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //----------------- OnPlayerPickUpHealItem ----------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    forward OnPlayerPickUpHealItem(playerid, item_objectId, &nextAction);
-    public OnPlayerPickUpHealItem(playerid, item_objectId, &nextAction)
+    forward OnPlayerPickUpHealItem(playerid, item_objectId);
+    public OnPlayerPickUpHealItem(playerid, item_objectId)
     {
         new itemId, itemAmount, itemWeaponId;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount, .itemWeaponId = itemWeaponId);
@@ -143,8 +142,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         {
             if(IsPlayerWeaponFullOnAmmo(playerid, WEAPON_MEDKIT))
             {
-                nextAction = NEXT_ACTION_NONE;
-                return 1;
+                return NEXT_ACTION_NONE;
             }
 
             new newItemAmount = GetPlayerWeaponAmmo(playerid, WEAPON_MEDKIT) + itemAmount;
@@ -154,25 +152,24 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         {
             SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + HEAL_ITEM_RECOVER_HP);
         }
-        return 0;
+        return NEXT_ACTION_DESTROY;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerPickUpMeleeItem ----------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    forward OnPlayerPickUpMeleeItem(playerid, item_objectId, &nextAction, &droppedMeleeItemIdx, &droppedMeleeCnd, &droppedMeleeExtCnd);
-    public OnPlayerPickUpMeleeItem(playerid, item_objectId, &nextAction, &droppedMeleeItemIdx, &droppedMeleeCnd, &droppedMeleeExtCnd)
+    forward OnPlayerPickUpMeleeItem(playerid, item_objectId, &droppedMeleeItemIdx, &droppedMeleeCnd, &droppedMeleeExtCnd);
+    public OnPlayerPickUpMeleeItem(playerid, item_objectId, &droppedMeleeItemIdx, &droppedMeleeCnd, &droppedMeleeExtCnd)
     {
         new playerMeleeWeapon = GetPlayerMelee[playerid];
 
-        nextAction = (playerMeleeWeapon != NO_MELEE) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
+        new nextAction = (playerMeleeWeapon != NO_MELEE) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
         if(nextAction == NEXT_ACTION_UPDATE)
         {
             new playerMeleeItemIdx = droppedMeleeItemIdx = FindItemIdxByWeaponId(playerMeleeWeapon);
             if(playerMeleeItemIdx == -1)
             {
-                nextAction = NEXT_ACTION_NONE;
-                return 1;
+                return NEXT_ACTION_NONE;
             }
 
             droppedMeleeCnd = GetPlayerMeleeCnd[playerid];
@@ -188,34 +185,32 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         {
             HidePlayerWeapon(playerid);
         }
-        return 0;
+        return NEXT_ACTION_DESTROY;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //-------------- OnPlayerPickUpThrowableItem --------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    forward OnPlayerPickUpThrowableItem(playerid, item_objectId, &nextAction, &droppedThrowableItemIdx);
-    public OnPlayerPickUpThrowableItem(playerid, item_objectId, &nextAction, &droppedThrowableItemIdx)
+    forward OnPlayerPickUpThrowableItem(playerid, item_objectId, &droppedThrowableItemIdx);
+    public OnPlayerPickUpThrowableItem(playerid, item_objectId, &droppedThrowableItemIdx)
     {
         new itemId, itemWeaponId;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemWeaponId = itemWeaponId);
 
         if(HasPlayerGotThrowableItem(playerid, itemWeaponId))
         {
-            nextAction = NEXT_ACTION_NONE;
-            return 1;
+            return NEXT_ACTION_NONE;
         }
 
         new playerThrowable = GetPlayerThrowable[playerid];
-        nextAction = HasPlayerGotThrowableItem(playerid) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
+        new nextAction = HasPlayerGotThrowableItem(playerid) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
 
         if(nextAction == NEXT_ACTION_UPDATE)
         {
             new playerThrowableItemIdx = droppedThrowableItemIdx = FindItemIdxByWeaponId(playerThrowable);
             if(playerThrowableItemIdx == -1)
             {
-                nextAction = NEXT_ACTION_NONE;
-                return 1;
+                return NEXT_ACTION_NONE;
             }
         }
 
@@ -231,27 +226,27 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         {
             LastPlayerWeaponId[playerid] = itemWeaponId;                
         }
-        return 0;
+        return nextAction;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //--------------- OnPlayerPickUpWeaponOrAmmo --------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    forward OnPlayerPickUpWeaponOrAmmo(playerid, item_objectId, &nextAction, &droppedAmmoAmount);
-    public OnPlayerPickUpWeaponOrAmmo(playerid, item_objectId, &nextAction, &droppedAmmoAmount)
+    forward OnPlayerPickUpWeaponOrAmmo(playerid, item_objectId, &droppedAmmoAmount);
+    public OnPlayerPickUpWeaponOrAmmo(playerid, item_objectId, &droppedAmmoAmount)
     {
         new itemId, itemAmount, itemWeaponId;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount, .itemWeaponId = itemWeaponId);
 
         if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId))
         {
-            nextAction = NEXT_ACTION_NONE;
-            return 1;
+            return NEXT_ACTION_NONE;
         }
 
         new newItemAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
         SetPlayerItemAmount(playerid, itemId, newItemAmount);
 
+        new nextAction;
         if(IsBulletWeapon(itemWeaponId) || itemWeaponId == WEAPON_BOW)
         {
             new playerWeapon_MaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, itemWeaponId);
@@ -262,7 +257,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
                 droppedAmmoAmount = (newItemAmount-playerWeapon_MaxAmmo);
             }
         }
-        return 0;
+        return nextAction;
     }
 
 //#endregion
