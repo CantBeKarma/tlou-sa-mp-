@@ -46,71 +46,73 @@ timer Callback_HoldKeyTimer[100](playerid, key)
 timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 {
 //#region Looking at items...
-
-	// // Looking at invalid object.
-	// new lookingAt_objectId = GetPlayerCameraTargetDynObject(playerid);
-	// if(!IsValidDynamicObject(lookingAt_objectId))
-	// {
-    //     if(!IsPlayerLookingAtItem(playerid))
-	// 	{
-	// 		return 1;
-	// 	}
-
-	// 	GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
-			
-	// 	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-	// 	{
-	// 		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-	// 	}
-	// 	return 1;
-	// }
-
-	// // Check if object that player is looking at has a flag of created item.
-	// if(!Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, lookingAt_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
-	// {
-	// 	return 1;
-	// }
-
-	// if(GetPlayerFocusedObjectId(playerid) == lookingAt_objectId)
-	// {
-	// 	return 1;
-	// }
-
-	// // If player's distance to the item is higher than allowed.
-	// new Float:x, Float:y, Float:z;
-	// GetDynamicObjectPos(lookingAt_objectId, x, y, z);
-	// if(!IsPlayerInRangeOfPoint(playerid, ITEM_LABEL_DRAW_DIST, x, y, z))
-	// {
-	// 	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-	// 	{
-	// 		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-	// 	}
-	// 	return 1;
-	// }
-
-	// // If I was looking at player but I do look at object now (reset lookingAt object data).
-	// if(IsPlayerLookingAtPlayer(playerid))
-	// {
-	// 	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 	
-	// 	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-	// 	{
-	// 		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-	// 	}		
-	// }
+	// Looking at invalid object.
+	new lookingAt_objectId = GetPlayerCameraTargetDynObject(playerid);
+	if(!IsValidDynamicObject(lookingAt_objectId))
+	{
+        if(IsPlayerLookingAtItem(playerid))
+		{
+			GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
+				
+			if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+			{
+				DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+			}
+		}
+	}
 
-	// GetPlayerFocusedObjectId(playerid) = lookingAt_objectId;
-	// OnPlayerLookAtItem(playerid, lookingAt_objectId);
+	// Check if object that player is looking at has a flag of created item.
+	if(!Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, lookingAt_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
+	{
+		SCMF(playerid, -1, "This isn't an item.");
+		return 1;
+	}
+
+	if(GetPlayerFocusedObjectId(playerid) == lookingAt_objectId)
+	{
+		SCMF(playerid, -1, "Already am looking at it.");
+		return 1;
+	}
+
+	// If player's distance to the item is higher than allowed.
+	new Float:x, Float:y, Float:z;
+	GetDynamicObjectPos(lookingAt_objectId, x, y, z);
+	if(!IsPlayerInRangeOfPoint(playerid, ITEM_LABEL_DRAW_DIST, x, y, z))
+	{
+		SCMF(playerid, -1, "Not in range of the item!");
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		}
+		return 1;
+	}
+
+	// If I was looking at player but I do look at object now (reset lookingAt object data).
+	if(IsPlayerLookingAtPlayer(playerid))
+	{
+		SCMF(playerid, -1, "I was looking at the player. Reseting its data.");
+		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
+	
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		}		
+	}
+
+	GetPlayerFocusedObjectId(playerid) = lookingAt_objectId;
+	OnPlayerLookAtItem(playerid, lookingAt_objectId);
 
 //#endregion
 
 //#region Looking at player...
 
 	// If player is looking at the item.
-	// if(IsPlayerLookingAtItem(playerid))
-	// {
-	// 	return 1;
-	// }
+	if(IsPlayerLookingAtItem(playerid))
+	{
+		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
+		return 1;
+	}
 
 	// If player looks at invalid player.
 	new lookingAt_playerId = GetPlayerCameraTargetPlayer(playerid);
