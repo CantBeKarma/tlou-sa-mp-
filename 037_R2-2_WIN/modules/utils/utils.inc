@@ -42,6 +42,12 @@ DesynchronizePlayerKey(playerid, keyDef)
 	SetPlayerSyncKeys(playerid, keys & ~keyDef, updown, leftright);
 }
 
+// Check if player Id is valid or invalid.
+IsValidPlayerId(playerid)
+{
+	return playerid != INVALID_PLAYER_ID;
+}
+
 // Extends GetPlayerSkin default function.
 GetPlayerSkinEx(playerid)
 {

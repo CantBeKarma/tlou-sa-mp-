@@ -210,8 +210,8 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerCrafting(playerid)				return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
 	IsPlayerUpgradingSkill(playerid)		return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 	IsPlayerCrouched(playerid)				return (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK);
-	IsPlayerLookingAtPlayer(playerid)		return (GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID);
-	IsPlayerLookingAtItem(playerid)			return (GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID);
+	IsPlayerLookingAtPlayer(playerid)		return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID);
+	IsPlayerLookingAtItem(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID);
 	IsPlayerAllowedToShiv(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid));
 
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);

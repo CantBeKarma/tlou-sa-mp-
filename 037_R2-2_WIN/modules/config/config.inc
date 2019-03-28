@@ -136,7 +136,7 @@ hook OnGameModeInit()
 	#if defined USE_VPS
  
 		//SendRconCommand("hostname "GAMEMODE_HOST"");
-	    SendRconCommand("game modetext "GAMEMODE_MODE"");
+	    SendRconCommand("gamemodetext "GAMEMODE_MODE"");
 	   	SendRconCommand("mapname "GAMEMODE_AREA"");
 	   	SendRconCommand("weburl "GAMEMODE_WEBURL"");
 
