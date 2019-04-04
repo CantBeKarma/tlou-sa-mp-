@@ -46,44 +46,62 @@ timer Callback_HoldKeyTimer[100](playerid, key)
 timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 {
 //#region Looking at items...
-
-	new playerTargetObjectId = GetPlayerCameraTargetDynObject(playerid);
-
-	// If looking at invalid objectId and player WAS looking at item.
-	if(!IsValidDynamicObject(playerTargetObjectId) && IsPlayerLookingAtItem(playerid))
+	
+	// Looking at invalid object.
+	new lookingAt_objectId = GetPlayerCameraTargetDynObject(playerid);
+	if(!IsValidDynamicObject(lookingAt_objectId))
 	{
-		GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
-		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-	}
-
-	// If player is looking at valid Dynamic objectId.
-	if(IsValidDynamicObject(playerTargetObjectId))
-	{
-		// Check if player's target objectId is different than the old one
-		// and it has a flag of "item created" inside.
-		if(GetPlayerFocusedObjectId(playerid) != playerTargetObjectId
-		&& Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, playerTargetObjectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
+        if(IsPlayerLookingAtItem(playerid))
 		{
-			// If player's distance to the item is higher than allowed.
-			new Float:x, Float:y, Float:z, vW, intId;
-			ReadItemRelation(playerTargetObjectId, .itemPosX = x, .itemPosY = y, .itemPosZ = z, .itemVw = vW, .itemIntId = intId);
-			if(!IsPlayerInRangeOfPoint(playerid, ITEM_LABEL_DRAW_DIST, x, y, z)
-			|| GetPlayerVirtualWorld(playerid) != vW || GetPlayerInterior(playerid) != intId)
+			GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
+				
+			if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 			{
-				return 1;
-			}
-
-			// If I was looking at player but I do look at object now (reset lookingAt object data).
-			if(IsPlayerLookingAtPlayer(playerid))
-			{
-				GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 				DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
 			}
-
-			GetPlayerFocusedObjectId(playerid) = playerTargetObjectId;
-			OnPlayerLookAtItem(playerid, playerTargetObjectId);
 		}
 	}
+
+	// Check if object that player is looking at has a flag of created item.
+	if(!Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, lookingAt_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
+	{
+		SCMF(playerid, -1, "This isn't an item.");
+		return 1;
+	}
+
+	if(GetPlayerFocusedObjectId(playerid) == lookingAt_objectId)
+	{
+		SCMF(playerid, -1, "Already am looking at it.");
+		return 1;
+	}
+
+	// If player's distance to the item is higher than allowed.
+	new Float:x, Float:y, Float:z;
+	GetDynamicObjectPos(lookingAt_objectId, x, y, z);
+	if(!IsPlayerInRangeOfPoint(playerid, ITEM_LABEL_DRAW_DIST, x, y, z))
+	{
+		SCMF(playerid, -1, "Not in range of the item!");
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		}
+		return 1;
+	}
+
+	// If I was looking at player but I do look at object now (reset lookingAt object data).
+	if(IsPlayerLookingAtPlayer(playerid))
+	{
+		SCMF(playerid, -1, "I was looking at the player. Reseting its data.");
+		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
+	
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		}		
+	}
+
+	GetPlayerFocusedObjectId(playerid) = lookingAt_objectId;
+	OnPlayerLookAtItem(playerid, lookingAt_objectId);
 
 //#endregion
 
@@ -92,47 +110,58 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 	// If player is looking at the item.
 	if(IsPlayerLookingAtItem(playerid))
 	{
+		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 		return 1;
 	}
 
-	new playerTargetPlayerId = GetPlayerCameraTargetPlayer(playerid);
-
-	// If player looks at invalid player and WAS looking at the player recently.
-	if(!IsValidPlayerId(playerTargetPlayerId) && IsPlayerLookingAtPlayer(playerid))
+	// If player looks at invalid player.
+	new lookingAt_playerId = GetPlayerCameraTargetPlayer(playerid);
+	if(lookingAt_playerId == INVALID_PLAYER_ID)
 	{
+		if(!IsPlayerLookingAtPlayer(playerid))
+		{
+			return 1;
+		}
+
 		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
-		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		}
+		return 1;
 	}
 
-	if(IsValidPlayerId(playerTargetPlayerId))
+	// If player is looking at dead NPC or dead player.
+	if(IsPlayerNPC(lookingAt_playerId) && FCNPC_IsDeadEx(lookingAt_playerId)
+	|| !IsPlayerNPC(lookingAt_playerId) && IsPlayerDead(lookingAt_playerId))
 	{
-		// If player is looking at dead NPC or dead player.
-		if( IsPlayerNPC(playerTargetPlayerId) && FCNPC_IsDeadEx(playerTargetPlayerId)
-		|| !IsPlayerNPC(playerTargetPlayerId) && IsPlayerDead(playerTargetPlayerId) )
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
-			if(IsPlayerLookingAtPlayer(playerid))
-			{
-				GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
-				DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-			}
-			return 1;
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
 		}
+		return 1;
+	}
 
-		// If player's distance between eachother is higher than allowed.
-		if(GetDistanceBetweenPlayers(playerid, playerTargetPlayerId) > SHIV_LABEL_DRAW_DIST)
+	// If player's distance between eachother is higher than allowed.
+	new Float:distance = GetDistanceBetweenPlayers(playerid, lookingAt_playerId);
+	if(distance > SHIV_LABEL_DRAW_DIST)
+	{
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
-			return 1;
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
 		}
+		return 1;
+	}
 
-		GetPlayerFocusedPlayerId(playerid) = playerTargetPlayerId;
-		if(IsPlayerNPC(playerTargetPlayerId))
-		{
-			OnPlayerLookAtNPC(playerid, playerTargetPlayerId);
-		}	
-		else
-		{
-			OnPlayerLookAtPlayer(playerid, playerTargetPlayerId);
-		}
+	GetPlayerFocusedPlayerId(playerid) = lookingAt_playerId;
+	if(IsPlayerNPC(lookingAt_playerId))
+	{
+		OnPlayerLookAtNPC(playerid, lookingAt_playerId);
+	}	
+	else
+	{
+		OnPlayerLookAtPlayer(playerid, lookingAt_playerId);
 	}
 
 //#endregion
