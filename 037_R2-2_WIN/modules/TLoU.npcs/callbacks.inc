@@ -267,8 +267,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		
 		// Doesn't hide weapon if we are hitting someone.
 		RestartHideHudTimer(issuerid);
-
-		DegradePlayerMeleeWeapon(issuerid, issuerWeaponId);
+		DegradePlayerMeleeWeapon(issuerid);
 		return 0;
 	}
 

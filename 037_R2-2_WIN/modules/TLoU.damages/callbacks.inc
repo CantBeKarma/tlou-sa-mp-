@@ -75,8 +75,7 @@ public OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount
     
     // Doesn't hide weapon if we are hitting someone.
     RestartHideHudTimer(issuerId);
-
-    DegradePlayerMeleeWeapon(issuerId, issuerWeaponId);    
+    DegradePlayerMeleeWeapon(issuerId);    
 	return 0;
 }
 
