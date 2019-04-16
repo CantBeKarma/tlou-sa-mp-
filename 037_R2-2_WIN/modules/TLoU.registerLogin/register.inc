@@ -29,6 +29,7 @@ PrepareDataAfterRegister(playerid)
 
     SetPlayerVirtualWorld(playerid, 0);
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
+    
     SpawnPlayer(playerid);
 
     for(new i = 0; i != MAX_WEAPON_SLOTS; i++)
