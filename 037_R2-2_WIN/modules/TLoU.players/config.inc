@@ -66,6 +66,7 @@
 		Timer:e_iTimer_holdingKey,
 
 		e_iTargetedPlayer,
+		Text3D:e_iPlayerLabel,
 
 		e_iLookingAtObjId,
 		e_iLookingAtPlayerId,

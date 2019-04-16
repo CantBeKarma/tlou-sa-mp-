@@ -57,8 +57,8 @@
 	//#define		COLOR_DARK_RED			0xCC0000FF
 	#define		COLOR_DARK_RED				0xA80000FF
 	#define     COLOR_GOLD              	0xFFD700FF
-	#define		COLOR_CHAT_FADE_FROM		0x6E6E6E6E
-	#define		COLOR_CHAT_FADE_TO			0xE6E6E6E6
+	#define		COLOR_CHAT_FADE_FROM		0xE6E6E6E6
+	#define		COLOR_CHAT_FADE_TO			0x6E6E6E6E
 
 //#endregion
 

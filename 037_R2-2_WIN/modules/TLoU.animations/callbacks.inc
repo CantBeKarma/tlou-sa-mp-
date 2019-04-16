@@ -35,6 +35,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 			{
 				if(IsPlayerAimingWeapon(playerid))
 				{
+					SCMF(playerid, -1, "GRENADE_THROW has finished. DILDO_IDLE begin!");
 					ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
 				}
 			}

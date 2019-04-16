@@ -108,6 +108,7 @@ ResetBits_ePlayerFlag(playerid)
 			}
 
 			case PLAYER_STATUS_AIMING: {}
+			case PLAYER_STATUS_PLAYING_ANIM: {}
 
 			case PLAYER_STATUS_STUNNED:
 			{

@@ -496,4 +496,36 @@ ResetEnum_ePlayerWeapon(playerid)
 		}
 		return 0;
 	}
+
+	// Reduces condition of player's melee weapon by one.
+	DegradePlayerMeleeWeapon(playerid)
+	{
+		new weaponid = GetPlayerMelee[playerid];
+
+		// Durability logic (reduce upgraded durability or basic one?)
+		new newMeleeDurability = (IsPlayerMeleeUpgraded[playerid]) ? (GetPlayerMeleeExtCnd[playerid]-1) : (GetPlayerMeleeCnd[playerid]-1);
+		HudTd_UpdateMeleeWeaponCND(playerid, weaponid, newMeleeDurability);
+
+		if(newMeleeDurability > 0)
+		{
+			return;
+		}
+
+		// Removes melee weapon if broke.
+		if(!IsPlayerMeleeUpgraded[playerid])
+		{
+			RemovePlayerWeapon(playerid, weaponid);
+			return;
+		}
+
+		// If melee is upgraded - remove its upgraded feature and hide bars of it.
+		IsPlayerMeleeUpgraded[playerid] = false;
+		HudTd_HideMeleeUpgradedBars(playerid, weaponid);
+
+		if(weaponid == WEAPON_SCISSOR_PIPE)
+		{
+			GetPlayerMelee[playerid] = WEAPON_PIPE;
+			SetPlayerWeapon(playerid, GetPlayerMelee[playerid], GetPlayerMeleeCnd[playerid]);
+		}
+	}
 //#endregion

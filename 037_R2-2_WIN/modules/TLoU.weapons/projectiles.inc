@@ -6,6 +6,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerStartAimingProjectile(playerid, weaponId)
     {
+        SCMF(playerid, -1, "OnPlayerStartAimingProjectile: DILDO_IDLE anim!");
         ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
         ForceChangeHoldingKeyDef(playerid, KEY_AIM);
         return 0;
@@ -36,7 +37,8 @@
             HidePlayerWeapon(playerid);
         }
 
-        ApplyCallbackAnim(playerid, "GRENADE", "WEAPON_THROW");
+        CLF(#ApplyCallbackAnim, "dss", playerid, "GRENADE", "WEAPON_THROW");
+        //ApplyCallbackAnim(playerid, "GRENADE", "WEAPON_THROW");
         return 0;
     }
 

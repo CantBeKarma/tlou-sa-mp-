@@ -146,7 +146,7 @@ public OnPlayerFinishSwappingWeaps(playerid)
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][i]);
     }
     
-    Perform_BackpackClosing(playerid);
+    CLF(#Perform_BackpackClosing, "d", playerid);
     LastPlayerWeaponId[playerid] = WeapMenu_Ls_WeaponId(playerid, WeapMenu_GetSelectionH(playerid));
     return 0;
 }

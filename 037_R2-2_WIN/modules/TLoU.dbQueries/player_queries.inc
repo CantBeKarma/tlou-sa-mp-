@@ -83,7 +83,7 @@
             }
         }
 
-        new query[88];
+        new query[110];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `id_item`, `amount`, `meleeExtCnd` FROM `items_data` WHERE `uid_owner` = %d ORDER BY `uid_owner`", charUid);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharsItemsDataReceived);
         return 0;

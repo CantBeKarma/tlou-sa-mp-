@@ -65,13 +65,13 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 	// Check if object that player is looking at has a flag of created item.
 	if(!Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, lookingAt_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
 	{
-		SCMF(playerid, -1, "This isn't an item.");
+		//SCMF(playerid, -1, "This isn't an item.");
 		return 1;
 	}
 
 	if(GetPlayerFocusedObjectId(playerid) == lookingAt_objectId)
 	{
-		SCMF(playerid, -1, "Already am looking at it.");
+		//SCMF(playerid, -1, "Already am looking at it.");
 		return 1;
 	}
 
@@ -80,7 +80,7 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 	GetDynamicObjectPos(lookingAt_objectId, x, y, z);
 	if(!IsPlayerInRangeOfPoint(playerid, ITEM_LABEL_DRAW_DIST, x, y, z))
 	{
-		SCMF(playerid, -1, "Not in range of the item!");
+		//SCMF(playerid, -1, "Not in range of the item!");
 		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
 			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
@@ -91,7 +91,7 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 	// If I was looking at player but I do look at object now (reset lookingAt object data).
 	if(IsPlayerLookingAtPlayer(playerid))
 	{
-		SCMF(playerid, -1, "I was looking at the player. Reseting its data.");
+		//SCMF(playerid, -1, "I was looking at the player. Reseting its data.");
 		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 	
 		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
