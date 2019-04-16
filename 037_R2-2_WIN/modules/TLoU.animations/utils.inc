@@ -17,7 +17,7 @@ function PreloadAnimations(playerid)
 }
 
 // Apply player animation with OnPlayerAnimFinished callback.
-ApplyCallbackAnim(playerid, animlib[], animname[])
+function ApplyCallbackAnim(playerid, animlib[], animname[])
 {
 	if(IsPlayerPlayingCallbackAnim(playerid))
 	{
@@ -27,8 +27,8 @@ ApplyCallbackAnim(playerid, animlib[], animname[])
 	ApplyAnimation(playerid, animlib, animname, 4.1, 0, 1, 1, 0, 0);
 
 	wait_ms(150);
-	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_PLAYING_ANIM);
 	ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
+	CLF(#SetPlayerStatus, "dd", playerid, _:PLAYER_STATUS_PLAYING_ANIM);
 }
 
 // Clear animations using other anim.
