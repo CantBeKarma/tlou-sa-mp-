@@ -27,6 +27,7 @@ PrepareDataAfterRegister(playerid)
     SetPlayerHealth(playerid, FLOAT_INFINITY);
     SetPlayerHealthEx(playerid, 100.0);
 
+    SetPlayerVirtualWorld(playerid, 0);
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
     SpawnPlayer(playerid);
 

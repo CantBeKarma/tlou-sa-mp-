@@ -1,7 +1,7 @@
 // Define player spawn info with SetPlayerTeam fix.
 function SetSpawnInfoEx(playerid, skin, Float:x, Float:y, Float:z, Float:rotation)
 {
-	SetPlayerTeam(playerid, FACTION_NONE);
+	// SetPlayerTeam(playerid, FACTION_NONE);
 	SetSpawnInfo(playerid, NO_TEAM, skin, Float:x, Float:y, Float:z, Float:rotation, 0, 0, 0, 0, 0, 0);
 }
 

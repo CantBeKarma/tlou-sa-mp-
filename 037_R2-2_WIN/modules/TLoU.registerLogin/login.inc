@@ -64,7 +64,8 @@ function PrepareDataAfterLogin(playerid)
     TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);
 
     SkillTd_FillPlayerSkillBars(playerid);
-
+    SetPlayerVirtualWorld(playerid, eCharsInfo[playerid][e_iPosVw]);
+    
     SetPlayerHealth(playerid, FLOAT_INFINITY);
     SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
     SetSpawnInfoEx(playerid, GetPlayerSkinEx(playerid), eCharsInfo[playerid][e_fPosX], eCharsInfo[playerid][e_fPosY], eCharsInfo[playerid][e_fPosZ], eCharsInfo[playerid][e_fPosAng]);
