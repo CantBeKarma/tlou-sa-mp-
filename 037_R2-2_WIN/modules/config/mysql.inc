@@ -1,14 +1,14 @@
 #include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
 
-//#define		USE_VPS
+#define		USE_VPS
 
 // MYSQL SERVER DETAILS
 #if defined USE_VPS
 
 	#define     MYSQL_HOST              "127.0.0.1"
-	#define     MYSQL_USER              "server_198"
-	#define     MYSQL_DATA              "server_198_tlou"
-	#define     MYSQL_PASS              "lpniv52fr3"
+	#define     MYSQL_USER              "server_536"
+	#define     MYSQL_DATA              "server_536_tlou"
+	#define     MYSQL_PASS              "kbq815rapf"
 
 #else
 

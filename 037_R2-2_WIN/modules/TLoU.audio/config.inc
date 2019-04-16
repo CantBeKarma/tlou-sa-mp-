@@ -1,7 +1,14 @@
 #include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
 
+#define     USE_VPS
+
 // AUDIO PLUGIN CONFIG
-#define		AUDIO_PLUGIN_PORT		(7777)
+#if defined USE_VPS
+    #define		AUDIO_PLUGIN_PORT		(7777)
+#else
+    #define     AUDIO_PLUGIN_PORT       (2560)
+#endif
+
 #define     AUDIO_PLUGIN_PACK       "tlou_audio_pack"
 
 #define     NO_AUDIO                (-1)
