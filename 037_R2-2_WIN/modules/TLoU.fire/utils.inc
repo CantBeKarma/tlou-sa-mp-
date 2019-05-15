@@ -7,6 +7,8 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
         return 1;
     }
 
+    // Below magic trick is required, because server checks if player is in a fire area
+    // from ID of 1 instead of 0 example: CreateDynamic[...] IDs start from 1, where Iterator ID starts from 0
     if(fireId == 0)
     {
         fireId = Iter_Alloc(ServerFires);
