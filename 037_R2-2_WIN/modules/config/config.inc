@@ -9,7 +9,7 @@
 #define		MAX_PATHFINDER_THREADS	(1) // = MAX_FCNPCS (CHANGE WHEN NECESSARY SINCE I CAN'T ACCESS IT!)
 
 // ON-CLIENT DISPLAY SETTINGS
-#define		USE_VPS
+//#define		USE_VPS
 #define     SAMP_VERSION            "0.3.7-R3"
 
 #define     GAMEMODE_HOST           "The Last of Us (SA-MP)"

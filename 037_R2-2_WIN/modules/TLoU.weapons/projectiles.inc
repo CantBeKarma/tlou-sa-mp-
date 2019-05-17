@@ -29,6 +29,8 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerThrowProjectile(playerid, weaponId)
     {
+        SCMF(playerid, -1, "OnPlayerThrowProjectile: weapId: %d/%d", weaponId, CurrentPlayerWeaponId[playerid]);
+
         new newProjectileAmount = GetPlayerWeaponAmmo(playerid, weaponId)-1;
         SetPlayerWeaponAmmo(playerid, weaponId, newProjectileAmount);
 
@@ -37,8 +39,8 @@
             HidePlayerWeapon(playerid);
         }
 
-        CLF(#ApplyCallbackAnim, "dss", playerid, "GRENADE", "WEAPON_THROW");
-        //ApplyCallbackAnim(playerid, "GRENADE", "WEAPON_THROW");
+        //CLF(#ApplyCallbackAnim, "dss", playerid, "GRENADE", "WEAPON_THROW");
+        ApplyCallbackAnim(playerid, "GRENADE", "WEAPON_THROW");
         return 0;
     }
 

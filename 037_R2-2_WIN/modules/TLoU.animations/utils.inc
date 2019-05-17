@@ -28,7 +28,8 @@ function ApplyCallbackAnim(playerid, animlib[], animname[])
 
 	wait_ms(150);
 	ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
-	CLF(#SetPlayerStatus, "dd", playerid, _:PLAYER_STATUS_PLAYING_ANIM);
+	//CLF(#SetPlayerStatus, "dd", playerid, _:PLAYER_STATUS_PLAYING_ANIM);
+	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_PLAYING_ANIM);
 }
 
 // Clear animations using other anim.

@@ -68,7 +68,7 @@ function PrepareDataAfterLogin(playerid)
     SetPlayerHealth(playerid, FLOAT_INFINITY);
     SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
 
-    //CreatePlayerLabel(playerid);
+    CreatePlayerLabel(playerid);
     SetPlayerVirtualWorld(playerid, eCharsInfo[playerid][e_iPosVw]);
     SetSpawnInfoEx(playerid, GetPlayerSkinEx(playerid), eCharsInfo[playerid][e_fPosX], eCharsInfo[playerid][e_fPosY], eCharsInfo[playerid][e_fPosZ], eCharsInfo[playerid][e_fPosAng]);
 
@@ -78,7 +78,7 @@ function PrepareDataAfterLogin(playerid)
     return 0;
 }
 
-// CreatePlayerLabel(playerid)
-// {
-//     //ePlayerInfo[playerid][e_iPlayerLabel] = CreateDynamic3DTextLabel(PlayerName(playerid), COLOR_WHITE_TRANS, 0.0, 0.0, 0.0, .attachedplayer = playerid, .testlos = 1);
-// }
+CreatePlayerLabel(playerid)
+{
+    ePlayerInfo[playerid][e_iPlayerLabel] = CreateDynamic3DTextLabel(PlayerName(playerid), COLOR_WHITE_TRANS, 0.0, 0.0, 0.12, 10.0, playerid, INVALID_VEHICLE_ID, true);
+}

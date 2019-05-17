@@ -219,7 +219,7 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
         }
 
 		ShowHud(playerid);
-        
+
         HudTd_DisplayMeleeWeaponBars(playerid, newWeaponId);
         HudTd_DisplayWeaponCurrentAmmo(playerid, newWeaponId);
 

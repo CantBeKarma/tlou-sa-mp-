@@ -1,6 +1,6 @@
 #include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
 
-#define		USE_VPS
+//#define		USE_VPS
 
 // MYSQL SERVER DETAILS
 #if defined USE_VPS

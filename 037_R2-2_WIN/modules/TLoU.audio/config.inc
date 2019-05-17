@@ -1,6 +1,6 @@
 #include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
 
-#define     USE_VPS
+//#define     USE_VPS
 
 // AUDIO PLUGIN CONFIG
 #if defined USE_VPS
