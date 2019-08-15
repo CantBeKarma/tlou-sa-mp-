@@ -8,7 +8,7 @@ public Audio_OnClientConnect(playerid)
         return 1;
     }
 
-    Audio_PlayStreamed(playerid, "http://localhost/TLoU/ambient_noise/TLoU_MainMenu.mp3");
+    Audio_PlayStreamed(playerid, "http://localhost/TLoU/ambient_noise/TLoU_Ambient_-_Main_menu_theme.mp3");
     ConnectionIntroProcedure(playerid);
 	return 1;
 }

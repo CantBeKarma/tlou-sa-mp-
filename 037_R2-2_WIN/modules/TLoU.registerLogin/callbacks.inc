@@ -36,9 +36,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         if(!IsPlayerLogged(playerid) && IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_MainMenu_Prompt]))
         {
             TextDrawHideForPlayer(playerid, eTextDrawInfo[e_MainMenu_Prompt]);
-
-            new isPlayerRegistered = DB_CheckAccountExistence(playerid);
-            ShowRegisterLoginDialog(playerid, isPlayerRegistered);
+            ShowRegisterLoginDialog(playerid, DB_CheckAccountExistence(playerid));
         }
     }
     return 1;
