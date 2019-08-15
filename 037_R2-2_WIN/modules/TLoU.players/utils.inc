@@ -51,7 +51,7 @@ ResetBits_ePlayerFlag(playerid)
 		{
 			case PLAYER_STATUS_NONE:
 			{
-				if(IsPlayerAimingWeapon(playerid))
+				if(IsPlayerAimingWeapon(playerid) || IsPlayerPlayingContinuosAnim(playerid, GRENADE_WEAPON_THROW))
 				{
 					OnPlayerStopAimingWeapon(playerid);
 				}
@@ -223,6 +223,16 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
 
 //#endregion
+
+IsPlayerPlayingContinuosAnim(playerid, animIdx)
+{
+	if(!IsPlayerPlayingCallbackAnim(playerid))
+	{
+		return false;
+	}
+
+	return (GetPlayerAnimationIndex(playerid) == animIdx);
+}
 
 // Stops HideHud timer and starts it again.
 RestartHideHudTimer(playerid)

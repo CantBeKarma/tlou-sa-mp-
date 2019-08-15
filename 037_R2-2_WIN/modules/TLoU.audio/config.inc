@@ -4,9 +4,9 @@
 
 // AUDIO PLUGIN CONFIG
 #if defined USE_VPS
-    #define		AUDIO_PLUGIN_PORT		(7777)
+    #define		AUDIO_PLUGIN_PORT		(2560)
 #else
-    #define     AUDIO_PLUGIN_PORT       (2560)
+    #define     AUDIO_PLUGIN_PORT       (7777)
 #endif
 
 #define     AUDIO_PLUGIN_PACK       "tlou_audio_pack"

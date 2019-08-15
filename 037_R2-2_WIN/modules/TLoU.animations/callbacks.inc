@@ -31,22 +31,17 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		// Projectile has been thrown.
 		case GRENADE_WEAPON_THROW:
 		{
-			SCMF(playerid, -1, "My weapId: %d (ammo: %d)", CurrentPlayerWeaponId[playerid], GetPlayerWeaponAmmo(playerid, CurrentPlayerWeaponId[playerid]));
 			if(GetPlayerWeaponAmmo(playerid, CurrentPlayerWeaponId[playerid]) > 0)
 			{
-				SCMF(playerid, -1, "1 - GRENADE_WEAPON_THROW");
 				if(IsPlayerAimingWeapon(playerid))
 				{
-					SCMF(playerid, -1, "2 - GRENADE_THROW has finished. DILDO_IDLE begin!");
 					ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
 				}
 			}
 			else
 			{
-				SCMF(playerid, -1, "3 - GRENADE_WEAPON_THROW");
 				if(IsPlayerAimingWeapon(playerid))
 				{
-					SCMF(playerid, -1, "4 - GRENADE_WEAPON_THROW");
 					SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 				}
 			}

@@ -26,7 +26,7 @@ hook OnPlayerUpdate(playerid)
 	}
 	else
 	{
-		if(IsPlayerAimingWeapon(playerid))
+		if(IsPlayerAimingWeapon(playerid) || IsPlayerPlayingContinuosAnim(playerid, GRENADE_WEAPON_THROW))
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
@@ -59,7 +59,7 @@ public OnPlayerTryAimingWeapon(playerid, weaponId)
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingBow(playerid);
 		}
-		else if(IsProjectileWeapon(weaponId) || IsThrowableWeapon(weaponId))
+		else if(!IsPlayerPlayingCallbackAnim(playerid) && (IsProjectileWeapon(weaponId) || IsThrowableWeapon(weaponId)))
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingProjectile(playerid, weaponId);
