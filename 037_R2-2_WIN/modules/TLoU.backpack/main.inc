@@ -1,5 +1,5 @@
-#include ".\modules\TLoU.backpack\timers.inc"
-#include ".\modules\TLoU.backpack\callbacks.inc"
-#include ".\modules\TLoU.backpack\crafting.inc"
-#include ".\modules\TLoU.backpack\skills.inc"
-#include ".\modules\TLoU.backpack\collectibles.inc"
+#include <TLoU.backpack\timers>
+#include <TLoU.backpack\callbacks>
+#include <TLoU.backpack\crafting>
+#include <TLoU.backpack\skills>
+#include <TLoU.backpack\collectibles>
