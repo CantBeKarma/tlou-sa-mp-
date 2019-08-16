@@ -7,8 +7,7 @@ hook OnPlayerUpdate(playerid)
 {
     if(IsPlayerPlayingCallbackAnim(playerid))
 	{
-		new currentAnimIdx = GetPlayerAnimationIndex(playerid);
-		if(currentAnimIdx != ePlayerInfo[playerid][e_iAnimIdx])
+		if(GetPlayerAnimationIndex(playerid) != ePlayerInfo[playerid][e_iAnimIdx])
 		{
 			OnPlayerAnimFinish(playerid, ePlayerInfo[playerid][e_iAnimIdx]);
 			ePlayerInfo[playerid][e_iAnimIdx] = 0;
@@ -40,10 +39,8 @@ public OnPlayerAnimFinish(playerid, animIdx)
 			}
 			else
 			{
-				if(IsPlayerAimingWeapon(playerid))
-				{
-					SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
-				}
+				SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+				OnPlayerStopAimingWeapon(playerid); // Force hide aiming if player was still holding aiming key (Has to be called because STATUS_NONE is not applied anymore for 'Aiming').
 			}
 		}
 
