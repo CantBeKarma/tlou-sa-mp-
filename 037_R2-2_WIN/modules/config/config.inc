@@ -73,7 +73,10 @@
 		#define 	FLOAT_INFINITY   		(Float:0x7F800000)
 	#endif
 
-	#define 	FLOAT_NEG_INFINITY 		(Float:0xFF800000)
+	#if !defined FLOAT_NEG_INFINITY
+		#define 	FLOAT_NEG_INFINITY 		(Float:0xFF800000)
+	#endif
+	
 	#define     SCM             		SendClientMessage
 	#define     SCMF             		SendClientMessagef
 	#define		SCM_ALL					SendClientMessageToAll
