@@ -1,3 +1,3 @@
-#include ".\modules\TLoU.registerLogin\register.inc"
-#include ".\modules\TLoU.registerLogin\login.inc"
-#include ".\modules\TLoU.registerLogin\callbacks.inc"
+#include <TLoU.registerLogin\register>
+#include <TLoU.registerLogin\login>
+#include <TLoU.registerLogin\callbacks>

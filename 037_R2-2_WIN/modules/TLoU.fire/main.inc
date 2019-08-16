@@ -1,1 +1,1 @@
-#include ".\modules\TLoU.fire\callbacks.inc"
+#include <TLoU.fire\callbacks>
