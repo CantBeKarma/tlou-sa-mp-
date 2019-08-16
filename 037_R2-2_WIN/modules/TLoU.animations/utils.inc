@@ -17,14 +17,14 @@ function PreloadAnimations(playerid)
 }
 
 // Apply player animation with OnPlayerAnimFinished callback.
-function ApplyCallbackAnim(playerid, animlib[], animname[])
+function ApplyCallbackAnim(playerid, animLib[], animName[])
 {
 	if(IsPlayerPlayingCallbackAnim(playerid))
 	{
 		return;
 	}
 
-	ApplyAnimation(playerid, animlib, animname, 4.1, 0, 1, 1, 0, 0);
+	ApplyAnimation(playerid, animLib, animName, 4.1, 0, 1, 1, 0, 0);
 
 	wait_ms(150);
 	ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
