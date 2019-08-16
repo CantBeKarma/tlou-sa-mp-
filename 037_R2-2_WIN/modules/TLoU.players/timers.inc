@@ -63,7 +63,7 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 	}
 
 	// Check if object that player is looking at has a flag of created item.
-	if(!Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, lookingAt_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
+	if(IsValidDynamicObject(lookingAt_objectId) && !Streamer_IsInArrayData(STREAMER_TYPE_OBJECT, lookingAt_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]))
 	{
 		//SCMF(playerid, -1, "This isn't an item.");
 		return 1;
