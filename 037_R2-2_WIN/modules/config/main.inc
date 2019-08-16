@@ -1,23 +1,23 @@
-#include    ".\modules\config\forwards.inc"
-#include	".\modules\config\natives.inc"
-#include	".\modules\config\config.inc"
-#include	".\modules\config\mysql.inc"
+#include    <config\forwards>
+#include	<config\natives>
+#include	<config\config>
+#include	<config\mysql>
 
-#include 	".\modules\TLoU.animations\config.inc"
-#include 	".\modules\TLoU.weapons\config.inc"
-#include	".\modules\TLoU.audio\config.inc"
-#include 	".\modules\TLoU.backpack\config.inc"
-#include    ".\modules\TLoU.characters\config.inc"
-#include    ".\modules\TLoU.damages\config.inc"
-#include	".\modules\TLoU.factions\config.inc"
-#include	".\modules\TLoU.fire\config.inc"
-#include	".\modules\TLoU.items\config.inc"
-#include    ".\modules\TLoU.npcs\config.inc"
-#include    ".\modules\TLoU.objects\config.inc"
-#include 	".\modules\TLoU.players\config.inc"
-#include  	".\modules\TLoU.textdraws\config.inc"
-#include	".\modules\TLoU.weaponMenu\config.inc"
-#include 	".\modules\TLoU.weaponsUpgrades\config.inc"
+#include 	<TLoU.animations\config>
+#include 	<TLoU.weapons\config>
+#include	<TLoU.audio\config>
+#include 	<TLoU.backpack\config>
+#include    <TLoU.characters\config>
+#include    <TLoU.damages\config>
+#include	<TLoU.factions\config>
+#include	<TLoU.fire\config>
+#include	<TLoU.items\config>
+#include    <TLoU.npcs\config>
+#include    <TLoU.objects\config>
+#include 	<TLoU.players\config>
+#include  	<TLoU.textdraws\config>
+#include	<TLoU.weaponMenu\config>
+#include 	<TLoU.weaponsUpgrades\config>
 
 main()
 {

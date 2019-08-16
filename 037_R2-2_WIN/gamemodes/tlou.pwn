@@ -1,48 +1,49 @@
 // -> INCLUDES
 #include  	<a_samp>
 
-#include    ".\modules\includes\a_mysql.inc"
-#include	".\modules\includes\sscanf2.inc"
-#include    ".\modules\includes\YSF.inc"
-#include	".\modules\includes\tlou.inc"
-#include	".\modules\includes\audio.inc"
-#include    ".\modules\includes\mapandreas.inc"
-#include    ".\modules\includes\colandreas.inc"
-#include    ".\modules\includes\PathFinder.inc"
-#include    ".\modules\includes\colour-manipulation.inc"
-#include    ".\modules\includes\projectiles.inc"
-#include    ".\modules\includes\PawnPlus.inc"
-#include    ".\modules\includes\log-plugin.inc"
+#include    <a_mysql>
+#include	<sscanf2>
+#include    <YSF>
+#include	<audio>
+// #include    <mapandreas>
+// #include    <colandreas>
+// #include    <PathFinder>
+#include    <PawnPlus>
+#include    <log-plugin>
+#include    <colour-manipulation>
 
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_bit.inc"
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_dialog.inc"
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_iterate.inc"
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_timers.inc"
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_stringhash.inc"
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_commands.inc"
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_inline.inc"
+#include	<includes\tlou>
+#include    <includes\projectiles>
 
-#include	".\modules\includes\streamer.inc"
-#include	".\modules\includes\FCNPC.inc"
-#include    ".\modules\includes\a_mysql_yinline.inc"
+#include	<YSI\y_bit>
+#include	<YSI\y_dialog>
+#include	<YSI\y_iterate>
+#include	<YSI\y_timers>
+#include	<YSI\y_stringhash>
+#include	<YSI\y_commands>
+#include	<YSI\y_inline>
+
+#include	<streamer>
+#include	<FCNPC>
+#include    <a_mysql_yinline>
 
 // -> MODULES
-#include	".\modules\config\main.inc"
-#include    ".\modules\utils\main.inc"
-#include	".\modules\TLoU.animations\main.inc"
-#include	".\modules\TLoU.audio\main.inc"
-#include	".\modules\TLoU.backpack\main.inc"
-#include    ".\modules\TLoU.characters\main.inc"
-#include	".\modules\TLoU.commands\main.inc"
-#include	".\modules\TLoU.players\main.inc"
-#include	".\modules\TLoU.damages\main.inc"
-#include	".\modules\TLoU.fire\main.inc"
-#include    ".\modules\TLoU.dbQueries\main.inc"
-#include    ".\modules\TLoU.items\main.inc"
-#include	".\modules\TLoU.npcs\main.inc"
-#include	".\modules\TLoU.objects\main.inc"
-#include	".\modules\TLoU.registerLogin\main.inc"
-#include  	".\modules\TLoU.textdraws\main.inc"
-#include	".\modules\TLoU.weaponMenu\main.inc"
-#include	".\modules\TLoU.weapons\main.inc"
-#include    ".\modules\TLoU.weaponsUpgrades\main.inc"
+#include	<config\main>
+#include    <utils\main>
+#include	<TLoU.animations\main>
+#include	<TLoU.audio\main>
+#include	<TLoU.backpack\main>
+#include    <TLoU.characters\main>
+#include	<TLoU.commands\main>
+#include	<TLoU.players\main>
+#include	<TLoU.damages\main>
+#include	<TLoU.fire\main>
+#include    <TLoU.dbQueries\main>
+#include    <TLoU.items\main>
+#include	<TLoU.npcs\main>
+#include	<TLoU.objects\main>
+#include	<TLoU.registerLogin\main>
+#include  	<TLoU.textdraws\main>
+#include	<TLoU.weaponMenu\main>
+#include	<TLoU.weapons\main>
+#include    <TLoU.weaponsUpgrades\main>
