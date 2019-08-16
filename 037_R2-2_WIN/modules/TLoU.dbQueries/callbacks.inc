@@ -1,7 +1,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //---------------------- OnQueryError ---------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnQueryError(errorid, error[], callback[], query[], MySQL:handle)
+public OnQueryError(errorid, const error[], const callback[], const query[], MySQL:handle)
 {
 	switch(errorid)
 	{

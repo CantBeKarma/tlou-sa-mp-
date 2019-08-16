@@ -1,4 +1,4 @@
-native print_s(AmxString:string) = print;
+//native print_s(AmxString:string) = print;
 
 native GetPlayerName_s(playerid, AmxStringBuffer:name, len) = GetPlayerName;
 
