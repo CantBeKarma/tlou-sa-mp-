@@ -1,19 +1,6 @@
 // -> INCLUDES
 #include  	<a_samp>
-
-#include    <a_mysql>
-#include	<sscanf2>
-#include    <YSF>
 #include	<audio>
-// #include    <mapandreas>
-// #include    <colandreas>
-// #include    <PathFinder>
-#include    <PawnPlus>
-#include    <log-plugin>
-#include    <colour-manipulation>
-
-#include	<includes\tlou>
-#include    <includes\projectiles>
 
 #include	<YSI\y_bit>
 #include	<YSI\y_dialog>
@@ -23,9 +10,18 @@
 #include	<YSI\y_commands>
 #include	<YSI\y_inline>
 
+#include    <a_mysql>
+#include	<sscanf2>
+#include    <YSF>
+#include    <PawnPlus>
+#include    <log-plugin>
+#include    <colour-manipulation>
 #include	<streamer>
 #include	<FCNPC>
 #include    <a_mysql_yinline>
+
+#include	<includes\tlou>
+#include    <includes\projectiles>
 
 // -> MODULES
 #include	<config\main>
