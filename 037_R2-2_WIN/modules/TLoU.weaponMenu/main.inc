@@ -1,2 +1,2 @@
-#include    ".\modules\TLoU.weaponMenu\callbacks.inc"
-#include    ".\modules\TLoU.weaponMenu\timers.inc"
+#include <TLoU.weaponMenu\callbacks>
+#include <TLoU.weaponMenu\timers>

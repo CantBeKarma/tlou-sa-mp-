@@ -1,6 +1,6 @@
-#include ".\modules\TLoU.weapons\aiming.inc"
-#include ".\modules\TLoU.weapons\bow.inc"
-#include ".\modules\TLoU.weapons\shiv.inc"
-#include ".\modules\TLoU.weapons\projectiles.inc"
-#include ".\modules\TLoU.weapons\callbacks.inc"
-#include ".\modules\TLoU.weapons\timers.inc"
+#include <TLoU.weapons\aiming>
+#include <TLoU.weapons\bow>
+#include <TLoU.weapons\shiv>
+#include <TLoU.weapons\projectiles>
+#include <TLoU.weapons\callbacks>
+#include <TLoU.weapons\timers>

@@ -1,6 +1,6 @@
-#include  ".\modules\TLoU.textdraws\td_global.inc"
-#include  ".\modules\TLoU.textdraws\td_player.inc"
-#include  ".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
+#include  <TLoU.textdraws\td_global>
+#include  <TLoU.textdraws\td_player>
+#include  <YSI\y_hooks>
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnGameModeInit --------------------

@@ -1,1 +1,1 @@
-#include ".\modules\TLoU.weaponsUpgrades\utils.inc"
+#include <TLoU.weaponsUpgrades\utils>
