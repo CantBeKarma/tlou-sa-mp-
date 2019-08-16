@@ -1,0 +1,74 @@
+{
+    "user": "Jedrzej94",
+    "repo": "tlou-sa-mp-",
+    "entry": "gamemodes\\tlou.pwn",
+    "output": "gamemodes\\tlou.amx",
+    "dependencies": [
+        "sampctl/samp-stdlib",
+        "samp-incognito/samp-streamer-plugin:v2.9.3",
+        "samp-incognito/samp-audio-server-plugin:v0.5-r2",
+        "Pottus/ColAndreas:v1.4.0.3",
+        "Zeex/samp-plugin-crashdetect:v4.19.4",
+        "ziggi/FCNPC:v2.0.0-rc.7",
+        "maddinat0r/samp-log:v0.4",
+        "maddinat0r/sscanf:v2.8.3",
+        "pBlueG/SA-MP-MySQL:R41-4",
+        "IllidanS4/NativeFallback:v1.1",
+        "IllidanS4/PawnPlus:v1.1",
+        "IllidanS4/YSF:R20-RC4",
+        "ziggi/FCNPC"
+	],
+	
+	"runtime": {
+		"version": "0.3.7",
+		"mode": "server",
+		"echo": "-",
+		"rcon_password": "password",
+		"port": 7777,
+		"hostname": "SA-MP Server",
+		"maxplayers": 50,
+		"language": "",
+		"mapname": "San Andreas",
+		"weburl": "www.sa-mp.com",
+		"gamemodetext": "Unknown",
+		"announce": true,
+		"lanmode": false,
+		"query": true,
+		"rcon": false,
+		"logqueries": false,
+		"sleep": 5,
+		"maxnpc": 0,
+		"stream_rate": 1000,
+		"stream_distance": 200,
+		"onfoot_rate": 30,
+		"incar_rate": 30,
+		"weapon_rate": 30,
+		"chatlogging": true,
+		"timestamp": true,
+		"messageholelimit": 3000,
+		"messageslimit": 500,
+		"ackslimit": 3000,
+		"playertimeout": 10000,
+		"minconnectiontime": 0,
+		"lagcompmode": 1,
+		"connseedtime": 300000,
+		"db_logging": false,
+		"db_log_queries": false,
+		"conncookies": true,
+		"cookielogging": false,
+		"output": true
+	},
+
+    "builds": [
+        {
+           "name": "main",
+           "version": "3.10.8",
+           "args": [
+              "-;+",
+              "-(+",
+              "-d3"
+           ],
+           "includes": ["modules"]
+        }
+    ]
+}
