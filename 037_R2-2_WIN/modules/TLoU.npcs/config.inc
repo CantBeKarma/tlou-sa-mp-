@@ -1,4 +1,4 @@
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
+#include	<YSI\y_hooks>
 
 // NPCs Configuration.
 #define     TIMER_FCNPC_RESPAWN         (1000 * 5)

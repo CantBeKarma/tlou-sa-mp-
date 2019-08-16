@@ -1,4 +1,4 @@
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
+#include	<YSI\y_hooks>
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- OnPlayerShivPlayer -----------------

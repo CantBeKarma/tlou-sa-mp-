@@ -1,4 +1,4 @@
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
+#include	<YSI\y_hooks>
 
 // Reset all player data in enumerator (called in OnPlayerDisconnect)
 ResetEnum_ePlayerInfo(playerid)

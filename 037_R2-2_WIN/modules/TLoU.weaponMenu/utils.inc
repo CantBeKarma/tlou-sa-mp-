@@ -1,4 +1,4 @@
-#include	".\modules\includes\YSI-Includes-4.x\YSI\y_hooks.inc"
+#include	<YSI\y_hooks>
 
 // Clearing weapon's menu data for player.
 ResetEnum_ePlayerWeapMenu(playerid)
