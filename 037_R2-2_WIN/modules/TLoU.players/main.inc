@@ -1,7 +1,7 @@
-#include ".\modules\TLoU.players\timers.inc"
-#include ".\modules\TLoU.players\callbacks.inc"
-#include ".\modules\TLoU.players\cache.inc"
-#include ".\modules\TLoU.players\chat.inc"
-#include ".\modules\TLoU.players\hud.inc"
-#include ".\modules\TLoU.players\anti-bunnyhop.inc"
-#include ".\modules\TLoU.players\anti-crouchbug.inc"
+#include <TLoU.players\timers>
+#include <TLoU.players\callbacks>
+#include <TLoU.players\cache>
+#include <TLoU.players\chat>
+#include <TLoU.players\hud>
+#include <TLoU.players\anti-bunnyhop>
+#include <TLoU.players\anti-crouchbug>

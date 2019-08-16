@@ -1,2 +1,2 @@
-#include    ".\modules\TLoU.commands\callbacks.inc"
-#include    ".\modules\TLoU.commands\commands.inc"
+#include <TLoU.commands\callbacks>
+#include <TLoU.commands\commands>
