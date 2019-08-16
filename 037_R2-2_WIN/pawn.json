@@ -1,24 +1,38 @@
 {
-    "user": "Jedrzej94",
-    "repo": "tlou-sa-mp-",
-    "entry": "gamemodes\\tlou.pwn",
-    "output": "gamemodes\\tlou.amx",
-    "dependencies": [
-        "sampctl/samp-stdlib",
-        "samp-incognito/samp-streamer-plugin:v2.9.3",
-        "samp-incognito/samp-audio-server-plugin:v0.5-r2",
-        "Pottus/ColAndreas:v1.4.0.3",
-        "Zeex/samp-plugin-crashdetect:v4.19.4",
-        "ziggi/FCNPC:v2.0.0-rc.7",
-        "maddinat0r/samp-log:v0.4",
-        "maddinat0r/sscanf:v2.8.3",
-        "pBlueG/SA-MP-MySQL:R41-4",
-        "IllidanS4/NativeFallback:v1.1",
-        "IllidanS4/PawnPlus:v1.1",
-        "IllidanS4/YSF:R20-RC4",
-        "ziggi/FCNPC"
+	"user": "Jedrzej94",
+	"repo": "tlou-sa-mp-",
+	"entry": "gamemodes\\tlou.pwn",
+	"output": "gamemodes\\tlou.amx",
+	"dependencies": [
+		"sampctl/samp-stdlib",
+		"samp-incognito/samp-streamer-plugin:v2.9.3",
+		"samp-incognito/samp-audio-server-plugin:v0.5-r2",
+		"maddinat0r/samp-log:v0.4",
+		"maddinat0r/sscanf:v2.8.3",
+		"maddinat0r/samp-mysql-yinline-include:v1.0.1",
+		"IllidanS4/NativeFallback:v1.1",
+		"IllidanS4/PawnPlus:v1.1",
+		"IllidanS4/YSF:R20-RC4",
+		"ziggi/FCNPC:v2.0.0-rc.7",
+		"pBlueG/SA-MP-MySQL:R41-4",
+		"Zeex/samp-plugin-crashdetect:v4.19.4",
+		"kristoisberg/pawn-colour-manipulation",
+		"pawn-lang/YSI-Includes@4.x"
 	],
-	
+	"builds": [
+		{
+			"name": "main",
+			"version": "3.10.8",
+			"args": [
+				"-;+",
+				"-(+",
+				"-d3"
+			],
+			"includes": [
+				"modules"
+			]
+		}
+	],
 	"runtime": {
 		"version": "0.3.7",
 		"mode": "server",
@@ -57,18 +71,5 @@
 		"conncookies": true,
 		"cookielogging": false,
 		"output": true
-	},
-
-    "builds": [
-        {
-           "name": "main",
-           "version": "3.10.8",
-           "args": [
-              "-;+",
-              "-(+",
-              "-d3"
-           ],
-           "includes": ["modules"]
-        }
-    ]
+	}
 }
