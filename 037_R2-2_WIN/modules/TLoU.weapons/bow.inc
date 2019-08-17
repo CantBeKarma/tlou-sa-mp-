@@ -6,7 +6,6 @@
 public OnPlayerStartAimingBow(playerid)
 {	
 	FreezePlayer(playerid, true, -1);
-	//Bow_PullString(playerid);
 	Key_AimingCustomWeapon(playerid);
 	return 1;
 }

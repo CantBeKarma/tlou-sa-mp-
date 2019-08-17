@@ -12,6 +12,8 @@ timer DestroySmkBmbSmokeObject[TICK_RATE_SMOKEBMB_EFFECT](objectId)
     }
 }
 
+// Movement animation while aiming a custom weapon
+// (Firing/throwing custom weapons)
 timer Key_AimingCustomWeapon[100](playerid)
 {
     if(!IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
