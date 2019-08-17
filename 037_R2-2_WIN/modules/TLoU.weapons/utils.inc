@@ -360,11 +360,25 @@ ResetEnum_ePlayerWeapon(playerid)
 
 		switch(weaponId)
 		{
+			case
+				WEAPON_9MM, WEAPON_REVOLVER, WEAPON_SHORTY:
+				{
+					for(new i = 0; i < 3; i++)
+					{
+						if(weaponId == WeapMenu_Rs_WeaponId(playerid, i))
+						{
+							WeapMenu_Rs_WeaponId(playerid, i) = -1;
+							break;
+						}
+					}
+					Weapon_Rs_SortWeapons(playerid);
+				}
+
 			case 
 				WEAPON_SHOTGUN, WEAPON_RIFLE, 
 				WEAPON_ASSAULT, WEAPON_BOW:
 				{
-					for(new i = 0; i <= 3; i++)
+					for(new i = 0; i < 4; i++)
 					{
 						if(weaponId == WeapMenu_Ls_WeaponId(playerid, i))
 						{
