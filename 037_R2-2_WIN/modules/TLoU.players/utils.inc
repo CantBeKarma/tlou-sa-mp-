@@ -224,16 +224,6 @@ ResetBits_ePlayerFlag(playerid)
 
 //#endregion
 
-IsPlayerPlayingContinuosAnim(playerid, animIdx)
-{
-	if(!IsPlayerPlayingCallbackAnim(playerid))
-	{
-		return false;
-	}
-
-	return (GetPlayerAnimationIndex(playerid) == animIdx);
-}
-
 // Stops HideHud timer and starts it again.
 RestartHideHudTimer(playerid)
 {

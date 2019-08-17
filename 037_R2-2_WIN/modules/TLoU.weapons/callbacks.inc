@@ -178,6 +178,11 @@ public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
     PlayPlayer3D_ReloadSFX(playerid, weaponId);
     PlayPlayerReloadAnim(playerid, weaponId);
 	HudTd_DisplayWeaponCurrentAmmo(playerid, weaponId);
+
+    if(IsPlayerAimingWeapon(playerid))
+	{
+		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+	}
 	return 0;
 }
 
