@@ -163,7 +163,10 @@ enum e_PLAYER_WEAPONS_DATA
 
     e_iTickCounter_bowShooting,
     e_iTickCounter_projectileThrow,
-    e_iTickCounter_NoAmmoClicks
+    e_iTickCounter_NoAmmoClicks, 
+
+    bool:e_bShootingCustomWeapon,
+    bool:e_bAimingArrow
 };
 new ePlayerWeapon[MAX_PLAYERS][e_PLAYER_WEAPONS_DATA];
 

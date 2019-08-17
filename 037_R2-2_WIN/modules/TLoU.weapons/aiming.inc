@@ -26,7 +26,7 @@ hook OnPlayerUpdate(playerid)
 	}
 	else
 	{
-		if(IsPlayerAimingWeapon(playerid) || IsPlayerPlayingContinuosAnim(playerid, GRENADE_WEAPON_THROW))
+		if(IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
@@ -39,7 +39,7 @@ hook OnPlayerUpdate(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerTryAimingWeapon(playerid, weaponId)
 {
-	if(IsPlayerUnableToPerformAction(playerid) || IsPlayerPlayingContinuosAnim(playerid, GRENADE_WEAPON_THROW))
+	if(IsPlayerUnableToPerformAction(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
 	{
 		return 1;
 	}
@@ -138,5 +138,7 @@ public OnPlayerStopAimingWeapon(playerid)
 	{
 		OnPlayerStopAimingProjectile(playerid);
 	}
+
+	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
 	return 0;
 }

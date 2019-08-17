@@ -30,17 +30,13 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		// Projectile has been thrown.
 		case GRENADE_WEAPON_THROW:
 		{
-			if(GetPlayerWeaponAmmo(playerid, CurrentPlayerWeaponId[playerid]) > 0)
+			if(GetPlayerWeaponAmmo(playerid, CurrentPlayerWeaponId[playerid]) <= 0)
 			{
-				if(IsPlayerAimingWeapon(playerid))
-				{
-					ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
-				}
+				SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 			}
 			else
 			{
-				SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
-				OnPlayerStopAimingWeapon(playerid); // Force hide aiming if player was still holding aiming key (Has to be called because STATUS_NONE is not applied anymore for 'Aiming').
+				ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
 			}
 		}
 

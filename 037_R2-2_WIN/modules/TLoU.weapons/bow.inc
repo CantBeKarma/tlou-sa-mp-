@@ -6,8 +6,8 @@
 public OnPlayerStartAimingBow(playerid)
 {	
 	FreezePlayer(playerid, true, -1);
-	Bow_PullString(playerid);
-	ForceChangeHoldingKeyDef(playerid, KEY_AIM);
+	//Bow_PullString(playerid);
+	Key_AimingCustomWeapon(playerid);
 	return 1;
 }
 
@@ -53,41 +53,8 @@ public OnPlayerGetArrowShot(playerid, damagerid)
 {
 	ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
 	ApplyAnimation(playerid, "PED", "HIT_GUN_BUTT", 4.1, 0, 1, 1, 0, 350);
-	return 1;
-}
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------- OnPlayerHoldingKey ------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnPlayerHoldingKey(playerid, key)
-{
-    if(key & KEY_AIM)
-    {
-		if(IsPlayerAimingWeapon(playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
-            SetAngleBasedOnCam(playerid);
-    }
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- OnPlayerKeyStateChange -----------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-    if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
-    {
-        return 1;
-    }
-
-	if(PRESSED(KEY_FIRE))
-	{
-		if(IsPlayerAimingWeapon(playerid) && CurrentPlayerWeaponId[playerid] == WEAPON_BOW)
-		{
-			//new bowString_pullTime = GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey];
-			//new Float:arrowDistance = (bowString_pullTime >= 3800) ? (MAX_ARROW_DISTANCE) : (MAX_ARROW_DISTANCE / 2);
-			Arrow_FireArrow(playerid);
-		}
-	}
+	ePlayerWeapon[damagerid][e_bShootingCustomWeapon] = false;
 	return 1;
 }
 
@@ -117,6 +84,8 @@ hook OnDynamicObjectMoved(objectid)
 				CreateOrUpdateItem(17, 1, .x = x, .y = y, .z = z);
 			}
 		}
+
+		ePlayerWeapon[i][e_bShootingCustomWeapon] = false;
 	}
 	return 1;
 }
@@ -155,12 +124,19 @@ hook OnPlayerUpdate(playerid)
 // Pull player's bow string.
 Bow_PullString(playerid)
 {
+	if(ePlayerWeapon[playerid][e_bAimingArrow])
+	{
+		return;
+	}
+
 	ePlayerWeapon[playerid][e_iTickCounter_bowShooting] = GetConnectedTime(playerid);
 	ApplyAnimation(playerid, "TLoU", "BOW_AIM_IN", 3.1, 0, 1, 1, 1, 1);
 	Audio_PlayEx(playerid, AUDIO_BOW_PULL);
 
 	SPAO(playerid, ITEM_MODEL_ARROW);
 	SPAO(playerid, ITEM_MODEL_BOW, true);
+
+	ePlayerWeapon[playerid][e_bAimingArrow] = true;
 }
 
 // Release player's bow string.
@@ -172,11 +148,17 @@ Bow_ReleaseString(playerid)
 	SPAO(playerid, ITEM_MODEL_BOW, true);
 	RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 
+	ePlayerWeapon[playerid][e_iTickCounter_bowShooting] = 0;
+
 	// normal = -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000
 	// crouched = -0.090999, -0.061999, -0.011000, -5.899932, -171.399917,  1.700000, 0.758000, 0.627999, 1.000000
 
 	if(!IsPlayerCrouched(playerid))
+	{
 		ClearAnims(playerid);
+	}
+
+	ePlayerWeapon[playerid][e_bAimingArrow] = false;
 }
 
 // Fire arrow.
@@ -214,6 +196,8 @@ Arrow_FireArrow(playerid, Float:distance = MAX_ARROW_DISTANCE)
 		Streamer_UpdateEx(i, pPosX, pPosY, pPosZ, .type = STREAMER_TYPE_OBJECT);
 	}
 
+	ePlayerWeapon[playerid][e_bAimingArrow] = false;
+	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = true;
 	OnPlayerShotArrow(playerid);
 	return 0;
 }

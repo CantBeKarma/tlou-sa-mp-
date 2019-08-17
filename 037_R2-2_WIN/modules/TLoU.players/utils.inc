@@ -51,7 +51,7 @@ ResetBits_ePlayerFlag(playerid)
 		{
 			case PLAYER_STATUS_NONE:
 			{
-				if(IsPlayerAimingWeapon(playerid) || IsPlayerPlayingContinuosAnim(playerid, GRENADE_WEAPON_THROW))
+				if(IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
 				{
 					OnPlayerStopAimingWeapon(playerid);
 				}
@@ -364,14 +364,14 @@ HideDeathProcedureTds(playerid)
 }
 
 // Force change the old holding key to the specified key definition.
-ForceChangeHoldingKeyDef(playerid, key)
-{
-	if(!Bit_Get(ePlayerFlag[e_bHoldingKey], playerid))
-	{
-		return;
-	}
+// ForceChangeHoldingKeyDef(playerid, key)
+// {
+// 	if(!Bit_Get(ePlayerFlag[e_bHoldingKey], playerid))
+// 	{
+// 		return;
+// 	}
 
-	stop ePlayerInfo[playerid][e_iTimer_holdingKey];
-	ePlayerInfo[playerid][e_iTickCounter_holdingKey] = GetConnectedTime(playerid);
-	ePlayerInfo[playerid][e_iTimer_holdingKey] = repeat Callback_HoldKeyTimer(playerid, key);
-}
+// 	stop ePlayerInfo[playerid][e_iTimer_holdingKey];
+// 	ePlayerInfo[playerid][e_iTickCounter_holdingKey] = GetConnectedTime(playerid);
+// 	ePlayerInfo[playerid][e_iTimer_holdingKey] = repeat Callback_HoldKeyTimer(playerid, key);
+// }

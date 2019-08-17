@@ -7,7 +7,7 @@
     public OnPlayerStartAimingProjectile(playerid, weaponId)
     {
         ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
-        ForceChangeHoldingKeyDef(playerid, KEY_AIM);
+        Key_AimingCustomWeapon(playerid);
         return 0;
     }
 
@@ -16,7 +16,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerStopAimingProjectile(playerid)
     {
-        if(GetPlayerAnimationIndex(playerid) != GRENADE_WEAPON_THROW)
+        if(!ePlayerWeapon[playerid][e_bShootingCustomWeapon])
         {
             ClearAnims(playerid);
         }
@@ -58,25 +58,6 @@
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    //------------------- OnPlayerHoldingKey ------------------
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    hook OnPlayerHoldingKey(playerid, key)
-    {
-        if(key & KEY_AIM)
-        {
-            if(IsPlayerAimingWeapon(playerid))
-            {
-                new currentWeaponId = CurrentPlayerWeaponId[playerid];
-                if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
-                {
-                    SetAngleBasedOnCam(playerid);
-                }
-            }
-        }
-        return 0;
-    }
-
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerKeyStateChange -----------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -85,27 +66,15 @@
         {
             return 1;
         }
-        
+
         if(newkeys & KEY_FIRE)
         {
-            // Throw projectiles & sissy throw of a nailbomb (close throw).
-            new currentWeaponId = CurrentPlayerWeaponId[playerid];
-            if(IsPlayerAimingWeapon(playerid))
+            if(!IsPlayerAimingWeapon(playerid) && !IsPlayerUsingBackpack(playerid) 
+            && !IsPlayerUsingWeaponMenu(playerid) && !IsPlayerUnableToPerformAction(playerid))
             {
-                if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
+                if(CurrentPlayerWeaponId[playerid] == WEAPON_NAIL_BOMB)
                 {
-                    Projectile_Throw(playerid, CurrentPlayerWeaponId[playerid]);
-                }
-            }
-            else
-            {
-                if(!IsPlayerUsingBackpack(playerid) 
-                && !IsPlayerUsingWeaponMenu(playerid) && !IsPlayerUnableToPerformAction(playerid))
-                {
-                    if(currentWeaponId == WEAPON_NAIL_BOMB)
-                    {
-                        Projectile_Drop_Nailbomb(playerid);
-                    }
+                    Projectile_Drop_Nailbomb(playerid);
                 }
             }
         }
@@ -319,7 +288,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     Projectile_Throw(playerid, weaponId)
     {
         // Validation.
-        if(GetPlayerWeaponAmmo(playerid, weaponId) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES
+        if(GetPlayerWeaponAmmo(playerid, weaponId) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || ePlayerWeapon[playerid][e_bShootingCustomWeapon]
         || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
         {
             return 1;
@@ -379,6 +348,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
         Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, weaponId);
         
+        ePlayerWeapon[playerid][e_bShootingCustomWeapon] = true;
         OnPlayerThrowProjectile(playerid, weaponId);
         return 0;
     }
