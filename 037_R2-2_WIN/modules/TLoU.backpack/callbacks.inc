@@ -27,7 +27,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
     if(PRESSED(KEY_AIM))
     {
-        if(IsPlayerUsingBackpack(playerid))
+        if(IsPlayerUsingBackpack(playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
         {
             SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
         }
