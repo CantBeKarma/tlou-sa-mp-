@@ -34,7 +34,7 @@ WeapMenuTd_GetFreeSlot_H_Ls(playerid)
 // Get free slot in which player's weapon is going to be placed on the RIGHT SIDE of the weapon menu
 WeapMenuTd_GetFreeSlot_H_Rs(playerid)
 {
-    for(new i = 0; i <= 3; i++)
+    for(new i = 0; i < 3; i++)
     {
         if(WeapMenu_Rs_WeaponId(playerid, i) == -1) 
             return i;
