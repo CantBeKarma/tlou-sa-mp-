@@ -190,7 +190,6 @@ PlayPlayerDeadAnimIfDead(playerid)
     }
 }
 
-
 // Actions in which player can't do some stuff (e.g. opening backpack, equipping last weapon and other).
 IsPlayerUnableToPerformAction(playerid)
 {
