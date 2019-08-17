@@ -389,6 +389,8 @@ ResetEnum_ePlayerWeapon(playerid)
 		{
 			HudTd_UpdateShivs(playerid);
 		}
+
+		DetachWeaponFromPlayersBody(playerid, weaponId);
 	}
 
 	// Reloads player's weapon
