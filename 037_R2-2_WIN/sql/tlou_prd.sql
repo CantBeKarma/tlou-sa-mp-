@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 15, 2019 at 10:46 AM
+-- Generation Time: Aug 17, 2019 at 01:04 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `chars_data` (
 --
 
 INSERT INTO `chars_data` (`guid`, `uid`, `name`, `health`, `skinid`, `last_x`, `last_y`, `last_z`, `last_ang`, `last_int`, `last_vw`, `supplements`, `skill_maxhealth`, `skill_listenmode`, `skill_crafting`, `skill_healing`, `skill_weaponsway`, `skill_shivmaster`) VALUES
-(1, 1, 'Riddick', 80, 312, 2467.17, -1661.69, 13.2855, 304.711, 0, 0, 40, 0, 0, 3, 0, 2, 0);
+(1, 1, 'Riddick', 25, 312, 2472.53, -1662.42, 13.3295, 187.793, 0, 0, 0, 0, 0, 3, 3, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -80,8 +80,8 @@ CREATE TABLE IF NOT EXISTS `items_data` (
   `meleeExtCnd` smallint(6) UNSIGNED DEFAULT NULL,
   `collectibleTitle` varchar(32) DEFAULT NULL,
   `collectibleInnerMsg` varchar(128) DEFAULT NULL,
-  `uid_owner` smallint(6) DEFAULT '-1',
-  `is_created` tinyint(1) NOT NULL,
+  `uid_owner` smallint(6) NOT NULL DEFAULT '-1',
+  `is_created` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
