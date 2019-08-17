@@ -336,10 +336,7 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
 Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)return GetXYInFrontOfPlayer(playerid, x, y, distance);
 // Get XY coords behind player with certain distance (for distance substract sign '-' needs to be supplied).
 
-// new Iterator:AttachmentSlots<MAX_PLAYERS, MAX_PLAYER_ATTACHED_OBJECTS>;
-// new Iterator:AttachmentModel<MAX_PLAYERS, MAX_PLAYER_ATTACHED_OBJECTS>;
-
-// Attach : attach backpack to player's back.
+// Attach : attach backpack to player's back (happens during respawn).
 AttachBackpackToPlayer(playerid, bool:isInFrontOfPlayer = false)
 {
 	switch(GetPlayerSkinEx(playerid))
@@ -356,6 +353,25 @@ AttachBackpackToPlayer(playerid, bool:isInFrontOfPlayer = false)
 		default:
 			SPAO(playerid, OBJECT_MODEL_BILLBP, isInFrontOfPlayer);
 	}
+}
+
+// Attach : attach weapons to player (happens during respawn).
+AttachWeaponsToPlayer(playerid)
+{
+	new weaponId = -1;
+    for(new i = 0; i != MAX_WEAPON_SLOTS; i++)
+    {
+        weaponId = ePlayerWeapon[playerid][e_iWeaponsId][i];
+		if(!weaponId)
+		{
+			continue;
+		}
+
+        if(IsMeleeWeapon(weaponId) || IsBulletWeapon(weaponId))
+        {
+            SPAO(playerid, GetWeaponModelFromWeaponId(weaponId));
+        }
+    }
 }
 
 // Gets a free available attachment slot.
@@ -397,16 +413,12 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 		if(eAttachmentsData[i][e_iSkinId] == GetPlayerSkinEx(playerid) || eAttachmentsData[i][e_iSkinId] == -1)
 		{
 			attachmentIndex = i;
-			//slotIndex = Iter_Alloc(AttachmentSlots<playerid>);
 
 			slotIndex = GetFreeAttachmentSlot(playerid);
-			//SCMF(playerid, -1, "(forLoop idx: %d) | Returned values from table: attachmentIdx = %d", i, attachmentIndex);
+			SCMF(playerid, -1, "(i = %d) | (slotIndex = %d)", i, slotIndex);
 			break;
 		}
 	}
-	
-	// if(slotIndex == INVALID_ITERATOR_SLOT || attachmentIndex == -1)
-	// 	return;
 
 //#region old
 	if(slotIndex == -1 || attachmentIndex == -1)
@@ -423,9 +435,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 				if(eCharsInfo[playerid][e_iAttachSlot_Backpack] != -1)
 					slotIndex = eCharsInfo[playerid][e_iAttachSlot_Backpack];
 				else
-				 eCharsInfo[playerid][e_iAttachSlot_Backpack] = slotIndex;
-
-				//SCMF(playerid, -1, "Attached backpack under slot: %d", eCharsInfo[playerid][e_iAttachSlot_Backpack]);
+					eCharsInfo[playerid][e_iAttachSlot_Backpack] = slotIndex;		
 			}
 
 		case 
@@ -438,8 +448,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 					slotIndex = eCharsInfo[playerid][e_iAttachSlot_Melee];
 				else
 					eCharsInfo[playerid][e_iAttachSlot_Melee] = slotIndex;
-
-				//SCMF(playerid, -1, "Attached melee under slot: %d", eCharsInfo[playerid][e_iAttachSlot_Melee]);
 			}
 
 		case ITEM_MODEL_9MM:
@@ -448,8 +456,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 				slotIndex = eCharsInfo[playerid][e_iAttachSlot_9mm];
 			else
 				eCharsInfo[playerid][e_iAttachSlot_9mm] = slotIndex;
-
-			//SCMF(playerid, -1, "Attached 9mm pistol under slot: %d", eCharsInfo[playerid][e_iAttachSlot_9mm]);
 		}
 
 		case ITEM_MODEL_REVOLVER:
@@ -546,8 +552,8 @@ DetachWeaponFromPlayersBody(playerid, weaponId)
             return 1;
         }
     }
-    RemovePlayerAttachedObj(playerid, slotId);
 
+    RemovePlayerAttachedObj(playerid, slotId);
 	return 0;
 }
 
@@ -604,73 +610,4 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
 // 	distToGround = VectorSize(0.0, 0.0, z-distZ);
 // 	SCMF(playerid, -1, "Distance to the ground is: %f", distToGround);
 // 	return distToGround;
-// }
-
-// DiagonalRoute(Float:nx, Float:ny, Float: nz, Float:px, Float:py, Float:pz, Float: offset = 1.5, Float: diffHeigth = 1.5) 
-// {
-
-// 	//if(floatround(nz) != floatround(pz)) 
-// 	//	return  false;	
-
-// 	static Float: diffX;
-
-// 	if(nx > px) {
-// 		diffX = nx - px;
-// 	}
-// 	else {
-// 		diffX = px - nx;
-// 	}
-
-// 	new Float: diffY;
-
-// 	if(ny > py) {
-// 		diffY = ny - py;
-// 	}
-// 	else {
-// 		diffY = py - ny;
-// 	}
-
-// 	static Float: diffXY;
-
-// 	if(diffX > diffY) {
-// 		diffXY = (diffX / diffY) * offset ;
-// 	}
-// 	else {
-// 		diffXY = (diffY / diffX) * offset ;
-// 	}
-
-// 	if((nx < px)){
-// 		while(nx < px) {
-// 			nx += (diffXY);
-// 			if(ny > py) {
-// 				ny -= offset  ;
-// 			}
-// 			else {
-// 				ny += offset  ;
-// 			}
-// 			CA_FindZ_For2DCoord(nx, ny, nz);
-// 			if(floatabs((nz) - (pz)) > diffHeigth ) {
-// 				return  false;
-// 			}
-// 			pz = nz;
-// 		}
-// 	}
-// 	else {
-// 		while(nx > px) {
-// 			nx -= (diffXY);
-// 			if(ny > py) {
-// 				ny -= offset ;
-// 			}
-// 			else {
-// 				ny += offset ;
-// 			}
-// 			CA_FindZ_For2DCoord(nx, ny, nz);
-// 			if(floatabs((nz) - (pz)) > diffHeigth ) {
-// 				return  false;
-// 			}
-// 			pz = nz;
-// 		}
-// 	}
-
-// 	return true;
 // }

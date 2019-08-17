@@ -91,7 +91,9 @@ public OnPlayerRespawn(playerid)
 
 	new Float:charHealth = GetPlayerHealthEx(playerid);
 	SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
+
 	AttachBackpackToPlayer(playerid);
+	AttachWeaponsToPlayer(playerid);
 
 	wait_ms(150);
 	CLF(#FadePlayerScreen, "dd", playerid, FADE_OUT);
