@@ -76,6 +76,39 @@ WeapMenu_Ls_SortWeapons(playerid)
     }
 }
 
+// Sort weapons on the right side-bar of the wepaon menu (short-guns).
+Weapon_Rs_SortWeapons(playerid)
+{
+    new currentSlot = 0;
+
+    while(currentSlot < 3)
+    {
+        new slotToCheck = 
+            (currentSlot == 0) ? (1) 
+        :   (currentSlot == 1) ? (2)
+        :   (-1);
+
+        if(slotToCheck == -1)
+            break;
+
+        if(WeapMenu_Rs_WeaponId(playerid, currentSlot) == -1)
+        {
+            if(WeapMenu_Rs_WeaponId(playerid, slotToCheck) != -1)
+            {
+                WeapMenu_Rs_WeaponId(playerid, currentSlot) = WeapMenu_Rs_WeaponId(playerid, slotToCheck);
+                WeapMenu_Rs_WeaponId(playerid, slotToCheck) = -1;
+            }
+        }
+
+        currentSlot = slotToCheck;
+    }
+
+    if(IsPlayerUsingWeaponMenu(playerid))
+    {
+        WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+    }
+}
+
 // Change the position of selection box
 WeapMenu_MoveSelectBox(playerid, Float:x, Float:y)
 {
