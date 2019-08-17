@@ -390,7 +390,6 @@ RemovePlayerAttachedObj(playerid, slotId)
 {
     if(IsPlayerAttachedObjectSlotUsed(playerid, slotId) && slotId != -1)
 	{
-		//SCMF(playerid, -1, "RemovePlayerAttObj: (slotId: %d)", slotId);
         RemovePlayerAttachedObject(playerid, slotId);
 	}
 }
@@ -419,7 +418,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 		}
 	}
 
-//#region old
+//#region Slot assignment based on model id
 	if(slotIndex == -1 || attachmentIndex == -1)
 		return;
 
