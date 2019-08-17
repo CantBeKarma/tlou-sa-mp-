@@ -415,7 +415,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 			attachmentIndex = i;
 
 			slotIndex = GetFreeAttachmentSlot(playerid);
-			SCMF(playerid, -1, "(i = %d) | (slotIndex = %d)", i, slotIndex);
 			break;
 		}
 	}
@@ -465,7 +464,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 			else
 				eCharsInfo[playerid][e_iAttachSlot_Revolver] = slotIndex;
 
-			//SCMF(playerid, -1, "Attached revolver under slot: %d", eCharsInfo[playerid][e_iAttachSlot_Revolver]);
 		}
 
 		case ITEM_MODEL_SHOTGUN, ITEM_MODEL_ASSAULT:
@@ -475,7 +473,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 			else
 				eCharsInfo[playerid][e_iAttachSlot_LongGunOne] = slotIndex;
 
-			//SCMF(playerid, -1, "Attached shotgun / assault rifle under slot: %d", eCharsInfo[playerid][e_iAttachSlot_LongGunOne]);
 		}
 
 		case ITEM_MODEL_RIFLE, ITEM_MODEL_BOW:
@@ -485,7 +482,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 			else
 				eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] = slotIndex;
 
-			//SCMF(playerid, -1, "Attached rifle / bow under slot: %d", eCharsInfo[playerid][e_iAttachSlot_LongGunTwo]);
 		}
 
 		default: 
@@ -494,8 +490,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 				slotIndex = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
 			else
 				eCharsInfo[playerid][e_iAttachSlot_Dynamic] = slotIndex;
-
-			//SCMF(playerid, -1, "[DYNAMIC] Attachment Idx: %d | (modelid: %d/%d) under slot: %d", attachmentIndex, modelId, eAttachmentsData[attachmentIndex][e_iModelId], eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 		}
 	}
 //#endregion
@@ -579,35 +573,3 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
         }
     }
 }
-
-// Closest player to player.
-// GetClosestPlayerToPlayer(playerid, Float:dist = FLOAT_INFINITY)
-// {
-//     new 
-// 		targetid = INVALID_PLAYER_ID,
-// 		Float:x, Float:y, Float:z, Fload:d;
-
-// 	foreach(new i : Player)
-// 	{
-// 		GetPlayerPos(i, x, y, z);
-		
-// 		if((d = GetPlayerDistanceFromPoint(playerid, x, y, z)) < dist)
-// 		{
-// 			dist = d;
-// 			targetid = i;
-// 		}
-// 	}
-// 	return targetid;
-// }
-
-// Returns player's distance to the ground.
-// Float:GetDistanceToGround(playerid)
-// {
-// 	new Float:x, Float:y, Float:z, Float:distZ, Float:distToGround;
-// 	GetPlayerPos(playerid, x, y, z);
-// 	CA_FindZ_For2DCoord(x, y, distZ);
-
-// 	distToGround = VectorSize(0.0, 0.0, z-distZ);
-// 	SCMF(playerid, -1, "Distance to the ground is: %f", distToGround);
-// 	return distToGround;
-// }
