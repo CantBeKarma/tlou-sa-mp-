@@ -502,8 +502,6 @@ ResetEnum_ePlayerWeapon(playerid)
 				: (WEAPON_UNARMED)
 			);
 
-		SCMF(playerid, -1, "Melee weaponId: %d", weaponId);
-
 		if(weaponId == WEAPON_UNARMED) HidePlayerWeapon(playerid);
 		else
 		{
