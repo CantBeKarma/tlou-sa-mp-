@@ -114,7 +114,10 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
         new nailBmbIdx = FindNailbombIdx(objectid);
         if(nailBmbIdx != INVALID_ITERATOR_SLOT)
         {
-            CreateProjectileDestroyEffect(WEAPON_NAIL_BOMB, nailBmbIdx, x, y, z);
+            new Float:objX, Float:objY, Float:objZ;
+            GetDynamicObjectPos(objectid, objX, objY, objZ);
+
+            OnNailbombExplode(playerid, eProjectileData[nailBmbIdx][e_iProjectile_ThrowerId], nailBmbIdx, objX, objY, objZ);
         }
     }
     return 1;

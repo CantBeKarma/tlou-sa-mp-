@@ -43,10 +43,10 @@ DesynchronizePlayerKey(playerid, keyDef)
 }
 
 // Check if player Id is valid or invalid.
-IsValidPlayerId(playerid)
-{
-	return playerid != INVALID_PLAYER_ID;
-}
+// IsValidPlayerId(playerid)
+// {
+// 	return playerid != INVALID_PLAYER_ID;
+// }
 
 // Extends GetPlayerSkin default function.
 GetPlayerSkinEx(playerid)
