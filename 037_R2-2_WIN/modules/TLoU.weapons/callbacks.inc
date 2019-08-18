@@ -61,7 +61,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                     {
                         ApplyAnimation(playerid, "TLoU", "WEAPON_SWITCH", 4.1, 0, 1, 1, 0, 0);
                         SetPlayerWeapon(playerid, newWeaponId, GetPlayerWeaponAmmo(playerid, newWeaponId));
-                        TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
                     }
                 }                  
             }
@@ -221,6 +220,7 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
             // It is needed here because of different crosshairs for shotgun and other weapons
             // and when weapon changes automatically with "GetFirstWeaponWithAmmo"
             ShowPlayerCrosshair(playerid, .forceUpdate = true);
+            TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
         }
 
 		ShowHud(playerid);
