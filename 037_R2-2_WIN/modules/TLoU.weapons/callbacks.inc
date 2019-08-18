@@ -214,7 +214,8 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
     }
     else
     {
-        if(oldWeaponId != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN && IsPlayerAimingWeapon(playerid))
+        if( IsPlayerAimingWeapon(playerid) 
+        && ((oldWeaponId != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN) || (oldWeaponId == WEAPON_SHOTGUN)))
         {
             // This function is going to be called only if player keeps aiming
             // It is needed here because of different crosshairs for shotgun and other weapons
