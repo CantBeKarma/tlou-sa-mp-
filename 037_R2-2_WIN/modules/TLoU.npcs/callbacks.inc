@@ -473,7 +473,7 @@ public FCNPC_OnUpdate(npcid)
 			continue;
 		}
 
-		DestroyDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]);
+		DestroyPlayerArrow(playerid);
 		FCNPC_OnGetArrowShot(npcid, playerid);
 		break;
 	}

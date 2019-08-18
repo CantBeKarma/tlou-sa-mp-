@@ -80,7 +80,7 @@
     #define     ARROW_RANGE_DAMAGE          (3.0)
     #define		MAX_ARROW_SPEED			    (40.0)
     #define		MAX_ARROW_DISTANCE		    (40.0)
-    #define     TICK_RATE_ARROW_SHOOT       (1250)
+    #define     MAX_ARROW_STRETCH_TIME      (2000)
 
     #define     SHIV_LABEL_DRAW_DIST        (3.0)
     #define     SHIV_ATTACK_DIST            (3.0)
@@ -161,7 +161,7 @@ enum e_PLAYER_WEAPONS_DATA
     
     e_iArrowObjectId,
 
-    e_iTickCounter_bowShooting,
+    e_iTickCounter_bowString,
     e_iTickCounter_projectileThrow,
     e_iTickCounter_NoAmmoClicks, 
 
@@ -169,9 +169,3 @@ enum e_PLAYER_WEAPONS_DATA
     bool:e_bAimingArrow
 };
 new ePlayerWeapon[MAX_PLAYERS][e_PLAYER_WEAPONS_DATA];
-
-//new Iterator:PlayerWeapons[MAX_PLAYERS]<MAX_WEAPON_SLOTS, MAX_WEAPON_SLOTS>;
-
-// new 
-//     Iterator:PlayerWeapons<MAX_PLAYERS, MAX_WEAPON_SLOTS>,
-//     Iterator:PlayerWeaponsAmmo<MAX_PLAYERS, MAX_WEAPON_SLOTS>;

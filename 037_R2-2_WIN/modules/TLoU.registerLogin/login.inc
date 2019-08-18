@@ -48,6 +48,8 @@ function PrepareDataAfterLogin(playerid)
     Iter_Clear(SkillsToUpgrade<playerid>);
     Iter_Clear(iAudioHandle3D<playerid>);
 
+    ePlayerWeapon[playerid][e_iArrowObjectId] = -1;
+
     eCharsInfo[playerid][e_iAttachSlot_Backpack] = -1;
     eCharsInfo[playerid][e_iAttachSlot_9mm] = -1;
     eCharsInfo[playerid][e_iAttachSlot_Revolver] = -1;
