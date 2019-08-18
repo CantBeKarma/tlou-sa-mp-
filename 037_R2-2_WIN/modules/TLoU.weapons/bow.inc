@@ -26,14 +26,14 @@ public OnPlayerStopAimingBow(playerid)
 public OnPlayerShotArrow(playerid)
 {
 	Audio_PlayEx(playerid, AUDIO_BOW_SHOT);
+	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
 
 	new newBowArrows = GetPlayerArrows[playerid] - 1;
 	SetPlayerWeaponAmmo(playerid, WEAPON_BOW, newBowArrows);
-	
+
 	if(newBowArrows > 0)
 	{
-		if(IsPlayerAimingWeapon(playerid))
-			Bow_PullString(playerid);
+		Key_AimingCustomWeapon(playerid);
 	}
 	else
 	{
@@ -52,7 +52,6 @@ public OnPlayerGetArrowShot(playerid, damagerid)
 {
 	ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
 	ApplyAnimation(playerid, "PED", "HIT_GUN_BUTT", 4.1, 0, 1, 1, 0, 350);
-
 	ePlayerWeapon[damagerid][e_bShootingCustomWeapon] = false;
 	return 1;
 }
@@ -72,7 +71,6 @@ hook OnDynamicObjectMoved(objectid)
 			case 0: DestroyDynamicObject(ePlayerWeapon[i][e_iArrowObjectId]), SCMF(i, -1, "Your arrow have been destroyed");
 			case 1:
 			{
-
 				SCMF(i, -1, "You can still pick it up!");
 
 				new Float:x, Float:y, Float:z;
@@ -83,8 +81,6 @@ hook OnDynamicObjectMoved(objectid)
 				CreateOrUpdateItem(17, 1, .x = x, .y = y, .z = z);
 			}
 		}
-
-		ePlayerWeapon[i][e_bShootingCustomWeapon] = false;
 	}
 	return 1;
 }
