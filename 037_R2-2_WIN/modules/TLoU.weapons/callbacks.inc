@@ -214,7 +214,7 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
     }
     else
     {
-        if( IsPlayerAimingWeapon(playerid) 
+        if(IsPlayerAimingWeapon(playerid) 
         && ((oldWeaponId != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN) || (oldWeaponId == WEAPON_SHOTGUN)))
         {
             // This function is going to be called only if player keeps aiming
