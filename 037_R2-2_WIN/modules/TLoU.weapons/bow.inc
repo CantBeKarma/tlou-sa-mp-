@@ -184,7 +184,7 @@ Arrow_FireArrow(playerid)
 	new Float:dest_arrowZ = pCamZ + ((distance / 100) * 10.5) + floatmul(pCamVecZ, distance);
 
 	ePlayerWeapon[playerid][e_iArrowObjectId] = CreateDynamicObject(ITEM_MODEL_ARROW, pPosX, pPosY, pPosZ + 0.5, 0.0, 0.0, pAngle - 79.0);
-	MoveDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId], dest_arrowX, dest_arrowY, dest_arrowZ, MAX_ARROW_SPEED);
+	MoveDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId], dest_arrowX, dest_arrowY, dest_arrowZ, (distance * 1.5));
 
 	foreach(new i : Player)
 	{
