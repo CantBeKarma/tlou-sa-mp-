@@ -1,0 +1,104 @@
+[center][img]http://i.imgur.com/NgiDamJ.png[/img][/center]
+
+Hello,
+
+Almost one year ago I have started project called "The Last of Us (SA-MP)", which I wanted to keep quiet all this time... until now. 
+
+[size=5][color=red][b][u][color=green]About us[/color][/u][/b][/color][/size]
+
+I have managed to get a group to help me develop this project, we all had better and worse days, some people have left or they had to be removed from the group. I really appreciate people's potential to help with the project, I really want to thank the mappers I had before in a team, which were either removed or they have left.
+
+I can officially say now, that we are a happy team which is working really hard and fast to get this project up and running. There's just four of us, well experienced people which are the best at what they love to do.
+
+[size=5][color=red][b][u][color=green]Team members[/color][/u][/b][/color][/size]
+
+[url=http://tinyurl.com/Riddick94]Riddick94[/url], which is responsible for gamemode development from the very beginning and its full documentation. He also has created some custom models and has edited animations for the project. His responsibility is also to create a installer for the server, which is installing custom files for SA-MP to let people play at the server (files are affecting just our server). Riddick94 is the founder of TLoU (SA-MP) project.
+
+[s][url=http://tinyurl.com/nbxjduq]Sublime[/url], is responsible for developing our website with forum. Also, he's duty is to sort out databases, which are connected with game server. Sublime is in the project almost from it's very beginning.[/s]
+
+[url=http://tinyurl.com/ohjpwct]Math4Dead[/url], is developer of GTA San Andreas modifications which we are using in game. He's creating custom models and/or converting them from The Last of Us original PlayStation® game. Math4Dead is in the project almost from its very beginning.
+
+[url=http://tinyurl.com/IAmMapper]iAmMapper (John)[/url], is a new team member which is well experienced and talented mapper. He's responsible for re-doing the Los Santos map area for now. His goal is to achieve similar environment to the one we have in The Last of Us PS® game.
+
+[size=5][color=red][b][u][color=green]About gamemode[/color][/u][/b][/color][/size]
+
+The Last of Us (SA-MP) project is NOT supposed to be a typical Role-Play server. Since the name of the gamemode is including the name of the original game, that must mean the gamemode will include original game concept ideas. I am following features from Single-Player gamemode while ignoring Multi-Player mode (PS® game). Main goal of the gamemode is to achieve The Last of Us game concept in SA-MP, which is pretty hard.
+
+Once player has registered at forum and created his character in his panel, he's allowed to join the game and play with us. Player will scavenge the San Andreas map, which will be fully re-done and similar to the original TLoU game environment. He will find many items at the map, which are either:
+
+- Collectible (messages etc.);
+- Weapons;
+- Ingredients to craft an items.
+
+Also, the gamemode is supporting similiar skill-tree that Joel in original game also has. Player will be able to update his weapon skills, health bar length and other.
+
+Players are going to be able to create their own quarantine zones, where they will be able to live safe, unless something is going to happen. They will be able to open their "mini-shops" in quarantine zones, where they will giveout food when the army brings some and other illegal supplies (still in development, not finished). Some of them may be also smugglers (not confirmed yet).
+
+Infected people are going to be ONLY NPCs, there are four stages of the NPCs that I have created already. Each of them is acting different. I've tried to make them as similar as possible to the original game. You can read about the infected stages here: [url]http://thelastofus.wikia.com/wiki/The_Infected#Stages_of_infection[/url] I've done all four stages.
+
+We are planning to re-do the whole San Andreas state, including all the country sides. We are having map plan, which the mappers are following, they are re-doing the section they've been assigned to do.
+
+[size=5][color=red][b][u][color=green]Progress[/color][/u][/b][/color][/size]
+
+Objects that you are going to see are mainly the GTA: SA defualt objects. Mappers are using a custom objects too, but there are not many yet. We are going to have more vehicle models which we will replace with the old SA destroyed cars which are for example in the middle of the Groove Street. They will be changed, so please remember, that the gamemode is still in development (especially mapping), so the final result will look different.
+
+See more on the Discord channel:
+[url=https://discord.gg/5AByAG7][img]http://i.imgur.com/jCaUkHZ.png[/img][/url]
+
+[size=5][color=green][b][u]All the updates in a one place[/u][/b][/color][/size]
+
+[url]http://revctrl.com/Riddick/TLoU[/url]
+
+_____________________
+[url]http://tinyurl.com/Johns-Mapping[/url]
+[url]http://tinyurl.com/Kurts-Mapping[/url]
+[url]http://tinyurl.com/Very-First-Screens[/url]
+[url]http://tinyurl.com/First-Updates[/url]
+[url]http://tinyurl.com/Latest-Screens[/url]
+
+YouTube video (5th of May 2014) - edit:// whole playlist link now.
+[url]https://www.youtube.com/playlist?list=PLpvw0--ZfSu_imc3C0L0lwzjUfu5yJRHT[/url]
+
+[i]*** EDIT ***[/i]
+[url]http://tinyurl.com/n9svfpn[/url]
+
+Comparision pictures of the backpack (since the very beginning).
+[url]http://i.imgur.com/dwOB7x0.jpg[/url]
+
+Another portion of mapping here:
+[url]http://imgur.com/U6eZwif,1DsEdP1,gftcHyX,Abi5BJB,h2QUTgQ,2V4JJU1,J0s9lms,dsgSP6o,fBe62KG,tqfsZgn,CDqn9P7,mykps7y,ZTD6UOo,allEHln,iEdaBKC,BAa3TO6,hFm6nBS,GAxyMwh,4JpgaIR,9fL7lXR,59vhcq9,wmPWh8t,nZ24s8o,Keugykv,iUjLncM,VTMK66h,TtnS40W,EvQpRiU#0[/url]
+
+December 2015 updates:
+#1 - [url]http://forum.sa-mp.com/showpost.php?p=3627789&postcount=101[/url]
+#2 - [url]http://forum.sa-mp.com/showpost.php?p=3629973&postcount=110[/url]
+#3 - [url]http://forum.sa-mp.com/showpost.php?p=3630547&postcount=113[/url]
+#4 - [url]http://forum.sa-mp.com/showpost.php?p=3631311&postcount=115[/url]
+#5 - [url]http://forum.sa-mp.com/showpost.php?p=3632240&postcount=119[/url]
+#6 - [url]http://forum.sa-mp.com/showpost.php?p=3632680&postcount=121[/url]
+
+May 2016 updates:
+#1 - [url]http://forum.sa-mp.com/showpost.php?p=3700801&postcount=148[/url]
+
+May 2017 updates:
+#1 - [url]http://forum.sa-mp.com/showpost.php?p=3878397&postcount=162[/url]
+#2 - [url]http://forum.sa-mp.com/showpost.php?p=3879129&postcount=164[/url]
+#3 - [url]http://forum.sa-mp.com/showpost.php?p=3879143&postcount=165[/url]
+#4 - [url]http://forum.sa-mp.com/showpost.php?p=3879362&postcount=167[/url]
+
+June 2017 updates:
+#1 - [url]http://forum.sa-mp.com/showpost.php?p=3889136&postcount=169[/url]
+#2 - [url]http://forum.sa-mp.com/showpost.php?p=3889382&postcount=170[/url]
+#3 - [url]http://forum.sa-mp.com/showpost.php?p=3892109&postcount=189[/url]
+
+July 2017 updates:
+#1 - [url]http://forum.sa-mp.com/showpost.php?p=3896970&postcount=190[/url]
+
+-------- [b]NO MORE UPDATES TO BE GIVEN IN THIS THREAD. JOIN DISCORD FOR MORE[/b] --------
+
+Any ideas? Post them below, some rating about the gamemode would be also nice to hear.
+
+[size=5][color=red][b][u][color=red]Warning[/color][/u][/b][/color][/size]
+
+Any posts considered by me to be a spam are going to be reported straight away. Please, let's keep this thread nice and tidy without any harsh arguments.
+
+Thank you!

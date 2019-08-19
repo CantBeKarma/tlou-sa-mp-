@@ -1,0 +1,49 @@
+Suggestions for Factions. Sorry for my scuffed English. Nobody's perfect.
+
+
+I have 4 factions on my mind:
+
+Civilian
+U.S Army
+Firefly
+Bandits
+
+
+Each different faction have their own goal, spawn, weapons and supplies, skins and so forth. Since we are playing on designated map of San Andreas(full teritory or maybe not) it would be worth considering that due to playerbase limits and low playerbase faction spawn locations should be close to eachother, not very far. It will most likely cause players to quit if they are scattered arround the map. Same thing goes for factions.
+
+If I recall - we will begin in Los Santos. In TLOU SP we do not much know about Los Angeles(LS in SAMP) so it is my belief and personal thing what could allow theese 4 factions to co-exist in the server. 
+
+
+As seen in the game, majority of cities are under control of United States Army(or whats left of them). Atleast suburbian cities are. Los Angeles is sort-of suburbian city with its own docking and stuff. So chances for faction like U.S MILITARY are high to exist in Los Santos.
+
+
+U.S Army
+
+United States Army has decreased alot past 50 years as we know due to lore, but they still manage to maintain control. One of those cities can be Los Santos. To make Army not so overpowered, we have to make sure that the Army has as low resources and availability as they could possibly have. What I mean is by:
+
+- Less vehicles(definately no Rhinos,Hydras,Hunters otherwise youre gonna have some Militaristic RPG going on)
+- Completely 1 mag weapons(I mean 30 bullets per 1 weapon? Assault Rifle I mean)
+- Can't make the 3rd one :x lol.
+
+Objective of U.S Army
+
+
+I believe there are 3 primary objectives Army is after
+
+- Guard the defensive lines they are assigned to(to make sure nobody trespasses and goes outside of safezone)
+- Eliminate the Firefly faction(Cause Fireflies likes to cause havoc upon military resoruces)
+- Eliminate the Fungus infected people(SA-MP NPC'S if they approach the designed perimeter)
+
+
+
+Skill setup
+
+
+I believe U.S Army should start off the bat like the skills of a civilian. Lets be real - in current world of TLOU there are no more expierenced troops left, so their skillset(shooting if i May) equals zero. 
+
+
+Invitation process
+
+
+I believe the most easy way to make someone an Army member is to have an applications on forums so they could be tested under people who are incharge of Army recruitment. 
+
