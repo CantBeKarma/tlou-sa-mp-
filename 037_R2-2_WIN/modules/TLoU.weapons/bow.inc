@@ -70,12 +70,12 @@ hook OnDynamicObjectMoved(objectid)
 		
 		if(RandomEx(0, 2) == 1)
 		{
-			static arrowItemIdx = 17;
+			//static arrowItemIdx = 17;
 			new Float:x, Float:y, Float:z;
 
 			GetDynamicObjectPos(ePlayerWeapon[i][e_iArrowObjectId], x, y, z);
 			CA_FindZ_For2DCoord(x, y, z);
-			CreateOrUpdateItem(arrowItemIdx, 1, .x = x, .y = y, .z = z);
+			CreateOrUpdateItem(_:ITEM_IDX_ARROW, 1, .x = x, .y = y, .z = z);
 		}
 
 		DestroyPlayerArrow(i);

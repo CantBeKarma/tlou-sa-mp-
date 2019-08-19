@@ -213,7 +213,6 @@ GetItemType(itemId)
     return eItemsData[itemId][e_iItem_Type];
 }
 
-
 GetPlayerItemAmount(playerid, itemId)
 {
     if(!HasPlayerGotItem(playerid, itemId))
@@ -304,8 +303,6 @@ SetPlayerItemAmountEx(playerid, itemId, amount)
     ePlayerItemData[playerid][itemId][e_iItemAmount] = amount;
     return true;
 }
-
-
 
 SetPlayerMeleeWeaponCND(playerid, itemId, cnd, upgradedCnd = 0)
 {
