@@ -253,58 +253,44 @@ bool:HideWeaponMenu(playerid)
 WeapMenuTd_DisplayWeapsAndAmmo(playerid)
 {
     new 
-        tmp[5],
+        itemAmount = -1,
+        String:itemAmountStr = STRING_NULL,
         String:icon = STRING_NULL,
-        weaponId = WEAPON_NAIL_BOMB,
-        weaponAmmo = 0;
+        ITEM_IDX:itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
     
     for(new tdIdx = 0; tdIdx != 9; tdIdx++)
     {
         switch(tdIdx)
         {
             // Vertical (top -> bottom)
-            case 0: weaponId = WEAPON_NAIL_BOMB;
-            case 1: weaponId = WEAPON_MEDKIT;
-            case 2: weaponId = GetPlayerThrowable[playerid];
-            case 3: weaponId = WEAPON_MOLOTOV;
-            case 4: weaponId = WEAPON_SMOKE_BOMB;
+            case 0: itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
+            case 1: itemId = ITEM_IDX:ITEM_IDX_MEDKIT;
+            case 2: itemId = ITEM_IDX:ITEM_IDX_BRICK; // GetPlayerThrowable[playerid] - that needs to return itemId
+            case 3: itemId = ITEM_IDX:ITEM_IDX_MOLOTOV;
+            case 4: itemId = ITEM_IDX:ITEM_IDX_SMOKE_BOMB;
 
             // Horizontal (left -> right)
-            case 5: weaponId = WeapMenu_Ls_WeaponId(playerid, 0);
-            case 6: weaponId = WeapMenu_Ls_WeaponId(playerid, 1);
-            case 7: weaponId = WeapMenu_Rs_WeaponId(playerid, 0);
-            case 8: weaponId = WeapMenu_Rs_WeaponId(playerid, 1);
+            case 5: itemId = ITEM_IDX:WeapMenu_Ls_WeaponId(playerid, 0);
+            case 6: itemId = ITEM_IDX:WeapMenu_Ls_WeaponId(playerid, 1);
+            case 7: itemId = ITEM_IDX:WeapMenu_Rs_WeaponId(playerid, 0);
+            case 8: itemId = ITEM_IDX:WeapMenu_Rs_WeaponId(playerid, 1);
         }
 
-        if(!HasPlayerWeapon(playerid, weaponId)) 
-            continue;
-
-        switch(weaponId)
+        if(!HasPlayerGotItem(playerid, _:itemId))
         {
-            case WEAPON_NAIL_BOMB:  icon = str_new_static("TLoU:weap_nailbomb");
-            case WEAPON_MEDKIT:     icon = str_new_static("TLoU:weap_medkit");
-            case WEAPON_BRICK:      icon = str_new_static("TLoU:weap_brick");
-            case WEAPON_BOTTLE:     icon = str_new_static("TLoU:weap_bottle");
-            case WEAPON_MOLOTOV:    icon = str_new_static("TLoU:weap_molotov");
-            case WEAPON_SMOKE_BOMB: icon = str_new_static("TLoU:weap_smkbmb");
-
-            case WEAPON_SHOTGUN:    icon = str_new_static("TLoU:weap_shot");
-            case WEAPON_RIFLE:      icon = str_new_static("TLoU:weap_huntrif");
-            case WEAPON_BOW:        icon = str_new_static("TLoU:weap_bow");
-            case WEAPON_ASSAULT:    icon = str_new_static("TLoU:weap_assault");
-
-            case WEAPON_9MM:        icon = str_new_static("TLoU:weap_9mm");
-            case WEAPON_REVOLVER:   icon = str_new_static("TLoU:weap_rev");
-            case WEAPON_SHORTY:     icon = str_new_static("TLoU:weap_shorty");
+            continue;
         }
-        
-        weaponAmmo = GetPlayerWeaponAmmo(playerid, weaponId);
+
+        icon = str_new_static(eItemsSprites[_:itemId]);
+        itemAmount = GetPlayerItemAmount(playerid, _:itemId);
+
         PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], icon);
-        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (weaponAmmo <= 0 ? COLOR_GRAY : COLOR_WHITE));
-        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (weaponAmmo <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
+        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
 
-        valstr(tmp, weaponAmmo);
-        PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], tmp);
+        itemAmountStr = str_val(itemAmount);
+        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
+        PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
     }
 }

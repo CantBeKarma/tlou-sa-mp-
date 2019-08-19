@@ -44,3 +44,5 @@
 #include    <TLoU.weaponMenu\main>
 #include    <TLoU.weapons\main>
 #include    <TLoU.weaponsUpgrades\main>
+
+#include    <TLoU.items\refactoring>
