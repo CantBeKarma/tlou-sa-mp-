@@ -1,6 +1,9 @@
-// Other
-#define     MAX_UPGRADE_ITEMS       (17)
+// Maximal values.
 #define     MAX_ITEMS_DATA          (27)
+#define     MAX_MELEE_ITEMS         (4)
+#define     MAX_UPGRADE_ITEMS       (17)
+
+// Other.
 #define     NO_OWNER_UID            (-1)
 #define     ITEM_LABEL_DRAW_DIST    (2.5)
 #define     HEAL_ITEM_RECOVER_HP    (5.0)
@@ -158,10 +161,10 @@ stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
     {"Explosive",           ITEM_TYPE_INGREDIENT,   ITEM_MODEL_EXPLOSIVE,   -1,                         300,        AUDIO_PICKUP_EXPLOSIVE,     -1,                     0.0,    0.0,        -1,                     -1,                     -1},
     {"Sugar",               ITEM_TYPE_INGREDIENT,   ITEM_MODEL_SUGAR,       -1,                         300,        AUDIO_PICKUP_SUGAR,         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
 
-    {"Pipe",                ITEM_TYPE_MELEE,        ITEM_MODEL_PIPE,        WEAPON_SLOT_MELEE,          1,          -1,                         WEAPON_PIPE,            12.0,   12.0,       CRAFT_ITEM_MELEE,       -1,                     -1},
-    {"Scissor pipe",        ITEM_TYPE_MELEE,        ITEM_MODEL_SCSR_PIPE,   WEAPON_SLOT_MELEE,          1,          -1,                         WEAPON_SCISSOR_PIPE,    20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
-    {"Hatchet",             ITEM_TYPE_MELEE,        ITEM_MODEL_HATCHET,     WEAPON_SLOT_MELEE,          1,          -1,                         WEAPON_HATCHET,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
-    {"Machete",             ITEM_TYPE_MELEE,        ITEM_MODEL_MACHETE,     WEAPON_SLOT_MELEE,          1,          -1,                         WEAPON_MACHETE,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
+    {"Pipe",                ITEM_TYPE_MELEE,        ITEM_MODEL_PIPE,        WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_PIPE,            12.0,   12.0,       CRAFT_ITEM_MELEE,       -1,                     -1},
+    {"Scissor pipe",        ITEM_TYPE_MELEE,        ITEM_MODEL_SCSR_PIPE,   WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_SCISSOR_PIPE,    20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
+    {"Hatchet",             ITEM_TYPE_MELEE,        ITEM_MODEL_HATCHET,     WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_HATCHET,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
+    {"Machete",             ITEM_TYPE_MELEE,        ITEM_MODEL_MACHETE,     WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_MACHETE,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
 
     {"9mm pistol",          ITEM_TYPE_WEAPON,       ITEM_MODEL_9MM,         WEAPON_SLOT_9MM,            -1,         -1,                         WEAPON_9MM,             20.0,   60.0,       -1,                     -1,                     -1},
     {"Revolver",            ITEM_TYPE_WEAPON,       ITEM_MODEL_REVOLVER,    WEAPON_SLOT_REVOLVER,       18,         -1,                         WEAPON_REVOLVER,        35.0,   75.0,       -1,                     -1,                     -1},
@@ -223,13 +226,27 @@ stock const eItemsUpgrades[MAX_UPGRADE_ITEMS][e_ITEM_UPGRADES_DATA] =
     {ITEM_IDX_RIFLE, 2, UPGRADE_TYPE_CLIPSIZE, 3, 9, 40, 4}
 };
 
+// Melee weapons conditions (CND).
+enum e_ITEM_MELEE_CND
+{
+    ITEM_IDX:e_iItemId,
+    e_iItemBasicCND,
+    e_iItemExtraCND
+};
+stock const eItemsMeleeCND[MAX_MELEE_ITEMS][e_ITEM_MELEE_CND] =
+{
+    {ITEM_IDX_PIPE,        9, 0},
+    {ITEM_IDX_SCSR_PIPE,   9, 1},
+    {ITEM_IDX_HATCHET,     5, 3},
+    {ITEM_IDX_MACHETE,     3, 3}
+};
+
 // Player item's data.
 enum e_PLAYER_ITEM_DATA
 {
     e_iItemId,
     e_iItemAmount,
-    e_iItemUpgradedCND,
-
+    e_iItemMeleeExtraCND,
     e_iItemUpgradeLvl_ClipSize
 };
 new ePlayerItemData[MAX_PLAYERS][MAX_ITEMS_DATA][e_PLAYER_ITEM_DATA];
