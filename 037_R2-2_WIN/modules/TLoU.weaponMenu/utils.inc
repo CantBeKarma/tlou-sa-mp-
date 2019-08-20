@@ -284,13 +284,16 @@ WeapMenuTd_DisplayWeapsAndAmmo(playerid)
         icon = str_new_static(eItemsSprites[_:itemId]);
         itemAmount = GetPlayerItemAmount(playerid, _:itemId);
 
+        SCMF(playerid, -1, "Displaying icon: %s with amount: %d", _:icon, itemAmount);
+
         PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], icon);
         PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
 
         itemAmountStr = str_val(itemAmount);
-        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
+        SCMF(playerid, -1, "Amount in string: %s", _:itemAmountStr);
         PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
+        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
     }
 }
