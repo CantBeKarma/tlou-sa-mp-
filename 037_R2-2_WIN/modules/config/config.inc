@@ -69,13 +69,8 @@
 
 	#define 	function%0(%1) 			forward%0(%1); public%0(%1)
 
-	#if !defined FLOAT_INFINITY
-		#define 	FLOAT_INFINITY   		(Float:0x7F800000)
-	#endif
-
-	#if !defined FLOAT_NEG_INFINITY
-		#define 	FLOAT_NEG_INFINITY 		(Float:0xFF800000)
-	#endif
+	#define 	FLOAT_INFINITY   		(Float:0x7F800000)
+	#define 	FLOAT_NEG_INFINITY 		(Float:0xFF800000)
 	
 	#define     SCM             		SendClientMessage
 	#define     SCMF             		SendClientMessagef
