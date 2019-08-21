@@ -2,16 +2,6 @@ IsValidItemId(itemId)               return (itemId >= 0 && itemId < MAX_ITEMS_DA
 HasPlayerGotItem(playerid, itemId)  return (IsValidItemId(itemId) && ePlayerItemData[playerid][itemId][e_iItemId] != -1);
 GetItemType(itemId)                 return (IsValidItemId(itemId) && eItemsData[itemId][e_iItem_Type]);
 
-GetPlayerItemAmount(playerid, itemId)
-{
-    if(!HasPlayerGotItem(playerid, itemId))
-    {
-        return -1;
-    }
-
-    return ePlayerItemData[playerid][itemId][e_iItemAmount];
-}
-
 IsItemUpgradeable(itemId, upgradeType = -1)
 {
     for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
@@ -63,6 +53,16 @@ bool:SetPlayerItemUpgradeLvl(playerid, itemId, level, upgradeType)
     return true;
 }
 
+GetPlayerItemAmount(playerid, itemId)
+{
+    if(!HasPlayerGotItem(playerid, itemId))
+    {
+        return -1;
+    }
+
+    return ePlayerItemData[playerid][itemId][e_iItemAmount];
+}
+
 GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
 {
     if(!HasPlayerGotItem(playerid, itemId))
@@ -70,32 +70,47 @@ GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
         return -1;
     }
 
-    new maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
-    if(maxAmount == -1)
+    new maxAmount = -1;
+    if(checkMeleeExtraCND && GetItemType(itemId) == ITEM_TYPE_MELEE)
     {
-        if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
+        for(new i = 0; i != MAX_MELEE_ITEMS; i++)
         {
-            new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
-        
-            for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+            if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
             {
-                if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
-                && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
-                && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
-                {
-                    maxAmount = eItemsUpgrades[i][e_iItem_MaxAmount];
-                    break;
-                }
+                maxAmount = eItemsMeleeCND[i][e_iItemExtraCND];
+                break;
             }
         }
-        else if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+    }
+    else
+    {
+        maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
+        if(maxAmount == -1)
         {
-            for(new i = 0; i != MAX_MELEE_ITEMS; i++)
+            if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
             {
-                if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
+                new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
+            
+                for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
                 {
-                    maxAmount = (checkMeleeExtraCND == false) ? (eItemsMeleeCND[i][e_iItemBasicCND]) : (eItemsMeleeCND[i][e_iItemExtraCND]);
-                    break;
+                    if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
+                    && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
+                    && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
+                    {
+                        maxAmount = eItemsUpgrades[i][e_iItem_MaxAmount];
+                        break;
+                    }
+                }
+            }
+            else if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+            {
+                for(new i = 0; i != MAX_MELEE_ITEMS; i++)
+                {
+                    if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
+                    {
+                        maxAmount = eItemsMeleeCND[i][e_iItemBasicCND];
+                        break;
+                    }
                 }
             }
         }
@@ -112,7 +127,7 @@ IsPlayerFullOnItem(playerid, itemId)
 
     new bool:result = false;
 
-    if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && IsItemUpgradeable(itemId))
+    if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || GetItemType(itemId) == ITEM_TYPE_MELEE))
     {
         result = (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId));
     }
@@ -142,6 +157,8 @@ GivePlayerItem(playerid, itemId)
         {
             new freeSlot = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
             WeapMenu_Rs_WeaponId(playerid, freeSlot) = itemId;
+
+            SCMF(playerid, -1, "Giving player itemId: %d on freeSlot: %d", itemId, freeSlot);
         }
     }
 
@@ -181,7 +198,7 @@ SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND = 0)
         return false;
     }
 
-    if(_:ITEM_IDX_BLADE <= itemId <= _:ITEM_IDX_SUGAR)
+    if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
     {
         if((amount % 25) != 0)
         {
@@ -219,11 +236,15 @@ RemovePlayerItem(playerid, itemId)
 
 CMD:giveitem(playerid, params[])
 {
-    new itemId, amount;
-    if(sscanf(params, "dd", itemId))return SCM(playerid, -1, "/giveitem [itemId] [amount]");
+    new itemId, amount, meleeExtraCND = 0;
+    if(sscanf(params, "dd", itemId, amount))return SCM(playerid, -1, "/giveitem [itemId] [amount]");
     {
         GivePlayerItem(playerid, itemId);
-        SetPlayerItemAmountEx(playerid, itemId, amount);
+
+        if(!SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND))
+        {
+            SCMF(playerid, -1, "Amount failure!");
+        }
     }
     return 1;
 }
@@ -239,7 +260,7 @@ CMD:myitems(playerid, params[])
             continue;
         }
 
-        SCMF(playerid, -1, "Item Name: %s | Item Idx: %d | Amount: %d | Upgrade (clipsize) level: %d", eItemsData[i][e_sItem_Name], i, GetPlayerItemAmount(playerid, i), GetPlayerItemUpgradeLvl(playerid, i, UPGRADE_TYPE_CLIPSIZE));
+        SCMF(playerid, -1, "Item Name: %s | Item Idx: %d | Amount: %d | Max amount: %d | (Melee) MaxExtraCND: %d | Upgrade (clipsize) level: %d", eItemsData[i][e_sItem_Name], i, GetPlayerItemAmount(playerid, i), GetPlayerItemMaxAmount(playerid, i), GetPlayerItemMaxAmount(playerid, i, true), GetPlayerItemUpgradeLvl(playerid, i, UPGRADE_TYPE_CLIPSIZE));
     }
     return 1;
 }
@@ -249,9 +270,7 @@ CMD:setlvl(playerid, params[])
     new itemId, level;
     if(sscanf(params, "dd", itemId, level))return SCM(playerid, -1, "/setlvl [itemId] [level]");
     {
-        new bool:success = SetPlayerItemUpgradeLvl(playerid, itemId, level, UPGRADE_TYPE_CLIPSIZE);
-
-        if(!success)
+        if(!SetPlayerItemUpgradeLvl(playerid, itemId, level, UPGRADE_TYPE_CLIPSIZE))
         {
             SCMF(playerid, -1, "Something went wrong!");
         }

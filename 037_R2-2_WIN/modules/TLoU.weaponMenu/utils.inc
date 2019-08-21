@@ -255,7 +255,6 @@ WeapMenuTd_DisplayWeapsAndAmmo(playerid)
     new 
         itemAmount = -1,
         String:itemAmountStr = STRING_NULL,
-        String:icon = STRING_NULL,
         ITEM_IDX:itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
     
     for(new tdIdx = 0; tdIdx != 9; tdIdx++)
@@ -281,17 +280,13 @@ WeapMenuTd_DisplayWeapsAndAmmo(playerid)
             continue;
         }
 
-        icon = str_new_static(eItemsSprites[_:itemId]);
+        SCMF(playerid, -1, "Item icon: %s", eItemsSprites[_:itemId]);
         itemAmount = GetPlayerItemAmount(playerid, _:itemId);
-
-        SCMF(playerid, -1, "Displaying icon: %s with amount: %d", _:icon, itemAmount);
-
-        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], icon);
+        //PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], );
         PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
 
         itemAmountStr = str_val(itemAmount);
-        SCMF(playerid, -1, "Amount in string: %s", _:itemAmountStr);
         PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
         PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
