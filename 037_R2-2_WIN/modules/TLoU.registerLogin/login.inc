@@ -37,11 +37,17 @@ function PrepareDataAfterLogin(playerid)
     {
         ePlayerWeapon[playerid][e_iWeaponClipAmmo][i] = -1;
 
-        if(i <= 3) 
+        if(i < 4)
+        {
+            WeapMenu_Ls_ItemId(playerid, i) = -1;
             WeapMenu_Ls_WeaponId(playerid, i) = -1;
+        }
 
-        if(i <= 2)
+        if(i < 3)
+        {
+            WeapMenu_Rs_ItemId(playerid, i) = -1;
             WeapMenu_Rs_WeaponId(playerid, i) = -1;
+        }
     }
 
     Iter_Clear(ItemsToCraft<playerid>);
@@ -56,6 +62,9 @@ function PrepareDataAfterLogin(playerid)
 
     ePlayerWeapon[playerid][e_iArrowObjectId] = -1;
 
+    ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
+    ePlayerInfo[playerid][e_iLastEquippedItemId] = -1;
+    
     eCharsInfo[playerid][e_iAttachSlot_Backpack] = -1;
     eCharsInfo[playerid][e_iAttachSlot_9mm] = -1;
     eCharsInfo[playerid][e_iAttachSlot_Revolver] = -1;

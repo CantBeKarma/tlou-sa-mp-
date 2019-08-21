@@ -76,7 +76,7 @@
                 }
 
                 // Other weapons.
-                GivePlayerWeaponInSlot(playerid, weaponId);
+                //GivePlayerWeaponInSlot(playerid, weaponId);
                 SetPlayerWeaponAmmo(playerid, weaponId, row_amount);
             }
         }

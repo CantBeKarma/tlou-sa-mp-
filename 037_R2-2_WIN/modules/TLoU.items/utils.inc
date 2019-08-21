@@ -347,7 +347,7 @@ SetPlayerItemAmount(playerid, itemId, amount, meleeUpgradedCnd = 0)
     // Update database info & give player item.
     if(!HasPlayerWeapon(playerid, weaponId))
     {
-        GivePlayerWeaponInSlot(playerid, weaponId);
+        //GivePlayerWeaponInSlot(playerid, weaponId);
         DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
     }
 

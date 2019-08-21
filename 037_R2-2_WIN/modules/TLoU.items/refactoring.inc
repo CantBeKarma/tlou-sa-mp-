@@ -1,9 +1,39 @@
-
 //#region Validation
 
-    IsValidItemId(itemId)               return (itemId >= 0 && itemId < MAX_ITEMS_DATA);
-    HasPlayerGotItem(playerid, itemId)  return (IsValidItemId(itemId) && ePlayerItemData[playerid][itemId][e_iItemId] != -1);
-    GetItemType(itemId)                 return (IsValidItemId(itemId) && eItemsData[itemId][e_iItem_Type]);
+    IsValidItemId(itemId)
+    {
+        return (itemId >= 0 && itemId < MAX_ITEMS_DATA);
+    }
+
+    GetItemType(itemId)
+    {
+        if(!IsValidItemId(itemId))
+        {
+            return -1;
+        }
+
+        return (eItemsData[itemId][e_iItem_Type]);
+    }
+
+    GetItemModel(itemId)
+    {
+        if(!IsValidItemId(itemId))
+        {
+            return -1;
+        }
+
+        return (eItemsData[itemId][e_iItem_ModelId]);
+    }
+
+    GetItemNativeWeaponId(itemId)
+    {
+        if(!IsValidItemId(itemId))
+        {
+            return -1;
+        }
+
+        return (eItemsData[itemId][e_iItem_SA_WeaponId]);
+    }
 
     IsItemUpgradeable(itemId, upgradeType = -1)
     {
@@ -52,6 +82,10 @@
 
 //#region Items | Get Values
 
+    HasPlayerGotItem(playerid, itemId)      return (IsValidItemId(itemId) && ePlayerItemData[playerid][itemId][e_iItemId] != -1);
+    GetPlayerEquippedItemId(playerid)       return (ePlayerInfo[playerid][e_iCurrentEquippedItemId]);
+    GetPlayerLastEquippedItemId(playerid)   return (ePlayerInfo[playerid][e_iLastEquippedItemId]);
+
     GetPlayerItemUpgradeLvl(playerid, itemId, upgradeType)
     {
         if(!HasPlayerGotItem(playerid, itemId))
@@ -84,8 +118,13 @@
         }
 
         new maxAmount = -1;
-        if(checkMeleeExtraCND && GetItemType(itemId) == ITEM_TYPE_MELEE)
+        if(checkMeleeExtraCND == true)
         {
+            if(GetItemType(itemId) != ITEM_TYPE_MELEE)
+            {
+                return -1;
+            }
+
             for(new i = 0; i != MAX_MELEE_ITEMS; i++)
             {
                 if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
@@ -141,6 +180,8 @@
         {
             return false;
         }
+
+        // GetItemMaxUpgradeLvl(itemId, upgradeType)
 
         switch(upgradeType)
         {
@@ -202,6 +243,11 @@
         }
 
         ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
+
+        if(GetPlayerEquippedItemId(playerid) == itemId)
+        {
+            //HudTd_UpdateWeaponAmmo(playerid, weaponId);
+        }
         return true;
     }
 
@@ -219,6 +265,11 @@
         WeapMenu_AssignItemToFreeSlot(playerid, itemId);
 
         ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
+
+        if(IsPlayerUsingWeaponMenu(playerid))
+        {
+            WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+        }
         return true;
     }
 
@@ -229,57 +280,119 @@
             return false;
         }
 
+        if(GetPlayerEquippedItemId(playerid) == itemId)
+        {
+            HideItem(playerid);
+        }
+        else if(GetPlayerLastEquippedItemId(playerid) == itemId)
+        {
+            ePlayerInfo[playerid][e_iLastEquippedItemId] = -1;
+            // GetNextWeaponWithAmmo
+        }
+
+        // If it was an item (weapon) from horizontal weapon menu bar
+        // below function is going to sort its order if necessary
         WeapMenu_RemoveAndSortItems(playerid, itemId);
 
         ePlayerItemData[playerid][itemId][e_iItemId] = -1;
         ePlayerItemData[playerid][itemId][e_iItemAmount] = -1;
+
+        if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+		{
+			HudTd_UpdateMelee(playerid);
+		}
+
+		if(ITEM_IDX:itemId == ITEM_IDX_SHIV)
+		{
+			HudTd_UpdateShivs(playerid);
+		}
+
+		DetachWeaponFromPlayersBody(playerid, GetItemNativeWeaponId(itemId));
         return true;
     }
 
-    WeapMenu_RemoveAndSortItems(playerid, itemId)
-    {
-        switch(ITEM_IDX:itemId)
-        {
-            case 
-                ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
-                {
-                    RemoveItemFromHorizontalBar(playerid, itemId, "left_side");
-                    WeapMenuTd_Horizontal_SortWeapons(playerid, "left_side");
-                }
+//#endregion
 
-            case 
-                ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
-                {
-                    RemoveItemFromHorizontalBar(playerid, itemId, "right_side");
-                    WeapMenuTd_Horizontal_SortWeapons(playerid, "right_side");
-                }
+//#region Items | Equipping/Hiding
+
+    EquipItem(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return false;
         }
+
+        if(GetPlayerEquippedItemId(playerid) != -1)
+        {
+            HideItem(playerid);
+        }
+
+        new itemAmount = GetPlayerItemAmount(playerid, itemId);
+        new nativeWeaponId = GetItemNativeWeaponId(itemId);
+
+        if(itemAmount <= 0)
+        {
+            if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
+            {
+                if(nativeWeaponId == WEAPON_BOW)
+                {
+                    SPAO(playerid, ITEM_MODEL_BOW, true);
+                }
+                else
+                {
+                    GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
+                }
+            }
+        }
+        else
+        {
+            PlayerWeaponBodyDamage[playerid] = eItemsData[itemId][e_iItem_BodyDmg];
+			PlayerWeaponHeadDamage[playerid] = eItemsData[itemId][e_iItem_HeadDmg];
+
+            switch(GetItemType(itemId))
+            {
+                case ITEM_TYPE_MELEE:
+                    GivePlayerWeapon(playerid, nativeWeaponId, 1);
+
+                case ITEM_TYPE_WEAPON:
+                {
+                    GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
+                    SetPlayerNoReload(playerid, (nativeWeaponId != WEAPON_SHOTGUN));
+
+                    // We need some extra data here like clip ammo
+                }
+            
+                case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE:
+                {
+                    SPAO(playerid, \
+                        (nativeWeaponId == WEAPON_MEDKIT ? ITEM_MODEL_BINDING : GetItemModel(itemId)), \
+                        (nativeWeaponId == WEAPON_BOW ? true : false));
+                }
+            }
+        }
+
+        ePlayerInfo[playerid][e_iCurrentEquippedItemId] = itemId;
+        return true;
     }
 
-    RemoveItemFromHorizontalBar(playerid, itemId, leftOrRight[] = "")
+    HideItem(playerid)
     {
-        if(!strcmp(leftOrRight, "left_side"))
+        if(GetPlayerEquippedItemId(playerid) == -1)
         {
-            for(new i = 0; i < 4; i++)
-            {
-                if(itemId == WeapMenu_Ls_WeaponId(playerid, i))
-                {
-                    WeapMenu_Ls_WeaponId(playerid, i) = -1;
-                    break;
-                }
-            }
+            return false;
         }
-        else if(!strcmp(leftOrRight, "right_side"))
-        {
-            for(new i = 0; i < 3; i++)
-            {
-                if(itemId == WeapMenu_Rs_WeaponId(playerid, i))
-                {
-                    WeapMenu_Rs_WeaponId(playerid, i) = -1;
-                    break;
-                }
-            }
-        }
+
+        ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
+        ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
+
+        PlayerWeaponBodyDamage[playerid] = DAMAGE_VALUE_FISTS;
+		PlayerWeaponHeadDamage[playerid] = DAMAGE_VALUE_FISTS;
+
+        ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
+
+        // OnPlayerWeaponChange(playerid, WEAPON_UNARMED, currentWeapon);
+
+        return true;
     }
 
 //#endregion
@@ -333,16 +446,23 @@ CMD:equipitem(playerid, params[])
     new itemId;
     if(sscanf(params, "d", itemId))return SCM(playerid, -1, "/equipitem [item_index] (/myitems)");
     {
-        if(!HasPlayerGotItem(playerid, itemId))
-        {
-            SCM(playerid, -1, "You've tried to equip item that you either don't have or is invalid!");
-            return 1;
-        }
+        EquipItem(playerid, itemId);
+    }
+    return 1;
+}
 
-        if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
-        {
-            GivePlayerWeapon(playerid, eItemsData[itemId][e_iItem_SA_WeaponId], GetPlayerItemAmount(playerid, itemId));
-        }
+CMD:equipped(playerid, params[])
+{
+    SCMF(playerid, -1, "Currently equipped: %d", GetPlayerEquippedItemId(playerid));
+    return 1;
+}
+
+CMD:removeitem(playerid, params[])
+{
+    new itemId;
+    if(sscanf(params, "d", itemId))return SCM(playerid, -1, "/removeitem [item_index] (/myitems)");
+    {
+        RemovePlayerItem(playerid, itemId);
     }
     return 1;
 }

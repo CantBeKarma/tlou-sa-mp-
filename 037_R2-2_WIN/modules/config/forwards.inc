@@ -48,8 +48,8 @@ forward OnPlayerUD_SwapWeaps(playerid, keys);
 forward OnPlayerStartSwappingWeaps(playerid);
 forward OnPlayerFinishSwappingWeaps(playerid);
 
-forward OnPlayerTryAimingWeapon(playerid, weaponId);
-forward OnPlayerAimsWeapon(playerid, weaponId);
+forward OnPlayerTryAimingWeapon(playerid, itemId);
+forward OnPlayerAimsWeapon(playerid, itemId);
 forward OnPlayerStopAimingWeapon(playerid);
 forward OnPlayerStartAimingBulletWeapon(playerid);
 forward OnPlayerStopAimingBulletWeapon(playerid);

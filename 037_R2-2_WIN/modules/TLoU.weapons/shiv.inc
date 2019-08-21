@@ -10,7 +10,7 @@ public OnPlayerShivPlayer(playerid, shivedId)
 	
 	if(newShivAmount <= 0)
 	{
-		RemovePlayerWeapon(playerid, WEAPON_SHIV);
+		//RemovePlayerWeapon(playerid, WEAPON_SHIV);
 	}
 
 	HidePlayerWeapon(playerid);

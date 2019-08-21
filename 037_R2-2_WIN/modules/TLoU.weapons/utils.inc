@@ -26,7 +26,8 @@ ResetEnum_ePlayerWeapon(playerid)
 			}
 		}
 
-		if(CurrentPlayerWeaponId[playerid] == WEAPON_SHOTGUN || CurrentPlayerWeaponId[playerid] == WEAPON_SHORTY)
+		new nativeWeaponId = GetItemNativeWeaponId(GetPlayerEquippedItemId(playerid));
+		if(nativeWeaponId == WEAPON_SHOTGUN || nativeWeaponId == WEAPON_SHORTY)
 		{
 			TdShowForPlayer(playerid, eTextDrawInfo[e_Aim][1]);
 			TdHideForPlayer(playerid, eTextDrawInfo[e_Aim][0]);
@@ -312,117 +313,119 @@ ResetEnum_ePlayerWeapon(playerid)
 	}
 
 	// Give player weapon based on slot.
-	GivePlayerWeaponInSlot(playerid, weaponId)
-	{
-		if(HasPlayerWeapon(playerid, weaponId))
-			return;
+	// GivePlayerWeaponInSlot(playerid, weaponId)
+	// {
+	// 	if(HasPlayerWeapon(playerid, weaponId))
+	// 		return;
 
-		switch(weaponId)
-		{
-			case WEAPON_SHOTGUN, WEAPON_RIFLE, WEAPON_BOW, WEAPON_ASSAULT:
-			{
-				new weapMenu_Ls_freeSlot = WeapMenuTd_GetFreeSlot_H_Ls(playerid);
-				WeapMenu_Ls_WeaponId(playerid, weapMenu_Ls_freeSlot) = weaponId;
-			}
+	// 	switch(weaponId)
+	// 	{
+	// 		case WEAPON_SHOTGUN, WEAPON_RIFLE, WEAPON_BOW, WEAPON_ASSAULT:
+	// 		{
+	// 			new weapMenu_Ls_freeSlot = WeapMenuTd_GetFreeSlot_H_Ls(playerid);
+	// 			WeapMenu_Ls_WeaponId(playerid, weapMenu_Ls_freeSlot) = weaponId;
+	// 		}
 
-			case WEAPON_9MM, WEAPON_REVOLVER, WEAPON_SHORTY:
-			{
-				new weapMenu_Rs_freeSlot = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
-				WeapMenu_Rs_WeaponId(playerid, weapMenu_Rs_freeSlot) = weaponId;
-			}
-		}
+	// 		case WEAPON_9MM, WEAPON_REVOLVER, WEAPON_SHORTY:
+	// 		{
+	// 			new weapMenu_Rs_freeSlot = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
+	// 			WeapMenu_Rs_WeaponId(playerid, weapMenu_Rs_freeSlot) = weaponId;
+	// 		}
+	// 	}
 
-		ePlayerWeapon[playerid][e_iWeaponsId][GetCustomWeaponSlot(weaponId)] = weaponId;
+	// 	ePlayerWeapon[playerid][e_iWeaponsId][GetCustomWeaponSlot(weaponId)] = weaponId;
 
-		if(IsPlayerUsingWeaponMenu(playerid))
-		{
-			WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-		}
-	}
+	// 	if(IsPlayerUsingWeaponMenu(playerid))
+	// 	{
+	// 		WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+	// 	}
+	// }
 
 	// Remove player's weapon (doesn't matter if equipped or not).
-	RemovePlayerWeapon(playerid, weaponId)
-	{
-		if(!HasPlayerWeapon(playerid, weaponId))
-		{
-			return;
-		}
+	// RemovePlayerWeapon(playerid, weaponId)
+	// {
+	// 	if(!HasPlayerWeapon(playerid, weaponId))
+	// 	{
+	// 		return;
+	// 	}
 
-		if(CurrentPlayerWeaponId[playerid] == weaponId)
-		{
-			HidePlayerWeapon(playerid);
-		}
+	// 	if(CurrentPlayerWeaponId[playerid] == weaponId)
+	// 	{
+	// 		HidePlayerWeapon(playerid);
+	// 	}
 
-		if(LastPlayerWeaponId[playerid] == weaponId)
-		{
-			LastPlayerWeaponId[playerid] = GetFirstWeaponWithAmmo(playerid);
-		}
+	// 	if(LastPlayerWeaponId[playerid] == weaponId)
+	// 	{
+	// 		LastPlayerWeaponId[playerid] = GetFirstWeaponWithAmmo(playerid);
+	// 	}
 
-		switch(weaponId)
-		{
-			case
-				WEAPON_9MM, WEAPON_REVOLVER, WEAPON_SHORTY:
-				{
-					for(new i = 0; i < 3; i++)
-					{
-						if(weaponId == WeapMenu_Rs_WeaponId(playerid, i))
-						{
-							WeapMenu_Rs_WeaponId(playerid, i) = -1;
-							break;
-						}
-					}
-					WeapMenu_Rs_SortWeapons(playerid);
-				}
+	// 	switch(weaponId)
+	// 	{
+	// 		case
+	// 			WEAPON_9MM, WEAPON_REVOLVER, WEAPON_SHORTY:
+	// 			{
+	// 				for(new i = 0; i < 3; i++)
+	// 				{
+	// 					if(weaponId == WeapMenu_Rs_WeaponId(playerid, i))
+	// 					{
+	// 						WeapMenu_Rs_WeaponId(playerid, i) = -1;
+	// 						break;
+	// 					}
+	// 				}
+	// 				//WeapMenu_Rs_SortWeapons(playerid);
+	// 			}
 
-			case 
-				WEAPON_SHOTGUN, WEAPON_RIFLE, 
-				WEAPON_ASSAULT, WEAPON_BOW:
-				{
-					for(new i = 0; i < 4; i++)
-					{
-						if(weaponId == WeapMenu_Ls_WeaponId(playerid, i))
-						{
-							WeapMenu_Ls_WeaponId(playerid, i) = -1;
-							break;
-						}
-					}
-					WeapMenu_Ls_SortWeapons(playerid);
-				}
-		}
+	// 		case 
+	// 			WEAPON_SHOTGUN, WEAPON_RIFLE, 
+	// 			WEAPON_ASSAULT, WEAPON_BOW:
+	// 			{
+	// 				for(new i = 0; i < 4; i++)
+	// 				{
+	// 					if(weaponId == WeapMenu_Ls_WeaponId(playerid, i))
+	// 					{
+	// 						WeapMenu_Ls_WeaponId(playerid, i) = -1;
+	// 						break;
+	// 					}
+	// 				}
+	// 				//WeapMenu_Ls_SortWeapons(playerid);
+	// 			}
+	// 	}
 
-		new weaponSlot = GetCustomWeaponSlot(weaponId);
-		ePlayerWeapon[playerid][e_iWeaponsId][weaponSlot] = 0;
-		ePlayerWeapon[playerid][e_iWeaponsAmmo][weaponSlot] = 0;
+	// 	new weaponSlot = GetCustomWeaponSlot(weaponId);
+	// 	ePlayerWeapon[playerid][e_iWeaponsId][weaponSlot] = 0;
+	// 	ePlayerWeapon[playerid][e_iWeaponsAmmo][weaponSlot] = 0;
 
-		if(IsMeleeWeapon(weaponId))
-		{
-			HudTd_UpdateMelee(playerid);
-		}
+	// 	if(IsMeleeWeapon(weaponId))
+	// 	{
+	// 		HudTd_UpdateMelee(playerid);
+	// 	}
 
-		if(weaponId == WEAPON_SHIV)
-		{
-			HudTd_UpdateShivs(playerid);
-		}
+	// 	if(weaponId == WEAPON_SHIV)
+	// 	{
+	// 		HudTd_UpdateShivs(playerid);
+	// 	}
 
-		DetachWeaponFromPlayersBody(playerid, weaponId);
-	}
+	// 	DetachWeaponFromPlayersBody(playerid, weaponId);
+	// }
 
 	// Reloads player's weapon
 	ReloadWeapon(playerid)
 	{
-		new currentWeapon = CurrentPlayerWeaponId[playerid];
+		new currentEquippedItemId = GetPlayerEquippedItemId(playerid);
+		new currentWeaponId = GetItemNativeWeaponId(currentEquippedItemId);
 
 		if(IsPlayerUnableToPerformAction(playerid)
 		|| GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_CROUCHLOAD || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_LOAD
-		|| IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid) || !IsBulletWeapon(currentWeapon))
+		|| IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid) || GetItemType(currentEquippedItemId) != ITEM_TYPE_WEAPON)
 		{
 			return;
 		}
 
 		new 
-			currentAmmo = CurrentPlayerWeaponAmmo[playerid],
+			//currentAmmo = CurrentPlayerWeaponAmmo[playerid],
+			currentAmmo = GetPlayerItemAmount(playerid, currentEquippedItemId),
 			currentClipSize = CurrentPlayerWeaponClipSize[playerid],
-			maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, currentWeapon);
+			maxWeaponClipSize = GetPlayerItemMaxAmount(playerid, currentEquippedItemId); //GetPlayerWeaponLvl_MaxClipSize(playerid, currentWeaponId);
 
 		if(currentAmmo <= currentClipSize || currentClipSize == maxWeaponClipSize)
 		{
@@ -432,7 +435,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
 		
 		new newClipSize = CurrentPlayerWeaponClipSize[playerid] = (currentAmmo > maxWeaponClipSize) ? (maxWeaponClipSize) : (currentAmmo);
-		OnPlayerReloadWeapon(playerid, currentWeapon, currentClipSize, newClipSize);
+		OnPlayerReloadWeapon(playerid, currentWeaponId, currentClipSize, newClipSize);
 	}
 
 	// Gets first bullet weapon that player's own and has some ammo for it (used on the "Click noise")
@@ -526,11 +529,11 @@ ResetEnum_ePlayerWeapon(playerid)
 		}
 
 		// Removes melee weapon if broke.
-		if(!IsPlayerMeleeUpgraded[playerid])
-		{
-			RemovePlayerWeapon(playerid, weaponid);
-			return;
-		}
+		// if(!IsPlayerMeleeUpgraded[playerid])
+		// {
+		// 	RemovePlayerWeapon(playerid, weaponid);
+		// 	return;
+		// }
 
 		// If melee is upgraded - remove its upgraded feature and hide bars of it.
 		IsPlayerMeleeUpgraded[playerid] = false;

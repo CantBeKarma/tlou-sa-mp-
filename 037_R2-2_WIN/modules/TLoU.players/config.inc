@@ -77,6 +77,9 @@
 		e_iTickCounter_damageAnim,
 		e_iTickCounter_holdingKey,
 		Timer:e_iTimer_hideChat,
+
+		e_iCurrentEquippedItemId,
+		e_iLastEquippedItemId
 	}
 	new ePlayerInfo[MAX_PLAYERS][e_PLAYER_DATA];
 

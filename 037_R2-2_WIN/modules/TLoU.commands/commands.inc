@@ -8,15 +8,15 @@ CMD:hp(playerid, params[])
     return 1;
 }
 
-CMD:removeweap(playerid, params[])
-{
-    new weaponId;
-    if(sscanf(params, "d", weaponId)) return SCM(playerid, -1, "/removeWeap [weapon_id]");
-    {
-        RemovePlayerWeapon(playerid, weaponId);
-    }
-    return 1;
-}
+// CMD:removeweap(playerid, params[])
+// {
+//     new weaponId;
+//     if(sscanf(params, "d", weaponId)) return SCM(playerid, -1, "/removeWeap [weapon_id]");
+//     {
+//         RemovePlayerWeapon(playerid, weaponId);
+//     }
+//     return 1;
+// }
 
 CMD:align(playerid, params[])
 {

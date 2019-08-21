@@ -88,6 +88,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartAimingBulletWeapon(playerid)
 {
+    //if(GetPlayerItemAmount(playerid, GetPlayerEquippedItemId(playerid)) > 0)
 	if(CurrentPlayerWeaponClipSize[playerid] > 0)
 	{
 		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);

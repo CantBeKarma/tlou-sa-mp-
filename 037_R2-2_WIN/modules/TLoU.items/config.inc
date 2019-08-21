@@ -7,6 +7,7 @@
 #define     NO_OWNER_UID            (-1)
 #define     ITEM_LABEL_DRAW_DIST    (2.5)
 #define     HEAL_ITEM_RECOVER_HP    (5.0)
+#define     DAMAGE_VALUE_FISTS      (8.0)
 
 // Types of the items available.
 #define     ITEM_TYPE_MELEE         (0)
@@ -97,7 +98,7 @@ enum ITEM_IDX
     ITEM_IDX_BOTTLE
 };
 
-stock const eItemsSprites[] =
+stock const eItemsSprites[MAX_ITEMS_DATA][25] =
 {
     "TLoU:ingr_blade_full",
     "TLoU:ingr_binding_full",
