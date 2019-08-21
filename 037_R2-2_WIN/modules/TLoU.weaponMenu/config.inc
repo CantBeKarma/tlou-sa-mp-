@@ -18,6 +18,9 @@
 #define     WeapMenu_Ls_WeaponId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Ls_Weapons][%1]
 #define     WeapMenu_Rs_WeaponId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Rs_Weapons][%1]
 
+#define     WeapMenu_Ls_ItemId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Ls_ItemId][%1]
+#define     WeapMenu_Rs_ItemId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Rs_ItemId][%1]
+
 enum e_WEAPMENU_DATA
 {
     Float:e_fSelBoxX,
@@ -47,5 +50,8 @@ enum e_PLAYER_WEAPMENU_DATA
     e_iWeapMenu_SelectedItemH,
     e_iWeapMenu_H_Ls_Weapons[4],
     e_iWeapMenu_H_Rs_Weapons[3],
+
+    e_iWeapMenu_H_Ls_ItemId[4],
+    e_iWeapMenu_H_Rs_ItemId[3]
 };
 new ePlayerWeapMenu[MAX_PLAYERS][e_PLAYER_WEAPMENU_DATA];

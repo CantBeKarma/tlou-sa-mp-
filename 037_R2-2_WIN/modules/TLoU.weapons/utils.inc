@@ -371,7 +371,7 @@ ResetEnum_ePlayerWeapon(playerid)
 							break;
 						}
 					}
-					Weapon_Rs_SortWeapons(playerid);
+					WeapMenu_Rs_SortWeapons(playerid);
 				}
 
 			case 

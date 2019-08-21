@@ -42,32 +42,62 @@ WeapMenuTd_GetFreeSlot_H_Rs(playerid)
     return -1;
 }
 
-// Sort weapons on the left side-bar of the weapon menu (long-guns).
-WeapMenu_Ls_SortWeapons(playerid)
+WeapMenuTd_Horizontal_SortWeapons(playerid, leftOrRight[] = "")
 {
-    new currentSlot = 1;
+    new currentSlot = -1;
 
-    while(currentSlot < 3)
+    if(!strcmp(leftOrRight, "left_side"))
     {
-        new slotToCheck =
-            (currentSlot == 1) ? (0)
-        :   (currentSlot == 0) ? (2)
-        :   (currentSlot == 2) ? (3)
-        :   (-1);
-
-        if(slotToCheck == -1)
-            break;
-
-        if(WeapMenu_Ls_WeaponId(playerid, currentSlot) == -1)
+        currentSlot = 1;
+        
+        while(currentSlot < 4)
         {
-            if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
-            {
-                WeapMenu_Ls_WeaponId(playerid, currentSlot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
-                WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
-            }
-        }
+            new slotToCheck =
+                (currentSlot == 1) ? (0)
+            :   (currentSlot == 0) ? (2)
+            :   (currentSlot == 2) ? (3)
+            :   (-1);
 
-        currentSlot = slotToCheck;
+            if(slotToCheck == -1)
+                break;
+
+            if(WeapMenu_Ls_WeaponId(playerid, currentSlot) == -1)
+            {
+                if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
+                {
+                    WeapMenu_Ls_WeaponId(playerid, currentSlot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
+                    WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
+                }
+            }
+
+            currentSlot = slotToCheck;
+        }
+    }
+    else if(!strcmp(leftOrRight, "right_side"))
+    {
+        currentSlot = 0;
+
+        while(currentSlot < 3)
+        {
+            new slotToCheck = 
+                (currentSlot == 0) ? (1) 
+            :   (currentSlot == 1) ? (2)
+            :   (-1);
+
+            if(slotToCheck == -1)
+                break;
+
+            if(WeapMenu_Rs_WeaponId(playerid, currentSlot) == -1)
+            {
+                if(WeapMenu_Rs_WeaponId(playerid, slotToCheck) != -1)
+                {
+                    WeapMenu_Rs_WeaponId(playerid, currentSlot) = WeapMenu_Rs_WeaponId(playerid, slotToCheck);
+                    WeapMenu_Rs_WeaponId(playerid, slotToCheck) = -1;
+                }
+            }
+
+            currentSlot = slotToCheck;
+        }
     }
 
     if(IsPlayerUsingWeaponMenu(playerid))
@@ -76,38 +106,94 @@ WeapMenu_Ls_SortWeapons(playerid)
     }
 }
 
-// Sort weapons on the right side-bar of the wepaon menu (short-guns).
-Weapon_Rs_SortWeapons(playerid)
+WeapMenu_AssignItemToFreeSlot(playerid, itemId)
 {
-    new currentSlot = 0;
-
-    while(currentSlot < 3)
+    switch(ITEM_IDX:itemId)
     {
-        new slotToCheck = 
-            (currentSlot == 0) ? (1) 
-        :   (currentSlot == 1) ? (2)
-        :   (-1);
-
-        if(slotToCheck == -1)
-            break;
-
-        if(WeapMenu_Rs_WeaponId(playerid, currentSlot) == -1)
-        {
-            if(WeapMenu_Rs_WeaponId(playerid, slotToCheck) != -1)
+        case 
+            ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
             {
-                WeapMenu_Rs_WeaponId(playerid, currentSlot) = WeapMenu_Rs_WeaponId(playerid, slotToCheck);
-                WeapMenu_Rs_WeaponId(playerid, slotToCheck) = -1;
+                new freeSlotId = WeapMenuTd_GetFreeSlot_H_Ls(playerid);
+                WeapMenu_Ls_ItemId(playerid, freeSlotId) = itemId;
             }
-        }
 
-        currentSlot = slotToCheck;
-    }
-
-    if(IsPlayerUsingWeaponMenu(playerid))
-    {
-        WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+        case 
+            ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
+            {
+                new freeSlotId = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
+                WeapMenu_Rs_ItemId(playerid, freeSlotId) = itemId;
+            }
     }
 }
+
+//#region Old sorting
+    // Sort weapons on the left side-bar of the weapon menu (long-guns).
+    // WeapMenu_Ls_SortWeapons(playerid)
+    // {
+    //     new currentSlot = 1;
+
+    //     while(currentSlot < 3)
+    //     {
+    //         new slotToCheck =
+    //             (currentSlot == 1) ? (0)
+    //         :   (currentSlot == 0) ? (2)
+    //         :   (currentSlot == 2) ? (3)
+    //         :   (-1);
+
+    //         if(slotToCheck == -1)
+    //             break;
+
+    //         if(WeapMenu_Ls_WeaponId(playerid, currentSlot) == -1)
+    //         {
+    //             if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
+    //             {
+    //                 WeapMenu_Ls_WeaponId(playerid, currentSlot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
+    //                 WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
+    //             }
+    //         }
+
+    //         currentSlot = slotToCheck;
+    //     }
+
+    //     if(IsPlayerUsingWeaponMenu(playerid))
+    //     {
+    //         WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+    //     }
+    // }
+
+    // // Sort weapons on the right side-bar of the wepaon menu (short-guns).
+    // WeapMenu_Rs_SortWeapons(playerid)
+    // {
+    //     new currentSlot = 0;
+
+    //     while(currentSlot < 3)
+    //     {
+    //         new slotToCheck = 
+    //             (currentSlot == 0) ? (1) 
+    //         :   (currentSlot == 1) ? (2)
+    //         :   (-1);
+
+    //         if(slotToCheck == -1)
+    //             break;
+
+    //         if(WeapMenu_Rs_WeaponId(playerid, currentSlot) == -1)
+    //         {
+    //             if(WeapMenu_Rs_WeaponId(playerid, slotToCheck) != -1)
+    //             {
+    //                 WeapMenu_Rs_WeaponId(playerid, currentSlot) = WeapMenu_Rs_WeaponId(playerid, slotToCheck);
+    //                 WeapMenu_Rs_WeaponId(playerid, slotToCheck) = -1;
+    //             }
+    //         }
+
+    //         currentSlot = slotToCheck;
+    //     }
+
+    //     if(IsPlayerUsingWeaponMenu(playerid))
+    //     {
+    //         WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+    //     }
+    // }
+//#endregion
 
 // Change the position of selection box
 WeapMenu_MoveSelectBox(playerid, Float:x, Float:y)
@@ -269,10 +355,10 @@ WeapMenuTd_DisplayWeapsAndAmmo(playerid)
             case 4: itemId = ITEM_IDX:ITEM_IDX_SMOKE_BOMB;
 
             // Horizontal (left -> right)
-            case 5: itemId = ITEM_IDX:WeapMenu_Ls_WeaponId(playerid, 0);
-            case 6: itemId = ITEM_IDX:WeapMenu_Ls_WeaponId(playerid, 1);
-            case 7: itemId = ITEM_IDX:WeapMenu_Rs_WeaponId(playerid, 0);
-            case 8: itemId = ITEM_IDX:WeapMenu_Rs_WeaponId(playerid, 1);
+            case 5: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 0);
+            case 6: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 1);
+            case 7: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 0);
+            case 8: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 1);
         }
 
         if(!HasPlayerGotItem(playerid, _:itemId))

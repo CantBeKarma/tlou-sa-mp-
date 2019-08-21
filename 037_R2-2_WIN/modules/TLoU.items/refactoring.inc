@@ -1,238 +1,288 @@
-IsValidItemId(itemId)               return (itemId >= 0 && itemId < MAX_ITEMS_DATA);
-HasPlayerGotItem(playerid, itemId)  return (IsValidItemId(itemId) && ePlayerItemData[playerid][itemId][e_iItemId] != -1);
-GetItemType(itemId)                 return (IsValidItemId(itemId) && eItemsData[itemId][e_iItem_Type]);
 
-IsItemUpgradeable(itemId, upgradeType = -1)
-{
-    for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+//#region Validation
+
+    IsValidItemId(itemId)               return (itemId >= 0 && itemId < MAX_ITEMS_DATA);
+    HasPlayerGotItem(playerid, itemId)  return (IsValidItemId(itemId) && ePlayerItemData[playerid][itemId][e_iItemId] != -1);
+    GetItemType(itemId)                 return (IsValidItemId(itemId) && eItemsData[itemId][e_iItem_Type]);
+
+    IsItemUpgradeable(itemId, upgradeType = -1)
     {
-        if(upgradeType == -1)
+        for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
         {
-            if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId])
+            if(upgradeType == -1)
             {
-                return true;
+                if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId])
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId]
+                && upgradeType == eItemsUpgrades[i][e_iItem_UpgradeType])
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    IsPlayerFullOnItem(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return false;
+        }
+
+        new bool:result = false;
+
+        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || GetItemType(itemId) == ITEM_TYPE_MELEE))
+        {
+            result = (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId));
+        }
+        else
+        {
+            result = (GetPlayerItemAmount(playerid, itemId) >= eItemsData[itemId][e_iItem_MaxAmount]);
+        }
+        return result;
+    }
+
+//#endregion
+
+//#region Items | Get Values
+
+    GetPlayerItemUpgradeLvl(playerid, itemId, upgradeType)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return -1;
+        }
+
+        switch(upgradeType)
+        {
+            case UPGRADE_TYPE_CLIPSIZE: return ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize];
+        }
+        return 0;
+    }
+
+    GetPlayerItemAmount(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return -1;
+        }
+
+        return ePlayerItemData[playerid][itemId][e_iItemAmount];
+    }
+
+    GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return -1;
+        }
+
+        new maxAmount = -1;
+        if(checkMeleeExtraCND && GetItemType(itemId) == ITEM_TYPE_MELEE)
+        {
+            for(new i = 0; i != MAX_MELEE_ITEMS; i++)
+            {
+                if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
+                {
+                    maxAmount = eItemsMeleeCND[i][e_iItemExtraCND];
+                    break;
+                }
             }
         }
         else
         {
-            if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId]
-            && upgradeType == eItemsUpgrades[i][e_iItem_UpgradeType])
+            maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
+            if(maxAmount == -1)
             {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-GetPlayerItemUpgradeLvl(playerid, itemId, upgradeType)
-{
-    if(!HasPlayerGotItem(playerid, itemId))
-    {
-        return -1;
-    }
-
-    switch(upgradeType)
-    {
-        case UPGRADE_TYPE_CLIPSIZE: return ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize];
-    }
-    return 0;
-}
-
-bool:SetPlayerItemUpgradeLvl(playerid, itemId, level, upgradeType)
-{
-    if(!IsItemUpgradeable(itemId, upgradeType) || !HasPlayerGotItem(playerid, itemId))
-    {
-        return false;
-    }
-
-    switch(upgradeType)
-    {
-        case UPGRADE_TYPE_CLIPSIZE: ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize] = level;
-    }
-    return true;
-}
-
-GetPlayerItemAmount(playerid, itemId)
-{
-    if(!HasPlayerGotItem(playerid, itemId))
-    {
-        return -1;
-    }
-
-    return ePlayerItemData[playerid][itemId][e_iItemAmount];
-}
-
-GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
-{
-    if(!HasPlayerGotItem(playerid, itemId))
-    {
-        return -1;
-    }
-
-    new maxAmount = -1;
-    if(checkMeleeExtraCND && GetItemType(itemId) == ITEM_TYPE_MELEE)
-    {
-        for(new i = 0; i != MAX_MELEE_ITEMS; i++)
-        {
-            if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
-            {
-                maxAmount = eItemsMeleeCND[i][e_iItemExtraCND];
-                break;
-            }
-        }
-    }
-    else
-    {
-        maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
-        if(maxAmount == -1)
-        {
-            if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
-            {
-                new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
-            
-                for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+                if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
                 {
-                    if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
-                    && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
-                    && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
+                    new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
+                
+                    for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
                     {
-                        maxAmount = eItemsUpgrades[i][e_iItem_MaxAmount];
-                        break;
+                        if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
+                        && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
+                        && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
+                        {
+                            maxAmount = eItemsUpgrades[i][e_iItem_MaxAmount];
+                            break;
+                        }
                     }
                 }
-            }
-            else if(GetItemType(itemId) == ITEM_TYPE_MELEE)
-            {
-                for(new i = 0; i != MAX_MELEE_ITEMS; i++)
+                else if(GetItemType(itemId) == ITEM_TYPE_MELEE)
                 {
-                    if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
+                    for(new i = 0; i != MAX_MELEE_ITEMS; i++)
                     {
-                        maxAmount = eItemsMeleeCND[i][e_iItemBasicCND];
-                        break;
+                        if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
+                        {
+                            maxAmount = eItemsMeleeCND[i][e_iItemBasicCND];
+                            break;
+                        }
                     }
                 }
             }
         }
-    }
-    return maxAmount;
-}
-
-IsPlayerFullOnItem(playerid, itemId)
-{
-    if(!HasPlayerGotItem(playerid, itemId))
-    {
-        return false;
+        return maxAmount;
     }
 
-    new bool:result = false;
+//#endregion
 
-    if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || GetItemType(itemId) == ITEM_TYPE_MELEE))
+//#region Items | Set Values
+
+    bool:SetPlayerItemUpgradeLvl(playerid, itemId, level, upgradeType)
     {
-        result = (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId));
-    }
-    else
-    {
-        result = (GetPlayerItemAmount(playerid, itemId) >= eItemsData[itemId][e_iItem_MaxAmount]);
-    }
-    return result;
-}
-
-GivePlayerItem(playerid, itemId)
-{
-    if(HasPlayerGotItem(playerid, itemId))
-    {
-        return false;
-    }
-
-    switch(ITEM_IDX:itemId)
-    {
-        case ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
-        {
-            new freeSlot = WeapMenuTd_GetFreeSlot_H_Ls(playerid);
-            WeapMenu_Ls_WeaponId(playerid, freeSlot) = itemId;
-        }
-
-        case ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
-        {
-            new freeSlot = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
-            WeapMenu_Rs_WeaponId(playerid, freeSlot) = itemId;
-
-            SCMF(playerid, -1, "Giving player itemId: %d on freeSlot: %d", itemId, freeSlot);
-        }
-    }
-
-    ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
-    return true;
-}
-
-bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCND, extraCND = 0)
-{
-    if(!HasPlayerGotItem(playerid, itemId) || eItemsData[itemId][e_iItem_Type] != ITEM_TYPE_MELEE)
-    {
-        return false;
-    }
-
-    if(basicCND <= 0)
-    {
-        RemovePlayerItem(playerid, itemId);
-    }
-    else
-    {
-        new maxBasicCND = GetPlayerItemMaxAmount(playerid, itemId);
-        ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCND > maxBasicCND) ? (maxBasicCND) : (basicCND);
-    }
-
-    if(extraCND > 0)
-    {
-        new maxExtraCND = GetPlayerItemMaxAmount(playerid, itemId, true);
-        ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCND > maxExtraCND) ? (maxExtraCND) : (extraCND);
-    }
-    return true;
-}
-
-SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND = 0)
-{
-    if(!HasPlayerGotItem(playerid, itemId) || IsPlayerFullOnItem(playerid, itemId))
-    {
-        return false;
-    }
-
-    if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
-    {
-        if((amount % 25) != 0)
+        if(!IsItemUpgradeable(itemId, upgradeType) || !HasPlayerGotItem(playerid, itemId))
         {
             return false;
         }
+
+        switch(upgradeType)
+        {
+            case UPGRADE_TYPE_CLIPSIZE: ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize] = level;
+        }
+        return true;
     }
 
-    if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+    bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCND, extraCND = 0)
     {
-        return SetPlayerMeleeWeaponCND(playerid, itemId, amount, meleeExtraCND);
+        if(!HasPlayerGotItem(playerid, itemId) || eItemsData[itemId][e_iItem_Type] != ITEM_TYPE_MELEE)
+        {
+            return false;
+        }
+
+        if(basicCND <= 0)
+        {
+            RemovePlayerItem(playerid, itemId);
+        }
+        else
+        {
+            new maxBasicCND = GetPlayerItemMaxAmount(playerid, itemId);
+            ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCND > maxBasicCND) ? (maxBasicCND) : (basicCND);
+        }
+
+        if(extraCND > 0)
+        {
+            new maxExtraCND = GetPlayerItemMaxAmount(playerid, itemId, true);
+            ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCND > maxExtraCND) ? (maxExtraCND) : (extraCND);
+        }
+        return true;
     }
 
-    new maxItemAmount = GetPlayerItemMaxAmount(playerid, itemId);
-    if(maxItemAmount == -1)
+    SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND = 0)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: received invalid max item amount (-1). ItemId: %d", itemId);
-        return false;
+        if(!HasPlayerGotItem(playerid, itemId) || IsPlayerFullOnItem(playerid, itemId))
+        {
+            return false;
+        }
+
+        if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
+        {
+            if((amount % 25) != 0)
+            {
+                return false;
+            }
+        }
+
+        if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+        {
+            return SetPlayerMeleeWeaponCND(playerid, itemId, amount, meleeExtraCND);
+        }
+
+        new maxItemAmount = GetPlayerItemMaxAmount(playerid, itemId);
+        if(maxItemAmount == -1)
+        {
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: received invalid max item amount (-1). ItemId: %d", itemId);
+            return false;
+        }
+
+        ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
+        return true;
     }
 
-    ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
-    return true;
-}
+//#endregion
 
-RemovePlayerItem(playerid, itemId)
-{
-    if(!HasPlayerGotItem(playerid, itemId))
+//#region Items | Give/Remove
+
+    GivePlayerItem(playerid, itemId)
     {
-        return false;
+        if(HasPlayerGotItem(playerid, itemId))
+        {
+            return false;
+        }
+
+        WeapMenu_AssignItemToFreeSlot(playerid, itemId);
+
+        ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
+        return true;
     }
 
-    ePlayerItemData[playerid][itemId][e_iItemId] = -1;
-    ePlayerItemData[playerid][itemId][e_iItemAmount] = -1;
-    return true;
-}
+    RemovePlayerItem(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return false;
+        }
+
+        WeapMenu_RemoveAndSortItems(playerid, itemId);
+
+        ePlayerItemData[playerid][itemId][e_iItemId] = -1;
+        ePlayerItemData[playerid][itemId][e_iItemAmount] = -1;
+        return true;
+    }
+
+    WeapMenu_RemoveAndSortItems(playerid, itemId)
+    {
+        switch(ITEM_IDX:itemId)
+        {
+            case 
+                ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
+                {
+                    RemoveItemFromHorizontalBar(playerid, itemId, "left_side");
+                    WeapMenuTd_Horizontal_SortWeapons(playerid, "left_side");
+                }
+
+            case 
+                ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
+                {
+                    RemoveItemFromHorizontalBar(playerid, itemId, "right_side");
+                    WeapMenuTd_Horizontal_SortWeapons(playerid, "right_side");
+                }
+        }
+    }
+
+    RemoveItemFromHorizontalBar(playerid, itemId, leftOrRight[] = "")
+    {
+        if(!strcmp(leftOrRight, "left_side"))
+        {
+            for(new i = 0; i < 4; i++)
+            {
+                if(itemId == WeapMenu_Ls_WeaponId(playerid, i))
+                {
+                    WeapMenu_Ls_WeaponId(playerid, i) = -1;
+                    break;
+                }
+            }
+        }
+        else if(!strcmp(leftOrRight, "right_side"))
+        {
+            for(new i = 0; i < 3; i++)
+            {
+                if(itemId == WeapMenu_Rs_WeaponId(playerid, i))
+                {
+                    WeapMenu_Rs_WeaponId(playerid, i) = -1;
+                    break;
+                }
+            }
+        }
+    }
+
+//#endregion
 
 CMD:giveitem(playerid, params[])
 {

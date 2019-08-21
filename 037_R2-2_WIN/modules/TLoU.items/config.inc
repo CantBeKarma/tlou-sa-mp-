@@ -140,7 +140,6 @@ enum e_ITEM_DATA
     e_iItem_Type,
     e_iItem_ModelId,
     e_iItem_SlotId,
-    //e_iItem_MaxClipSize,
     e_iItem_MaxAmount,
     e_iItem_AudioPickupId,
     e_iItem_SA_WeaponId,
