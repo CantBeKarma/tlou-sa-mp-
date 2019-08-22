@@ -219,7 +219,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         // If player currently uses throwable item.
         if(IsThrowableWeapon(CurrentPlayerWeaponId[playerid]))
         {
-            SetPlayerWeapon(playerid, itemWeaponId);
+            //SetPlayerWeapon(playerid, itemWeaponId);
         }
         // If player last weapon is his throwable item.
         else if(LastPlayerWeaponId[playerid] == playerThrowable)

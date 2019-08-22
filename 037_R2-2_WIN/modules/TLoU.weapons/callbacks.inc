@@ -60,7 +60,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                     else
                     {
                         ApplyAnimation(playerid, "TLoU", "WEAPON_SWITCH", 4.1, 0, 1, 1, 0, 0);
-                        SetPlayerWeapon(playerid, newWeaponId, GetPlayerWeaponAmmo(playerid, newWeaponId));
+                        //SetPlayerWeapon(playerid, newWeaponId, GetPlayerWeaponAmmo(playerid, newWeaponId));
                     }
                 }                  
             }
@@ -78,7 +78,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
         // If player doesn't have any weapon equipped (or has melee)
         // and pressed KEY_AIM | instant equip last weapon used.
-        SetPlayerLastWeapon(playerid);
+        EquipItem(playerid, GetPlayerLastEquippedItemId(playerid));
     }
     return 1;
 }

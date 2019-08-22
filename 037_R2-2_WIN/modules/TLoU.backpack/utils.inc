@@ -82,7 +82,7 @@ function Perform_BackpackClosing(playerid)
     // if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid))
     // {
     wait_ms(1200);
-    CLF(#SetPlayerLastWeapon, "d", playerid);
+    //CLF(#SetPlayerLastWeapon, "d", playerid);
     //}
 }
 

@@ -315,28 +315,81 @@
 
 //#region Items | Equipping/Hiding
 
+SetPlayerLast()
+{
+    // If player's current weapon isn't melee (hands or melee weapon).
+    if(!IsMeleeWeapon(CurrentPlayerWeaponId[playerid]))
+    {
+        return;
+    }
+
+    IsPlayerUsingAnim(playerid, ANIM_COLLECTION_CLIMB)
+    || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_SWIM)
+    || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_JUMP)
+    || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_FALL)
+    || IsPlayerDead(playerid)
+    || IsPlayerBurning(playerid)
+    || IsPlayerStunned(playerid)
+
+    // If player uses backpack animations / or doing other actions.
+    if(GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
+    || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
+    || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP
+    || IsPlayerUnableToPerformAction(playerid))
+    {
+        return;
+    }
+
+    new lastWeaponId = LastPlayerWeaponId[playerid];
+    if(IsBulletWeapon(lastWeaponId) || IsProjectileWeapon(lastWeaponId) || IsThrowableWeapon(lastWeaponId) || lastWeaponId == WEAPON_BOW)
+    {
+        new lastWeapon_Ammo = GetPlayerWeaponAmmo(playerid, lastWeaponId);
+        //SetPlayerWeapon(playerid, lastWeaponId, lastWeapon_Ammo);
+    }
+}
+
+    IsPlayerUsingBackpackAnims(playerid)
+    {
+        return (GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
+        || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
+        || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP);
+    }
+
     EquipItem(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId))
+        if(!HasPlayerGotItem(playerid, itemId) 
+        || !IsPlayerUnableToPerformAction(playerid)
+        || IsPlayerUsingBackpackAnims(playerid))
         {
             return false;
         }
 
+        new itemAmount = GetPlayerItemAmount(playerid, itemId);
+        
+        if(itemAmount <= 0 
+        && (GetItemType(itemId) == ITEM_TYPE_PROJECTILE 
+        ||  GetItemType(itemId) == ITEM_TYPE_THROWABLE)
+        ||  GetItemType(itemId) == ITEM_TYPE_HEAL
+        ||  GetItemType(itemId) == ITEM_TYPE_MELEE)
+        {
+            return false;
+        }
+
+        new oldItemId = -1;
         if(GetPlayerEquippedItemId(playerid) != -1)
         {
+            oldItemId = GetPlayerEquippedItemId(playerid);
             HideItem(playerid);
         }
 
-        new itemAmount = GetPlayerItemAmount(playerid, itemId);
         new nativeWeaponId = GetItemNativeWeaponId(itemId);
-
         if(itemAmount <= 0)
         {
             if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
             {
-                if(nativeWeaponId == WEAPON_BOW)
+                if(ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW)
                 {
-                    SPAO(playerid, ITEM_MODEL_BOW, true);
+                    SPAO(playerid, GetItemModel(itemId), true);
                 }
                 else
                 {
@@ -352,26 +405,41 @@
             switch(GetItemType(itemId))
             {
                 case ITEM_TYPE_MELEE:
+                {
                     GivePlayerWeapon(playerid, nativeWeaponId, 1);
+                }
 
                 case ITEM_TYPE_WEAPON:
                 {
-                    GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
-                    SetPlayerNoReload(playerid, (nativeWeaponId != WEAPON_SHOTGUN));
+                    if(ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW)
+                    {
+                        SPAO(playerid, GetItemModel(itemId), true);
+                    }
+                    else
+                    {
+                        GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
+                        SetPlayerNoReload(playerid, (nativeWeaponId != WEAPON_SHOTGUN));
 
-                    // We need some extra data here like clip ammo
+           				// new clipAmmoSaved = ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(weaponId)];
+                        // if(clipAmmoSaved > -1) CurrentPlayerWeaponClipSize[playerid] = clipAmmoSaved;
+                        // else
+                        // {
+                        //     new maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId);
+                        //     CurrentPlayerWeaponClipSize[playerid] = (ammo < maxWeaponClipSize) ? (ammo) : (maxWeaponClipSize);
+                        // }
+                    }
                 }
             
                 case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE:
                 {
-                    SPAO(playerid, \
-                        (nativeWeaponId == WEAPON_MEDKIT ? ITEM_MODEL_BINDING : GetItemModel(itemId)), \
-                        (nativeWeaponId == WEAPON_BOW ? true : false));
+                    SPAO(playerid, (nativeWeaponId == WEAPON_MEDKIT) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
                 }
             }
         }
 
         ePlayerInfo[playerid][e_iCurrentEquippedItemId] = itemId;
+
+        OnPlayerWeaponChange(playerid, itemId, oldItemId);
         return true;
     }
 

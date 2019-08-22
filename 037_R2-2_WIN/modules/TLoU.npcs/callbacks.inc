@@ -300,7 +300,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnGetShived(npcid, shiverId)
 	{
-		SetPlayerWeapon(shiverId, WEAPON_SHIV);
+		EquipItem(shiverId, ITEM_IDX:ITEM_IDX_SHIV);
 		ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
 
 		FCNPC_SetHealthEx(npcid, 0.0, shiverId, WEAPON_SHIV);

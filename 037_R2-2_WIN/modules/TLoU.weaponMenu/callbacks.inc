@@ -65,11 +65,11 @@ public OnPlayerUD_WeaponMenu(playerid, keys)
 
     switch(newSelection)
     {
-        case WEAPON_MENU_V_BOMB:        SetPlayerWeapon(playerid, WEAPON_NAIL_BOMB,             GetPlayerWeaponAmmo(playerid, WEAPON_NAIL_BOMB));
-        case WEAPON_MENU_V_MEDKIT:      SetPlayerWeapon(playerid, WEAPON_MEDKIT,                GetPlayerWeaponAmmo(playerid, WEAPON_MEDKIT));
-        case WEAPON_MENU_V_BRICK:       SetPlayerWeapon(playerid, GetPlayerThrowable[playerid], GetPlayerWeaponAmmo(playerid, GetPlayerThrowable[playerid]));
-        case WEAPON_MENU_V_MOLOTOV:     SetPlayerWeapon(playerid, WEAPON_MOLOTOV,               GetPlayerWeaponAmmo(playerid, WEAPON_MOLOTOV));
-        case WEAPON_MENU_V_SMOKE_BOMB:  SetPlayerWeapon(playerid, WEAPON_SMOKE_BOMB,            GetPlayerWeaponAmmo(playerid, WEAPON_SMOKE_BOMB));
+        case WEAPON_MENU_V_BOMB:        EquipItem(playerid, ITEM_IDX:ITEM_IDX_NAIL_BOMB);
+        case WEAPON_MENU_V_MEDKIT:      EquipItem(playerid, ITEM_IDX:ITEM_IDX_MEDKIT);
+        case WEAPON_MENU_V_BRICK:       EquipItem(playerid, ITEM_IDX:ITEM_IDX_BRICK); // GetPlayerThrowable[playerid];
+        case WEAPON_MENU_V_MOLOTOV:     EquipItem(playerid, ITEM_IDX:ITEM_IDX_MOLOTOV);
+        case WEAPON_MENU_V_SMOKE_BOMB:  EquipItem(playerid, ITEM_IDX:ITEM_IDX_SMOKE_BOMB);
     }
     return 0;
 }
@@ -114,10 +114,10 @@ public OnPlayerLR_WeaponMenu(playerid, keys)
 
     switch(newSelection)
     {
-        case WEAPON_MENU_H_LEFT0:  SetPlayerWeapon(playerid, WeapMenu_Ls_WeaponId(playerid, 0), GetPlayerWeaponAmmo(playerid, WeapMenu_Ls_WeaponId(playerid, 0)));
-        case WEAPON_MENU_H_LEFT1:  SetPlayerWeapon(playerid, WeapMenu_Ls_WeaponId(playerid, 1), GetPlayerWeaponAmmo(playerid, WeapMenu_Ls_WeaponId(playerid, 1)));
-        case WEAPON_MENU_H_RIGHT0: SetPlayerWeapon(playerid, WeapMenu_Rs_WeaponId(playerid, 0), GetPlayerWeaponAmmo(playerid, WeapMenu_Rs_WeaponId(playerid, 0)));
-        case WEAPON_MENU_H_RIGHT1: SetPlayerWeapon(playerid, WeapMenu_Rs_WeaponId(playerid, 1), GetPlayerWeaponAmmo(playerid, WeapMenu_Rs_WeaponId(playerid, 1)));
+        case WEAPON_MENU_H_LEFT0:  EquipItem(playerid, WeapMenu_Ls_ItemId(playerid, 0);
+        case WEAPON_MENU_H_LEFT1:  EquipItem(playerid, WeapMenu_Ls_ItemId(playerid, 1);
+        case WEAPON_MENU_H_RIGHT0: EquipItem(playerid, WeapMenu_Rs_ItemId(playerid, 0);
+        case WEAPON_MENU_H_RIGHT1: EquipItem(playerid, WeapMenu_Rs_ItemId(playerid, 1);
     }
     return 0;
 }

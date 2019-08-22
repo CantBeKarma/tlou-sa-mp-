@@ -81,19 +81,19 @@ ResetEnum_ePlayerWeapon(playerid)
 //#region Validations
 
 	// Check if weapon exists in the items table and return its ITEM_ID.
-	IsValidWeapon(weaponId)
-	{
-		new weapon_itemId = -1;
-		for(new i = 0; i != MAX_ITEMS_DATA; i++)
-		{
-			if(weaponId == eItemsData[i][e_iItem_SA_WeaponId])
-			{
-				weapon_itemId = i;
-				break;
-			}
-		}
-		return weapon_itemId;
-	}
+	// IsValidWeapon(weaponId)
+	// {
+	// 	new weapon_itemId = -1;
+	// 	for(new i = 0; i != MAX_ITEMS_DATA; i++)
+	// 	{
+	// 		if(weaponId == eItemsData[i][e_iItem_SA_WeaponId])
+	// 		{
+	// 			weapon_itemId = i;
+	// 			break;
+	// 		}
+	// 	}
+	// 	return weapon_itemId;
+	// }
 
 	// Check if a weapon is bullet type weapon.
 	IsBulletWeapon(weaponId)
@@ -184,72 +184,72 @@ ResetEnum_ePlayerWeapon(playerid)
 
 //#region Weapons functions
 	// Set player weapon to dest.
-	SetPlayerWeapon(playerid, weaponId, ammo = 1)
-	{
-		if(weaponId == WEAPON_UNARMED
-			|| weaponId == CurrentPlayerWeaponId[playerid] && !IsMeleeWeapon(weaponId))
-		{
-			return;
-		}
+	// SetPlayerWeapon(playerid, weaponId, ammo = 1)
+	// {
+	// 	if(weaponId == WEAPON_UNARMED
+	// 		|| weaponId == CurrentPlayerWeaponId[playerid] && !IsMeleeWeapon(weaponId))
+	// 	{
+	// 		return;
+	// 	}
 
-		new weapon_itemId = IsValidWeapon(weaponId);
-		if(weapon_itemId == -1)
-		{
-			return;
-		}
+	// 	new weapon_itemId = IsValidWeapon(weaponId);
+	// 	if(weapon_itemId == -1)
+	// 	{
+	// 		return;
+	// 	}
 
-		new oldWeaponId = CurrentPlayerWeaponId[playerid];
-		HidePlayerWeapon(playerid);
+	// 	new oldWeaponId = CurrentPlayerWeaponId[playerid];
+	// 	HidePlayerWeapon(playerid);
 
-		if(ammo <= 0)
-		{
-			if(weaponId == WEAPON_BOW)
-			{
-				SPAO(playerid, ITEM_MODEL_BOW, true);
-			}
-			else if(IsBulletWeapon(weaponId))
-			{
-				GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
-			}
-			else
-			{
-				return;
-			}
-		}
-		else if(ammo > 0)
-		{
-			CurrentPlayerWeaponAmmo[playerid] = ammo;
-			PlayerWeaponBodyDamage[playerid] = eItemsData[weapon_itemId][e_iItem_BodyDmg];
-			PlayerWeaponHeadDamage[playerid] = eItemsData[weapon_itemId][e_iItem_HeadDmg];
+	// 	if(ammo <= 0)
+	// 	{
+	// 		if(weaponId == WEAPON_BOW)
+	// 		{
+	// 			SPAO(playerid, ITEM_MODEL_BOW, true);
+	// 		}
+	// 		else if(IsBulletWeapon(weaponId))
+	// 		{
+	// 			GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
+	// 		}
+	// 		else
+	// 		{
+	// 			return;
+	// 		}
+	// 	}
+	// 	else if(ammo > 0)
+	// 	{
+	// 		CurrentPlayerWeaponAmmo[playerid] = ammo;
+	// 		PlayerWeaponBodyDamage[playerid] = eItemsData[weapon_itemId][e_iItem_BodyDmg];
+	// 		PlayerWeaponHeadDamage[playerid] = eItemsData[weapon_itemId][e_iItem_HeadDmg];
 
-			if(IsMeleeWeapon(weaponId))
-			{
-				GivePlayerWeapon(playerid, weaponId, 1);
-			}
-			else if(IsBulletWeapon(weaponId))
-			{
-				GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
-				SetPlayerNoReload(playerid, (weaponId == WEAPON_SHOTGUN) ? (false) : (true));
+	// 		if(IsMeleeWeapon(weaponId))
+	// 		{
+	// 			GivePlayerWeapon(playerid, weaponId, 1);
+	// 		}
+	// 		else if(IsBulletWeapon(weaponId))
+	// 		{
+	// 			GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
+	// 			SetPlayerNoReload(playerid, (weaponId == WEAPON_SHOTGUN) ? (false) : (true));
 
-				new clipAmmoSaved = ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(weaponId)];
-				if(clipAmmoSaved > -1) CurrentPlayerWeaponClipSize[playerid] = clipAmmoSaved;
-				else
-				{
-					new maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId);
-					CurrentPlayerWeaponClipSize[playerid] = (ammo < maxWeaponClipSize) ? (ammo) : (maxWeaponClipSize);
-				}
-			}
-			else
-			{
-				SPAO(playerid, \
-					(weaponId == WEAPON_MEDKIT ? ITEM_MODEL_BINDING : eItemsData[weapon_itemId][e_iItem_ModelId]), \
-					(weaponId == WEAPON_BOW ? true : false));
-			}
-		}
+	// 			new clipAmmoSaved = ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(weaponId)];
+	// 			if(clipAmmoSaved > -1) CurrentPlayerWeaponClipSize[playerid] = clipAmmoSaved;
+	// 			else
+	// 			{
+	// 				new maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId);
+	// 				CurrentPlayerWeaponClipSize[playerid] = (ammo < maxWeaponClipSize) ? (ammo) : (maxWeaponClipSize);
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			SPAO(playerid, \
+	// 				(weaponId == WEAPON_MEDKIT ? ITEM_MODEL_BINDING : eItemsData[weapon_itemId][e_iItem_ModelId]), \
+	// 				(weaponId == WEAPON_BOW ? true : false));
+	// 		}
+	// 	}
 		
-		new newWeaponId = CurrentPlayerWeaponId[playerid] = weaponId;
-		OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId);
-	}
+	// 	new newWeaponId = CurrentPlayerWeaponId[playerid] = weaponId;
+	// 	OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId);
+	// }
 
 	// Hide's player current weapon equipped.
 	HidePlayerWeapon(playerid)
@@ -312,6 +312,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		return result;
 	}
 
+//#region converted
 	// Give player weapon based on slot.
 	// GivePlayerWeaponInSlot(playerid, weaponId)
 	// {
@@ -408,6 +409,8 @@ ResetEnum_ePlayerWeapon(playerid)
 	// 	DetachWeaponFromPlayersBody(playerid, weaponId);
 	// }
 
+//#endregion
+
 	// Reloads player's weapon
 	ReloadWeapon(playerid)
 	{
@@ -485,7 +488,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		if(IsBulletWeapon(lastWeaponId) || IsProjectileWeapon(lastWeaponId) || IsThrowableWeapon(lastWeaponId) || lastWeaponId == WEAPON_BOW)
 		{
 			new lastWeapon_Ammo = GetPlayerWeaponAmmo(playerid, lastWeaponId);
-			SetPlayerWeapon(playerid, lastWeaponId, lastWeapon_Ammo);
+			//SetPlayerWeapon(playerid, lastWeaponId, lastWeapon_Ammo);
 		}
 	}
 
@@ -509,7 +512,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		else
 		{
 			new durability = (weaponId == GetPlayerMelee[playerid] ? GetPlayerMeleeCnd[playerid] : 1);
-			SetPlayerWeapon(playerid, weaponId, durability);
+			//SetPlayerWeapon(playerid, weaponId, durability);
 		}
 		return 0;
 	}
@@ -542,7 +545,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		if(weaponid == WEAPON_SCISSOR_PIPE)
 		{
 			GetPlayerMelee[playerid] = WEAPON_PIPE;
-			SetPlayerWeapon(playerid, GetPlayerMelee[playerid], GetPlayerMeleeCnd[playerid]);
+			//SetPlayerWeapon(playerid, GetPlayerMelee[playerid], GetPlayerMeleeCnd[playerid]);
 		}
 	}
 //#endregion
