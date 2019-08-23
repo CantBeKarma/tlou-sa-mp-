@@ -140,8 +140,8 @@ hook OnPlayerUpdate@000(playerid)
 	// Thanks to YSF and new function "SetPlayerSyncKeys" I am able to sync all the keys that player 
 	// presses but KEY_FIRE. So that way people won't see "fake-shooting" when player is out of ammo for the weapon.
     if(IsPlayerAimingWeapon(playerid)
-    && IsBulletWeapon(CurrentPlayerWeaponId[playerid]) 
-	&& CurrentPlayerWeaponClipSize[playerid] <= 0)
+	&& IsItemBulletWeapon(GetPlayerEquippedItemId(playerid))
+	&& GetPlayerItemClipAmount(playerid, GetPlayerEquippedItemId(playerid)) <= 0)
     {
 		DesynchronizePlayerKey(playerid, KEY_FIRE);
     }
