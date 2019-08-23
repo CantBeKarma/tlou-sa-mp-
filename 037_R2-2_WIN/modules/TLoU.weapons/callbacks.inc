@@ -1,10 +1,5 @@
 #include	<YSI\y_hooks>
 
-IsItemBulletWeapon(itemId)
-{
-    return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
-}
-
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnPlayerKeyStateChange ---------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

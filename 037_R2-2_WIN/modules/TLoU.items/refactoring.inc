@@ -35,7 +35,7 @@
         return (eItemsData[itemId][e_iItem_SA_WeaponId]);
     }
 
-    IsItemUpgradeable(itemId, upgradeType = -1)
+    bool:IsItemUpgradeable(itemId, upgradeType = -1)
     {
         for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
         {
@@ -58,7 +58,7 @@
         return false;
     }
 
-    IsPlayerFullOnItem(playerid, itemId)
+    bool:IsPlayerFullOnItem(playerid, itemId)
     {
         if(!HasPlayerGotItem(playerid, itemId))
         {
@@ -85,7 +85,12 @@
     HasPlayerGotItem(playerid, itemId)      return (IsValidItemId(itemId) && ePlayerItemData[playerid][itemId][e_iItemId] != -1);
     GetPlayerEquippedItemId(playerid)       return (ePlayerInfo[playerid][e_iCurrentEquippedItemId]);
     GetPlayerLastEquippedItemId(playerid)   return (ePlayerInfo[playerid][e_iLastEquippedItemId]);
+    IsItemBulletWeapon(itemId)              return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
 
+    // Gets player item's specific upgrade level.
+    // Returns:
+    // (-1) if player hasn't got an item or item doesn't appear to be upgradeable for specific upgradeType
+    // (x) value of the upgrade level (integer)
     GetPlayerItemUpgradeLvl(playerid, itemId, upgradeType)
     {
         if(!HasPlayerGotItem(playerid, itemId))
@@ -97,9 +102,57 @@
         {
             case UPGRADE_TYPE_CLIPSIZE: return ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize];
         }
-        return 0;
+        return -1;
     }
 
+    // Returns maximal possible weapon clipsize that player can have for a specific weapon.
+    // Returns:
+    // (-1) if player hasn't got an item or didn't find specified item in the list of upgradeable items.
+    // (x) value of max clip size for that item
+    GetPlayerItemMaxClipSize(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return -1;
+        }
+
+        new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
+
+        for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+        {       
+            if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
+            && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
+            && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
+            {
+                return eItemsUpgrades[i][e_iItem_ClipSize];
+            }
+        }
+        return -1;
+    }
+
+    // Gets player's current clip amount of the item (fire weapon) specified
+    // Returns:
+    // (-1) if player hasn't got an item OR item is not a weapon OR item is a bow
+    // (x) current clip amount
+    GetPlayerItemClipAmount(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return -1;
+        }
+
+        if(GetItemType(itemId) != ITEM_TYPE_WEAPON || ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW)
+        {
+            return -1;
+        }
+
+        return ePlayerItemData[playerid][itemId][e_iItemClipAmount];
+    }
+
+    // Gets player item's amount of specified itemId.
+    // Returns:
+    // (-1) if player hasn't got an item or is invalid.
+    // (x) value of the amount that player has for that item (integer)
     GetPlayerItemAmount(playerid, itemId)
     {
         if(!HasPlayerGotItem(playerid, itemId))
@@ -110,6 +163,11 @@
         return ePlayerItemData[playerid][itemId][e_iItemAmount];
     }
 
+    // Gets maximal amount of an item type that's possible to get for player.
+    // Returns:
+    // (-1) if player hasn't got an item or system tried to check for melee extra CND on item which is not a melee weapon
+    // (x) maximal value of an item 
+    // (results are possible to be returned from 3 tables - eItemsData | eItemsUpgrades | eItemsMeleeCND)
     GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
     {
         if(!HasPlayerGotItem(playerid, itemId))
@@ -170,6 +228,51 @@
         return maxAmount;
     }
 
+    // Gets player's melee item id (MELEE or THROWABLE)
+    // Returns:
+    // (-1) if no melee weapon/throwable was found
+    // (x) item id.
+    GetPlayerMeleeItemId(playerid)
+    {
+        for(new i = 0; i != MAX_ITEMS_DATA; i++)
+        {
+            if(GetItemType(i) != ITEM_TYPE_MELEE
+            || GetItemType(i) != ITEM_TYPE_THROWABLE)
+            {
+                continue;
+            }
+
+            if(!HasPlayerGotItem(playerid, i))
+            {
+                continue;
+            }
+
+            if(GetPlayerItemAmount(playerid, i) > 0)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Gets first bullet weapon that player's own and has some ammo for it.
+    // Returns:
+    // (-1) if no weapon found with ammo in it.
+    // (x) item id.
+	GetFirstWeaponWithAmmo(playerid)
+	{
+        for(new i = 0; i != MAX_ITEMS_DATA; i++)
+        {
+            if(GetItemType(i) != ITEM_TYPE_WEAPON || !HasPlayerGotItem(playerid, i))
+            {
+                continue;
+            }
+
+            return i;
+        }
+        return -1;
+    }
+
 //#endregion
 
 //#region Items | Set Values
@@ -215,7 +318,7 @@
         return true;
     }
 
-    SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND = 0)
+    bool:SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND = 0)
     {
         if(!HasPlayerGotItem(playerid, itemId) || IsPlayerFullOnItem(playerid, itemId))
         {
@@ -286,8 +389,7 @@
         }
         else if(GetPlayerLastEquippedItemId(playerid) == itemId)
         {
-            ePlayerInfo[playerid][e_iLastEquippedItemId] = -1;
-            // GetNextWeaponWithAmmo
+            ePlayerInfo[playerid][e_iLastEquippedItemId] = GetFirstWeaponWithAmmo(playerid);
         }
 
         // If it was an item (weapon) from horizontal weapon menu bar
@@ -315,47 +417,7 @@
 
 //#region Items | Equipping/Hiding
 
-SetPlayerLast()
-{
-    // If player's current weapon isn't melee (hands or melee weapon).
-    if(!IsMeleeWeapon(CurrentPlayerWeaponId[playerid]))
-    {
-        return;
-    }
-
-    IsPlayerUsingAnim(playerid, ANIM_COLLECTION_CLIMB)
-    || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_SWIM)
-    || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_JUMP)
-    || IsPlayerUsingAnim(playerid, ANIM_COLLECTION_FALL)
-    || IsPlayerDead(playerid)
-    || IsPlayerBurning(playerid)
-    || IsPlayerStunned(playerid)
-
-    // If player uses backpack animations / or doing other actions.
-    if(GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
-    || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
-    || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP
-    || IsPlayerUnableToPerformAction(playerid))
-    {
-        return;
-    }
-
-    new lastWeaponId = LastPlayerWeaponId[playerid];
-    if(IsBulletWeapon(lastWeaponId) || IsProjectileWeapon(lastWeaponId) || IsThrowableWeapon(lastWeaponId) || lastWeaponId == WEAPON_BOW)
-    {
-        new lastWeapon_Ammo = GetPlayerWeaponAmmo(playerid, lastWeaponId);
-        //SetPlayerWeapon(playerid, lastWeaponId, lastWeapon_Ammo);
-    }
-}
-
-    IsPlayerUsingBackpackAnims(playerid)
-    {
-        return (GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
-        || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
-        || GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP);
-    }
-
-    EquipItem(playerid, itemId)
+    function EquipItem(playerid, itemId)
     {
         if(!HasPlayerGotItem(playerid, itemId) 
         || !IsPlayerUnableToPerformAction(playerid)
@@ -364,8 +426,25 @@ SetPlayerLast()
             return false;
         }
 
+        // If player is allowed to shiv, do not equip melee weapon
+        // and hide player weapon.
+        if(IsPlayerAllowedToShiv(playerid) && GetItemType(itemId) == ITEM_TYPE_MELEE)
+		{
+            HideItem(playerid);
+            return false;
+        }
+
+        // Tries to equip last weapon but his current weapon is melee weapon.
+        if(GetPlayerLastEquippedItemId(playerid) == itemId
+        && GetItemType(GetPlayerEquippedItemId(playerid)) == ITEM_TYPE_MELEE)
+        {
+            return false;
+        }
+
         new itemAmount = GetPlayerItemAmount(playerid, itemId);
         
+        // Equipping weapons with no ammo/amount is allowed 
+        // only for BOW and items of type WEAPON.
         if(itemAmount <= 0 
         && (GetItemType(itemId) == ITEM_TYPE_PROJECTILE 
         ||  GetItemType(itemId) == ITEM_TYPE_THROWABLE)
@@ -375,12 +454,8 @@ SetPlayerLast()
             return false;
         }
 
-        new oldItemId = -1;
-        if(GetPlayerEquippedItemId(playerid) != -1)
-        {
-            oldItemId = GetPlayerEquippedItemId(playerid);
-            HideItem(playerid);
-        }
+        // Hides player's currently equipped itemId if there are any.
+        HideItem(playerid);
 
         new nativeWeaponId = GetItemNativeWeaponId(itemId);
         if(itemAmount <= 0)
@@ -420,13 +495,11 @@ SetPlayerLast()
                         GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
                         SetPlayerNoReload(playerid, (nativeWeaponId != WEAPON_SHOTGUN));
 
-           				// new clipAmmoSaved = ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(weaponId)];
-                        // if(clipAmmoSaved > -1) CurrentPlayerWeaponClipSize[playerid] = clipAmmoSaved;
-                        // else
-                        // {
-                        //     new maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId);
-                        //     CurrentPlayerWeaponClipSize[playerid] = (ammo < maxWeaponClipSize) ? (ammo) : (maxWeaponClipSize);
-                        // }
+                        if(GetPlayerItemClipAmount(playerid, itemId) == -1)
+                        {
+                            new maxItemClipSizeAmount = GetPlayerItemMaxClipSize(playerid, itemId);
+                            ePlayerItemData[playerid][itemId][e_iItemClipAmount] = (itemAmount < maxItemClipSizeAmount) ? (itemAmount) : (maxItemClipSizeAmount);
+                        }
                     }
                 }
             
@@ -439,7 +512,7 @@ SetPlayerLast()
 
         ePlayerInfo[playerid][e_iCurrentEquippedItemId] = itemId;
 
-        OnPlayerWeaponChange(playerid, itemId, oldItemId);
+        OnPlayerWeaponChange(playerid, itemId, ePlayerInfo[playerid][e_iLastEquippedItemId]);
         return true;
     }
 
@@ -452,14 +525,13 @@ SetPlayerLast()
 
         ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
         ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
-
+        
         PlayerWeaponBodyDamage[playerid] = DAMAGE_VALUE_FISTS;
 		PlayerWeaponHeadDamage[playerid] = DAMAGE_VALUE_FISTS;
 
         ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
 
-        // OnPlayerWeaponChange(playerid, WEAPON_UNARMED, currentWeapon);
-
+        OnPlayerWeaponChange(playerid, -1, ePlayerInfo[playerid][e_iLastEquippedItemId]);
         return true;
     }
 
