@@ -37,7 +37,9 @@ PlayPlayer3D_ReloadSFX(playerid, weaponId)
     for(new i = 0; i != MAX_RELOAD_SFX_AUDIOS; i++)
     {
         if(SFX_WeaponReloads[i][e_iWeaponId] != weaponId)
+        {
             continue;
+        }
 
         new Float:x, Float:y, Float:z;
         GetPlayerPos(playerid, x, y, z);
