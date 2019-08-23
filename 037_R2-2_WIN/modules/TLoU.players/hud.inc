@@ -1,8 +1,5 @@
 // Check if HUD is visible to the player right now.
-IsHudVisibleForPlayer(playerid)
-{
-    return IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
-}
+IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
 
 // HUD : Showing.
 ShowHud(playerid)
@@ -321,21 +318,26 @@ HudTd_UpdateShivs(playerid)
     }
 
     // HUD : Update current ammo display.
-    HudTd_DisplayWeaponCurrentAmmo(playerid, weaponId)
+    HudTd_DisplayWeaponCurrentAmmo(playerid, itemId)
     {
-        if(!IsBulletWeapon(weaponId))
-            return;
+        if(GetItemType(itemId) != ITEM_TYPE_WEAPON || GetItemNativeWeaponId(itemId) == WEAPON_BOW)
+        {
+            return false;
+        }
 
         new 
-            maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId),
-            currentClipAmmo = CurrentPlayerWeaponClipSize[playerid];
+            currentClipAmmo = GetPlayerItemClipAmount(playerid, itemId),
+            maxWeaponClipSize = GetPlayerItemMaxClipSize(playerid, itemId);
 
-        if(maxWeaponClipSize == 0)
-            return;
+        if(maxWeaponClipSize == -1)
+        {
+            return false;
+        }
 
+        new nativeWeaponId = GetItemNativeWeaponId(itemId);
         for(new tdIdx = 0; tdIdx != maxWeaponClipSize; tdIdx++)
         {
-            switch(weaponId)
+            switch(nativeWeaponId)
             {
                 case WEAPON_9MM:      PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
                 case WEAPON_REVOLVER: PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
@@ -344,6 +346,7 @@ HudTd_UpdateShivs(playerid)
                 case WEAPON_ASSAULT:  PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
             }
         }
+        return true;
     }
 
     // HUD : Update certain bullet color.
