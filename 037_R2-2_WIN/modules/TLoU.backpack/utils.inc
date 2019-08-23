@@ -79,11 +79,8 @@ function Perform_BackpackClosing(playerid)
     Audio_PlayEx(playerid, AUDIO_BP_CLOSE);
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 0);
 
-    // if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid))
-    // {
     wait_ms(1200);
-    //CLF(#SetPlayerLastWeapon, "d", playerid);
-    //}
+    CLF(#EquipItem, "dd", playerid, GetPlayerLastEquippedItemId(playerid));
 }
 
 // Change the colors of WRENCH and SUPPLEMENT icons in the navigation menu.
