@@ -1,5 +1,10 @@
 #include	<YSI\y_hooks>
 
+IsItemBulletWeapon(itemId)
+{
+    return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
+}
+
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnPlayerKeyStateChange ---------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -17,7 +22,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
     if(PRESSED(KEY_FIRE))
     {
-        new currentWeaponId = CurrentPlayerWeaponId[playerid];
+        new currentItemId = GetPlayerEquippedItemId(playerid);
         
         if(!IsPlayerAimingWeapon(playerid)
         && !IsPlayerUsingBackpack(playerid) 
@@ -25,7 +30,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         && !IsPlayerUnableToPerformAction(playerid))
         {
             // Healing
-            if(currentWeaponId == WEAPON_MEDKIT && GetPlayerMedkits[playerid] > 0)
+            if(GetItemType(currentItemId) == ITEM_TYPE_HEAL 
+            && GetPlayerItemAmount(playerid, currentItemId) > 0)
             {
                 if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < 100.0)
                 {
@@ -34,14 +40,16 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 }
             }
             // Equipping melee weapon
-            else if(currentWeaponId != WEAPON_NAIL_BOMB && currentWeaponId != WEAPON_UNARMED)
+            else if(ITEM_IDX:currentItemId != ITEM_IDX:ITEM_IDX_NAIL_BOMB)
             {
-                SetPlayerMeleeWeapon(playerid);
+                EquipItem(playerid, GetPlayerMeleeItemId(playerid));
             }
         }
 
         // If player uses bullet weapon and has no ammo in a weapon magazine...
-        if(IsBulletWeapon(currentWeaponId) && CurrentPlayerWeaponClipSize[playerid] <= 0 && IsPlayerAimingWeapon(playerid))
+        if(IsPlayerAimingWeapon(playerid) 
+        && IsItemBulletWeapon(currentItemId) 
+        && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
         {
             // perform a sound effect when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
@@ -52,15 +60,15 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             else
             {
                 // reload a weapon if still has some ammo left or seek for the new weapon in the inventory.
-                if(GetPlayerWeaponAmmo(playerid, currentWeaponId) > 0) ReloadWeapon(playerid);
+                if(GetPlayerItemAmount(playerid, currentItemId) > 0) ReloadWeapon(playerid);
                 else
                 {
-                    new newWeaponId = GetFirstWeaponWithAmmo(playerid);
-                    if(newWeaponId == 0) Audio_PlayEx(playerid, AUDIO_WEAP_NOAMMO);
+                    new itemId = GetFirstWeaponWithAmmo(playerid);
+                    if(itemId == -1) Audio_PlayEx(playerid, AUDIO_WEAP_NOAMMO);
                     else
                     {
                         ApplyAnimation(playerid, "TLoU", "WEAPON_SWITCH", 4.1, 0, 1, 1, 0, 0);
-                        //SetPlayerWeapon(playerid, newWeaponId, GetPlayerWeaponAmmo(playerid, newWeaponId));
+                        EquipItem(playerid, itemId);
                     }
                 }                  
             }
@@ -88,8 +96,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartAimingBulletWeapon(playerid)
 {
-    //if(GetPlayerItemAmount(playerid, GetPlayerEquippedItemId(playerid)) > 0)
-	if(CurrentPlayerWeaponClipSize[playerid] > 0)
+    if(GetPlayerItemClipAmount(playerid, GetPlayerEquippedItemId(playerid)) > 0)
 	{
 		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
 	}
@@ -129,25 +136,28 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-    new currentWeaponId = CurrentPlayerWeaponId[playerid];
-    if(currentWeaponId <= 0)
+    new 
+        currentItemId = GetPlayerEquippedItemId(playerid),
+        nativeWeaponId = GetItemNativeWeaponId(currentItemId);
+
+    if(nativeWeaponId <= 0)
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [%d] [%s] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), playerid, GetPlayerIpAddress(playerid), weaponid);
         return 0;
     }
 
-    new 
-        oldAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
-        oldClipAmmo = CurrentPlayerWeaponClipSize[playerid];
+    new
+        oldAmmo = GetPlayerItemAmount(playerid, currentItemId),
+        oldClipAmmo = GetPlayerItemClipAmount(playerid, currentItemId);
 
-    SetPlayerWeaponAmmo(playerid, currentWeaponId, oldAmmo-1);
-    CurrentPlayerWeaponClipSize[playerid] -= 1;
+    ePlayerItemData[playerid][currentItemId][e_iItemAmount]--;
+    ePlayerItemData[playerid][currentItemId][e_iItemClipAmount]--;
 
     new
-        newAmmo = GetPlayerWeaponAmmo(playerid, currentWeaponId),
-        newClipAmmo = CurrentPlayerWeaponClipSize[playerid];
+        newAmmo = GetPlayerItemAmount(playerid, currentItemId),
+        newClipAmmo = GetPlayerItemClipAmount(playerid, currentItemId);
 
-    CLF("OnPlayerWeaponShoot", "ddddddfff", playerid, currentWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
+    CLF("OnPlayerWeaponShoot", "ddddddfff", playerid, nativeWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
 	return 0;
 }
 
@@ -178,10 +188,6 @@ hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newC
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
 {
-    PlayPlayer3D_ReloadSFX(playerid, weaponId);
-    PlayPlayerReloadAnim(playerid, weaponId);
-	HudTd_DisplayWeaponCurrentAmmo(playerid, weaponId);
-
     if(IsPlayerAimingWeapon(playerid))
 	{
 		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);

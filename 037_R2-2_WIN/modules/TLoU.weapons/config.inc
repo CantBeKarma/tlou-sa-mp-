@@ -104,7 +104,6 @@
 
 //#region Helpers.
     #define     CurrentPlayerWeaponId[%0]           ePlayerWeapon[%0][e_iWeaponId]
-    #define     CurrentPlayerWeaponClipSize[%0]     ePlayerWeapon[%0][e_iWeaponClipSize]
     #define     CurrentPlayerWeaponAmmo[%0]         ePlayerWeapon[%0][e_iWeaponAmmo]
 
     #define     LastPlayerWeaponId[%0]              ePlayerWeapon[%0][e_iLastWeaponId]

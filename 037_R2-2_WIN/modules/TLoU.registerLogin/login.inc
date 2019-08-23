@@ -58,6 +58,7 @@ function PrepareDataAfterLogin(playerid)
     {
         ePlayerItemData[playerid][i][e_iItemId] = -1;
         ePlayerItemData[playerid][i][e_iItemAmount] = -1;
+        ePlayerItemData[playerid][i][e_iItemClipAmount] = -1;
     }
 
     ePlayerWeapon[playerid][e_iArrowObjectId] = -1;
