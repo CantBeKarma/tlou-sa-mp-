@@ -39,14 +39,14 @@ ClearAnims(playerid)
 }
 
 // Does a reload animation for player on the specified weapon type.
-PlayPlayerReloadAnim(playerid, weaponId)
+PlayPlayerReloadAnim(playerid, itemId)
 {
-    switch(weaponId)
+    switch(ITEM_IDX:itemId)
     {
         case 
-            WEAPON_9MM,
-            WEAPON_REVOLVER,
-            WEAPON_SHORTY:
+            ITEM_IDX_9MM,
+            ITEM_IDX_REVOLVER,
+            ITEM_IDX_SHORTY:
             {
                 ApplyAnimation(playerid, "PYTHON", \
                     IsPlayerCrouched(playerid) ? "PYTHON_CROUCHRELOAD" : "PYTHON_RELOAD", \
@@ -54,7 +54,7 @@ PlayPlayerReloadAnim(playerid, weaponId)
             }
 
         case
-            WEAPON_SHOTGUN:
+            ITEM_IDX_SHOTGUN:
             {
                 ApplyAnimation(playerid, "BUDDY", \
                     IsPlayerCrouched(playerid) ? "BUDDY_CROUCHRELOAD" : "BUDDY_RELOAD", \
@@ -62,8 +62,8 @@ PlayPlayerReloadAnim(playerid, weaponId)
             }
 
         case
-            WEAPON_RIFLE,
-            WEAPON_ASSAULT:
+            ITEM_IDX_RIFLE,
+            ITEM_IDX_ASSAULT_RIFLE:
             {
                 ApplyAnimation(playerid, "RIFLE", \
                     IsPlayerCrouched(playerid) ? "RIFLE_CROUCHLOAD" : "RIFLE_LOAD", \
@@ -202,6 +202,14 @@ IsPlayerUnableToPerformAction(playerid)
 		|| IsPlayerBurning(playerid)
 		|| IsPlayerStunned(playerid)
     ;
+}
+
+// Checks if player is using backpack animations.
+IsPlayerUsingBackpackAnims(playerid)
+{
+	return (GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
+	|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
+	|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP);
 }
 
 // Determines if player is playing a specific callback animation
