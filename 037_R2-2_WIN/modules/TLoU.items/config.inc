@@ -246,6 +246,7 @@ enum e_PLAYER_ITEM_DATA
 {
     e_iItemId,
     e_iItemAmount,
+    e_iItemClipAmount,
     e_iItemMeleeExtraCND,
     e_iItemUpgradeLvl_ClipSize
 };
