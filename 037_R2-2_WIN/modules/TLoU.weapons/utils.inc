@@ -183,73 +183,6 @@ ResetEnum_ePlayerWeapon(playerid)
 //#endregion
 
 //#region Weapons functions
-	// Set player weapon to dest.
-	// SetPlayerWeapon(playerid, weaponId, ammo = 1)
-	// {
-	// 	if(weaponId == WEAPON_UNARMED
-	// 		|| weaponId == CurrentPlayerWeaponId[playerid] && !IsMeleeWeapon(weaponId))
-	// 	{
-	// 		return;
-	// 	}
-
-	// 	new weapon_itemId = IsValidWeapon(weaponId);
-	// 	if(weapon_itemId == -1)
-	// 	{
-	// 		return;
-	// 	}
-
-	// 	new oldWeaponId = CurrentPlayerWeaponId[playerid];
-	// 	HidePlayerWeapon(playerid);
-
-	// 	if(ammo <= 0)
-	// 	{
-	// 		if(weaponId == WEAPON_BOW)
-	// 		{
-	// 			SPAO(playerid, ITEM_MODEL_BOW, true);
-	// 		}
-	// 		else if(IsBulletWeapon(weaponId))
-	// 		{
-	// 			GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
-	// 		}
-	// 		else
-	// 		{
-	// 			return;
-	// 		}
-	// 	}
-	// 	else if(ammo > 0)
-	// 	{
-	// 		CurrentPlayerWeaponAmmo[playerid] = ammo;
-	// 		PlayerWeaponBodyDamage[playerid] = eItemsData[weapon_itemId][e_iItem_BodyDmg];
-	// 		PlayerWeaponHeadDamage[playerid] = eItemsData[weapon_itemId][e_iItem_HeadDmg];
-
-	// 		if(IsMeleeWeapon(weaponId))
-	// 		{
-	// 			GivePlayerWeapon(playerid, weaponId, 1);
-	// 		}
-	// 		else if(IsBulletWeapon(weaponId))
-	// 		{
-	// 			GivePlayerWeapon(playerid, weaponId, _:FLOAT_INFINITY);
-	// 			SetPlayerNoReload(playerid, (weaponId == WEAPON_SHOTGUN) ? (false) : (true));
-
-	// 			new clipAmmoSaved = ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(weaponId)];
-	// 			if(clipAmmoSaved > -1) CurrentPlayerWeaponClipSize[playerid] = clipAmmoSaved;
-	// 			else
-	// 			{
-	// 				new maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId);
-	// 				CurrentPlayerWeaponClipSize[playerid] = (ammo < maxWeaponClipSize) ? (ammo) : (maxWeaponClipSize);
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			SPAO(playerid, \
-	// 				(weaponId == WEAPON_MEDKIT ? ITEM_MODEL_BINDING : eItemsData[weapon_itemId][e_iItem_ModelId]), \
-	// 				(weaponId == WEAPON_BOW ? true : false));
-	// 		}
-	// 	}
-		
-	// 	new newWeaponId = CurrentPlayerWeaponId[playerid] = weaponId;
-	// 	OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId);
-	// }
 
 	// Hide's player current weapon equipped.
 	HidePlayerWeapon(playerid)
@@ -260,20 +193,18 @@ ResetEnum_ePlayerWeapon(playerid)
 			return;
 	
 		new 
-			currentAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon),
-			currentClipAmmo = CurrentPlayerWeaponClipSize[playerid];
+			currentAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon);
 
 		// Clear current player's weapon data.
 		CurrentPlayerWeaponId[playerid] = WEAPON_UNARMED;
 		CurrentPlayerWeaponAmmo[playerid] = 0;
-		CurrentPlayerWeaponClipSize[playerid] = 0;
 		PlayerWeaponBodyDamage[playerid] = 8.0;
 		PlayerWeaponHeadDamage[playerid] = 8.0;
 		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
 
 		// Save player's weapon ammo and save it as a last used weaponId by player.
 		LastPlayerWeaponId[playerid] = currentWeapon;
-		ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(currentWeapon)] = currentClipAmmo;
+		//ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(currentWeapon)] = currentClipAmmo;
 		SetPlayerWeaponAmmo(playerid, currentWeapon, currentAmmo);
 
 		OnPlayerWeaponChange(playerid, WEAPON_UNARMED, currentWeapon);
@@ -415,106 +346,33 @@ ResetEnum_ePlayerWeapon(playerid)
 	ReloadWeapon(playerid)
 	{
 		new currentEquippedItemId = GetPlayerEquippedItemId(playerid);
-		new currentWeaponId = GetItemNativeWeaponId(currentEquippedItemId);
 
-		if(IsPlayerUnableToPerformAction(playerid)
-		|| GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_CROUCHLOAD || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_LOAD
-		|| IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid) || GetItemType(currentEquippedItemId) != ITEM_TYPE_WEAPON)
+		if(currentEquippedItemId == -1 || GetItemType(currentEquippedItemId) != ITEM_TYPE_WEAPON 
+		|| IsPlayerUnableToPerformAction(playerid) || IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid)
+		|| GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_CROUCHLOAD || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_LOAD)
 		{
-			return;
+			return false;
 		}
 
 		new 
-			//currentAmmo = CurrentPlayerWeaponAmmo[playerid],
 			currentAmmo = GetPlayerItemAmount(playerid, currentEquippedItemId),
-			currentClipSize = CurrentPlayerWeaponClipSize[playerid],
-			maxWeaponClipSize = GetPlayerItemMaxAmount(playerid, currentEquippedItemId); //GetPlayerWeaponLvl_MaxClipSize(playerid, currentWeaponId);
+			currentClipSize = GetPlayerItemClipAmount(playerid, currentEquippedItemId),
+			maxWeaponClipSize = GetPlayerItemMaxClipSize(playerid, currentEquippedItemId);
 
 		if(currentAmmo <= currentClipSize || currentClipSize == maxWeaponClipSize)
 		{
-			return;
+			return false;
 		}
 
 		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
+
+		PlayPlayerReloadAnim(playerid, currentEquippedItemId);
+		PlayPlayer3D_ReloadSFX(playerid, GetItemNativeWeaponId(currentEquippedItemId));
+		HudTd_DisplayWeaponCurrentAmmo(playerid, currentEquippedItemId);
 		
-		new newClipSize = CurrentPlayerWeaponClipSize[playerid] = (currentAmmo > maxWeaponClipSize) ? (maxWeaponClipSize) : (currentAmmo);
-		OnPlayerReloadWeapon(playerid, currentWeaponId, currentClipSize, newClipSize);
-	}
-
-	// Gets first bullet weapon that player's own and has some ammo for it (used on the "Click noise")
-	GetFirstWeaponWithAmmo(playerid)
-	{
-		new
-			returnWeaponId = 0,
-			playerWeaponId = 0;
-
-		// Index = 5 because that's where the bullet weapons indexes start in the weapon's slots.
-		// 0..4 = Melee/Projectiles/Shiv
-		for(new i = 5; i != MAX_WEAPON_SLOTS; i++)
-		{
-			playerWeaponId = ePlayerWeapon[playerid][e_iWeaponsId][i];
-			
-			if(!IsBulletWeapon(playerWeaponId) || CurrentPlayerWeaponId[playerid] == playerWeaponId) 
-				continue;
-
-			if(GetPlayerWeaponAmmo(playerid, playerWeaponId) > 0)
-			{
-				returnWeaponId = playerWeaponId;
-				break;
-			}
-		}
-		return returnWeaponId;
-	}
-
-	// Gives player his last used weapon (used for instant equips).
-	function SetPlayerLastWeapon(playerid)
-	{
-		// If player's current weapon isn't melee (hands or melee weapon).
-		if(!IsMeleeWeapon(CurrentPlayerWeaponId[playerid]))
-		{
-			return;
-		}
-
-		// If player uses backpack animations / or doing other actions.
-		if(GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
-		|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
-		|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP
-		|| IsPlayerUnableToPerformAction(playerid))
-		{
-			return;
-		}
-
-		new lastWeaponId = LastPlayerWeaponId[playerid];
-		if(IsBulletWeapon(lastWeaponId) || IsProjectileWeapon(lastWeaponId) || IsThrowableWeapon(lastWeaponId) || lastWeaponId == WEAPON_BOW)
-		{
-			new lastWeapon_Ammo = GetPlayerWeaponAmmo(playerid, lastWeaponId);
-			//SetPlayerWeapon(playerid, lastWeaponId, lastWeapon_Ammo);
-		}
-	}
-
-	// Gives player his melee weapon.
-	SetPlayerMeleeWeapon(playerid)
-	{
-		if(IsPlayerAllowedToShiv(playerid))
-		{
-			HidePlayerWeapon(playerid);
-			return 1;
-		}
-
-		new weaponId = 
-			(
-				  HasPlayerGotMeleeWeapon(playerid) ? GetPlayerMelee[playerid]
-				: HasPlayerGotThrowableItem(playerid) ? GetPlayerThrowable[playerid]
-				: (WEAPON_UNARMED)
-			);
-
-		if(weaponId == WEAPON_UNARMED) HidePlayerWeapon(playerid);
-		else
-		{
-			new durability = (weaponId == GetPlayerMelee[playerid] ? GetPlayerMeleeCnd[playerid] : 1);
-			//SetPlayerWeapon(playerid, weaponId, durability);
-		}
-		return 0;
+		new newClipSize = ePlayerItemData[playerid][currentEquippedItemId][e_iItemClipAmount] = (currentAmmo > maxWeaponClipSize) ? (maxWeaponClipSize) : (currentAmmo);
+		OnPlayerReloadWeapon(playerid, currentEquippedItemId, currentClipSize, newClipSize);
+		return true;
 	}
 
 	// Reduces condition of player's melee weapon by one.
