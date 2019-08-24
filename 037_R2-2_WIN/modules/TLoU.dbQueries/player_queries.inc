@@ -175,6 +175,8 @@
 
             mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT * FROM `chars_data` WHERE `guid` = %d AND `name` = '%s' LIMIT 1", ePlayerInfo[playerid][e_iGuid], ePlayerInfo[playerid][e_sName]);
             mysql_tquery(eServerInfo[e_SqlHandler], query, "PrepareDataAfterLogin", "d", playerid);
+
+            mysql_tquery(eServerInfo[e_SqlHandler], "UPDATE `player_data` SET `last_login_date` = NOW()");
         }
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT * FROM `player_data` WHERE `guid` = %d AND `password` = '%s' LIMIT 1", ePlayerInfo[playerid][e_iGuid], passwordHash);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnPlayerDataReceived);
@@ -197,7 +199,7 @@
             mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `chars_data` (`guid`, `name`) VALUES ('%d', '%s')", ePlayerInfo[playerid][e_iGuid], ePlayerInfo[playerid][e_sName]);
             mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharsDataReceived);
         }
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `player_data` (`password`) VALUES ('%s')", passwordHash);
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `player_data` (`ip_address`, `register_date`, `last_login_date`, `password`) VALUES ('%s', NOW(), NOW(), '%s')", GetPlayerIpAddress(playerid), passwordHash);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnPlayerDataReceived);
     }
 
