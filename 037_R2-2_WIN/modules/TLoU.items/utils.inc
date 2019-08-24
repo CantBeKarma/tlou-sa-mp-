@@ -364,6 +364,80 @@ ShowPlayerItemLabel(playerid, item_objectId)
     Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
 }
 
+//#region Items | Give/Remove
+
+    // Gives player a specified item.
+    // Returns:
+    // false - if player has specified item already.
+    // true - if item has been given correctly
+    bool:GivePlayerItem(playerid, itemId)
+    {
+        if(HasPlayerGotItem(playerid, itemId))
+        {
+            return false;
+        }
+
+        // // Update database info & give player item.
+        // if(!HasPlayerGotItem(playerid, weaponId))
+        // {
+        //     //GivePlayerWeaponInSlot(playerid, weaponId);
+        //     DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
+        // }
+
+        WeapMenu_AssignItemToFreeSlot(playerid, itemId);
+
+        ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
+
+        if(IsPlayerUsingWeaponMenu(playerid))
+        {
+            WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+        }
+        return true;
+    }
+
+    // Removes item from player (doesn't matter if equipped or not).
+    // Returns:
+    // false - if player didn't have that item.
+    // true - if item has been removed correctly.
+    bool:RemovePlayerItem(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId))
+        {
+            return false;
+        }
+
+        if(GetPlayerEquippedItemId(playerid) == itemId)
+        {
+            HideItem(playerid);
+        }
+        else if(GetPlayerLastEquippedItemId(playerid) == itemId)
+        {
+            ePlayerInfo[playerid][e_iLastEquippedItemId] = GetFirstWeaponWithAmmo(playerid);
+        }
+
+        // If it was an item (weapon) from horizontal weapon menu bar
+        // below function is going to sort its order if necessary
+        WeapMenu_RemoveAndSortItems(playerid, itemId);
+
+        ePlayerItemData[playerid][itemId][e_iItemId] = -1;
+        ePlayerItemData[playerid][itemId][e_iItemAmount] = -1;
+
+        if(IsItemMeleeWeapon(itemId))
+		{
+			HudTd_UpdateMelee(playerid);
+		}
+
+		if(ITEM_IDX:itemId == ITEM_IDX_SHIV)
+		{
+			HudTd_UpdateShivs(playerid);
+		}
+
+		DetachWeaponFromPlayersBody(playerid, GetItemNativeWeaponId(itemId));
+        return true;
+    }
+
+//#endregion
+
 //#region Items | Get Values
 
     HasPlayerGotItem(playerid, itemId)      return (IsValidItemId(itemId) && ePlayerItemData[playerid][itemId][e_iItemId] != -1);
@@ -715,75 +789,13 @@ ShowPlayerItemLabel(playerid, item_objectId)
 
 //#endregion
 
-//#region Items | Give/Remove
-
-    GivePlayerItem(playerid, itemId)
-    {
-        if(HasPlayerGotItem(playerid, itemId))
-        {
-            return false;
-        }
-
-        // // Update database info & give player item.
-        // if(!HasPlayerGotItem(playerid, weaponId))
-        // {
-        //     //GivePlayerWeaponInSlot(playerid, weaponId);
-        //     DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
-        // }
-
-        WeapMenu_AssignItemToFreeSlot(playerid, itemId);
-
-        ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
-
-        if(IsPlayerUsingWeaponMenu(playerid))
-        {
-            WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-        }
-        return true;
-    }
-
-    RemovePlayerItem(playerid, itemId)
-    {
-        if(!HasPlayerGotItem(playerid, itemId))
-        {
-            return false;
-        }
-
-        if(GetPlayerEquippedItemId(playerid) == itemId)
-        {
-            HideItem(playerid);
-        }
-        else if(GetPlayerLastEquippedItemId(playerid) == itemId)
-        {
-            ePlayerInfo[playerid][e_iLastEquippedItemId] = GetFirstWeaponWithAmmo(playerid);
-        }
-
-        // If it was an item (weapon) from horizontal weapon menu bar
-        // below function is going to sort its order if necessary
-        WeapMenu_RemoveAndSortItems(playerid, itemId);
-
-        ePlayerItemData[playerid][itemId][e_iItemId] = -1;
-        ePlayerItemData[playerid][itemId][e_iItemAmount] = -1;
-
-        if(IsItemMeleeWeapon(itemId))
-		{
-			HudTd_UpdateMelee(playerid);
-		}
-
-		if(ITEM_IDX:itemId == ITEM_IDX_SHIV)
-		{
-			HudTd_UpdateShivs(playerid);
-		}
-
-		DetachWeaponFromPlayersBody(playerid, GetItemNativeWeaponId(itemId));
-        return true;
-    }
-
-//#endregion
-
 //#region Items | Equipping/Hiding
 
-    function EquipItem(playerid, itemId)
+    // Equips player with an item.
+    // Returns:
+    // false - if player hasn't got an item OR is unable to equip at the time OR is using backpack anims OR is allowed to shiv OR itemAmount is 0 and it's not a WEAPON
+    // true - if item equipped correctly
+    function bool:EquipItem(playerid, itemId)
     {
         SCMF(playerid, -1, "EquipItem: %d", itemId);
 
@@ -898,7 +910,11 @@ ShowPlayerItemLabel(playerid, item_objectId)
         return true;
     }
 
-    HideItem(playerid)
+    // Hides player item.
+    // Returns:
+    // false - if player didn't have any item equipped.
+    // true - if item hid correctly.
+    bool:HideItem(playerid)
     {
         SCMF(playerid, -1, "HideItem");
         if(GetPlayerEquippedItemId(playerid) == -1)
@@ -928,7 +944,6 @@ SetPlayerSupplements(playerid, amount)
 {
     eCharsInfo[playerid][e_iSkills_SuppsAmount] = ((amount < 0) ? (0) : (amount > MAX_PLAYER_SUPPS_AMOUNT) ? (MAX_PLAYER_SUPPS_AMOUNT) : (amount));
 
-    // Update UI.
     if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
     {
         SkillsTd_CheckSuppsAmount(playerid);
