@@ -213,7 +213,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
     {
         if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
         {
-            if(WeapMenu_Ls_WeaponId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
+            if(WeapMenu_Ls_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
             else
             {
                 PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
@@ -229,7 +229,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
         // case WEAPON_MENU_H_RIGHT0, WEAPON_MENU_H_RIGHT1:
         // {
-        //     if(WeapMenu_Rs_WeaponId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
+        //     if(WeapMenu_Rs_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
         //     else
         //     {
         //         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);

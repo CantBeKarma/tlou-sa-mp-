@@ -190,8 +190,6 @@ public OnPlayerReloadWeapon(playerid, itemId, oldClipAmmo, newClipAmmo)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 {
-    SCMF(playerid, -1, "OnPlayerWeaponChange, newItemId: %d | oldItemId: %d", newItemId, oldItemId);
-
     // Attach old item to player it if was only a WEAPON type.
     if(GetItemType(oldItemId) == ITEM_TYPE_WEAPON)
     {

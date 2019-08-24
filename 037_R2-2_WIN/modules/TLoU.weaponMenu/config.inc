@@ -15,9 +15,6 @@
 // Other.
 #define     WeapMenu_GetSelectionV(%0)      ePlayerWeapMenu[%0][e_iWeapMenu_SelectedItemV]
 #define     WeapMenu_GetSelectionH(%0)      ePlayerWeapMenu[%0][e_iWeapMenu_SelectedItemH]
-#define     WeapMenu_Ls_WeaponId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Ls_Weapons][%1]
-#define     WeapMenu_Rs_WeaponId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Rs_Weapons][%1]
-
 #define     WeapMenu_Ls_ItemId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Ls_ItemId][%1]
 #define     WeapMenu_Rs_ItemId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Rs_ItemId][%1]
 

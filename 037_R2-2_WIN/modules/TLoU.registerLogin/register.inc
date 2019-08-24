@@ -38,10 +38,10 @@ PrepareDataAfterRegister(playerid)
         ePlayerWeapon[playerid][e_iWeaponClipAmmo][i] = -1;
 
         if(i <= 3) 
-            WeapMenu_Ls_WeaponId(playerid, i) = -1;
+            WeapMenu_Ls_ItemId(playerid, i) = -1;
 
         if(i <= 2) 
-            WeapMenu_Rs_WeaponId(playerid, i) = -1;
+            WeapMenu_Rs_ItemId(playerid, i) = -1;
     }
 
     FadePlayerScreen(playerid, FADE_OUT);

@@ -147,7 +147,7 @@ public OnPlayerFinishSwappingWeaps(playerid)
     }
     
     CLF(#Perform_BackpackClosing, "d", playerid);
-    LastPlayerWeaponId[playerid] = WeapMenu_Ls_WeaponId(playerid, WeapMenu_GetSelectionH(playerid));
+    LastPlayerWeaponId[playerid] = WeapMenu_Ls_ItemId(playerid, WeapMenu_GetSelectionH(playerid));
     return 0;
 }
 
@@ -158,25 +158,25 @@ public OnPlayerUD_SwapWeaps(playerid, keys)
 {
     new 
         selectionH = WeapMenu_GetSelectionH(playerid),
-        oldWeapon = WeapMenu_Ls_WeaponId(playerid, selectionH);
+        oldWeapon = WeapMenu_Ls_ItemId(playerid, selectionH);
         
     if(keys == KEY_UP)
     {
-        new slotIdx = (WeapMenu_Ls_WeaponId(playerid, 3) != -1) ? (3) : (2);
-        WeapMenu_Ls_WeaponId(playerid, selectionH) = WeapMenu_Ls_WeaponId(playerid, slotIdx);
+        new slotIdx = (WeapMenu_Ls_ItemId(playerid, 3) != -1) ? (3) : (2);
+        WeapMenu_Ls_ItemId(playerid, selectionH) = WeapMenu_Ls_ItemId(playerid, slotIdx);
 
-        if(slotIdx == 3) WeapMenu_Ls_WeaponId(playerid, 3) = WeapMenu_Ls_WeaponId(playerid, 2);
-        WeapMenu_Ls_WeaponId(playerid, 2) = oldWeapon;
+        if(slotIdx == 3) WeapMenu_Ls_ItemId(playerid, 3) = WeapMenu_Ls_ItemId(playerid, 2);
+        WeapMenu_Ls_ItemId(playerid, 2) = oldWeapon;
     }
     else if(keys == KEY_DOWN)
     {
-        WeapMenu_Ls_WeaponId(playerid, selectionH) = WeapMenu_Ls_WeaponId(playerid, 2);
+        WeapMenu_Ls_ItemId(playerid, selectionH) = WeapMenu_Ls_ItemId(playerid, 2);
 
-        if(WeapMenu_Ls_WeaponId(playerid, 3) == -1) WeapMenu_Ls_WeaponId(playerid, 2) = oldWeapon;
+        if(WeapMenu_Ls_ItemId(playerid, 3) == -1) WeapMenu_Ls_ItemId(playerid, 2) = oldWeapon;
         else 
         {
-            WeapMenu_Ls_WeaponId(playerid, 2) = WeapMenu_Ls_WeaponId(playerid, 3);
-            WeapMenu_Ls_WeaponId(playerid, 3) = oldWeapon;
+            WeapMenu_Ls_ItemId(playerid, 2) = WeapMenu_Ls_ItemId(playerid, 3);
+            WeapMenu_Ls_ItemId(playerid, 3) = oldWeapon;
         }
     }
     Audio_PlayEx(playerid, AUDIO_BP_SWITCH_WEAPS);
