@@ -23,7 +23,7 @@ timer HideHud[TIMER_HIDE_HUD](playerid)
 {
     if(!IsHudVisibleForPlayer(playerid))
     {
-        return;
+        return false;
     }
 
     // Weapon HUD hiding is being done inside 'OnPlayerWeaponChange' !
@@ -31,7 +31,7 @@ timer HideHud[TIMER_HIDE_HUD](playerid)
     
     if(IsPlayerHudFlashing(playerid))
     {
-        return;
+        return false;
     }
 
     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
@@ -44,6 +44,7 @@ timer HideHud[TIMER_HIDE_HUD](playerid)
     TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
     TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Underneath]);
     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status]);
+    return true;
 }
 
 // HUD : Checks player's armed weapon and displays it.
