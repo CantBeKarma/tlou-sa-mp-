@@ -338,26 +338,6 @@
     // true - if melee's weapon CND set correctly
     bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCND, extraCND = 0)
     {
-        //     // Melee weapons.
-        //     if(meleeUpgradedCnd > 0)
-        //     {
-        //         IsPlayerMeleeUpgraded[playerid] = true;
-
-        //         new maxMeleeExtCnd = GetMeleeWeapon_Durability(weaponId, true);
-        //         GetPlayerMeleeExtCnd[playerid] = (meleeUpgradedCnd > maxMeleeExtCnd) ? (maxMeleeExtCnd) : (meleeUpgradedCnd);
-        //     }
-
-        //     // If trying to give melee weapon and player 
-        //     // already had a melee weapon - remove ownership of it from DB.
-        //     if(HasPlayerGotMeleeWeapon(playerid))
-        //     {
-        //         new playerMeleeItemIdx = FindItemIdxByWeaponId(GetPlayerMelee[playerid]);
-        //         if(playerMeleeItemIdx != -1)
-        //         {
-        //             DB_RemovePlayerItem(playerid, playerMeleeItemIdx);
-        //         }
-        //     }
-
         if(!HasPlayerGotItem(playerid, itemId) || !IsItemMeleeWeapon(itemId))
         {
             return false;
@@ -373,7 +353,7 @@
             ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCND > maxBasicCND) ? (maxBasicCND) : (basicCND);
         }
 
-        if(extraCND > 0)
+        if(extraCND > 0 && HasPlayerGotItem(playerid, itemId))
         {
             new maxExtraCND = GetPlayerItemMaxAmount(playerid, itemId, true);
             ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCND > maxExtraCND) ? (maxExtraCND) : (extraCND);
