@@ -19,14 +19,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         new currentItemId = GetPlayerEquippedItemId(playerid);
         
-        if(!IsPlayerAimingWeapon(playerid)
-        && !IsPlayerUsingBackpack(playerid) 
-        && !IsPlayerUsingWeaponMenu(playerid)
-        && !IsPlayerUnableToPerformAction(playerid))
+        if(IsPlayerIdle(playerid))
         {
             // Healing
-            if(GetItemType(currentItemId) == ITEM_TYPE_HEAL 
-            && GetPlayerItemAmount(playerid, currentItemId) > 0)
+            if(GetItemType(currentItemId) == ITEM_TYPE_HEAL)
             {
                 if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < 100.0)
                 {
@@ -42,9 +38,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         }
 
         // If player uses bullet weapon and has no ammo in a weapon magazine...
-        if(IsPlayerAimingWeapon(playerid) 
-        && IsItemBulletWeapon(currentItemId) 
-        && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
+        if(IsPlayerAimingWeapon(playerid) && IsItemBulletWeapon(currentItemId) && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
         {
             // perform a sound effect when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
