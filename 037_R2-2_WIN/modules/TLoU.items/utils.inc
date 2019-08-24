@@ -306,7 +306,7 @@ ShowPlayerItemLabel(playerid, item_objectId)
     new labelStr[32];
     switch(itemType)
     {
-        case ITEM_TYPE_HEAL:        format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (GetPlayerWeaponAmmo(playerid, itemWeaponId) >= MAX_AMOUNT_MEDKIT ? "\n{FF0000}(FULL)" : ""));
+        case ITEM_TYPE_HEAL:        format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (GetPlayerItemAmount(playerid, itemId) >= MAX_AMOUNT_MEDKIT ? "\n{FF0000}(FULL)" : ""));
         case ITEM_TYPE_THROWABLE:   format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (HasPlayerGotItem(playerid, itemId) ? "\n{FF0000}(FULL)" : ""));
         case ITEM_TYPE_COLLECTIBLE: format(labelStr, sizeof(labelStr), "%s", eObjData[e_sObj_Title]);
 
@@ -333,7 +333,7 @@ ShowPlayerItemLabel(playerid, item_objectId)
 
         case ITEM_TYPE_WEAPON:
         {
-            if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId))
+            if(IsPlayerFullOnItem(playerid, itemId))
             {
                 format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
             }
@@ -523,6 +523,16 @@ ShowPlayerItemLabel(playerid, item_objectId)
         }
 
         return ePlayerItemData[playerid][itemId][e_iItemAmount];
+    }
+
+    GetPlayerMeleeExtraCnd(playerid, itemId)
+    {
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemMeleeWeapon(itemId))
+        {
+            return -1;
+        }
+
+        return ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND];
     }
 
     // Gets maximal amount of an item type that's possible to get for player.
@@ -914,7 +924,7 @@ ShowPlayerItemLabel(playerid, item_objectId)
     // Returns:
     // false - if player didn't have any item equipped.
     // true - if item hid correctly.
-    bool:HideItem(playerid)
+    HideItem(playerid)
     {
         SCMF(playerid, -1, "HideItem");
         if(GetPlayerEquippedItemId(playerid) == -1)

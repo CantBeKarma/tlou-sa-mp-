@@ -28,8 +28,7 @@ public OnPlayerShotArrow(playerid)
 	Audio_PlayEx(playerid, AUDIO_BOW_SHOT);
 	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
 
-	new newBowArrows = GetPlayerArrows[playerid] - 1;
-	SetPlayerWeaponAmmo(playerid, WEAPON_BOW, newBowArrows);
+	new newBowArrows = GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW);
 
 	if(newBowArrows > 0)
 	{
@@ -159,7 +158,7 @@ Bow_ReleaseString(playerid)
 Arrow_FireArrow(playerid)
 {
 	// Validation.
-	if(GetPlayerArrows[playerid] <= 0 || ePlayerWeapon[playerid][e_iArrowObjectId] != -1)
+	if(GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW) <= 0 || ePlayerWeapon[playerid][e_iArrowObjectId] != -1)
 	{
 		return 1;
 	}

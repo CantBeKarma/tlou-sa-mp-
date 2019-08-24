@@ -160,34 +160,9 @@ ResetEnum_ePlayerWeapon(playerid)
 		return item_slotId;
 	}
 
-	// Check if player is full on ammo for certain weapon.
-	IsPlayerWeaponFullOnAmmo(playerid, weaponId)
-	{
-		return GetPlayerWeaponAmmo(playerid, weaponId) >= GetPlayerWeaponLvl_MaxAmmo(playerid, weaponId);
-	}
 //#endregion
 
 //#region Weapons functions
-
-	// Set player's weapon ammo (doesn't matter if weapon is equipped or not).
-	SetPlayerWeaponAmmo(playerid, weaponId, ammo)
-	{
-		if(CurrentPlayerWeaponId[playerid] != weaponId) PlayerWeaponSlotAmmo[playerid, GetCustomWeaponSlot(weaponId)] = ammo;
-		else
-		{
-			CurrentPlayerWeaponAmmo[playerid] = ammo;
-			HudTd_UpdateWeaponAmmo(playerid, weaponId);
-		}
-	}
-
-	// Get player's weapon ammo (doesn't matter if weapon is equipped or not).
-	GetPlayerWeaponAmmo(playerid, weaponId)
-	{
-		return 
-			CurrentPlayerWeaponId[playerid] == weaponId 
-			? CurrentPlayerWeaponAmmo[playerid] 
-			: PlayerWeaponSlotAmmo[playerid, GetCustomWeaponSlot(weaponId)];
-	}
 
 	// Reduces condition of player's melee weapon by one.
 	DegradePlayerMeleeWeapon(playerid)
@@ -195,7 +170,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		new weaponid = GetPlayerMelee[playerid];
 
 		// Durability logic (reduce upgraded durability or basic one?)
-		new newMeleeDurability = (IsPlayerMeleeUpgraded[playerid]) ? (GetPlayerMeleeExtCnd[playerid]-1) : (GetPlayerMeleeCnd[playerid]-1);
+		new newMeleeDurability = (IsPlayerMeleeUpgraded[playerid]) ? (GetPlayerMeleeExtraCnd(playerid, weaponid)-1) : (GetPlayerItemAmount(playerid, weaponid)-1);
 		HudTd_UpdateMeleeWeaponCND(playerid, weaponid, newMeleeDurability);
 
 		if(newMeleeDurability > 0)

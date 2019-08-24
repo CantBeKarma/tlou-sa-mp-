@@ -30,7 +30,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		// Projectile has been thrown.
 		case GRENADE_WEAPON_THROW:
 		{
-			if(GetPlayerWeaponAmmo(playerid, CurrentPlayerWeaponId[playerid]) <= 0)
+			if(GetPlayerItemAmount(playerid, GetPlayerEquippedItemId(playerid)) <= 0)
 			{
 				SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 			}

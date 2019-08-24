@@ -114,14 +114,9 @@
 
     #define     IsPlayerMeleeUpgraded[%0]           ePlayerWeapon[%0][e_iWeaponMeleeUpgraded]
     #define     GetPlayerMelee[%0]                  ePlayerWeapon[%0][e_iWeaponsId][WEAPON_SLOT_MELEE]
-    #define     GetPlayerMeleeCnd[%0]               GetPlayerWeaponAmmo(%0, GetPlayerMelee[%0])
-    #define     GetPlayerMeleeExtCnd[%0]            ePlayerWeapon[%0][e_iMeleeUpgradedCnd]
     #define     GetPlayerShivCnd[%0]                ePlayerWeapon[%0][e_iShivCnd]
 
     #define     GetPlayerThrowable[%0]              ePlayerWeapon[%0][e_iWeaponsId][WEAPON_SLOT_BRICK_BOTTLE]
-    #define     GetPlayerArrows[%0]                 GetPlayerWeaponAmmo(%0, WEAPON_BOW)
-    #define     GetPlayerMedkits[%0]                GetPlayerWeaponAmmo(%0, WEAPON_MEDKIT)
-    #define     GetPlayerShivs[%0]                  GetPlayerWeaponAmmo(%0, WEAPON_SHIV)
 //#endregion
 
 // Projectiles data.

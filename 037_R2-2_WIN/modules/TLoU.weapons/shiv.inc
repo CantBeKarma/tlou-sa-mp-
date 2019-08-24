@@ -5,8 +5,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerShivPlayer(playerid, shivedId)
 {
-	new newShivAmount = GetPlayerShivs[playerid] - 1;
-	SetPlayerWeaponAmmo(playerid, WEAPON_SHIV, newShivAmount);
+	new newShivAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) - 1;
 	
 	if(newShivAmount <= 0)
 	{

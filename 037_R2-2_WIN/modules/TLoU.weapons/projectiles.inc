@@ -28,8 +28,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerThrowProjectile(playerid, weaponId)
     {
-        new newProjectileAmount = GetPlayerWeaponAmmo(playerid, weaponId)-1;
-        SetPlayerWeaponAmmo(playerid, weaponId, newProjectileAmount);
+        new newProjectileAmount = GetPlayerItemAmount(playerid, GetItemNativeWeaponId(weaponId)) - 1;
 
         if(newProjectileAmount <= 0)
         {
@@ -45,8 +44,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerDropNailbomb(playerid)
     {
-        new newProjectileAmount = GetPlayerWeaponAmmo(playerid, WEAPON_NAIL_BOMB)-1;
-        SetPlayerWeaponAmmo(playerid, WEAPON_NAIL_BOMB, newProjectileAmount);
+        new newProjectileAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB);
 
         if(newProjectileAmount <= 0)
         {
@@ -288,7 +286,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     Projectile_Throw(playerid, weaponId)
     {
         // Validation.
-        if(GetPlayerWeaponAmmo(playerid, weaponId) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || ePlayerWeapon[playerid][e_bShootingCustomWeapon]
+        if(GetPlayerItemAmount(playerid, GetItemNativeWeaponId(weaponId)) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || ePlayerWeapon[playerid][e_bShootingCustomWeapon]
         || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
         {
             return 1;
@@ -357,7 +355,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     Projectile_Drop_Nailbomb(playerid)
     {
         // Validation.
-        if(GetPlayerWeaponAmmo(playerid, WEAPON_NAIL_BOMB) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES
+        if(GetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES
         || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
         {
             return 1;

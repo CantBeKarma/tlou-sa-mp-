@@ -290,8 +290,7 @@ hook OnPlayerUpdate@000(playerid)
 		Audio_StopEx(playerid);
 		Audio_PlayEx(playerid, AUDIO_BANDAGE_FINISH);
 
-		new newMedkitAmount = GetPlayerWeaponAmmo(playerid, WEAPON_MEDKIT)-1;
-		SetPlayerWeaponAmmo(playerid, WEAPON_MEDKIT, newMedkitAmount);
+		new newMedkitAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_MEDKIT) - 1;
 
 		if(newMedkitAmount <= 0)
 		{
@@ -363,7 +362,7 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerLookAtPlayer(playerid, lookingAt_playerId)
 	{
-		if(GetPlayerShivs[playerid] <= 0
+		if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0
 		|| IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
 			return 1;
@@ -405,7 +404,7 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 	{
-		if(GetPlayerShivs[playerid] <= 0 || FCNPC_GetType(lookingAt_NpcId) == NPC_TYPE:TYPE_BLOATER)
+		if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0 || FCNPC_GetType(lookingAt_NpcId) == NPC_TYPE:TYPE_BLOATER)
 		{
 			return 1;
 		}

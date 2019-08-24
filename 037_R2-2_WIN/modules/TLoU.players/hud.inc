@@ -91,14 +91,16 @@ HudTd_UpdateCraftingWrench(playerid)
 // HUD : Checking if player has any shivs - if so, displays shiv icon and amount.
 HudTd_UpdateShivs(playerid)
 {
-    if(GetPlayerWeaponAmmo(playerid, WEAPON_SHIV) <= 0) TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
+    if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0) TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
     else
     {
-        new tmp_weapAmmo[5];
-        valstr(tmp_weapAmmo, GetPlayerWeaponAmmo(playerid, WEAPON_SHIV));
-
         TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
-        PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount], tmp_weapAmmo);
+        
+        new String:itemAmountStr = STRING_NULL;
+        itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV));
+
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount], itemAmountStr);
+        PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
     }
 }
 
@@ -131,8 +133,8 @@ HudTd_UpdateShivs(playerid)
             meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false),
             maxMeleeBars = meleeBasicCnd + GetMeleeWeapon_Durability(weaponId, true),
 
-            playerMeleeCnd = GetPlayerMeleeCnd[playerid],
-            playerMeleeExtCnd = GetPlayerMeleeExtCnd[playerid];
+            playerMeleeCnd = GetPlayerItemAmount(playerid, weaponid),
+            playerMeleeExtCnd = GetPlayerMeleeExtraCnd(playerid, weaponId);
 
         for(new tdIdx = 0; tdIdx != maxMeleeBars; tdIdx++)
         {
@@ -208,11 +210,11 @@ HudTd_UpdateShivs(playerid)
 
         if(!IsPlayerMeleeUpgraded[playerid]) 
         {
-            SetPlayerWeaponAmmo(playerid, weaponId, tdIdx);
+            //SetPlayerWeaponAmmo(playerid, weaponId, tdIdx);
         }
         else
         {
-            GetPlayerMeleeExtCnd[playerid] = tdIdx;
+            ePlayerItemData[playerid][weaponId][e_iItemMeleeExtraCND] = tdIdx;
         }
 
         switch(weaponId)

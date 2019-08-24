@@ -177,14 +177,6 @@ CMD:skin(playerid, params[])
     return 1;
 }
 
-CMD:mymelee(playerid, params[])
-{
-    new weaponId = GetPlayerMelee[playerid];
-    SCMF(playerid, -1, "Melee weaponId: %d | CND: %d | Upgraded CND: %d", weaponId, GetPlayerMeleeCnd[playerid], GetPlayerMeleeExtCnd[playerid]);
-    SCMF(playerid, -1, "default basic CND: %d | default upgraded CND: %d", GetMeleeWeapon_Durability(weaponId, false), GetMeleeWeapon_Durability(weaponId, true));
-    return 1;
-}
-
 Dialog_CreateItemList(playerid)
 {
     inline ItemListResponse(pid, dialogid, response, listitem, string:inputtext[])

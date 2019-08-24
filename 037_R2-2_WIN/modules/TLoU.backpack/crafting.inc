@@ -43,8 +43,7 @@ public OnPlayerCraftedItem(playerid, craftItemId)
         return 1;
     }
 
-    new itemWeaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
-    if(craftItemId != CRAFT_ITEM_MELEE) SetPlayerItemAmount(playerid, itemId, GetPlayerWeaponAmmo(playerid, itemWeaponId) + 1);
+    if(craftItemId != CRAFT_ITEM_MELEE) SetPlayerItemAmount(playerid, itemId, GetPlayerItemAmount(playerid, itemId) + 1);
     else
     {
         if(GetPlayerMelee[playerid] == WEAPON_PIPE)
@@ -53,7 +52,7 @@ public OnPlayerCraftedItem(playerid, craftItemId)
         }
         
         new 
-            meleeCnd = GetPlayerMeleeCnd[playerid],
+            meleeCnd = GetPlayerItemAmount(playerid, WEAPON_SCISSOR_PIPE),
             meleeExtCnd = GetMeleeWeapon_Durability(GetPlayerMelee[playerid], true);
 
         SetPlayerItemAmount(playerid, itemId, meleeCnd, .meleeExtraCND = meleeExtCnd);
@@ -66,7 +65,7 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     // Set newly crafted weapon as a last weapon used.
     if(craftItemId != CRAFT_ITEM_SHIV)
     {
-        LastPlayerWeaponId[playerid] = itemWeaponId;
+        LastPlayerWeaponId[playerid] = GetItemNativeWeaponId(itemId);
     }
 
     Audio_StopEx(playerid);
@@ -364,7 +363,7 @@ CraftTd_CheckWhatsToCraft(playerid)
             else 
                 Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MELEE);
 
-            if(GetPlayerWeaponAmmo(playerid, WEAPON_SHIV) < MAX_AMOUNT_SHIV) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_SHIV);
+            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) < MAX_AMOUNT_SHIV) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_SHIV);
             else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SHIV);
         }
         else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MELEE), Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SHIV);
@@ -373,10 +372,10 @@ CraftTd_CheckWhatsToCraft(playerid)
     //#region RAG + ALCOHOL (Medkit & Molotov cocktail)
         if(Craft_IngrAmount(playerid, INGR_ITEM_RAG) >= requiredMinAmount && Craft_IngrAmount(playerid, INGR_ITEM_ALCOHOL) >= requiredMinAmount)
         {
-            if(GetPlayerWeaponAmmo(playerid, WEAPON_MEDKIT) < MAX_AMOUNT_MEDKIT) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_MEDKIT);
+            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_MEDKIT) < MAX_AMOUNT_MEDKIT) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_MEDKIT);
             else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MEDKIT);
 
-            if(GetPlayerWeaponAmmo(playerid, WEAPON_MOLOTOV) < MAX_AMOUNT_MOLOTOV) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_MOLOTOV);
+            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_MOLOTOV) < MAX_AMOUNT_MOLOTOV) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_MOLOTOV);
             else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MOLOTOV);
         }
         else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MEDKIT), Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MOLOTOV);
@@ -385,7 +384,7 @@ CraftTd_CheckWhatsToCraft(playerid)
     //#region BLADE + EXPLOSIVE (Nailbomb)
         if(Craft_IngrAmount(playerid, INGR_ITEM_BLADE) >= requiredMinAmount && Craft_IngrAmount(playerid, INGR_ITEM_EXPLOSIVE) >= requiredMinAmount)
         {
-            if(GetPlayerWeaponAmmo(playerid, WEAPON_NAIL_BOMB) < MAX_AMOUNT_BOMB) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_BOMB);
+            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB) < MAX_AMOUNT_BOMB) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_BOMB);
             else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_BOMB);
         }
         else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_BOMB);
@@ -394,7 +393,7 @@ CraftTd_CheckWhatsToCraft(playerid)
     //#region EXPLOSIVE + SUGAR (Smoke bomb)
         if(Craft_IngrAmount(playerid, INGR_ITEM_EXPLOSIVE) >= requiredMinAmount && Craft_IngrAmount(playerid, INGR_ITEM_SUGAR) >= requiredMinAmount)
         {
-            if(GetPlayerWeaponAmmo(playerid, WEAPON_SMOKE_BOMB) < MAX_AMOUNT_SMOKE_BOMB) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_SMOKE_BOMB);
+            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SMOKE_BOMB) < MAX_AMOUNT_SMOKE_BOMB) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_SMOKE_BOMB);
             else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SMOKE_BOMB);
         }
         else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SMOKE_BOMB);

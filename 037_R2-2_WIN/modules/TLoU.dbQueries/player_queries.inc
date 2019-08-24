@@ -71,13 +71,13 @@
                     if(row_meleeExtCnd > 0)
                     {
                         IsPlayerMeleeUpgraded[playerid] = true;
-                        GetPlayerMeleeExtCnd[playerid] = row_meleeExtCnd;
+                        //GetPlayerMeleeExtraCnd(playerid, i) = row_meleeExtCnd;
                     }
                 }
 
                 // Other weapons.
                 //GivePlayerWeaponInSlot(playerid, weaponId);
-                SetPlayerWeaponAmmo(playerid, weaponId, row_amount);
+                //SetPlayerWeaponAmmo(playerid, weaponId, row_amount);
             }
         }
 
@@ -108,10 +108,10 @@
                 {
                     if(HasPlayerGotItem(playerid, i))
                     {
-                        itemAmount = GetPlayerMeleeCnd[playerid];
+                        itemAmount = GetPlayerItemAmount(playerid, i);
 
                         if(IsPlayerMeleeUpgraded[playerid])
-                            meleeExtCnd = GetPlayerMeleeExtCnd[playerid];
+                            meleeExtCnd = ePlayerItemData[playerid][i][e_iItemMeleeExtraCND];
                     }
                 }
 
@@ -119,7 +119,9 @@
                 default:
                 {
                     if(eItemsData[i][e_iItem_SA_WeaponId] != -1)
-                        itemAmount = GetPlayerWeaponAmmo(playerid, eItemsData[i][e_iItem_SA_WeaponId]);
+                    {
+                        itemAmount = GetPlayerItemAmount(playerid, i);
+                    }
                 }
             }
 

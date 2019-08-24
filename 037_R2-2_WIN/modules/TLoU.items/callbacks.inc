@@ -140,12 +140,12 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         if(itemWeaponId == WEAPON_MEDKIT)
         {
-            if(IsPlayerWeaponFullOnAmmo(playerid, WEAPON_MEDKIT))
+            if(IsPlayerFullOnItem(playerid, itemId))
             {
                 return NEXT_ACTION_NONE;
             }
 
-            new newItemAmount = GetPlayerWeaponAmmo(playerid, WEAPON_MEDKIT) + itemAmount;
+            new newItemAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_MEDKIT) + itemAmount;
             SetPlayerItemAmount(playerid, itemId, newItemAmount);
         }
         else
@@ -172,8 +172,8 @@ public OnPlayerLookAtItem(playerid, item_objectId)
                 return NEXT_ACTION_NONE;
             }
 
-            droppedMeleeCnd = GetPlayerMeleeCnd[playerid];
-            droppedMeleeExtCnd = (IsPlayerMeleeUpgraded[playerid] ? GetPlayerMeleeExtCnd[playerid] : 0);
+            // droppedMeleeCnd = GetPlayerItemAmount(playerid, i);
+            // droppedMeleeExtCnd = (IsPlayerMeleeUpgraded[playerid] ? GetPlayerMeleeExtraCnd(playerid, itemId) : 0);
         }
 
         new itemId, meleeCnd, meleeExtCnd;
@@ -238,12 +238,12 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         new itemId, itemAmount, itemWeaponId;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount, .itemWeaponId = itemWeaponId);
 
-        if(IsPlayerWeaponFullOnAmmo(playerid, itemWeaponId))
+        if(IsPlayerFullOnItem(playerid, itemId))
         {
             return NEXT_ACTION_NONE;
         }
 
-        new newItemAmount = GetPlayerWeaponAmmo(playerid, itemWeaponId) + itemAmount;
+        new newItemAmount = GetPlayerItemAmount(playerid, itemId) + itemAmount;
         SetPlayerItemAmount(playerid, itemId, newItemAmount);
 
         new nextAction;
