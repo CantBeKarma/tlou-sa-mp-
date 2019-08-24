@@ -166,9 +166,6 @@
 
 //#region Utils
 
-    // Check if player is full on the specified ingredient.
-    IsPlayerFullOnIngr(playerid, ingrId) return Craft_IngrAmount(playerid, ingrId) >= 300;
-
     // Check if player has a melee weapon (any or a specific one).
     bool:HasPlayerGotMeleeWeapon(playerid, meleeId = NO_MELEE)
     {
@@ -225,7 +222,7 @@
             case ITEM_TYPE_INGREDIENT:
             {
                 // itemId = ingredientId (this is the ONLY case!)
-                if(IsPlayerFullOnIngr(playerid, itemId))
+                if(IsPlayerFullOnItem(playerid, itemid))
                 {
                     format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
                 }

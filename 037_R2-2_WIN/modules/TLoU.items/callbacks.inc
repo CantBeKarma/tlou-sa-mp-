@@ -113,7 +113,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount);
 
         // itemId = ingredientId (this is the ONLY case!)
-        if(IsPlayerFullOnIngr(playerid, itemId))
+        if(IsPlayerFullOnItem(playerid, itemid))
         {
             return NEXT_ACTION_NONE;
         }
