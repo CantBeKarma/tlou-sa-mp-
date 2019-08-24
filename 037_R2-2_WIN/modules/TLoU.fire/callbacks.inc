@@ -43,7 +43,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartBurning(playerid, fireCreatorId)
 {
-    HidePlayerWeapon(playerid);
+    HideItem(playerid);
 
     SPAO(playerid, OBJECT_MODEL_BURNING);
     ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, fireCreatorId);

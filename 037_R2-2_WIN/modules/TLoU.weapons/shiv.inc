@@ -12,8 +12,8 @@ public OnPlayerShivPlayer(playerid, shivedId)
 	{
 		//RemovePlayerWeapon(playerid, WEAPON_SHIV);
 	}
-
-	HidePlayerWeapon(playerid);
+	
+	HideItem(playerid);
 	ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PLAYER");
 
 	SPAO(playerid, ITEM_MODEL_SHIV);

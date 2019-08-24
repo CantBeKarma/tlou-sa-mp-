@@ -49,7 +49,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		// When player shived NPC/Player (Remove Shiv model from hand).
 		case KNIFE_KILL_KNIFE_PLAYER:
 		{
-			HidePlayerWeapon(playerid);
+			HideItem(playerid);
 		}
 
 		default:

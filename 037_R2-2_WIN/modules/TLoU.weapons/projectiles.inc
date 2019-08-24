@@ -33,7 +33,7 @@
 
         if(newProjectileAmount <= 0)
         {
-            HidePlayerWeapon(playerid);
+            HideItem(playerid);
         }
 
         CLF(#ApplyCallbackAnim, "dss", playerid, "GRENADE", "WEAPON_THROW");
@@ -50,7 +50,7 @@
 
         if(newProjectileAmount <= 0)
         {
-            HidePlayerWeapon(playerid);
+            HideItem(playerid);
         }
 
         ApplyAnimation(playerid, "GRENADE", "WEAPON_THROWU", 3.0, 0, 1, 1, 0, 0);

@@ -120,7 +120,7 @@ public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
 	}
 
 	FreezePlayer(playerid, true, -1);
-	HidePlayerWeapon(playerid);
+	HideItem(playerid);
 	PlayDeathAnimation(playerid, bodypart, weaponid);
 	PlayDeathProcedureForPlayer(playerid);
     return 1;
@@ -295,7 +295,7 @@ hook OnPlayerUpdate@000(playerid)
 
 		if(newMedkitAmount <= 0)
 		{
-			HidePlayerWeapon(playerid);
+			HideItem(playerid);
 		}
 
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);

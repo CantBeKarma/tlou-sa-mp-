@@ -183,7 +183,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         // If player currently has melee weapon equipped > Hide it.
         if(CurrentPlayerWeaponId[playerid] == playerMeleeWeapon && playerMeleeWeapon != NO_MELEE)
         {
-            HidePlayerWeapon(playerid);
+            HideItem(playerid);
         }
         return nextAction;
     }
