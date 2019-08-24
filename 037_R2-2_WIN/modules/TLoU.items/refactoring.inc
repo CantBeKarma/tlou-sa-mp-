@@ -331,13 +331,33 @@
         return true;
     }
 
-    // ! DO NOT USE MANUALLY ANYWHERE ! this function is used internally in SetPlayerItemAmountEx !
+    // ! DO NOT USE MANUALLY ANYWHERE ! this function is used internally in SetPlayerItemAmount !
     // ( IF CND set to 0 an item is going to be removed from player!)
     // Returns:
-    // false - if player hasn't got an item or item isn't a melee weapon
+    // false - if player hasn't got an item OR item isn't a melee weapon
     // true - if melee's weapon CND set correctly
     bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCND, extraCND = 0)
     {
+        //     // Melee weapons.
+        //     if(meleeUpgradedCnd > 0)
+        //     {
+        //         IsPlayerMeleeUpgraded[playerid] = true;
+
+        //         new maxMeleeExtCnd = GetMeleeWeapon_Durability(weaponId, true);
+        //         GetPlayerMeleeExtCnd[playerid] = (meleeUpgradedCnd > maxMeleeExtCnd) ? (maxMeleeExtCnd) : (meleeUpgradedCnd);
+        //     }
+
+        //     // If trying to give melee weapon and player 
+        //     // already had a melee weapon - remove ownership of it from DB.
+        //     if(HasPlayerGotMeleeWeapon(playerid))
+        //     {
+        //         new playerMeleeItemIdx = FindItemIdxByWeaponId(GetPlayerMelee[playerid]);
+        //         if(playerMeleeItemIdx != -1)
+        //         {
+        //             DB_RemovePlayerItem(playerid, playerMeleeItemIdx);
+        //         }
+        //     }
+
         if(!HasPlayerGotItem(playerid, itemId) || !IsItemMeleeWeapon(itemId))
         {
             return false;
@@ -365,24 +385,11 @@
     // Returns:
     // false - if player hasn't got an item OR player is full on that item already OR amount for ingredient is not specified correctly (every 25) OR can't find MaxAmount for the item!
     // true - if player item's amount has been set correctly
-    bool:SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND = 0)
+    SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCND = 0)
     {
         if(!HasPlayerGotItem(playerid, itemId) || IsPlayerFullOnItem(playerid, itemId))
         {
             return false;
-        }
-
-        if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
-        {
-            if((amount % 25) != 0)
-            {
-                return false;
-            }
-        }
-
-        if(GetItemType(itemId) == ITEM_TYPE_MELEE)
-        {
-            return SetPlayerMeleeWeaponCND(playerid, itemId, amount, meleeExtraCND);
         }
 
         new maxItemAmount = GetPlayerItemMaxAmount(playerid, itemId);
@@ -392,13 +399,85 @@
             return false;
         }
 
+        new bool:success = false;
+        if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
+        {
+            success = ((amount % 25) == 0);
+        }
+
+        if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+        {
+            success = SetPlayerMeleeWeaponCND(playerid, itemId, amount, meleeExtraCND);
+        }
+
+        if(!success)
+        {
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: Something went wrong. ItemId: %d | amount: %d | maxItemAmount: %d", itemId, amount, maxItemAmount);
+            return false;
+        }
+
         ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
 
-        if(GetPlayerEquippedItemId(playerid) == itemId)
-        {
-            HudTd_UpdateWeaponAmmo(playerid, itemId);
-        }
+        // DB_UpdatePlayerItemAmount(itemId, calcAmount, .ownerUid = eCharsInfo[playerid][e_iUid]);
+
+        UpdateTextDrawsIfNecessary(playerid, itemId);
         return true;
+    }
+
+
+    UpdateTextDrawsIfNecessary(playerid, itemId)
+    {
+        if(IsPlayerUsingWeaponMenu(playerid))
+        {
+            WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+            CraftTd_CheckWhatsToCraft(playerid);
+        }
+
+        switch(GetItemType(itemId))
+        {
+            case ITEM_TYPE_INGREDIENT:
+            {
+                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
+                {
+                    new selectedCraft = Craft_GetSelection(playerid);
+                    CraftTd_CheckWhatsToCraft(playerid);
+                    CraftTd_UpdateViewingItem(playerid, selectedCraft);
+                    CraftTd_HighlightSelection(playerid, selectedCraft);
+                    CraftTd_UpdateIngr(playerid, itemId);
+                }
+                
+                UpdateNavItemsColors(playerid);
+            }
+
+            case ITEM_TYPE_MELEE, ITEM_TYPE_MISC:
+            {
+                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING && ITEM_IDX:itemId != ITEM_IDX_SHIV)
+                {
+                    CraftTd_UpdateViewingItem(playerid, CRAFT_ITEM_MELEE);
+                }
+                else
+                {
+                    ShowHud(playerid);
+                }
+            }
+
+            case ITEM_TYPE_WEAPON:
+            {
+                if(GetPlayerEquippedItemId(playerid) == itemId)
+                {
+                    HudTd_UpdateWeaponAmmo(playerid, itemId);
+                }
+            }
+
+            default:
+            {
+                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
+                {
+                    // Update backpack items amounts. Foreach?
+                    //CraftTd_UpdateItemAmount(playerid, eItemsData[itemId][e_iItem_CraftItemId], calcAmount);
+                }
+            }
+        }
     }
 
 //#endregion
@@ -411,6 +490,13 @@
         {
             return false;
         }
+
+        // // Update database info & give player item.
+        // if(!HasPlayerGotItem(playerid, weaponId))
+        // {
+        //     //GivePlayerWeaponInSlot(playerid, weaponId);
+        //     DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
+        // }
 
         WeapMenu_AssignItemToFreeSlot(playerid, itemId);
 
@@ -640,7 +726,7 @@ CMD:giveitem(playerid, params[])
     {
         GivePlayerItem(playerid, itemId);
 
-        if(!SetPlayerItemAmountEx(playerid, itemId, amount, meleeExtraCND))
+        if(!SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCND))
         {
             SCMF(playerid, -1, "Amount failure!");
         }

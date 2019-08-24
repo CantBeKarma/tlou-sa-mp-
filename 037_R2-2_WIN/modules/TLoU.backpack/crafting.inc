@@ -56,7 +56,7 @@ public OnPlayerCraftedItem(playerid, craftItemId)
             meleeCnd = GetPlayerMeleeCnd[playerid],
             meleeExtCnd = GetMeleeWeapon_Durability(GetPlayerMelee[playerid], true);
 
-        SetPlayerItemAmount(playerid, itemId, meleeCnd, .meleeUpgradedCnd = meleeExtCnd);
+        SetPlayerItemAmount(playerid, itemId, meleeCnd, .meleeExtraCND = meleeExtCnd);
     }
     
     // Reduct ingredients.
