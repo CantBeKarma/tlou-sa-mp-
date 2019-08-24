@@ -230,6 +230,14 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
 	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
 
+	IsPlayerIdle(playerid)
+	{
+		return !IsPlayerAimingWeapon(playerid)
+			&& !IsPlayerUsingBackpack(playerid) 
+			&& !IsPlayerUsingWeaponMenu(playerid)
+			&& !IsPlayerUnableToPerformAction(playerid);
+	}
+
 //#endregion
 
 // Stops HideHud timer and starts it again.
