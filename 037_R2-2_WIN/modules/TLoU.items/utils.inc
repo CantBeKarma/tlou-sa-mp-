@@ -119,23 +119,6 @@
         return HasPlayerGotItem(playerid, _:ITEM_IDX_BRICK) || HasPlayerGotItem(playerid, _:ITEM_IDX_BOTTLE);
     }
 
-    bool:HasPlayerGotMeleeItem(playerid)
-    {
-        for(new i = 0; i != MAX_ITEMS_DATA; i++)
-        {
-            if(GetItemType(i) != ITEM_TYPE_MELEE)
-            {
-                continue;
-            }
-
-            if(HasPlayerGotItem(playerid, i))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
 //#endregion
 
 //#region Item Create/Update/Destroy/Validate
