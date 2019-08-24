@@ -5,7 +5,7 @@ forward OnPlayerFirstSpawn(playerid);
 forward OnPlayerRespawn(playerid);
 forward OnPlayerPrepareToSign(playerid);
 forward OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart);
-forward OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId);
+forward OnPlayerWeaponChange(playerid, newItemId, oldItemId);
 forward OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId);
 forward OnPlayerLookAtPlayer(playerid, lookingAt_playerId); 
 forward OnPlayerLookAtNPC(playerid, lookingAt_NpcId);
@@ -53,7 +53,7 @@ forward OnPlayerAimsWeapon(playerid, itemId);
 forward OnPlayerStopAimingWeapon(playerid);
 forward OnPlayerStartAimingBulletWeapon(playerid);
 forward OnPlayerStopAimingBulletWeapon(playerid);
-forward OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo);
+forward OnPlayerReloadWeapon(playerid, itemId, oldClipAmmo, newClipAmmo);
 forward OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, Float:fX, Float:fY, Float:fZ);
 
 forward OnPlayerStartAimingBow(playerid);

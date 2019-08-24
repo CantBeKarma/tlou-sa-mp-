@@ -131,11 +131,8 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-    new 
-        currentItemId = GetPlayerEquippedItemId(playerid),
-        nativeWeaponId = GetItemNativeWeaponId(currentItemId);
-
-    if(nativeWeaponId <= 0)
+    new currentItemId = GetPlayerEquippedItemId(playerid);
+    if(currentItemId == -1)
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [%d] [%s] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), playerid, GetPlayerIpAddress(playerid), weaponid);
         return 0;
@@ -152,14 +149,14 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
         newAmmo = GetPlayerItemAmount(playerid, currentItemId),
         newClipAmmo = GetPlayerItemClipAmount(playerid, currentItemId);
 
-    CLF("OnPlayerWeaponShoot", "ddddddfff", playerid, nativeWeaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
+    CLF("OnPlayerWeaponShoot", "ddddddfff", playerid, currentItemId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, fX, fY, fZ);
 	return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- OnPlayerWeaponShoot ----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShoot(playerid, itemId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, Float:fX, Float:fY, Float:fZ)
 {
     // If no ammo in clip - disallow shooting.
     if(newClipAmmo <= 0)
@@ -168,11 +165,12 @@ hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newC
 	}
 
     // Update bullet display weapon ammo (textdraws!)
-    HudTd_ReduceWeaponCurrentAmmo(playerid, weaponId, newClipAmmo);
+    HudTd_UpdateWeaponAmmo(playerid, itemId);
+    HudTd_ReduceWeaponCurrentAmmo(playerid, itemId, newClipAmmo);
 
     // Every rifle shot perform "reload" animation
-    // applies to rifle because of "SetWeaponNoReload" was causing rapid fire of the weapon.
-    if(weaponId == WEAPON_RIFLE && newClipAmmo > 0)
+    // applies to rifle because "SetWeaponNoReload" caused a rapid fire.
+    if(ITEM_IDX:itemId == ITEM_IDX_RIFLE && newClipAmmo > 0)
     {
         ApplyAnimation(playerid, "RIFLE", (IsPlayerCrouched(playerid) ? "RIFLE_CROUCHLOAD" : "RIFLE_LOAD"), 4.1, 0, 1, 1, 0, 0);
     }
@@ -181,10 +179,13 @@ hook OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newC
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- OnPlayerReloadWeapon ---------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
+public OnPlayerReloadWeapon(playerid, itemId, oldClipAmmo, newClipAmmo)
 {
     if(IsPlayerAimingWeapon(playerid))
 	{
+        PlayPlayerReloadAnim(playerid, itemId);
+		PlayPlayer3D_ReloadSFX(playerid, GetItemNativeWeaponId(itemId));
+        HudTd_DisplayWeaponCurrentAmmo(playerid, itemId);
 		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
 	}
 	return 0;
@@ -193,33 +194,34 @@ public OnPlayerReloadWeapon(playerid, weaponId, oldClipAmmo, newClipAmmo)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnPlayerWeaponChange --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
+public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 {
-    // Don't do any attachments with my current weapon if it
-    // was a projectile or a throwable weapon (not necessary to call).
-    if(!IsProjectileWeapon(oldWeaponId) && !IsThrowableWeapon(oldWeaponId))
+    SCMF(playerid, -1, "OnPlayerWeaponChange, newItemId: %d | oldItemId: %d", newItemId, oldItemId);
+
+    // Attach old item to player it if was only a WEAPON type.
+    if(GetItemType(oldItemId) == ITEM_TYPE_WEAPON)
     {
-        SPAO(playerid, GetWeaponModelFromWeaponId(oldWeaponId));
+        SPAO(playerid, GetItemNativeWeaponId(oldItemId));
     }
 
     // Update HUD weapon display.
-    HudTd_UpdateWeapon(playerid, newWeaponId);
-    HudTd_UpdateWeaponAmmo(playerid, newWeaponId);
+    HudTd_UpdateWeapon(playerid, newItemId);
+    HudTd_UpdateWeaponAmmo(playerid, newItemId);
 
-    if(newWeaponId == WEAPON_UNARMED)
+    if(newItemId == -1)
     {
         // Remove attached object if it was a projectile/medkit/throwable.
 		ResetPlayerWeapons(playerid);
         RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 
-        HudTd_HideWeaponCurrentAmmo(playerid, oldWeaponId);
-		HudTd_HideMeleeWeaponBars(playerid, oldWeaponId);
-		HudTd_HideMeleeUpgradedBars(playerid, oldWeaponId);
+        HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
+		// HudTd_HideMeleeWeaponBars(playerid, oldItemId);
+		// HudTd_HideMeleeUpgradedBars(playerid, oldItemId);
     }
     else
     {
         if(IsPlayerAimingWeapon(playerid) 
-        && ((oldWeaponId != WEAPON_SHOTGUN && newWeaponId == WEAPON_SHOTGUN) || (oldWeaponId == WEAPON_SHOTGUN)))
+        && ((oldItemId != _:ITEM_IDX_SHOTGUN && newItemId == _:ITEM_IDX_SHOTGUN) || (oldItemId == _:ITEM_IDX_SHOTGUN)))
         {
             // This function is going to be called only if player keeps aiming
             // It is needed here because of different crosshairs for shotgun and other weapons
@@ -230,11 +232,11 @@ public OnPlayerWeaponChange(playerid, newWeaponId, oldWeaponId)
 
 		ShowHud(playerid);
 
-        HudTd_DisplayMeleeWeaponBars(playerid, newWeaponId);
-        HudTd_DisplayWeaponCurrentAmmo(playerid, newWeaponId);
+        // HudTd_DisplayMeleeWeaponBars(playerid, newItemId);
+        HudTd_DisplayWeaponCurrentAmmo(playerid, newItemId);
 
         // Detach weapon from player's body when it is in use.
-        DetachWeaponFromPlayersBody(playerid, newWeaponId);
+        DetachWeaponFromPlayersBody(playerid, newItemId);
     }
     return 0;
 }
