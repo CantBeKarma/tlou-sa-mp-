@@ -54,6 +54,8 @@ ResetEnum_ePlayerWeapMenu(playerid)
             currentSlot = -1,
             slotToCheck = 1;
 
+        SCMF(playerid, -1, "WeapMenu_Horizontal_SortWeapons: %s", leftOrRight);
+
         if(!strcmp(leftOrRight, "left_side"))
         {
             currentSlot = 1;
@@ -66,17 +68,19 @@ ResetEnum_ePlayerWeapMenu(playerid)
                 :   (currentSlot == 2) ? (3)
                 :   (-1);
 
+                SCMF(playerid, -1, "slotToCheck: %d", slotToCheck);
+
                 if(slotToCheck == -1)
                 {
                     break;
                 }
 
-                if(WeapMenu_Ls_WeaponId(playerid, currentSlot) == -1)
+                if(WeapMenu_Ls_ItemId(playerid, currentSlot) == -1)
                 {
-                    if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
+                    if(WeapMenu_Ls_ItemId(playerid, slotToCheck) != -1)
                     {
-                        WeapMenu_Ls_WeaponId(playerid, currentSlot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
-                        WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
+                        WeapMenu_Ls_ItemId(playerid, currentSlot) = WeapMenu_Ls_ItemId(playerid, slotToCheck);
+                        WeapMenu_Ls_ItemId(playerid, slotToCheck) = -1;
                     }
                 }
 
@@ -99,12 +103,12 @@ ResetEnum_ePlayerWeapMenu(playerid)
                     break;
                 }
 
-                if(WeapMenu_Rs_WeaponId(playerid, currentSlot) == -1)
+                if(WeapMenu_Rs_ItemId(playerid, currentSlot) == -1)
                 {
-                    if(WeapMenu_Rs_WeaponId(playerid, slotToCheck) != -1)
+                    if(WeapMenu_Rs_ItemId(playerid, slotToCheck) != -1)
                     {
-                        WeapMenu_Rs_WeaponId(playerid, currentSlot) = WeapMenu_Rs_WeaponId(playerid, slotToCheck);
-                        WeapMenu_Rs_WeaponId(playerid, slotToCheck) = -1;
+                        WeapMenu_Rs_ItemId(playerid, currentSlot) = WeapMenu_Rs_ItemId(playerid, slotToCheck);
+                        WeapMenu_Rs_ItemId(playerid, slotToCheck) = -1;
                     }
                 }
 
@@ -120,6 +124,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
     WeapMenu_RemoveAndSortItems(playerid, itemId)
     {
+        SCMF(playerid, -1, "WeapMenu_RemoveAndSortItems");
         switch(ITEM_IDX:itemId)
         {
             case 
@@ -160,6 +165,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
     RemoveItemFromHorizontalBar(playerid, itemId, leftOrRight[] = "")
     {
+        SCMF(playerid, -1, "RemoveItemFromHorizontalBar: %s", leftOrRight);
         if(!strcmp(leftOrRight, "left_side"))
         {
             for(new i = 0; i < 4; i++)
@@ -167,6 +173,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
                 if(itemId == WeapMenu_Ls_ItemId(playerid, i))
                 {
                     WeapMenu_Ls_ItemId(playerid, i) = -1;
+                    SCMF(playerid, -1, "removed itemId: %d from slotId: %d", itemId, i);
                     break;
                 }
             }
@@ -178,6 +185,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
                 if(itemId == WeapMenu_Rs_ItemId(playerid, i))
                 {
                     WeapMenu_Rs_ItemId(playerid, i) = -1;
+                    SCMF(playerid, -1, "removed itemId: %d from slotId: %d", itemId, i);
                     break;
                 }
             }
