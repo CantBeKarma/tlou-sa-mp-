@@ -147,7 +147,7 @@ public OnPlayerFinishSwappingWeaps(playerid)
     }
     
     CLF(#Perform_BackpackClosing, "d", playerid);
-    LastPlayerWeaponId[playerid] = WeapMenu_Ls_ItemId(playerid, WeapMenu_GetSelectionH(playerid));
+    ePlayerInfo[playerid][e_iLastEquippedItemId] = WeapMenu_Ls_ItemId(playerid, WeapMenu_GetSelectionH(playerid));
     return 0;
 }
 

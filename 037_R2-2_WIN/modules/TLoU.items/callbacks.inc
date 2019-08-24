@@ -222,9 +222,9 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             //SetPlayerWeapon(playerid, itemWeaponId);
         }
         // If player last weapon is his throwable item.
-        else if(LastPlayerWeaponId[playerid] == playerThrowable)
+        else if(GetPlayerLastEquippedItemId(playerid) == playerThrowable)
         {
-            LastPlayerWeaponId[playerid] = itemWeaponId;                
+            ePlayerInfo[playerid][e_iLastEquippedItemId] = itemWeaponId;                
         }
         return nextAction;
     }

@@ -65,7 +65,7 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     // Set newly crafted weapon as a last weapon used.
     if(craftItemId != CRAFT_ITEM_SHIV)
     {
-        LastPlayerWeaponId[playerid] = GetItemNativeWeaponId(itemId);
+        ePlayerInfo[playerid][e_iLastEquippedItemId] = itemId;
     }
 
     Audio_StopEx(playerid);
