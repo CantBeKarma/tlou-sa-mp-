@@ -128,7 +128,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     new currentItemId = GetPlayerEquippedItemId(playerid);
     if(currentItemId == -1)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [%d] [%s] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), playerid, GetPlayerIpAddress(playerid), weaponid);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [charUid: %d] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), GetPlayerCharUid(playerid), weaponid);
         return 0;
     }
 
@@ -232,5 +232,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         // Detach weapon from player's body when it is in use.
         DetachWeaponFromPlayersBody(playerid, newItemId);
     }
+
+    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerWeaponChange: Changed from itemId: %d to itemId %d (charUid: %d)", oldItemId, newItemId, GetPlayerCharUid(playerid));
     return 0;
 }

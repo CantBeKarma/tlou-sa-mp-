@@ -5,7 +5,7 @@ function LoginPlayerToAccount(playerid, password[])
     SHA256_PassHash(password, "tlou2014", hashStr, sizeof(hashStr));
     DB_RequestPlayerData(playerid, hashStr);
 
-    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s is trying to sign in to account of Guid: %d", PlayerName(playerid), ePlayerInfo[playerid][e_iGuid]);
+    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s is trying to sign in to account of Guid: %d", PlayerName(playerid), GetPlayerCharUid(playerid));
 }
 
 // Prepare player's data during sign in.
@@ -40,13 +40,11 @@ function PrepareDataAfterLogin(playerid)
         if(i < 4)
         {
             WeapMenu_Ls_ItemId(playerid, i) = -1;
-            WeapMenu_Ls_WeaponId(playerid, i) = -1;
         }
 
         if(i < 3)
         {
             WeapMenu_Rs_ItemId(playerid, i) = -1;
-            WeapMenu_Rs_WeaponId(playerid, i) = -1;
         }
     }
 
@@ -91,6 +89,7 @@ function PrepareDataAfterLogin(playerid)
     SetSpawnInfoEx(playerid, GetPlayerSkinEx(playerid), eCharsInfo[playerid][e_fPosX], eCharsInfo[playerid][e_fPosY], eCharsInfo[playerid][e_fPosZ], eCharsInfo[playerid][e_fPosAng]);
 
     Bit_Let(ePlayerFlag[e_bLogged], playerid);
+    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s (charUid: %d) has logged in successfully!", PlayerName(playerid), GetPlayerCharUid(playerid));
 
     SpawnPlayer(playerid);
     return 0;

@@ -378,11 +378,7 @@ ShowPlayerItemLabel(playerid, item_objectId)
         }
 
         // // Update database info & give player item.
-        // if(!HasPlayerGotItem(playerid, weaponId))
-        // {
-        //     //GivePlayerWeaponInSlot(playerid, weaponId);
         //     DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
-        // }
 
         WeapMenu_AssignItemToFreeSlot(playerid, itemId);
 
@@ -392,6 +388,8 @@ ShowPlayerItemLabel(playerid, item_objectId)
         {
             WeapMenuTd_DisplayWeapsAndAmmo(playerid);
         }
+
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), itemId);
         return true;
     }
 
@@ -433,6 +431,7 @@ ShowPlayerItemLabel(playerid, item_objectId)
 		}
 
 		DetachWeaponFromPlayersBody(playerid, GetItemNativeWeaponId(itemId));
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "RemovePlayerItem: charUid: %d got his itemId: %d removed", GetPlayerCharUid(playerid), itemId);
         return true;
     }
 
@@ -665,6 +664,8 @@ ShowPlayerItemLabel(playerid, item_objectId)
         {
             case UPGRADE_TYPE_CLIPSIZE: ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize] = level;
         }
+
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemUpgradeLvl: set upgrade level to: %d of upgrade type: %d for item id: %d (charUid: %d)", level, upgradeType, itemId, GetPlayerCharUid(playerid));
         return true;
     }
 
@@ -712,11 +713,11 @@ ShowPlayerItemLabel(playerid, item_objectId)
         new maxItemAmount = GetPlayerItemMaxAmount(playerid, itemId);
         if(maxItemAmount == -1)
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: received invalid max item amount (-1). ItemId: %d", itemId);
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], ERROR, "SetPlayerItemAmount: received invalid max item amount (-1). ItemId: %d", itemId);
             return false;
         }
 
-        new bool:success = false;
+        new bool:success = true;
         if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
         {
             success = ((amount % 25) == 0);
@@ -729,12 +730,12 @@ ShowPlayerItemLabel(playerid, item_objectId)
 
         if(!success)
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: Something went wrong. ItemId: %d | amount: %d | maxItemAmount: %d", itemId, amount, maxItemAmount);
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], ERROR, "SetPlayerItemAmount: Something went wrong. ItemId: %d | amount: %d | maxItemAmount: %d", itemId, amount, maxItemAmount);
             return false;
         }
 
         ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
-
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: set item amount to: %d (extraCnd = %d) of item id: %d for charUid: %d", amount, meleeExtraCND, itemId, GetPlayerCharUid(playerid));
         // DB_UpdatePlayerItemAmount(itemId, calcAmount, .ownerUid = eCharsInfo[playerid][e_iUid]);
 
         UpdateTextDrawsIfNecessary(playerid, itemId);
@@ -807,8 +808,6 @@ ShowPlayerItemLabel(playerid, item_objectId)
     // true - if item equipped correctly
     function bool:EquipItem(playerid, itemId)
     {
-        SCMF(playerid, -1, "EquipItem: %d", itemId);
-
         if(!HasPlayerGotItem(playerid, itemId) 
         || IsPlayerUnableToPerformAction(playerid)
         || IsPlayerUsingBackpackAnims(playerid))
@@ -829,7 +828,8 @@ ShowPlayerItemLabel(playerid, item_objectId)
         // Tries to equip last weapon but has some weapon equipped already (and not using weapon menu).
         if(GetPlayerEquippedItemId(playerid) != -1 
         && GetPlayerLastEquippedItemId(playerid) == itemId
-        && !IsPlayerUsingWeaponMenu(playerid))
+        && !IsPlayerUsingWeaponMenu(playerid)
+        && ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] == 0)
         {
             SCMF(playerid, -1, "Stopped at 3rd validation");
             return false;
@@ -851,8 +851,6 @@ ShowPlayerItemLabel(playerid, item_objectId)
 
         // Hides player's currently equipped itemId if there are any.
         HideItem(playerid);
-
-        SCMF(playerid, -1, "Passed all validation.");
 
         new nativeWeaponId = GetItemNativeWeaponId(itemId);
         if(itemAmount <= 0)
