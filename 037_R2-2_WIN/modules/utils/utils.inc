@@ -369,7 +369,7 @@ AttachWeaponsToPlayer(playerid)
 
         if(IsMeleeWeapon(weaponId) || IsBulletWeapon(weaponId))
         {
-            SPAO(playerid, GetWeaponModelFromWeaponId(weaponId));
+            //SPAO(playerid, GetWeaponModelFromWeaponId(weaponId));
         }
     }
 }

@@ -103,23 +103,6 @@ ResetEnum_ePlayerWeapon(playerid)
 		//return (WEAPON_UNARMED <= weaponid <= WEAPON_KATANA) || (WEAPON_DILDO <= weaponid <= WEAPON_CANE) || weaponid == WEAPON_PISTOLWHIP;
 	}
 
-	// Check if a weapon is projectile type of a weapon.
-	IsProjectileWeapon(weaponId)
-	{
-		return 
-			weaponId == WEAPON_MOLOTOV 
-			|| weaponId == WEAPON_NAIL_BOMB 
-			|| weaponId == WEAPON_SMOKE_BOMB;
-	}
-
-	// Check if a weapon is throwable type of a weapon.
-	IsThrowableWeapon(weaponId)
-	{
-		return 
-			weaponId == WEAPON_BRICK 
-			|| weaponId == WEAPON_BOTTLE;
-	}
-
 	// Return for which weapon id the specified ammo is for.
 	GetWeaponIdForAmmoType(ammoModelId)
 	{
@@ -128,36 +111,6 @@ ResetEnum_ePlayerWeapon(playerid)
 			case ITEM_MODEL_ARROW:	return WEAPON_BOW;
 		}
 		return -1;
-	}
-
-	// Return weapon's model based on ID.
-	GetWeaponModelFromWeaponId(weaponId)
-	{
-		new item_modelId = -1;
-		for(new i = 0; i != MAX_ITEMS_DATA; i++)
-		{
-			if(weaponId == eItemsData[i][e_iItem_SA_WeaponId])
-			{
-				item_modelId = eItemsData[i][e_iItem_ModelId];
-				break;
-			}
-		}
-		return item_modelId;
-	}
-
-	// Return slot of a weapon (server-sided weapons).
-	GetCustomWeaponSlot(weaponId)
-	{
-		new item_slotId = -1;
-		for(new i = 0; i != MAX_ITEMS_DATA; i++)
-		{
-			if(weaponId == eItemsData[i][e_iItem_SA_WeaponId])
-			{
-				item_slotId = eItemsData[i][e_iItem_SlotId];
-				break;
-			}
-		}
-		return item_slotId;
 	}
 
 //#endregion
@@ -170,13 +123,13 @@ ResetEnum_ePlayerWeapon(playerid)
 		new weaponid = GetPlayerMelee[playerid];
 
 		// Durability logic (reduce upgraded durability or basic one?)
-		new newMeleeDurability = (IsPlayerMeleeUpgraded[playerid]) ? (GetPlayerMeleeExtraCnd(playerid, weaponid)-1) : (GetPlayerItemAmount(playerid, weaponid)-1);
-		HudTd_UpdateMeleeWeaponCND(playerid, weaponid, newMeleeDurability);
+		// new newMeleeDurability = (IsPlayerMeleeUpgraded[playerid]) ? (GetPlayerMeleeExtraCnd(playerid, weaponid)-1) : (GetPlayerItemAmount(playerid, weaponid)-1);
+		// HudTd_UpdateMeleeWeaponCND(playerid, weaponid, newMeleeDurability);
 
-		if(newMeleeDurability > 0)
-		{
-			return;
-		}
+		// if(newMeleeDurability > 0)
+		// {
+		// 	return;
+		// }
 
 		// Removes melee weapon if broke.
 		// if(!IsPlayerMeleeUpgraded[playerid])
@@ -186,7 +139,7 @@ ResetEnum_ePlayerWeapon(playerid)
 		// }
 
 		// If melee is upgraded - remove its upgraded feature and hide bars of it.
-		IsPlayerMeleeUpgraded[playerid] = false;
+		//IsPlayerMeleeUpgraded[playerid] = false;
 		HudTd_HideMeleeUpgradedBars(playerid, weaponid);
 
 		if(weaponid == WEAPON_SCISSOR_PIPE)
