@@ -189,19 +189,6 @@ ResetEnum_ePlayerWeapon(playerid)
 			: PlayerWeaponSlotAmmo[playerid, GetCustomWeaponSlot(weaponId)];
 	}
 
-	// Check if player has certain weapon.
-	HasPlayerWeapon(playerid, weaponId)
-	{
-		new bool:result = false;
-		if(weaponId <= 0) result = false;
-		else if(CurrentPlayerWeaponId[playerid] == weaponId) result = true;
-		else
-		{
-			result = (ePlayerWeapon[playerid][e_iWeaponsId][GetCustomWeaponSlot(weaponId)] == weaponId) ? (true) : (false);
-		}
-		return result;
-	}
-
 	// Reduces condition of player's melee weapon by one.
 	DegradePlayerMeleeWeapon(playerid)
 	{
