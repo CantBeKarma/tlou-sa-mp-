@@ -113,7 +113,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount);
 
         // itemId = ingredientId (this is the ONLY case!)
-        if(IsPlayerFullOnItem(playerid, itemid))
+        if(IsPlayerFullOnItem(playerid, itemId))
         {
             return NEXT_ACTION_NONE;
         }
@@ -197,7 +197,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         new itemId, itemWeaponId;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemWeaponId = itemWeaponId);
 
-        if(HasPlayerGotThrowableItem(playerid, itemWeaponId))
+        if(HasPlayerGotItem(playerid, itemId))
         {
             return NEXT_ACTION_NONE;
         }

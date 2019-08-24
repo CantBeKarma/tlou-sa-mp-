@@ -106,7 +106,7 @@
                 // Melee weapon CND.
                 case 6..9:
                 {
-                    if(HasPlayerGotMeleeWeapon(playerid, eItemsData[i][e_iItem_SA_WeaponId]))
+                    if(HasPlayerGotItem(playerid, i))
                     {
                         itemAmount = GetPlayerMeleeCnd[playerid];
 

@@ -221,3 +221,32 @@ ResetEnum_ePlayerWeapon(playerid)
 		}
 	}
 //#endregion
+
+// Reloads player's weapon
+ReloadWeapon(playerid)
+{
+    new currentEquippedItemId = GetPlayerEquippedItemId(playerid);
+
+    if(currentEquippedItemId == -1 || !IsItemBulletWeapon(currentEquippedItemId)
+    || IsPlayerUnableToPerformAction(playerid) || IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid)
+    || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_CROUCHLOAD || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_LOAD)
+    {
+        return false;
+    }
+
+    new 
+        currentAmmo = GetPlayerItemAmount(playerid, currentEquippedItemId),
+        currentClipSize = GetPlayerItemClipAmount(playerid, currentEquippedItemId),
+        maxWeaponClipSize = GetPlayerItemMaxClipSize(playerid, currentEquippedItemId);
+
+    if(currentAmmo <= currentClipSize || currentClipSize == maxWeaponClipSize)
+    {
+        return false;
+    }
+
+    ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
+    
+    new newClipSize = ePlayerItemData[playerid][currentEquippedItemId][e_iItemClipAmount] = (currentAmmo > maxWeaponClipSize) ? (maxWeaponClipSize) : (currentAmmo);
+    OnPlayerReloadWeapon(playerid, currentEquippedItemId, currentClipSize, newClipSize);
+    return true;
+}
