@@ -6,3 +6,9 @@ ResetEnum_eCharsInfo(playerid)
 
     print("ResetEnum_eCharsInfo");
 }
+
+
+GetPlayerCharUid(playerid)
+{
+    return eCharsInfo[playerid][e_iUid];
+}
