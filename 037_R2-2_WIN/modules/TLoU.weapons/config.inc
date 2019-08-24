@@ -106,8 +106,6 @@
     #define     CurrentPlayerWeaponId[%0]           ePlayerWeapon[%0][e_iWeaponId]
     #define     CurrentPlayerWeaponAmmo[%0]         ePlayerWeapon[%0][e_iWeaponAmmo]
 
-    #define     LastPlayerWeaponId[%0]              ePlayerWeapon[%0][e_iLastWeaponId]
-
     #define     PlayerWeaponBodyDamage[%0]          ePlayerWeapon[%0][e_fWeapon_BodyDamage]
     #define     PlayerWeaponHeadDamage[%0]          ePlayerWeapon[%0][e_fWeapon_HeadDamage]
     #define     PlayerWeaponSlotAmmo[%0,%1]         ePlayerWeapon[%0][e_iWeaponsAmmo][%1]
@@ -139,10 +137,7 @@ enum e_PLAYER_WEAPONS_DATA
     e_iWeaponId,
     e_iWeaponClipSize,
 	e_iWeaponAmmo,
-
-    e_iLastWeaponId,
-    e_iSwitch_LastWeapon,
-    e_iMeleeUpgradedCnd,
+    
     e_iShivCnd,
     bool:e_iWeaponMeleeUpgraded,
     Float:e_fWeapon_BodyDamage,
