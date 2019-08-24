@@ -33,9 +33,15 @@ function PrepareDataAfterLogin(playerid)
     cache_get_value_name_int(0, "skill_shivmaster", Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER));
 
 //#region Reset variables
-    for(new i = 0; i != MAX_WEAPON_SLOTS; i++)
+    Iter_Clear(ItemsToCraft<playerid>);
+    Iter_Clear(SkillsToUpgrade<playerid>);
+    Iter_Clear(iAudioHandle3D<playerid>);
+
+    for(new i = 0; i != MAX_ITEMS_DATA; i++)
     {
-        ePlayerWeapon[playerid][e_iWeaponClipAmmo][i] = -1;
+        ePlayerItemData[playerid][i][e_iItemId] = -1;
+        ePlayerItemData[playerid][i][e_iItemAmount] = -1;
+        ePlayerItemData[playerid][i][e_iItemClipAmount] = -1;
 
         if(i < 4)
         {
@@ -46,17 +52,6 @@ function PrepareDataAfterLogin(playerid)
         {
             WeapMenu_Rs_ItemId(playerid, i) = -1;
         }
-    }
-
-    Iter_Clear(ItemsToCraft<playerid>);
-    Iter_Clear(SkillsToUpgrade<playerid>);
-    Iter_Clear(iAudioHandle3D<playerid>);
-
-    for(new i = 0; i != MAX_ITEMS_DATA; i++)
-    {
-        ePlayerItemData[playerid][i][e_iItemId] = -1;
-        ePlayerItemData[playerid][i][e_iItemAmount] = -1;
-        ePlayerItemData[playerid][i][e_iItemClipAmount] = -1;
     }
 
     ePlayerWeapon[playerid][e_iArrowObjectId] = -1;

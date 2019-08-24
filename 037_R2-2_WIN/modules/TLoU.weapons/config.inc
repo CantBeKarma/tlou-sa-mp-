@@ -150,8 +150,6 @@ enum e_PLAYER_WEAPONS_DATA
 
 	e_iWeaponsId[MAX_WEAPON_SLOTS],
 	e_iWeaponsAmmo[MAX_WEAPON_SLOTS],
-    e_iWeaponClipAmmo[MAX_WEAPON_SLOTS],
-    e_iWeaponsUpgradeLvl_ClipSize[MAX_WEAPON_SLOTS],
     
     e_iArrowObjectId,
 

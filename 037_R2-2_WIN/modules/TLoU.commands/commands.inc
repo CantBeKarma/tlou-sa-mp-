@@ -126,47 +126,6 @@ YCMD:icmd(playerid, params[], help)
     return 1;
 }
 
-CMD:clipsizelvl(playerid, params[])
-{
-    new weaponId, level;
-    if(sscanf(params, "dd", weaponId, level))return SCM(playerid, -1, "/clipsizelvl [weaponId] [newLevel]");
-    {
-        SetPlayerWeaponUpgradeLvl(playerid, weaponId, level, UPGRADE_TYPE_CLIPSIZE);
-    }
-    return 1;
-}
-
-CMD:weapsdata(playerid, params[])
-{
-    new 
-        str_weapsData[512],
-        formattedStr[128];
-
-    new 
-        weaponId,
-        weaponAmmo,
-        weaponMaxAmmo,
-        weaponClipAmmo;
-
-    strcat(str_weapsData, "ID\tAmmo\tMax ammo\tClip ammo\n", sizeof(str_weapsData));
-
-    for(new i = 0; i != MAX_WEAPON_SLOTS; i++)
-    {
-        weaponId = ePlayerWeapon[playerid][e_iWeaponsId][i];
-        weaponAmmo = ePlayerWeapon[playerid][e_iWeaponsAmmo][i];
-        weaponMaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, weaponId);
-        weaponClipAmmo = ePlayerWeapon[playerid][e_iWeaponClipAmmo][i];
-
-        SPAO(playerid, GetWeaponModelFromWeaponId(weaponId));
-
-        format(formattedStr, sizeof(formattedStr), "%d\t%d\t%d\t%d\n", weaponId, weaponAmmo, weaponMaxAmmo, weaponClipAmmo);
-        strcat(str_weapsData, formattedStr, sizeof(str_weapsData));
-    }
-
-    Dialog_Show(playerid, DIALOG_STYLE_TABLIST_HEADERS, "Your weapons data...", str_weapsData, "Close", "");
-    return 1;
-}
-
 CMD:skin(playerid, params[])
 {
     new skinId;
@@ -443,40 +402,6 @@ CMD:mystatus(playerid, params[])
     if(sscanf(params, "d", _:status))return SCM(playerid, -1, "/mystatus [status]");
     {
         SetPlayerStatus(playerid, status);
-    }
-    return 1;
-}
-
-CMD:allin(playerid, params[])
-{
-    // Ingredients.
-    for(new i = 0; i <= 5; i++)
-    {
-        SetPlayerItemAmount(playerid, i, 300);
-    }
-
-    // Melee weapon.
-    new 
-        randomMelee = RandomEx(6, 9),
-        weaponId = eItemsData[randomMelee][e_iItem_SA_WeaponId],
-        meleeCnd = GetMeleeWeapon_Durability(weaponId, false),
-        meleeExtCnd = GetMeleeWeapon_Durability(weaponId, true);
-
-    SetPlayerItemAmount(playerid, randomMelee, meleeCnd, meleeExtCnd);
-
-    // Other weapons.
-    for(new i = 9; i != MAX_ITEMS_DATA; i++)
-    {
-        weaponId = eItemsData[i][e_iItem_SA_WeaponId];
-
-        if(eItemsData[i][e_iItem_Type] == ITEM_TYPE_COLLECTIBLE 
-        || eItemsData[i][e_iItem_Type] == ITEM_TYPE_AMMO
-        || weaponId == WEAPON_BOTTLE)
-        {
-            continue;
-        }
-
-        SetPlayerItemAmount(playerid, i, GetPlayerWeaponLvl_MaxAmmo(playerid, weaponId));
     }
     return 1;
 }

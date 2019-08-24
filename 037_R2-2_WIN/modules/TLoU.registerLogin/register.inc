@@ -17,6 +17,12 @@ PrepareDataAfterRegister(playerid)
     for(new i = 0; i != 5; i++)
     {
         DB_GivePlayerItem(i, 0, .ownerUid = eCharsInfo[playerid][e_iUid]);
+
+        if(i <= 3) 
+            WeapMenu_Ls_ItemId(playerid, i) = -1;
+
+        if(i <= 2) 
+            WeapMenu_Rs_ItemId(playerid, i) = -1;
     }
 
     Iter_Clear(iAudioHandle3D<playerid>);
@@ -32,17 +38,6 @@ PrepareDataAfterRegister(playerid)
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
     
     SpawnPlayer(playerid);
-
-    for(new i = 0; i != MAX_WEAPON_SLOTS; i++)
-    {
-        ePlayerWeapon[playerid][e_iWeaponClipAmmo][i] = -1;
-
-        if(i <= 3) 
-            WeapMenu_Ls_ItemId(playerid, i) = -1;
-
-        if(i <= 2) 
-            WeapMenu_Rs_ItemId(playerid, i) = -1;
-    }
 
     FadePlayerScreen(playerid, FADE_OUT);
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] has signed up for the first time!", ePlayerInfo[playerid][e_sName], playerid);

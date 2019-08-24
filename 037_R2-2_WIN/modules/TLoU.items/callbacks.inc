@@ -249,7 +249,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         new nextAction;
         if(IsBulletWeapon(itemWeaponId) || itemWeaponId == WEAPON_BOW)
         {
-            new playerWeapon_MaxAmmo = GetPlayerWeaponLvl_MaxAmmo(playerid, itemWeaponId);
+            new playerWeapon_MaxAmmo = GetPlayerItemMaxAmount(playerid, itemId);
             nextAction = (newItemAmount > playerWeapon_MaxAmmo) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
 
             if(nextAction == NEXT_ACTION_UPDATE)
