@@ -26,8 +26,8 @@ timer HideHud[TIMER_HIDE_HUD](playerid)
         return;
     }
 
-    // Weapon HUD hiding is being done inside 'HidePlayerWeapon' !
-    HidePlayerWeapon(playerid);
+    // Weapon HUD hiding is being done inside 'OnPlayerWeaponChange' !
+    HideItem(playerid);
     
     if(IsPlayerHudFlashing(playerid))
     {
@@ -47,25 +47,30 @@ timer HideHud[TIMER_HIDE_HUD](playerid)
 }
 
 // HUD : Checks player's armed weapon and displays it.
-HudTd_UpdateWeapon(playerid, weaponId)
+HudTd_UpdateWeapon(playerid, itemId)
 {
-    if(weaponId == WEAPON_UNARMED) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
-    else
+    if(itemId == -1)
     {
-        for(new i = 0; i != MAX_HUD_WEAPONS; i++)
-        {
-            if(weaponId == eHudMenu_Items[i][e_iHud_WeaponId])
-            {
-                PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_sHud_WeapIcon]);
-                PlayerTextDrawTextSize(playerid,  ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconTextSize_X], eHudMenu_Items[i][e_fHud_WeapIconTextSize_Y]);
-                PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconPos_X], eHudMenu_Items[i][e_fHud_WeapIconPos_Y]);
-                PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Ammo],   eHudMenu_Items[i][e_fHud_WeapAmmoPos_X], eHudMenu_Items[i][e_fHud_WeapAmmoPos_Y]);
-
-                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
-                break;
-            }
-        }
+        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
+        return true;
     }
+
+    for(new i = 0; i != MAX_HUD_WEAPONS; i++)
+    {
+        if(itemId != _:eHudMenu_Items[i][e_iHud_itemId])
+        {
+            continue;
+        }
+
+        PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_sHud_WeapIcon]);
+        PlayerTextDrawTextSize(playerid,  ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconTextSize_X], eHudMenu_Items[i][e_fHud_WeapIconTextSize_Y]);
+        PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconPos_X], eHudMenu_Items[i][e_fHud_WeapIconPos_Y]);
+        PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Ammo],   eHudMenu_Items[i][e_fHud_WeapAmmoPos_X], eHudMenu_Items[i][e_fHud_WeapAmmoPos_Y]);
+
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
+        break;
+    }
+    return true;
 }
 
 // HUD : Checking if there's anything to craft and displays wrench icon if so.
@@ -235,18 +240,20 @@ HudTd_UpdateShivs(playerid)
     }
 
     // HUD : Hide melee conditions bars.
-    HudTd_HideMeleeWeaponBars(playerid, weaponId)
+    HudTd_HideMeleeWeaponBars(playerid, itemId)
     {
-        if(!IsMeleeWeapon(weaponId) || weaponId == WEAPON_UNARMED) 
-            return;
+        if(!IsItemMeleeWeapon(itemId))
+        {
+            return false;
+        }
         
         new 
-            meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false),
-            maxMeleeBars = meleeBasicCnd + GetMeleeWeapon_Durability(weaponId, true);
+            maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId),
+            maxExtraCnd = GetPlayerItemMaxAmount(playerid, itemId, true);
 
-        for(new tdIdx = 0; tdIdx != maxMeleeBars; tdIdx++)
+        for(new tdIdx = 0; tdIdx != maxExtraCnd; tdIdx++)
         {
-            switch(weaponId)
+            switch(itemId)
             {
                 case 
                     WEAPON_PIPE,
@@ -257,31 +264,32 @@ HudTd_UpdateShivs(playerid)
 
                 case WEAPON_HATCHET:
                 {
-                    if(tdIdx < meleeBasicCnd) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx]);
-                    else if(tdIdx >= meleeBasicCnd)
+                    if(tdIdx < maxBasicCnd) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx]);
+                    else if(tdIdx >= maxBasicCnd)
                     {
                         if(!IsPlayerMeleeUpgraded[playerid]) 
                             break;
 
-                        new upgradedTdIdx = (tdIdx - meleeBasicCnd);
+                        new upgradedTdIdx = (tdIdx - maxBasicCnd);
                         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
                     } 
                 }
 
                 case WEAPON_MACHETE:
                 {
-                    if(tdIdx < meleeBasicCnd) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx]);
-                    else if(tdIdx >= meleeBasicCnd)
+                    if(tdIdx < maxBasicCnd) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx]);
+                    else if(tdIdx >= maxBasicCnd)
                     {
                         if(!IsPlayerMeleeUpgraded[playerid]) 
                             break;
 
-                        new upgradedTdIdx = (tdIdx - meleeBasicCnd);
+                        new upgradedTdIdx = (tdIdx - maxBasicCnd);
                         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
                     }
                 }
             }
         }
+        return true;
     }
 
     // HUD : Hide melee upgraded condition bars.
@@ -305,22 +313,31 @@ HudTd_UpdateShivs(playerid)
 //#region Bullet weapons HUD textdraws functions
 
     // HUD : Updates overall ammo display.
-    HudTd_UpdateWeaponAmmo(playerid, weaponId)
+    HudTd_UpdateWeaponAmmo(playerid, itemId)
     {
-        if(IsMeleeWeapon(weaponId) || IsThrowableWeapon(weaponId)) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
-        else
+        if(GetItemType(itemId) != ITEM_TYPE_WEAPON)
         {
-            new tmp_weapAmmo[5];
-            valstr(tmp_weapAmmo, GetPlayerWeaponAmmo(playerid, weaponId));
-            PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo], tmp_weapAmmo);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
+            return true;
         }
-        return 0;
+
+        new itemAmount = GetPlayerItemAmount(playerid, itemId);
+        if(itemAmount == -1)
+        {
+            return false;
+        }
+
+        new String:itemAmountStr = STRING_NULL;
+        itemAmountStr = str_val(itemAmount);
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo], itemAmountStr);
+        PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
+        return true;
     }
 
     // HUD : Update current ammo display.
     HudTd_DisplayWeaponCurrentAmmo(playerid, itemId)
     {
-        if(GetItemType(itemId) != ITEM_TYPE_WEAPON || GetItemNativeWeaponId(itemId) == WEAPON_BOW)
+        if(!IsItemBulletWeapon(itemId))
         {
             return false;
         }
@@ -350,43 +367,50 @@ HudTd_UpdateShivs(playerid)
     }
 
     // HUD : Update certain bullet color.
-    HudTd_ReduceWeaponCurrentAmmo(playerid, weaponId, tdIdx)
+    HudTd_ReduceWeaponCurrentAmmo(playerid, itemId, tdIdx)
     {
-        if(!IsBulletWeapon(weaponId))
-            return;
-
-        switch(weaponId)
+        if(!IsItemBulletWeapon(itemId))
         {
-            case WEAPON_9MM:            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      COLOR_GRAY_TRANS);
-            case WEAPON_REVOLVER:       PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], COLOR_GRAY_TRANS);
-            case WEAPON_SHOTGUN:        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx],  COLOR_GRAY_TRANS);
-            case WEAPON_RIFLE:          PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx],    COLOR_GRAY_TRANS);
-            case WEAPON_ASSAULT:        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  COLOR_GRAY_TRANS);
+            return false;
         }
+
+        switch(ITEM_IDX:itemId)
+        {
+            case ITEM_IDX_9MM:            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      COLOR_GRAY_TRANS);
+            case ITEM_IDX_REVOLVER:       PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], COLOR_GRAY_TRANS);
+            case ITEM_IDX_SHOTGUN:        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx],  COLOR_GRAY_TRANS);
+            case ITEM_IDX_RIFLE:          PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx],    COLOR_GRAY_TRANS);
+            case ITEM_IDX_ASSAULT_RIFLE:  PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  COLOR_GRAY_TRANS);
+        }
+        return true;
     }
 
     // HUD : Hide weapon's bullets.
-    HudTd_HideWeaponCurrentAmmo(playerid, weaponId)
+    HudTd_HideWeaponCurrentAmmo(playerid, itemId)
     {
-        if(!IsBulletWeapon(weaponId))
-            return;
-        
-        new maxWeaponClipSize = GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId);
-
-        if(maxWeaponClipSize == 0)
-            return;
-            
-        for(new tdIdx = 0; tdIdx != maxWeaponClipSize; tdIdx++)
+        if(!IsItemBulletWeapon(itemId))
         {
-            switch(weaponId)
+            return false;
+        }
+
+        new maxItemClipSize = GetPlayerItemMaxClipSize(playerid, itemId);
+        if(maxItemClipSize == -1)
+        {
+            return false;
+        }
+
+        for(new tdIdx = 0; tdIdx != maxItemClipSize; tdIdx++)
+        {
+            switch(ITEM_IDX:itemId)
             {
-                case WEAPON_9MM:        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
-                case WEAPON_REVOLVER:   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
-                case WEAPON_SHOTGUN:    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx]);
-                case WEAPON_RIFLE:      PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx]);
-                case WEAPON_ASSAULT:    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
+                case ITEM_IDX_9MM:            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
+                case ITEM_IDX_REVOLVER:       PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
+                case ITEM_IDX_SHOTGUN:        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx]);
+                case ITEM_IDX_RIFLE:          PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx]);
+                case ITEM_IDX_ASSAULT_RIFLE:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
             }
         }
+        return true;
     }
 
 //#endregion
