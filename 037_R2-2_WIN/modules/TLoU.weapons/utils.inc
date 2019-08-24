@@ -185,30 +185,30 @@ ResetEnum_ePlayerWeapon(playerid)
 //#region Weapons functions
 
 	// Hide's player current weapon equipped.
-	HidePlayerWeapon(playerid)
-	{
-		new currentWeapon = CurrentPlayerWeaponId[playerid];
+	// HidePlayerWeapon(playerid)
+	// {
+	// 	new currentWeapon = CurrentPlayerWeaponId[playerid];
 
-		if(currentWeapon == WEAPON_UNARMED)
-			return;
+	// 	if(currentWeapon == WEAPON_UNARMED)
+	// 		return;
 	
-		new 
-			currentAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon);
+	// 	new 
+	// 		currentAmmo = GetPlayerWeaponAmmo(playerid, currentWeapon);
 
-		// Clear current player's weapon data.
-		CurrentPlayerWeaponId[playerid] = WEAPON_UNARMED;
-		CurrentPlayerWeaponAmmo[playerid] = 0;
-		PlayerWeaponBodyDamage[playerid] = 8.0;
-		PlayerWeaponHeadDamage[playerid] = 8.0;
-		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
+	// 	// Clear current player's weapon data.
+	// 	CurrentPlayerWeaponId[playerid] = WEAPON_UNARMED;
+	// 	CurrentPlayerWeaponAmmo[playerid] = 0;
+	// 	PlayerWeaponBodyDamage[playerid] = 8.0;
+	// 	PlayerWeaponHeadDamage[playerid] = 8.0;
+	// 	ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
 
-		// Save player's weapon ammo and save it as a last used weaponId by player.
-		LastPlayerWeaponId[playerid] = currentWeapon;
-		//ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(currentWeapon)] = currentClipAmmo;
-		SetPlayerWeaponAmmo(playerid, currentWeapon, currentAmmo);
+	// 	// Save player's weapon ammo and save it as a last used weaponId by player.
+	// 	LastPlayerWeaponId[playerid] = currentWeapon;
+	// 	//ePlayerWeapon[playerid][e_iWeaponClipAmmo][GetCustomWeaponSlot(currentWeapon)] = currentClipAmmo;
+	// 	SetPlayerWeaponAmmo(playerid, currentWeapon, currentAmmo);
 
-		OnPlayerWeaponChange(playerid, WEAPON_UNARMED, currentWeapon);
-	}
+	// 	OnPlayerWeaponChange(playerid, WEAPON_UNARMED, currentWeapon);
+	// }
 
 	// Set player's weapon ammo (doesn't matter if weapon is equipped or not).
 	SetPlayerWeaponAmmo(playerid, weaponId, ammo)
@@ -365,10 +365,6 @@ ResetEnum_ePlayerWeapon(playerid)
 		}
 
 		ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
-
-		PlayPlayerReloadAnim(playerid, currentEquippedItemId);
-		PlayPlayer3D_ReloadSFX(playerid, GetItemNativeWeaponId(currentEquippedItemId));
-		HudTd_DisplayWeaponCurrentAmmo(playerid, currentEquippedItemId);
 		
 		new newClipSize = ePlayerItemData[playerid][currentEquippedItemId][e_iItemClipAmount] = (currentAmmo > maxWeaponClipSize) ? (maxWeaponClipSize) : (currentAmmo);
 		OnPlayerReloadWeapon(playerid, currentEquippedItemId, currentClipSize, newClipSize);
