@@ -16,7 +16,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerStopAimingProjectile(playerid)
     {
-        if(!ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+        if(!Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
         {
             ClearAnims(playerid);
         }
@@ -286,7 +286,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     Projectile_Throw(playerid, weaponId)
     {
         // Validation.
-        if(GetPlayerItemAmount(playerid, GetItemNativeWeaponId(weaponId)) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || ePlayerWeapon[playerid][e_bShootingCustomWeapon]
+        if(GetPlayerItemAmount(playerid, GetItemNativeWeaponId(weaponId)) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid)
         || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
         {
             return 1;
@@ -346,7 +346,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
         Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, weaponId);
         
-        ePlayerWeapon[playerid][e_bShootingCustomWeapon] = true;
+        Bit_Let(ePlayerFlag[e_bShootingCustomWeapon], playerid);
         OnPlayerThrowProjectile(playerid, weaponId);
         return 0;
     }

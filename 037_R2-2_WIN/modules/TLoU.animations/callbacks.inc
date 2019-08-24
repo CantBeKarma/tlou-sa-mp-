@@ -36,7 +36,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 			}
 			else
 			{
-				ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
+				Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 			}
 		}
 

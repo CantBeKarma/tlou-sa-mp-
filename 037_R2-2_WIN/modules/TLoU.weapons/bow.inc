@@ -26,7 +26,7 @@ public OnPlayerStopAimingBow(playerid)
 public OnPlayerShotArrow(playerid)
 {
 	Audio_PlayEx(playerid, AUDIO_BOW_SHOT);
-	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
+	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 
 	new newBowArrows = GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW);
 
@@ -51,7 +51,7 @@ public OnPlayerGetArrowShot(playerid, damagerid)
 {
 	ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
 	ApplyAnimation(playerid, "PED", "HIT_GUN_BUTT", 4.1, 0, 1, 1, 0, 350);
-	ePlayerWeapon[damagerid][e_bShootingCustomWeapon] = false;
+	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], damagerid);
 	return 1;
 }
 
@@ -191,7 +191,7 @@ Arrow_FireArrow(playerid)
 	}
 
 	ePlayerWeapon[playerid][e_bAimingArrow] = false;
-	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = true;
+	Bit_Let(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 	OnPlayerShotArrow(playerid);
 	return 0;
 }

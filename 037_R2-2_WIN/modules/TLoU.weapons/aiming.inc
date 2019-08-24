@@ -24,7 +24,7 @@ hook OnPlayerUpdate(playerid)
 	}
 	else
 	{
-		if(IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+		if(IsPlayerAimingWeapon(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
@@ -37,7 +37,7 @@ hook OnPlayerUpdate(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerTryAimingWeapon(playerid, itemId)
 {
-	if(IsPlayerUnableToPerformAction(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+	if(IsPlayerUnableToPerformAction(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
 	{
 		return 1;
 	}
@@ -137,6 +137,6 @@ public OnPlayerStopAimingWeapon(playerid)
 		OnPlayerStopAimingProjectile(playerid);
 	}
 
-	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
+	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 	return 0;
 }

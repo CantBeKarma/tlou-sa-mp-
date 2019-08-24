@@ -98,7 +98,8 @@
 		e_bIsUpgradingSkill,
 		e_bIsSwitchingWeapons,
 		e_bLookingAtTimerRunning,
-		e_bIsHudBgFlashing
+		e_bIsHudBgFlashing,
+		e_bShootingCustomWeapon
 	}
 	new BitArray:ePlayerFlag[e_PLAYER_FLAGS]<MAX_PLAYERS>;
 

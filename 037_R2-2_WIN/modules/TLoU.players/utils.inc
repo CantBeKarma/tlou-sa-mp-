@@ -27,6 +27,7 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 
 	print("ResetBits_ePlayerFlag");
 }
@@ -51,7 +52,7 @@ ResetBits_ePlayerFlag(playerid)
 		{
 			case PLAYER_STATUS_NONE:
 			{
-				if(IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+				if(IsPlayerAimingWeapon(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
 				{
 					OnPlayerStopAimingWeapon(playerid);
 				}
