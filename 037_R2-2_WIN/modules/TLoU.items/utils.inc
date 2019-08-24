@@ -111,7 +111,12 @@
 
     IsItemThrowable(itemId)
     {
-        return (IsValidItemId(itemid) && GetItemType(itemId) == ITEM_TYPE_THROWABLE);
+        return (IsValidItemId(itemId) && GetItemType(itemId) == ITEM_TYPE_THROWABLE);
+    }
+
+    IsItemProjectile(itemId)
+    {
+        return (IsValidItemId(itemId) && GetItemType(itemId) == ITEM_TYPE_PROJECTILE);
     }
 
     bool:HasPlayerGotThrowableItem(playerid)

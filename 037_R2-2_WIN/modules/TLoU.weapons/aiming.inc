@@ -78,8 +78,7 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 public OnPlayerAimsWeapon(playerid, itemId)
 {
 	// Weapon Sway.
-	//if(IsBulletWeapon(weaponId) || weaponId != WEAPON_BOW)
-	if(GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX_BOW)
+	if(IsItemBulletWeapon(itemId))
 	{
 		new drunkLevel = 
 			  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
@@ -124,19 +123,19 @@ public OnPlayerStopAimingWeapon(playerid)
 	HidePlayerHitMarker(playerid);
 	SetPlayerDrunkLevel(playerid, 0);
 
-	// new currentWeaponId = CurrentPlayerWeaponId[playerid];
-	// if(IsBulletWeapon(currentWeaponId))
-	// {
-	// 	OnPlayerStopAimingBulletWeapon(playerid);
-	// }
-	// else if(currentWeaponId == WEAPON_BOW)
-	// {
-	// 	OnPlayerStopAimingBow(playerid);
-	// }
-	// else if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
-	// {
-	// 	OnPlayerStopAimingProjectile(playerid);
-	// }
+	new equippedItemid = GetPlayerEquippedItemId(playerid);
+	if(IsItemBulletWeapon(equippedItemid))
+	{
+		OnPlayerStopAimingBulletWeapon(playerid);
+	}
+	else if(equippedItemid == _:ITEM_IDX_BOW)
+	{
+		OnPlayerStopAimingBow(playerid);
+	}
+	else if(IsItemThrowable(equippedItemid) || IsItemProjectile(equippedItemid))
+	{
+		OnPlayerStopAimingProjectile(playerid);
+	}
 
 	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
 	return 0;
