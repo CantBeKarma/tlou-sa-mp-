@@ -45,8 +45,6 @@ enum e_PLAYER_WEAPMENU_DATA
 	e_iWeapMenu_KeysLeftRight,
     e_iWeapMenu_SelectedItemV,
     e_iWeapMenu_SelectedItemH,
-    e_iWeapMenu_H_Ls_Weapons[4],
-    e_iWeapMenu_H_Rs_Weapons[3],
 
     e_iWeapMenu_H_Ls_ItemId[4],
     e_iWeapMenu_H_Rs_ItemId[3]
