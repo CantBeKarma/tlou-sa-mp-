@@ -141,6 +141,7 @@ enum e_ITEM_DATA
     e_iItem_Type,
     e_iItem_ModelId,
     e_iItem_SlotId,
+    e_iItem_MaxClipSize,
     e_iItem_MaxAmount,
     e_iItem_AudioPickupId,
     e_iItem_SA_WeaponId,
@@ -154,39 +155,39 @@ enum e_ITEM_DATA
 };
 stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
 {
-    {"Blade",               ITEM_TYPE_INGREDIENT,   ITEM_MODEL_BLADE,       -1,                         300,        AUDIO_PICKUP_BLADE,         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
-    {"Binding",             ITEM_TYPE_INGREDIENT,   ITEM_MODEL_BINDING,     -1,                         300,        AUDIO_PICKUP_RAG,           -1,                     0.0,    0.0,        -1,                     -1,                     -1},
-    {"Rag",                 ITEM_TYPE_INGREDIENT,   ITEM_MODEL_RAG,         -1,                         300,        AUDIO_PICKUP_RAG,           -1,                     0.0,    0.0,        -1,                     -1,                     -1},
-    {"Alcohol",             ITEM_TYPE_INGREDIENT,   ITEM_MODEL_ALCOHOL,     -1,                         300,        AUDIO_PICKUP_ALCOHOL,       -1,                     0.0,    0.0,        -1,                     -1,                     -1},
-    {"Explosive",           ITEM_TYPE_INGREDIENT,   ITEM_MODEL_EXPLOSIVE,   -1,                         300,        AUDIO_PICKUP_EXPLOSIVE,     -1,                     0.0,    0.0,        -1,                     -1,                     -1},
-    {"Sugar",               ITEM_TYPE_INGREDIENT,   ITEM_MODEL_SUGAR,       -1,                         300,        AUDIO_PICKUP_SUGAR,         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Blade",               ITEM_TYPE_INGREDIENT,   ITEM_MODEL_BLADE,       -1,                         -1,     300,        AUDIO_PICKUP_BLADE,         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Binding",             ITEM_TYPE_INGREDIENT,   ITEM_MODEL_BINDING,     -1,                         -1,     300,        AUDIO_PICKUP_RAG,           -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Rag",                 ITEM_TYPE_INGREDIENT,   ITEM_MODEL_RAG,         -1,                         -1,     300,        AUDIO_PICKUP_RAG,           -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Alcohol",             ITEM_TYPE_INGREDIENT,   ITEM_MODEL_ALCOHOL,     -1,                         -1,     300,        AUDIO_PICKUP_ALCOHOL,       -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Explosive",           ITEM_TYPE_INGREDIENT,   ITEM_MODEL_EXPLOSIVE,   -1,                         -1,     300,        AUDIO_PICKUP_EXPLOSIVE,     -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Sugar",               ITEM_TYPE_INGREDIENT,   ITEM_MODEL_SUGAR,       -1,                         -1,     300,        AUDIO_PICKUP_SUGAR,         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
 
-    {"Pipe",                ITEM_TYPE_MELEE,        ITEM_MODEL_PIPE,        WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_PIPE,            12.0,   12.0,       CRAFT_ITEM_MELEE,       -1,                     -1},
-    {"Scissor pipe",        ITEM_TYPE_MELEE,        ITEM_MODEL_SCSR_PIPE,   WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_SCISSOR_PIPE,    20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
-    {"Hatchet",             ITEM_TYPE_MELEE,        ITEM_MODEL_HATCHET,     WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_HATCHET,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
-    {"Machete",             ITEM_TYPE_MELEE,        ITEM_MODEL_MACHETE,     WEAPON_SLOT_MELEE,          -1,         -1,                         WEAPON_MACHETE,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
+    {"Pipe",                ITEM_TYPE_MELEE,        ITEM_MODEL_PIPE,        WEAPON_SLOT_MELEE,          -1,     -1,         -1,                         WEAPON_PIPE,            12.0,   12.0,       CRAFT_ITEM_MELEE,       -1,                     -1},
+    {"Scissor pipe",        ITEM_TYPE_MELEE,        ITEM_MODEL_SCSR_PIPE,   WEAPON_SLOT_MELEE,          -1,     -1,         -1,                         WEAPON_SCISSOR_PIPE,    20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
+    {"Hatchet",             ITEM_TYPE_MELEE,        ITEM_MODEL_HATCHET,     WEAPON_SLOT_MELEE,          -1,     -1,         -1,                         WEAPON_HATCHET,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
+    {"Machete",             ITEM_TYPE_MELEE,        ITEM_MODEL_MACHETE,     WEAPON_SLOT_MELEE,          -1,     -1,         -1,                         WEAPON_MACHETE,         20.0,   20.0,       CRAFT_ITEM_MELEE,       INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
 
-    {"9mm pistol",          ITEM_TYPE_WEAPON,       ITEM_MODEL_9MM,         WEAPON_SLOT_9MM,            -1,         -1,                         WEAPON_9MM,             20.0,   60.0,       -1,                     -1,                     -1},
-    {"Revolver",            ITEM_TYPE_WEAPON,       ITEM_MODEL_REVOLVER,    WEAPON_SLOT_REVOLVER,       18,         -1,                         WEAPON_REVOLVER,        35.0,   75.0,       -1,                     -1,                     -1},
-    {"Shorty",              ITEM_TYPE_WEAPON,       ITEM_MODEL_SHORTY,      WEAPON_SLOT_SHORTY,         -1,         -1,                         WEAPON_SHORTY,          35.0,   35.0,       -1,                     -1,                     -1},
+    {"9mm pistol",          ITEM_TYPE_WEAPON,       ITEM_MODEL_9MM,         WEAPON_SLOT_9MM,            -1,     -1,         -1,                         WEAPON_9MM,             20.0,   60.0,       -1,                     -1,                     -1},
+    {"Revolver",            ITEM_TYPE_WEAPON,       ITEM_MODEL_REVOLVER,    WEAPON_SLOT_REVOLVER,        6,     18,         -1,                         WEAPON_REVOLVER,        35.0,   75.0,       -1,                     -1,                     -1},
+    {"Shorty",              ITEM_TYPE_WEAPON,       ITEM_MODEL_SHORTY,      WEAPON_SLOT_SHORTY,         -1,     -1,         -1,                         WEAPON_SHORTY,          35.0,   35.0,       -1,                     -1,                     -1},
 
-    {"Shotgun",             ITEM_TYPE_WEAPON,       ITEM_MODEL_SHOTGUN,     WEAPON_SLOT_SHOTGUN,        -1,         -1,                         WEAPON_SHOTGUN,         40.0,   80.0,       -1,                     -1,                     -1},
-    {"Rifle",               ITEM_TYPE_WEAPON,       ITEM_MODEL_RIFLE,       WEAPON_SLOT_RIFLE,          -1,         -1,                         WEAPON_RIFLE,           70.0,   100.0,      -1,                     -1,                     -1},
-    {"Assault rifle",       ITEM_TYPE_WEAPON,       ITEM_MODEL_ASSAULT,     WEAPON_SLOT_ASSAULT,        90,         -1,                         WEAPON_ASSAULT,         20.0,   60.0,       -1,                     -1,                     -1},
-    {"Bow",                 ITEM_TYPE_WEAPON,       ITEM_MODEL_BOW,         WEAPON_SLOT_BOW,            9,          -1,                         WEAPON_BOW,             45.0,   35.0,       -1,                     -1,                     -1},
-    {"Arrow",               ITEM_TYPE_AMMO,         ITEM_MODEL_ARROW,       -1,                         -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Shotgun",             ITEM_TYPE_WEAPON,       ITEM_MODEL_SHOTGUN,     WEAPON_SLOT_SHOTGUN,        -1,     -1,         -1,                         WEAPON_SHOTGUN,         40.0,   80.0,       -1,                     -1,                     -1},
+    {"Rifle",               ITEM_TYPE_WEAPON,       ITEM_MODEL_RIFLE,       WEAPON_SLOT_RIFLE,          -1,     -1,         -1,                         WEAPON_RIFLE,           70.0,   100.0,      -1,                     -1,                     -1},
+    {"Assault rifle",       ITEM_TYPE_WEAPON,       ITEM_MODEL_ASSAULT,     WEAPON_SLOT_ASSAULT,        30,     90,         -1,                         WEAPON_ASSAULT,         20.0,   60.0,       -1,                     -1,                     -1},
+    {"Bow",                 ITEM_TYPE_WEAPON,       ITEM_MODEL_BOW,         WEAPON_SLOT_BOW,            -1,      9,         -1,                         WEAPON_BOW,             45.0,   35.0,       -1,                     -1,                     -1},
+    {"Arrow",               ITEM_TYPE_AMMO,         ITEM_MODEL_ARROW,       -1,                         -1,     -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
 
-    {"Shiv",                ITEM_TYPE_MISC,         ITEM_MODEL_SHIV,        WEAPON_SLOT_SHIV,           3,          -1,                         WEAPON_SHIV,            0.0,    0.0,        CRAFT_ITEM_SHIV,        INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
-    {"Medkit",              ITEM_TYPE_HEAL,         ITEM_MODEL_MEDKIT,      WEAPON_SLOT_MEDKIT,         3,          AUDIO_PICKUP_MEDKIT,        WEAPON_MEDKIT,          0.0,    0.0,        CRAFT_ITEM_MEDKIT,      INGR_ITEM_RAG,          INGR_ITEM_ALCOHOL},
-    {"Molotov Cocktail",    ITEM_TYPE_PROJECTILE,   ITEM_MODEL_MOLOTOV,     WEAPON_SLOT_MOLOTOV,        3,          -1,                         WEAPON_MOLOTOV,         5.0,    5.0,        CRAFT_ITEM_MOLOTOV,     INGR_ITEM_RAG,          INGR_ITEM_ALCOHOL},
-    {"Nail bomb",           ITEM_TYPE_PROJECTILE,   ITEM_MODEL_BOMB,        WEAPON_SLOT_BOMB,           3,          -1,                         WEAPON_NAIL_BOMB,       85.0,   85.0,       CRAFT_ITEM_BOMB,        INGR_ITEM_BLADE,        INGR_ITEM_EXPLOSIVE},
-    {"Smoke Bomb",          ITEM_TYPE_PROJECTILE,   ITEM_MODEL_SMKBMB,      WEAPON_SLOT_SMOKE_BOMB,     3,          -1,                         WEAPON_SMOKE_BOMB,      0.0,    0.0,        CRAFT_ITEM_SMOKE_BOMB,  INGR_ITEM_EXPLOSIVE,    INGR_ITEM_SUGAR},
+    {"Shiv",                ITEM_TYPE_MISC,         ITEM_MODEL_SHIV,        WEAPON_SLOT_SHIV,           -1,      3,          -1,                         WEAPON_SHIV,            0.0,    0.0,        CRAFT_ITEM_SHIV,        INGR_ITEM_BLADE,        INGR_ITEM_BINDING},
+    {"Medkit",              ITEM_TYPE_HEAL,         ITEM_MODEL_MEDKIT,      WEAPON_SLOT_MEDKIT,         -1,      3,          AUDIO_PICKUP_MEDKIT,        WEAPON_MEDKIT,          0.0,    0.0,        CRAFT_ITEM_MEDKIT,      INGR_ITEM_RAG,          INGR_ITEM_ALCOHOL},
+    {"Molotov Cocktail",    ITEM_TYPE_PROJECTILE,   ITEM_MODEL_MOLOTOV,     WEAPON_SLOT_MOLOTOV,        -1,      3,          -1,                         WEAPON_MOLOTOV,         5.0,    5.0,        CRAFT_ITEM_MOLOTOV,     INGR_ITEM_RAG,          INGR_ITEM_ALCOHOL},
+    {"Nail bomb",           ITEM_TYPE_PROJECTILE,   ITEM_MODEL_BOMB,        WEAPON_SLOT_BOMB,           -1,      3,          -1,                         WEAPON_NAIL_BOMB,       85.0,   85.0,       CRAFT_ITEM_BOMB,        INGR_ITEM_BLADE,        INGR_ITEM_EXPLOSIVE},
+    {"Smoke Bomb",          ITEM_TYPE_PROJECTILE,   ITEM_MODEL_SMKBMB,      WEAPON_SLOT_SMOKE_BOMB,     -1,      3,          -1,                         WEAPON_SMOKE_BOMB,      0.0,    0.0,        CRAFT_ITEM_SMOKE_BOMB,  INGR_ITEM_EXPLOSIVE,    INGR_ITEM_SUGAR},
 
-    {"Brick",               ITEM_TYPE_THROWABLE,    ITEM_MODEL_BRICK,       WEAPON_SLOT_BRICK_BOTTLE,   1,          AUDIO_BRICK_PICKUP,         WEAPON_BRICK,           10.0,   10.0,       -1,                     -1,                     -1},
-    {"Bottle",              ITEM_TYPE_THROWABLE,    ITEM_MODEL_BOTTLE,      WEAPON_SLOT_BRICK_BOTTLE,   1,          AUDIO_BOTTLE_PICKUP,        WEAPON_BOTTLE,          10.0,   10.0,       -1,                     -1,                     -1},
+    {"Brick",               ITEM_TYPE_THROWABLE,    ITEM_MODEL_BRICK,       WEAPON_SLOT_BRICK_BOTTLE,   -1,      1,          AUDIO_BRICK_PICKUP,         WEAPON_BRICK,           10.0,   10.0,       -1,                     -1,                     -1},
+    {"Bottle",              ITEM_TYPE_THROWABLE,    ITEM_MODEL_BOTTLE,      WEAPON_SLOT_BRICK_BOTTLE,   -1,      1,          AUDIO_BOTTLE_PICKUP,        WEAPON_BOTTLE,          10.0,   10.0,       -1,                     -1,                     -1},
 
-    {"Note #1",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_PAPER,       -1,                         -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
-    {"Note #2",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_NOTES,       -1,                         -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1}
+    {"Note #1",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_PAPER,       -1,                         -1,      -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Note #2",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_NOTES,       -1,                         -1,      -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1}
 };
 
 // Item upgrade's data.
