@@ -186,75 +186,6 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
 //#endregion
 
-//#region Old sorting
-    // Sort weapons on the left side-bar of the weapon menu (long-guns).
-    // WeapMenu_Ls_SortWeapons(playerid)
-    // {
-    //     new currentSlot = 1;
-
-    //     while(currentSlot < 3)
-    //     {
-    //         new slotToCheck =
-    //             (currentSlot == 1) ? (0)
-    //         :   (currentSlot == 0) ? (2)
-    //         :   (currentSlot == 2) ? (3)
-    //         :   (-1);
-
-    //         if(slotToCheck == -1)
-    //             break;
-
-    //         if(WeapMenu_Ls_WeaponId(playerid, currentSlot) == -1)
-    //         {
-    //             if(WeapMenu_Ls_WeaponId(playerid, slotToCheck) != -1)
-    //             {
-    //                 WeapMenu_Ls_WeaponId(playerid, currentSlot) = WeapMenu_Ls_WeaponId(playerid, slotToCheck);
-    //                 WeapMenu_Ls_WeaponId(playerid, slotToCheck) = -1;
-    //             }
-    //         }
-
-    //         currentSlot = slotToCheck;
-    //     }
-
-    //     if(IsPlayerUsingWeaponMenu(playerid))
-    //     {
-    //         WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-    //     }
-    // }
-
-    // // Sort weapons on the right side-bar of the wepaon menu (short-guns).
-    // WeapMenu_Rs_SortWeapons(playerid)
-    // {
-    //     new currentSlot = 0;
-
-    //     while(currentSlot < 3)
-    //     {
-    //         new slotToCheck = 
-    //             (currentSlot == 0) ? (1) 
-    //         :   (currentSlot == 1) ? (2)
-    //         :   (-1);
-
-    //         if(slotToCheck == -1)
-    //             break;
-
-    //         if(WeapMenu_Rs_WeaponId(playerid, currentSlot) == -1)
-    //         {
-    //             if(WeapMenu_Rs_WeaponId(playerid, slotToCheck) != -1)
-    //             {
-    //                 WeapMenu_Rs_WeaponId(playerid, currentSlot) = WeapMenu_Rs_WeaponId(playerid, slotToCheck);
-    //                 WeapMenu_Rs_WeaponId(playerid, slotToCheck) = -1;
-    //             }
-    //         }
-
-    //         currentSlot = slotToCheck;
-    //     }
-
-    //     if(IsPlayerUsingWeaponMenu(playerid))
-    //     {
-    //         WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-    //     }
-    // }
-//#endregion
-
 //#region Swap weapon icons & help text
 
     // Change the position of selection box
@@ -334,10 +265,10 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
         for(new i = 0; i != 4; i++)
         {
-            if(WeapMenu_Ls_WeaponId(playerid, i) == -1) 
+            if(WeapMenu_Ls_ItemId(playerid, i) == -1) 
                 continue;
 
-            switch(WeapMenu_Ls_WeaponId(playerid, i))
+            switch(WeapMenu_Ls_ItemId(playerid, i))
             {
                 case WEAPON_SHOTGUN:    strcpy(icon, "TLoU:weap_shot");
                 case WEAPON_RIFLE:      strcpy(icon, "TLoU:weap_huntrif");
