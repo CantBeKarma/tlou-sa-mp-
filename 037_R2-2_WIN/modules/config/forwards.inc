@@ -61,9 +61,9 @@ forward OnPlayerStopAimingBow(playerid);
 forward OnPlayerShotArrow(playerid);
 forward OnPlayerGetArrowShot(playerid, damagerid);
 
-forward OnPlayerStartAimingProjectile(playerid, weaponId);
+forward OnPlayerStartAimingProjectile(playerid, itemId);
 forward OnPlayerStopAimingProjectile(playerid);
-forward OnPlayerThrowProjectile(playerid, weaponId);
+forward OnPlayerThrowProjectile(playerid, itemId);
 forward OnPlayerDropNailbomb(playerid);
 forward OnPlayerTriggerNailbomb(triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward OnPlayerGetStunned(playerid);
@@ -71,7 +71,7 @@ forward OnPlayerShakeOffStun(playerid);
 
 forward OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z);
 forward OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z);
-forward OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, Float:z);
+forward OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Float:z);
 forward OnNailbombInitiate(nailBmbIdx, throwerid, Float:x, Float:y, Float:z);
 
 forward FCNPC_OnIdle(npcid);

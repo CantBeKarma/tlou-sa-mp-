@@ -24,7 +24,7 @@ timer Key_AimingCustomWeapon[100](playerid)
     new keys, updown, leftright;
     GetPlayerKeys(playerid, keys, updown, leftright);
 
-    new currentWeaponId = CurrentPlayerWeaponId[playerid];
+    new currentItemId = GetPlayerEquippedItemId(playerid);
     
     // If player was aiming arrow and moved.
     if(ePlayerWeapon[playerid][e_bAimingArrow])
@@ -42,11 +42,11 @@ timer Key_AimingCustomWeapon[100](playerid)
     else if(leftright == KEY_RIGHT) ApplyAnimation(playerid, "PED", "GUNMOVE_R", 4.1, 1, 1, 1, 0, 0);
     else
     {
-        if(IsItemThrowable(GetPlayerEquippedItemId(playerid)) || IsItemProjectile(GetPlayerEquippedItemId(playerid)))
+        if(IsItemThrowable(currentItemId) || IsItemProjectile(currentItemId))
         {
             ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
         }
-        else if(currentWeaponId == WEAPON_BOW)
+        else if(currentItemId == _:ITEM_IDX_BOW)
         {
             Bow_PullString(playerid);
         }
@@ -57,11 +57,11 @@ timer Key_AimingCustomWeapon[100](playerid)
     {
         if(keys & KEY_FIRE)
         {
-            if(IsItemThrowable(GetPlayerEquippedItemId(playerid)) || IsItemProjectile(GetPlayerEquippedItemId(playerid)))
+            if(IsItemThrowable(currentItemId) || IsItemProjectile(currentItemId))
             {
-                Projectile_Throw(playerid, currentWeaponId);
+                Projectile_Throw(playerid, currentItemId);
             }
-            else if(currentWeaponId == WEAPON_BOW)
+            else if(currentItemId == _:ITEM_IDX_BOW)
             {
                 Arrow_FireArrow(playerid);
             }

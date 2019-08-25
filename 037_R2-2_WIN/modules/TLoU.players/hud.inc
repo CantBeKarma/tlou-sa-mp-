@@ -318,7 +318,7 @@ HudTd_UpdateShivs(playerid)
     // HUD : Updates overall ammo display.
     HudTd_UpdateWeaponAmmo(playerid, itemId)
     {
-        if(GetItemType(itemId) != ITEM_TYPE_WEAPON)
+        if(GetItemType(itemId) != ITEM_TYPE_WEAPON && !IsItemProjectile(itemId))
         {
             PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
             return true;

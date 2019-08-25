@@ -4,7 +4,7 @@
 //----------------- OnPlayerStartAimingBow ----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartAimingBow(playerid)
-{	
+{
 	FreezePlayer(playerid, true, -1);
 	Key_AimingCustomWeapon(playerid);
 	return 1;
@@ -28,7 +28,8 @@ public OnPlayerShotArrow(playerid)
 	Audio_PlayEx(playerid, AUDIO_BOW_SHOT);
 	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 
-	new newBowArrows = GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW);
+	new newBowArrows = GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW) - 1;
+	SetPlayerItemAmount(playerid, _:ITEM_IDX_BOW, newBowArrows);
 
 	if(newBowArrows > 0)
 	{
@@ -69,7 +70,6 @@ hook OnDynamicObjectMoved(objectid)
 		
 		if(RandomEx(0, 2) == 1)
 		{
-			//static arrowItemIdx = 17;
 			new Float:x, Float:y, Float:z;
 
 			GetDynamicObjectPos(ePlayerWeapon[i][e_iArrowObjectId], x, y, z);

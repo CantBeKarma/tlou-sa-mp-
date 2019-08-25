@@ -4,7 +4,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //------------- OnPlayerStartAimingProjectile -------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerStartAimingProjectile(playerid, weaponId)
+    public OnPlayerStartAimingProjectile(playerid, itemId)
     {
         ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
         Key_AimingCustomWeapon(playerid);
@@ -26,10 +26,11 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerThrowProjectile ----------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerThrowProjectile(playerid, weaponId)
+    public OnPlayerThrowProjectile(playerid, itemId)
     {
-        new newProjectileAmount = GetPlayerItemAmount(playerid, GetItemNativeWeaponId(weaponId)) - 1;
-
+        new newProjectileAmount = GetPlayerItemAmount(playerid, itemId) - 1;
+        SetPlayerItemAmount(playerid, itemId, newProjectileAmount);
+        
         if(newProjectileAmount <= 0)
         {
             HideItem(playerid);
@@ -67,13 +68,9 @@
 
         if(newkeys & KEY_FIRE)
         {
-            if(!IsPlayerAimingWeapon(playerid) && !IsPlayerUsingBackpack(playerid) 
-            && !IsPlayerUsingWeaponMenu(playerid) && !IsPlayerUnableToPerformAction(playerid))
+            if(IsPlayerIdle(playerid) && GetPlayerEquippedItemId(playerid) == _:ITEM_IDX_NAIL_BOMB)
             {
-                if(CurrentPlayerWeaponId[playerid] == WEAPON_NAIL_BOMB)
-                {
-                    Projectile_Drop_Nailbomb(playerid);
-                }
+                Projectile_Drop_Nailbomb(playerid);
             }
         }
         return 1;
@@ -83,9 +80,9 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnThrowableDestroy -------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnThrowableDestroy(projid, throwerid, hitid, weaponid, Float:x, Float:y, Float:z)
+public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Float:z)
 {
-    CreateProjectileDestroyEffect(weaponid, projid, x, y, z);
+    CreateProjectileDestroyEffect(itemId, projid, x, y, z);
 
     if(hitid != INVALID_PLAYER_ID && IsPlayerNPC(hitid))
     {
@@ -228,21 +225,21 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
             return 1;
         }
 
-        new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
+        new itemId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
 
-        switch(weaponId)
+        switch(ITEM_IDX:itemId)
         {
-            case WEAPON_BOTTLE, WEAPON_BRICK:
+            case ITEM_IDX_BOTTLE, ITEM_IDX_BRICK:
             {
-                OnThrowableDestroy(projid, throwerid, (type == PROJECTILE_COLLIDE_PLAYER) ? (extraid) : (INVALID_PLAYER_ID), weaponId, x, y, z);
+                OnThrowableDestroy(projid, throwerid, (type == PROJECTILE_COLLIDE_PLAYER) ? (extraid) : (INVALID_PLAYER_ID), itemId, x, y, z);
             }
 
-            case WEAPON_MOLOTOV:
+            case ITEM_IDX_MOLOTOV:
             {
                 OnMolotovExplode(projid, throwerid, (type == PROJECTILE_COLLIDE_PLAYER) ? (extraid) : (INVALID_PLAYER_ID), x, y, z);
             }
 
-            case WEAPON_SMOKE_BOMB:
+            case ITEM_IDX_SMOKE_BOMB:
             {
                 if(type == PROJECTILE_COLLIDE_PLAYER)
                 {
@@ -250,7 +247,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
                 }
             }
 
-            case WEAPON_NAIL_BOMB:
+            case ITEM_IDX_NAIL_BOMB:
             {
                 if(type == PROJECTILE_COLLIDE_PLAYER)
                 {
@@ -267,13 +264,13 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     public OnProjectileStop(projid, Float:x, Float:y, Float:z)
     {
         new throwerid = eProjectileData[projid][e_iProjectile_ThrowerId];
-        new weaponId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
+        new itemId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
 
-        if(weaponId == WEAPON_SMOKE_BOMB)
+        if(itemId == _:ITEM_IDX_SMOKE_BOMB)
         {
             OnSmokebombExplode(projid, throwerid, INVALID_PLAYER_ID, x, y, z);
         }
-        else if(weaponId == WEAPON_NAIL_BOMB)
+        else if(itemId == _:ITEM_IDX_NAIL_BOMB)
         {
             InitiateNailbomb(projid, throwerid, x, y, z);
         }
@@ -283,10 +280,10 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 
 //#region Projectiles utils
     // Function assigned to do the work related with projectiles throw.
-    Projectile_Throw(playerid, weaponId)
+    Projectile_Throw(playerid, itemId)
     {
         // Validation.
-        if(GetPlayerItemAmount(playerid, GetItemNativeWeaponId(weaponId)) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid)
+        if(GetPlayerItemAmount(playerid, itemId) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid)
         || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
         {
             return 1;
@@ -314,24 +311,17 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 
         if(projid == -1)
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Unable to create projectile (ID: %d) for player: %s (ID: %d). Weapon equipped: %d", projid, PlayerName(playerid), playerid, weaponId);
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Unable to create projectile (ID: %d) for player: %s (ID: %d). Item equipped: %d", projid, PlayerName(playerid), playerid, itemId);
             return 1;
         }
 
         // Object creation.
         new projObjectId = INVALID_OBJECT_ID;
-        switch(weaponId)
-        {
-            case WEAPON_NAIL_BOMB:  projObjectId = CreateDynamicObject(ITEM_MODEL_BOMB,    dest_projX, dest_projY, dest_projZ + 0.5, 0, 0, 0);
-            case WEAPON_MOLOTOV:    projObjectId = CreateDynamicObject(ITEM_MODEL_MOLOTOV, dest_projX, dest_projY, dest_projZ + 0.5, 0, 0, 0);
-            case WEAPON_SMOKE_BOMB: projObjectId = CreateDynamicObject(ITEM_MODEL_SMKBMB,  dest_projX, dest_projY, dest_projZ + 0.5, 0, 0, 0);
-            case WEAPON_BOTTLE:     projObjectId = CreateDynamicObject(ITEM_MODEL_BOTTLE,  dest_projX, dest_projY, dest_projZ + 0.5, 0, 0, 0);
-            case WEAPON_BRICK:      projObjectId = CreateDynamicObject(ITEM_MODEL_BRICK,   dest_projX, dest_projY, dest_projZ + 0.5, 0, 0, 0);
-        }
+        projObjectId = CreateDynamicObject(GetItemModel(itemId), dest_projX, dest_projY, dest_projZ + 0.5, 0, 0, 0);
 
         if(projObjectId == INVALID_OBJECT_ID)
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Invalid object Id for weapon id: %d (Player data: %s [%d])", weaponId, PlayerName(playerid), playerid);
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Invalid object Id for item id: %d (Player data: %s [%d])", itemId, PlayerName(playerid), playerid);
             return 1;
         }
 
@@ -344,10 +334,10 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         eProjectileData[projid][e_iProjectile_ThrowerId] = playerid;
         eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
         ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, weaponId);
+        Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, itemId);
         
         Bit_Let(ePlayerFlag[e_bShootingCustomWeapon], playerid);
-        OnPlayerThrowProjectile(playerid, weaponId);
+        OnPlayerThrowProjectile(playerid, itemId);
         return 0;
     }
 
@@ -377,7 +367,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         }
 
         // Object creation.
-        new projObjectId = CreateDynamicObject(ITEM_MODEL_BOMB, x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, 93.7, 120.0, ang + 60.0);
+        new projObjectId = CreateDynamicObject(GetItemModel(_:ITEM_IDX_NAIL_BOMB), x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, 93.7, 120.0, ang + 60.0);
         if(projObjectId == INVALID_OBJECT_ID)
         {
             Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Drop_Nailbomb] Invalid object Id. (Player data: %s [%d])", PlayerName(playerid), playerid);
@@ -393,7 +383,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         eProjectileData[projid][e_iProjectile_ThrowerId] = playerid;
         eProjectileData[projid][e_iProjectile_ObjectId] = projObjectId;
         ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, WEAPON_NAIL_BOMB);
+        Streamer_SetIntData(STREAMER_TYPE_OBJECT, projObjectId, E_STREAMER_EXTRA_ID, _:ITEM_IDX_NAIL_BOMB);
         
         OnPlayerDropNailbomb(playerid);
         return 0;
@@ -430,17 +420,17 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         return INVALID_ITERATOR_SLOT;
     }
 
-    // Creates projectile destroy effect based on the weaponId.
-    CreateProjectileDestroyEffect(weaponId, projid, Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_ID)
+    // Creates projectile destroy effect based on the itemId.
+    CreateProjectileDestroyEffect(itemId, projid, Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_ID)
     {
-        switch(weaponId)
+        switch(ITEM_IDX:itemId)
         {
-            case WEAPON_MOLOTOV:
+            case ITEM_IDX_MOLOTOV:
             {
                 CreateFire(x, y, z, throwerid);
             }
 
-            case WEAPON_NAIL_BOMB:
+            case ITEM_IDX_NAIL_BOMB:
             {
                 if(IsValidDynamicObject(eProjectileData[projid][e_iNailBmb_SmokeObjectId]))
                 {
@@ -465,14 +455,14 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
                 CreateDynamicObject(OBJ_MODEL_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
             }
 
-            case WEAPON_SMOKE_BOMB:
+            case ITEM_IDX_SMOKE_BOMB:
             {
                 new smkBmbSmokeObjectId = CreateDynamicObject(OBJ_MODEL_SMOKE, x, y, z, 0.0, 0.0, 0.0);
                 defer DestroySmkBmbSmokeObject(smkBmbSmokeObjectId);
             }
         }
 
-        if(IsValidDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]) && weaponId != WEAPON_NAIL_BOMB)
+        if(IsValidDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]) && itemId != _:ITEM_IDX_NAIL_BOMB)
         {
             ResetProjectileData(projid);
             DestroyDynamicObject(eProjectileData[projid][e_iProjectile_ObjectId]);
@@ -481,7 +471,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         foreach(new playerid : Player)
         {
             Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
-            PlayPlayer3D_ProjectileSFX(playerid, weaponId, x, y, z);
+            PlayPlayer3D_ProjectileSFX(playerid, itemId, x, y, z);
         }
     }
 

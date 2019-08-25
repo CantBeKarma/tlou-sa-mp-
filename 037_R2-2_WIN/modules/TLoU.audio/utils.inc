@@ -52,11 +52,11 @@ PlayPlayer3D_ReloadSFX(playerid, weaponId)
 
 // Plays player 3D Sound effect of destroyed projectile.
 // SFX is played in the specific location (based on coordinates).
-PlayPlayer3D_ProjectileSFX(playerid, weaponId, Float:x, Float:y, Float:z)
+PlayPlayer3D_ProjectileSFX(playerid, itemId, Float:x, Float:y, Float:z)
 {
     for(new i = 0; i != MAX_PROJECTILES_SFX; i++)
     {
-        if(SFX_ProjectilesDestroy[i][e_iProjectileWeaponId] != weaponId)
+        if(SFX_ProjectilesDestroy[i][e_iProjectileWeaponId] != GetItemNativeWeaponId(itemId))
             continue;
 
         if(IsPlayerInRangeOfPoint(playerid, SFX_ProjectilesDestroy[i][e_fProjectileDistanceSFX], x, y, z))
