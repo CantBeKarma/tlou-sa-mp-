@@ -118,7 +118,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             return NEXT_ACTION_NONE;
         }
         
-        newItemAmount = Craft_IngrAmount(playerid, itemId) + itemAmount;
+        //newItemAmount = Craft_IngrAmount(playerid, itemId) + itemAmount;
         SetPlayerItemAmount(playerid, itemId, newItemAmount);
 
         new nextAction = (newItemAmount > 300) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
