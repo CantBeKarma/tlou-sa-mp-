@@ -328,7 +328,7 @@
             WeapMenuTd_DisplayWeapsAndAmmo(playerid);
         }
 
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), itemId);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d was given itemId: %d", GetPlayerCharUid(playerid), itemId);
         return true;
     }
 
@@ -357,7 +357,7 @@
         WeapMenu_RemoveAndSortItems(playerid, itemId);
 
         ePlayerItemData[playerid][itemId][e_iItemId] = -1;
-        ePlayerItemData[playerid][itemId][e_iItemAmount] = -1;
+        ePlayerItemData[playerid][itemId][e_iItemAmount] = 0;
 
         if(IsItemMeleeWeapon(itemId))
 		{
@@ -451,13 +451,13 @@
 
     // Gets player item's amount of specified itemId.
     // Returns:
-    // (-1) if player hasn't got an item or is invalid.
+    // (0) if player hasn't got an item or is invalid.
     // (x) value of the amount that player has for that item (integer)
     GetPlayerItemAmount(playerid, itemId)
     {
         if(!HasPlayerGotItem(playerid, itemId))
         {
-            return -1;
+            return 0;
         }
 
         return ePlayerItemData[playerid][itemId][e_iItemAmount];
@@ -484,17 +484,17 @@
     // (results are possible to be returned from 3 tables - eItemsData | eItemsUpgrades | eItemsMeleeCND)
     GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
     {
-        if(!HasPlayerGotItem(playerid, itemId))
-        {
-            return -1;
-        }
+        // if(!HasPlayerGotItem(playerid, itemId))
+        // {
+        //     return 0;
+        // }
 
-        new maxAmount = -1;
+        new maxAmount = 0;
         if(checkMeleeExtraCND == true)
         {
             if(GetItemType(itemId) != ITEM_TYPE_MELEE)
             {
-                return -1;
+                return 0;
             }
 
             for(new i = 0; i != MAX_MELEE_ITEMS; i++)
@@ -679,7 +679,7 @@
     // true - if player item's amount has been set correctly
     SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCND = 0)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || IsPlayerFullOnItem(playerid, itemId))
+        if(!HasPlayerGotItem(playerid, itemId))
         {
             return false;
         }
@@ -688,6 +688,16 @@
         if(maxItemAmount == -1)
         {
             Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], ERROR, "SetPlayerItemAmount: received invalid max item amount (-1). ItemId: %d", itemId);
+            return false;
+        }
+
+        if(IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
+        {
+            return false;
+        }
+
+        if(meleeExtraCND == 0 && GetPlayerItemAmount(playerid, itemId) == amount)
+        {
             return false;
         }
 
@@ -742,9 +752,16 @@
 
             case ITEM_TYPE_MELEE, ITEM_TYPE_MISC:
             {
-                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING && ITEM_IDX:itemId != ITEM_IDX_SHIV)
+                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
                 {
-                    CraftTd_UpdateViewingItem(playerid, CRAFT_ITEM_MELEE);
+                    if(ITEM_IDX:itemId == ITEM_IDX_SHIV)
+                    {
+                        CraftTd_UpdateItemAmount(playerid, itemId);
+                    }
+                    else
+                    {
+                        CraftTd_UpdateViewingItem(playerid, CRAFT_ITEM_MELEE);
+                    }
                 }
                 else
                 {
@@ -764,7 +781,7 @@
             {
                 if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
                 {
-                    CraftTd_UpdateItemAmount(playerid, eItemsData[itemId][e_iItem_CraftItemId]);
+                    CraftTd_UpdateItemAmount(playerid, itemId);
                 }
             }
         }

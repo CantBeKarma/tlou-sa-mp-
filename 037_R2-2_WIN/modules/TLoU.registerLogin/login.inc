@@ -40,7 +40,7 @@ function PrepareDataAfterLogin(playerid)
     for(new i = 0; i != MAX_ITEMS_DATA; i++)
     {
         ePlayerItemData[playerid][i][e_iItemId] = -1;
-        ePlayerItemData[playerid][i][e_iItemAmount] = -1;
+        ePlayerItemData[playerid][i][e_iItemAmount] = 0;
         ePlayerItemData[playerid][i][e_iItemClipAmount] = -1;
 
         if(i < 4)

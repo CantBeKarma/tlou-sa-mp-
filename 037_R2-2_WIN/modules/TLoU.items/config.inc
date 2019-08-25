@@ -175,7 +175,7 @@ stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
     {"Rifle",               ITEM_TYPE_WEAPON,       ITEM_MODEL_RIFLE,       WEAPON_SLOT_RIFLE,          -1,     -1,         -1,                         WEAPON_RIFLE,           70.0,   100.0,      -1,                     -1,                     -1},
     {"Assault rifle",       ITEM_TYPE_WEAPON,       ITEM_MODEL_ASSAULT,     WEAPON_SLOT_ASSAULT,        30,     90,         -1,                         WEAPON_ASSAULT,         20.0,   60.0,       -1,                     -1,                     -1},
     {"Bow",                 ITEM_TYPE_WEAPON,       ITEM_MODEL_BOW,         WEAPON_SLOT_BOW,            -1,      9,         -1,                         WEAPON_BOW,             45.0,   35.0,       -1,                     -1,                     -1},
-    {"Arrow",               ITEM_TYPE_AMMO,         ITEM_MODEL_ARROW,       -1,                         -1,     -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Arrow",               ITEM_TYPE_AMMO,         ITEM_MODEL_ARROW,       -1,                         -1,      0,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
 
     {"Shiv",                ITEM_TYPE_MISC,         ITEM_MODEL_SHIV,        WEAPON_SLOT_SHIV,           -1,      3,          -1,                         WEAPON_SHIV,            0.0,    0.0,        CRAFT_ITEM_SHIV,        _:ITEM_IDX_BLADE,       _:ITEM_IDX_BINDING},
     {"Medkit",              ITEM_TYPE_HEAL,         ITEM_MODEL_MEDKIT,      WEAPON_SLOT_MEDKIT,         -1,      3,          AUDIO_PICKUP_MEDKIT,        WEAPON_MEDKIT,          0.0,    0.0,        CRAFT_ITEM_MEDKIT,      _:ITEM_IDX_RAG,         _:ITEM_IDX_ALCOHOL},
@@ -186,8 +186,8 @@ stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
     {"Brick",               ITEM_TYPE_THROWABLE,    ITEM_MODEL_BRICK,       WEAPON_SLOT_BRICK_BOTTLE,   -1,      1,          AUDIO_BRICK_PICKUP,         WEAPON_BRICK,           10.0,   10.0,       -1,                     -1,                     -1},
     {"Bottle",              ITEM_TYPE_THROWABLE,    ITEM_MODEL_BOTTLE,      WEAPON_SLOT_BRICK_BOTTLE,   -1,      1,          AUDIO_BOTTLE_PICKUP,        WEAPON_BOTTLE,          10.0,   10.0,       -1,                     -1,                     -1},
 
-    {"Note #1",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_PAPER,       -1,                         -1,      -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
-    {"Note #2",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_NOTES,       -1,                         -1,      -1,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1}
+    {"Note #1",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_PAPER,       -1,                         -1,      0,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1},
+    {"Note #2",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_NOTES,       -1,                         -1,      0,         -1,                         -1,                     0.0,    0.0,        -1,                     -1,                     -1}
 };
 
 // Item upgrade's data.
