@@ -35,6 +35,21 @@ Backpack_ResizeSelectBox(playerid)
     }
 }
 
+// Crafting : Returns index of textdraw which displays amount of the item
+GetBackpackItemAmountTdIdx(itemId)
+{
+    new result = -1;
+    switch(ITEM_IDX:itemId)
+    {
+        case ITEM_IDX_SHIV:       result = 0;
+        case ITEM_IDX_MEDKIT:     result = 1;
+        case ITEM_IDX_MOLOTOV:    result = 2;
+        case ITEM_IDX_NAIL_BOMB:  result = 3;
+        case ITEM_IDX_SMOKE_BOMB: result = 4;
+    }
+    return result;
+}
+
 // Perform anim. with camera backpack opening.
 Perform_BackpackOpening(playerid)
 {
