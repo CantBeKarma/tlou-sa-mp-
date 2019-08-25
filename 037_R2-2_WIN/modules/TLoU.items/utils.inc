@@ -542,6 +542,21 @@
         return maxAmount;
     }
 
+    // Checks if player's melee weapon is upgraded.
+    // Returns:
+    // false - if player hasn't got a melee item
+    // true if player has a melee and its extra CND is higher that 0
+    bool:IsPlayerMeleeUpgraded(playerid)
+    {
+        new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
+        if(playerMeleeItemId == -1)
+        {
+            return false;
+        }
+
+        return (GetPlayerMeleeExtraCnd(playerid, playerMeleeItemId) > 0);
+    }
+
     // Gets player's melee item id (MELEE)
     // Returns:
     // (-1) if no melee weapon was found
@@ -701,7 +716,6 @@
         return true;
     }
 
-
     UpdateTextDrawsIfNecessary(playerid, itemId)
     {
         if(IsPlayerUsingWeaponMenu(playerid))
@@ -750,8 +764,7 @@
             {
                 if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
                 {
-                    // Update backpack items amounts. Foreach?
-                    //CraftTd_UpdateItemAmount(playerid, eItemsData[itemId][e_iItem_CraftItemId], calcAmount);
+                    CraftTd_UpdateItemAmount(playerid, eItemsData[itemId][e_iItem_CraftItemId]);
                 }
             }
         }
