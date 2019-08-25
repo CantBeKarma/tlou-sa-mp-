@@ -71,7 +71,7 @@
                     if(row_meleeExtCnd > 0)
                     {
                         IsPlayerMeleeUpgraded[playerid] = true;
-                        GetPlayerMeleeExtraCnd(playerid, i) = row_meleeExtCnd;
+                        ePlayerItemData[playerid][i][e_iItemMeleeExtraCND] = row_meleeExtCnd;
                     }
                 }
 

@@ -217,9 +217,9 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         SetPlayerItemAmount(playerid, itemId, 1);
 
         // If player currently uses throwable item.
-        if(GetPlayerEquippedItemId(playerid, itemId) == itemid)
+        if(GetPlayerEquippedItemId(playerid) == itemId)
         {
-            EquipItem(playerid, itemid);
+            EquipItem(playerid, itemId);
         }
         // If player last weapon is his throwable item.
         else if(GetPlayerLastEquippedItemId(playerid) == playerThrowable)
