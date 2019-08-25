@@ -56,6 +56,18 @@
         return (eItemsData[itemId][e_iItem_SA_WeaponId]);
     }
 
+    GetItemIdFromCraftItemId(craftItemId)
+    {
+        for(new i = 0; i != MAX_ITEMS_DATA; i++)
+        {
+            if(craftItemId == eItemsData[i][e_iItem_CraftItemId])
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     bool:IsItemUpgradeable(itemId, upgradeType = -1)
     {
         for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
@@ -124,9 +136,83 @@
         return HasPlayerGotItem(playerid, _:ITEM_IDX_BRICK) || HasPlayerGotItem(playerid, _:ITEM_IDX_BOTTLE);
     }
 
+    ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Float:rY, &Float:rZ)
+    {
+        switch(itemId)
+        {
+            // Ingredients.
+            case 0..5:
+            {
+                // Validate if the specified value is only every 25.
+                if((itemAmount % 25) != 0 || itemAmount <= 0 || itemAmount > 300)
+                {
+                    return 1;
+                }
+                rZ = float(random(360));
+            }
+
+            // Melee weapons.
+            case 6..9:
+            {
+                new weaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
+                if(meleeExtCnd != 0)
+                {
+                    new maxExtCnd = GetMeleeWeapon_Durability(weaponId, true);
+
+                    if(meleeExtCnd > maxExtCnd)
+                        meleeExtCnd = maxExtCnd;
+                }
+
+                new meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false);
+
+                if(itemAmount > meleeBasicCnd)
+                    itemAmount = meleeBasicCnd;
+
+                rX = 90.0;
+                rY = float(random(360));
+            }
+
+            // Weapons.
+            case 10..15:
+            {
+                rX = 90.0;
+                rY = float(random(360));
+            }
+
+            // Bow, Shiv, Medkit.
+            case 16, 17, 18:
+            {
+                z += 0.06;
+                rZ = float(random(360));
+            }
+
+            // Molotov Cocktail, Nail bomb, Smoke bomb.
+            case 19, 20, 21:
+            {
+                switch(random(2))
+                {
+                    case 0:rY = -15;
+                    case 1:rX = 90, z += 0.02;
+                }
+                rZ = float(random(360));
+            }
+
+            // Bottle.
+            case 23:
+            {
+                switch(random(2))
+                {
+                    case 0: z += 0.1783;
+                    case 1: rX = 90.0, rY = float(random(360)), rZ = float(random(360)), z += 0.04;
+                }
+            }
+        }
+        return 0;
+    }
+
 //#endregion
 
-//#region Item Create/Update/Destroy/Validate
+//#region Item Create/Update/Destroy
 
     // Create an item.
     CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
@@ -215,159 +301,7 @@
         return -1;
     }
 
-    // Validates item's creation positions, amounts and conditions.
-    ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Float:rY, &Float:rZ)
-    {
-        switch(itemId)
-        {
-            // Ingredients.
-            case 0..5:
-            {
-                // Validate if the specified value is only every 25.
-                if((itemAmount % 25) != 0 || itemAmount <= 0 || itemAmount > 300)
-                {
-                    return 1;
-                }
-                rZ = float(random(360));
-            }
-
-            // Melee weapons.
-            case 6..9:
-            {
-                new weaponId = eItemsData[itemId][e_iItem_SA_WeaponId];
-                if(meleeExtCnd != 0)
-                {
-                    new maxExtCnd = GetMeleeWeapon_Durability(weaponId, true);
-
-                    if(meleeExtCnd > maxExtCnd)
-                        meleeExtCnd = maxExtCnd;
-                }
-
-                new meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false);
-
-                if(itemAmount > meleeBasicCnd)
-                    itemAmount = meleeBasicCnd;
-
-                rX = 90.0;
-                rY = float(random(360));
-            }
-
-            // Weapons.
-            case 10..15:
-            {
-                rX = 90.0;
-                rY = float(random(360));
-            }
-
-            // Bow, Shiv, Medkit.
-            case 16, 17, 18:
-            {
-                z += 0.06;
-                rZ = float(random(360));
-            }
-
-            // Molotov Cocktail, Nail bomb, Smoke bomb.
-            case 19, 20, 21:
-            {
-                switch(random(2))
-                {
-                    case 0:rY = -15;
-                    case 1:rX = 90, z += 0.02;
-                }
-                rZ = float(random(360));
-            }
-
-            // Bottle.
-            case 23:
-            {
-                switch(random(2))
-                {
-                    case 0: z += 0.1783;
-                    case 1: rX = 90.0, rY = float(random(360)), rZ = float(random(360)), z += 0.04;
-                }
-            }
-        }
-        return 0;
-    }
-
 //#endregion
-
-// Show player item label of the objectid.
-ShowPlayerItemLabel(playerid, item_objectId)
-{
-    new itemUid, itemId, Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, bool:itemCreated, itemModel, itemType, itemWeaponId;
-    ReadItemRelations(item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated, itemModel, itemType, itemWeaponId);
-
-    if(!itemCreated)
-    {
-        return;
-    }
-
-    if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-    {
-        DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-    }
-
-    new labelStr[32];
-    switch(itemType)
-    {
-        case ITEM_TYPE_HEAL:        format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (GetPlayerItemAmount(playerid, itemId) >= MAX_AMOUNT_MEDKIT ? "\n{FF0000}(FULL)" : ""));
-        case ITEM_TYPE_THROWABLE:   format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (HasPlayerGotItem(playerid, itemId) ? "\n{FF0000}(FULL)" : ""));
-        case ITEM_TYPE_COLLECTIBLE: format(labelStr, sizeof(labelStr), "%s", eObjData[e_sObj_Title]);
-
-        case ITEM_TYPE_MELEE:
-        {
-            new bool:isItemMeleeUpgraded = (itemExtAmount > 0);
-            format(labelStr, sizeof(labelStr), "%s\n(CND: %d/%d)", eItemsData[itemId][e_sItem_Name], \
-                    (isItemMeleeUpgraded) ? (itemAmount + itemExtAmount) : (itemAmount), \
-                    (isItemMeleeUpgraded) ? GetMeleeWeapon_Durability(itemWeaponId, false) + GetMeleeWeapon_Durability(itemWeaponId, true) : GetMeleeWeapon_Durability(itemWeaponId, false));
-        }
-
-        case ITEM_TYPE_INGREDIENT:
-        {
-            // itemId = ingredientId (this is the ONLY case!)
-            if(IsPlayerFullOnItem(playerid, itemId))
-            {
-                format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
-            }
-            else 
-            {
-                format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
-            }
-        }
-
-        case ITEM_TYPE_WEAPON:
-        {
-            if(IsPlayerFullOnItem(playerid, itemId))
-            {
-                format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
-            }
-            else
-            {
-                switch(itemModel)
-                {
-                    case 
-                        ITEM_MODEL_SHIV,
-                        ITEM_MODEL_BOMB,
-                        ITEM_MODEL_MOLOTOV,
-                        ITEM_MODEL_SMKBMB,
-                        ITEM_MODEL_ARROW:
-                        {
-                            format(labelStr, sizeof(labelStr), "%s", eItemsData[itemId][e_sItem_Name]);
-                        }
-                    
-                    default:
-                    {
-                        format(labelStr, sizeof(labelStr), "%s\n(ammo: %d)", eItemsData[itemId][e_sItem_Name], floatround(itemAmount));
-                    }
-                }
-            }
-        }
-    }
-
-    ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel(labelStr, COLOR_WHITE_TRANS, itemPosX, itemPosY, itemPosZ, ITEM_LABEL_DRAW_DIST, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, itemVw, itemIntId, playerid);
-    Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
-}
 
 //#region Items | Give/Remove
 
@@ -529,6 +463,10 @@ ShowPlayerItemLabel(playerid, item_objectId)
         return ePlayerItemData[playerid][itemId][e_iItemAmount];
     }
 
+    // Gets player's melee weapon extra CND (upgraded)
+    // Returns:
+    // (-1) if player hasn't got an item or specified itemId isn't a melee weapon.
+    // (x) number (int) of melee's upgraded condition
     GetPlayerMeleeExtraCnd(playerid, itemId)
     {
         if(!HasPlayerGotItem(playerid, itemId) || !IsItemMeleeWeapon(itemId))
@@ -604,16 +542,15 @@ ShowPlayerItemLabel(playerid, item_objectId)
         return maxAmount;
     }
 
-    // Gets player's melee item id (MELEE or THROWABLE)
+    // Gets player's melee item id (MELEE)
     // Returns:
-    // (-1) if no melee weapon/throwable was found
+    // (-1) if no melee weapon was found
     // (x) item id.
     GetPlayerMeleeItemId(playerid)
     {
         for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
-            if(GetItemType(i) != ITEM_TYPE_MELEE
-            || GetItemType(i) != ITEM_TYPE_THROWABLE)
+            if(GetItemType(i) != ITEM_TYPE_MELEE)
             {
                 continue;
             }
@@ -627,6 +564,23 @@ ShowPlayerItemLabel(playerid, item_objectId)
             {
                 return i;
             }
+        }
+        return -1;
+    }
+
+    // Gets player throwable item id
+    // Returns:
+    // (-1) if no throwable item found
+    // (x) item id
+    GetPlayerThrowableItemId(playerid)
+    {
+        if(HasPlayerGotItem(playerid, _:ITEM_IDX_BRICK))
+        {
+            return _:ITEM_IDX_BRICK;
+        }
+        else if(HasPlayerGotItem(playerid, _:ITEM_IDX_BOTTLE))
+        {
+            return _:ITEM_IDX_BOTTLE;
         }
         return -1;
     }
@@ -952,16 +906,79 @@ ShowPlayerItemLabel(playerid, item_objectId)
 
 //#endregion
 
-// Set player's supplements amount.
-SetPlayerSupplements(playerid, amount)
+// Show player item label of the objectid.
+ShowPlayerItemLabel(playerid, item_objectId)
 {
-    eCharsInfo[playerid][e_iSkills_SuppsAmount] = ((amount < 0) ? (0) : (amount > MAX_PLAYER_SUPPS_AMOUNT) ? (MAX_PLAYER_SUPPS_AMOUNT) : (amount));
+    new itemUid, itemId, Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, bool:itemCreated, itemModel, itemType, itemWeaponId;
+    ReadItemRelations(item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated, itemModel, itemType, itemWeaponId);
 
-    if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
+    if(!itemCreated)
     {
-        SkillsTd_CheckSuppsAmount(playerid);
-        SkillsTd_CheckWhatsToUpgrade(playerid);
-        SkillTd_UpdateViewingItem(playerid, Skill_GetSelection(playerid));
+        return;
     }
-    UpdateNavItemsColors(playerid);
+
+    if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+    {
+        DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+    }
+
+    new labelStr[32];
+    switch(itemType)
+    {
+        case ITEM_TYPE_HEAL:        format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (GetPlayerItemAmount(playerid, itemId) >= MAX_AMOUNT_MEDKIT ? "\n{FF0000}(FULL)" : ""));
+        case ITEM_TYPE_THROWABLE:   format(labelStr, sizeof(labelStr), "%s%s", eItemsData[itemId][e_sItem_Name], (HasPlayerGotItem(playerid, itemId) ? "\n{FF0000}(FULL)" : ""));
+        case ITEM_TYPE_COLLECTIBLE: format(labelStr, sizeof(labelStr), "%s", eObjData[e_sObj_Title]);
+
+        case ITEM_TYPE_MELEE:
+        {
+            new bool:isItemMeleeUpgraded = (itemExtAmount > 0);
+            format(labelStr, sizeof(labelStr), "%s\n(CND: %d/%d)", eItemsData[itemId][e_sItem_Name], \
+                    (isItemMeleeUpgraded) ? (itemAmount + itemExtAmount) : (itemAmount), \
+                    (isItemMeleeUpgraded) ? GetMeleeWeapon_Durability(itemWeaponId, false) + GetMeleeWeapon_Durability(itemWeaponId, true) : GetMeleeWeapon_Durability(itemWeaponId, false));
+        }
+
+        case ITEM_TYPE_INGREDIENT:
+        {
+            // itemId = ingredientId (this is the ONLY case!)
+            if(IsPlayerFullOnItem(playerid, itemId))
+            {
+                format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
+            }
+            else 
+            {
+                format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
+            }
+        }
+
+        case ITEM_TYPE_WEAPON:
+        {
+            if(IsPlayerFullOnItem(playerid, itemId))
+            {
+                format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
+            }
+            else
+            {
+                switch(itemModel)
+                {
+                    case 
+                        ITEM_MODEL_SHIV,
+                        ITEM_MODEL_BOMB,
+                        ITEM_MODEL_MOLOTOV,
+                        ITEM_MODEL_SMKBMB,
+                        ITEM_MODEL_ARROW:
+                        {
+                            format(labelStr, sizeof(labelStr), "%s", eItemsData[itemId][e_sItem_Name]);
+                        }
+                    
+                    default:
+                    {
+                        format(labelStr, sizeof(labelStr), "%s\n(ammo: %d)", eItemsData[itemId][e_sItem_Name], floatround(itemAmount));
+                    }
+                }
+            }
+        }
+    }
+
+    ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel(labelStr, COLOR_WHITE_TRANS, itemPosX, itemPosY, itemPosZ, ITEM_LABEL_DRAW_DIST, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, itemVw, itemIntId, playerid);
+    Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
 }
