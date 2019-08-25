@@ -859,7 +859,6 @@
         }
         else
         {
-            SCMF(playerid, -1, "I had some ammo for that item.");
             PlayerWeaponBodyDamage[playerid] = eItemsData[itemId][e_iItem_BodyDmg];
 			PlayerWeaponHeadDamage[playerid] = eItemsData[itemId][e_iItem_HeadDmg];
 
@@ -867,20 +866,17 @@
             {
                 case ITEM_TYPE_MELEE:
                 {
-                    SCMF(playerid, -1, "It's a MELEE item.");
                     GivePlayerWeapon(playerid, nativeWeaponId, 1);
                 }
 
                 case ITEM_TYPE_WEAPON:
                 {
-                    SCMF(playerid, -1, "It's a WEAPON item.");
                     if(ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW)
                     {
                         SPAO(playerid, GetItemModel(itemId), true);
                     }
                     else
                     {
-                        SCMF(playerid, -1, "Equipping bullet weapon");
                         GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
                         SetPlayerNoReload(playerid, (nativeWeaponId != WEAPON_SHOTGUN));
 
@@ -888,15 +884,12 @@
                         {
                             new maxItemClipSizeAmount = GetPlayerItemMaxClipSize(playerid, itemId);
                             ePlayerItemData[playerid][itemId][e_iItemClipAmount] = (itemAmount < maxItemClipSizeAmount) ? (itemAmount) : (maxItemClipSizeAmount);
-
-                            SCMF(playerid, -1, "GetPlayerItemClipAmount == -1. maxItemClipSizeAmount = %d. Result: %d", maxItemClipSizeAmount, ePlayerItemData[playerid][itemId][e_iItemClipAmount]);
                         }
                     }
                 }
             
                 case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE:
                 {
-                    SCMF(playerid, -1, "It's either PROJECTILE or THROWABLE");
                     SPAO(playerid, (nativeWeaponId == WEAPON_MEDKIT) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
                 }
             }
