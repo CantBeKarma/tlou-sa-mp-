@@ -26,43 +26,44 @@ public OnPlayerCanceledCrafting(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerCraftedItem(playerid, craftItemId)
 {
-    // Find item index of the craft id.
-    new itemId = -1;
-    for(new i = 0; i != MAX_ITEMS_DATA; i++)
-    {
-        if(craftItemId == eItemsData[i][e_iItem_CraftItemId])
-        {
-            itemId = i;
-            break;
-        }
-    }
-
+    new itemId = GetItemIdFromCraftItemId(craftItemId);
     if(itemId == -1)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], ERROR, "%s (%d) tried to craft (%d) an invalid item. (Couldn't find its index in the table!)", PlayerName(playerid), playerid, craftItemId);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "%s (charUid: %d) tried to craft (%d) an invalid item. (Couldn't find its index in the table!)", PlayerName(playerid), GetPlayerCharUid(playerid), craftItemId);
         return 1;
     }
 
-    if(craftItemId != CRAFT_ITEM_MELEE) SetPlayerItemAmount(playerid, itemId, GetPlayerItemAmount(playerid, itemId) + 1);
+    if(craftItemId != CRAFT_ITEM_MELEE)
+    {
+        GivePlayerItem(playerid, itemId);
+        SetPlayerItemAmount(playerid, itemId, GetPlayerItemAmount(playerid, itemId) + 1);
+    }
     else
     {
-        if(GetPlayerMelee[playerid] == WEAPON_PIPE)
-        {
-            GetPlayerMelee[playerid] = WEAPON_SCISSOR_PIPE;
-        }
-        
         new 
-            meleeCnd = GetPlayerItemAmount(playerid, WEAPON_SCISSOR_PIPE),
-            meleeExtCnd = GetMeleeWeapon_Durability(GetPlayerMelee[playerid], true);
+            playerMeleeItemId = GetPlayerMeleeItemId(playerid),
+            playerMeleeCnd = GetPlayerItemAmount(playerid, playerMeleeItemId);
 
-        SetPlayerItemAmount(playerid, itemId, meleeCnd, .meleeExtraCND = meleeExtCnd);
+        if(playerMeleeItemId == _:ITEM_IDX_PIPE)
+        {
+            RemovePlayerItem(playerid, playerMeleeItemId);
+            GivePlayerItem(playerid, _:ITEM_IDX_SCSR_PIPE);
+        }
+
+        SetPlayerItemAmount(playerid, itemId, playerMeleeCnd, GetPlayerItemMaxAmount(playerid, itemId, true));
     }
-    
-    // Reduct ingredients.
-    SetPlayerItemAmount(playerid, eItemsData[itemId][e_iItem_CraftIngrRequired1], Craft_IngrAmount(playerid, eItemsData[itemId][e_iItem_CraftIngrRequired1]) - 100);
-    SetPlayerItemAmount(playerid, eItemsData[itemId][e_iItem_CraftIngrRequired2], Craft_IngrAmount(playerid, eItemsData[itemId][e_iItem_CraftIngrRequired2]) - 100);
 
-    // Set newly crafted weapon as a last weapon used.
+    // Reduct ingredients.
+    static reductIngrAmount = 100;
+
+    new 
+        firstRequiredIngr = eItemsData[itemId][e_iItem_CraftIngrRequired1],
+        secondRequiredIngr = eItemsData[itemId][e_iItem_CraftIngrRequired2];
+
+    SetPlayerItemAmount(playerid, firstRequiredIngr, GetPlayerItemAmount(playerid, firstRequiredIngr) - reductIngrAmount);
+    SetPlayerItemAmount(playerid, secondRequiredIngr, GetPlayerItemAmount(playerid, secondRequiredIngr) - reductIngrAmount);
+
+    // Set newly crafted item as a last item used.
     if(craftItemId != CRAFT_ITEM_SHIV)
     {
         ePlayerInfo[playerid][e_iLastEquippedItemId] = itemId;
@@ -170,22 +171,33 @@ timer Craft_CraftItem[1000](playerid, craftItemId, craft_time)
 }
 
 // Crafting : Show item's amount that player own.
-CraftTd_UpdateItemAmount(playerid, itemId = -1, calcAmount = -1)
+CraftTd_UpdateItemAmount(playerid, itemId = -1)
 {
-    new strAmount[3];
-    if(itemId == -1 && calcAmount == -1)
+    new String:itemAmountStr = STRING_NULL;
+    if(itemId == -1)
     {
-        for(new tdIdx = 0, slotIdx = 1; tdIdx != 5; tdIdx++, slotIdx++)
+        for(new tdIdx = 0; tdIdx <= 4; tdIdx++)
         {
-            valstr(strAmount, PlayerWeaponSlotAmmo[playerid, slotIdx]);
-            PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItemsAmount][tdIdx], strAmount);
+            switch(tdIdx)
+            {
+                case 0: itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV));
+                case 1: itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_MEDKIT));
+                case 2: itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_MOLOTOV));
+                case 3: itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB));
+                case 4: itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_SMOKE_BOMB));
+            }
+            
+            PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItemsAmount][tdIdx], itemAmountStr);
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItemsAmount][tdIdx]);
         }
     }
     else
     {
-        new tdIdx = itemId - 1; // tdIdx start from 0. Why this? because: (shiv)ItemId: 1 - 1 = 0, (medkit)ItemId: 2 - 1 = 1 (result is textdrawIndex).
-        valstr(strAmount, calcAmount);
-        PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItemsAmount][tdIdx], strAmount);
+        new tdIdx = GetBackpackItemAmountTdIdx(itemId);
+        itemAmountStr = str_val(GetPlayerItemAmount(playerid, itemId));
+
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItemsAmount][tdIdx], itemAmountStr);
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItemsAmount][tdIdx]);
     }
 }
 
@@ -195,17 +207,18 @@ CraftTd_UpdateViewingItem(playerid, selection)
     if(selection != CRAFT_ITEM_MELEE) PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CurrentItem][0], eBackpack_CraftItemsData[selection][e_sCurrentItemIcon]);
     else
     {
-        new meleeIconStr[20];
-        switch(GetPlayerMelee[playerid])
+        new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
+        new String:meleeIconStr = str_new_static("TLoU:weap_pipe");
+        if(playerMeleeItemId != -1)
         {
-            case WEAPON_PIPE:         strcpy(meleeIconStr, "TLoU:weap_pipe");
-            case WEAPON_SCISSOR_PIPE: strcpy(meleeIconStr, "TLoU:weap_scsr_pipe");
-            case WEAPON_HATCHET:      strcpy(meleeIconStr, "TLoU:weap_hatchet");
-            case WEAPON_MACHETE:      strcpy(meleeIconStr, "TLoU:weap_machete");
-            default:                  strcpy(meleeIconStr, "TLoU:weap_pipe");
+            meleeIconStr = str_new_static(eItemsSprites[playerMeleeItemId]);
         }
-        PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][0], meleeIconStr);
-        PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CurrentItem][0], meleeIconStr);
+
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][0], meleeIconStr);
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CurrentItem][0], meleeIconStr);
+
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][0]);
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CurrentItem][0]);
     }
 
     PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CurrentItem][1], eBackpack_CraftItemsData[selection][e_sCurrentItemName]);
@@ -298,34 +311,27 @@ CraftTd_HighlightSelection(playerid, newSelection, oldSelection = -1)
     }
     PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][newSelection], COLOR_WHITE);
     
-    switch(newSelection)
+    static requiredMinAmount = 100;
+    for(new i = 0; i != MAX_ITEMS_DATA; i++)
     {
-        case CRAFT_ITEM_MELEE, CRAFT_ITEM_SHIV:
+        if(eItemsData[i][e_iItem_CraftItemId] != newSelection
+        || eItemsData[i][e_iItem_CraftItemId] == CRAFT_ITEM_MELEE) // (Remember to work out CRAFT_ITEM_MELEE!!!!!!)
         {
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_BLADE, (Craft_IngrAmount(playerid, INGR_ITEM_BLADE) < 100 ? false : true));
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_BINDING, (Craft_IngrAmount(playerid, INGR_ITEM_BINDING) < 100 ? false : true));
-            
-            if(newSelection == CRAFT_ITEM_MELEE)
-                CraftTd_HighlightIngr(playerid, INGR_ITEM_MELEE, (GetPlayerMelee[playerid] != NO_MELEE && !IsPlayerMeleeUpgraded[playerid] ? true : false));
+            continue;
         }
 
-        case CRAFT_ITEM_MEDKIT, CRAFT_ITEM_MOLOTOV:
-        {
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_RAG, (Craft_IngrAmount(playerid, INGR_ITEM_RAG) < 100 ? false : true));
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_ALCOHOL, (Craft_IngrAmount(playerid, INGR_ITEM_ALCOHOL) < 100 ? false : true));
-        }
+        new 
+            firstRequiredIngr = eItemsData[i][e_iItem_CraftIngrRequired1],
+            secondRequiredIngr = eItemsData[i][e_iItem_CraftIngrRequired2];
 
-        case CRAFT_ITEM_BOMB:
-        {
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_BLADE, (Craft_IngrAmount(playerid, INGR_ITEM_BLADE) < 100 ? false : true));
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_EXPLOSIVE, (Craft_IngrAmount(playerid, INGR_ITEM_EXPLOSIVE) < 100 ? false : true));
-        }
+        CraftTd_HighlightIngr(playerid, firstRequiredIngr, GetPlayerItemAmount(playerid, firstRequiredIngr) >= requiredMinAmount);
+        CraftTd_HighlightIngr(playerid, secondRequiredIngr, GetPlayerItemAmount(playerid, secondRequiredIngr) >= requiredMinAmount);
 
-        case CRAFT_ITEM_SMOKE_BOMB:
+        if(newSelection == CRAFT_ITEM_MELEE)
         {
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_EXPLOSIVE, (Craft_IngrAmount(playerid, INGR_ITEM_EXPLOSIVE) < 100 ? false : true));
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_SUGAR, (Craft_IngrAmount(playerid, INGR_ITEM_SUGAR) < 100 ? false : true));
+            CraftTd_HighlightIngr(playerid, INGR_ITEM_MELEE, (GetPlayerMeleeItemId(playerid) != -1 && !IsPlayerMeleeUpgraded(playerid) ? true : false));
         }
+        break;
     }
 }
 
@@ -353,81 +359,76 @@ CraftTd_HighlightIngr(playerid, ingredientId, bool:positive = true)
 // Crafting : During backpack opening - check what's there possibly to craft for player.
 CraftTd_CheckWhatsToCraft(playerid)
 {
-        static requiredMinAmount = 100;
+    static requiredMinAmount = 100;
 
-    //#region BLADE + BINDING (Melee upgrade & Shiv)
-        if(Craft_IngrAmount(playerid, INGR_ITEM_BLADE) >= requiredMinAmount && Craft_IngrAmount(playerid, INGR_ITEM_BINDING) >= requiredMinAmount)
+    for(new i = 0; i != MAX_ITEMS_DATA; i++)
+    {
+        new craftItemId = eItemsData[i][e_iItem_CraftItemId];
+        if(craftItemId == -1 || craftItemId == CRAFT_ITEM_MELEE) // (Remember to work out CRAFT_ITEM_MELEE!!!!!!)
         {
-            if(GetPlayerMelee[playerid] != NO_MELEE && IsPlayerMeleeUpgraded[playerid]) 
-                Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_MELEE);
-            else 
-                Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MELEE);
-
-            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) < MAX_AMOUNT_SHIV) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_SHIV);
-            else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SHIV);
+            continue;
         }
-        else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MELEE), Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SHIV);
-    //#endregion
 
-    //#region RAG + ALCOHOL (Medkit & Molotov cocktail)
-        if(Craft_IngrAmount(playerid, INGR_ITEM_RAG) >= requiredMinAmount && Craft_IngrAmount(playerid, INGR_ITEM_ALCOHOL) >= requiredMinAmount)
+        if(GetPlayerItemAmount(playerid, i) >= GetPlayerItemMaxAmount(playerid, i))
         {
-            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_MEDKIT) < MAX_AMOUNT_MEDKIT) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_MEDKIT);
-            else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MEDKIT);
-
-            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_MOLOTOV) < MAX_AMOUNT_MOLOTOV) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_MOLOTOV);
-            else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MOLOTOV);
-        }
-        else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MEDKIT), Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_MOLOTOV);
-    //#endregion
-
-    //#region BLADE + EXPLOSIVE (Nailbomb)
-        if(Craft_IngrAmount(playerid, INGR_ITEM_BLADE) >= requiredMinAmount && Craft_IngrAmount(playerid, INGR_ITEM_EXPLOSIVE) >= requiredMinAmount)
-        {
-            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB) < MAX_AMOUNT_BOMB) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_BOMB);
-            else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_BOMB);
-        }
-        else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_BOMB);
-    //#endregion
-
-    //#region EXPLOSIVE + SUGAR (Smoke bomb)
-        if(Craft_IngrAmount(playerid, INGR_ITEM_EXPLOSIVE) >= requiredMinAmount && Craft_IngrAmount(playerid, INGR_ITEM_SUGAR) >= requiredMinAmount)
-        {
-            if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SMOKE_BOMB) < MAX_AMOUNT_SMOKE_BOMB) Iter_Add(ItemsToCraft<playerid>, WEAPON_SLOT_SMOKE_BOMB);
-            else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SMOKE_BOMB);
-        }
-        else Iter_Remove(ItemsToCraft<playerid>, WEAPON_SLOT_SMOKE_BOMB);
-    //#endregion
-
-    //#region Displaying items possible to craft (backpack / weapon menu).
-        // Show wrench icons next to the craft items (backpack).
-        if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
-        {
-            // Check which iter is not in the list and hide related textdraw to it if it's visible.
-            for(new i = 0; i != MAX_CRAFT_ITEMS; i++)
+            if(Iter_Contains(ItemsToCraft<playerid>, craftItemId))
             {
-                if(!Iter_Contains(ItemsToCraft<playerid>, i))
-                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][i]);
-                else
-                    PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][i]);
+                Iter_Remove(ItemsToCraft<playerid>, craftItemId);
+            }
+            continue;
+        }
+
+        new 
+            firstRequiredIngr = GetPlayerItemAmount(playerid, eItemsData[i][e_iItem_CraftIngrRequired1]),
+            secondRequiredIngr = GetPlayerItemAmount(playerid, eItemsData[i][e_iItem_CraftIngrRequired2]);
+
+        if(firstRequiredIngr >= requiredMinAmount 
+        && secondRequiredIngr >= requiredMinAmount)
+        {
+            if(!Iter_Contains(ItemsToCraft<playerid>, craftItemId))
+            {
+                Iter_Add(ItemsToCraft<playerid>, craftItemId);
             }
         }
-        // Show wrench icons next to the craft items (weapon menu).
-        else if(IsPlayerUsingWeaponMenu(playerid))
+        else
         {
-            foreach(new i : ItemsToCraft<playerid>)
+            if(Iter_Contains(ItemsToCraft<playerid>, craftItemId))
             {
-                switch(i)
-                {
-                    // PlayerTdShow does "show icon if it's not visible and item is possible to craft".
-                    case WEAPON_SLOT_BOMB:       PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][0]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][0]);
-                    case WEAPON_SLOT_MEDKIT:     PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][1]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][1]);
-                    case WEAPON_SLOT_MOLOTOV:    PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][2]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][3]);
-                    case WEAPON_SLOT_SMOKE_BOMB: PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][3]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][4]);
-                }
+                Iter_Remove(ItemsToCraft<playerid>, craftItemId);
             }
         }
-    //#endregion
+    }
+
+    // Show wrench icons next to the craft items (backpack).
+    if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
+    {
+        // Check which iter is not in the list and hide related textdraw to it if it's visible.
+        for(new i = 0; i != MAX_CRAFT_ITEMS; i++)
+        {
+            if(!Iter_Contains(ItemsToCraft<playerid>, i))
+            {
+                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][i]);
+            }
+            else
+            {
+                PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][i]);
+            }
+        }
+    }
+    // Show wrench icons next to the craft items (weapon menu).
+    else if(IsPlayerUsingWeaponMenu(playerid))
+    {
+        foreach(new i : ItemsToCraft<playerid>)
+        {
+            switch(i)
+            {
+                case CRAFT_ITEM_BOMB:       PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][0]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][0]);
+                case CRAFT_ITEM_MEDKIT:     PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][1]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][1]);
+                case CRAFT_ITEM_MOLOTOV:    PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][2]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][3]);
+                case CRAFT_ITEM_SMOKE_BOMB: PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][3]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][4]);
+            }
+        }
+    }
 }
 
 // Crafting : Ugly way of checking what ingredients player has and showing its icon on the list (but it works).
@@ -435,7 +436,7 @@ CraftTd_UpdateIngr(playerid, ingredientId = -1)
 {
     if(ingredientId == -1 || ingredientId == INGR_ITEM_BLADE)
     {
-        switch(Craft_IngrAmount(playerid, INGR_ITEM_BLADE))
+        switch(GetPlayerItemAmount(playerid, INGR_ITEM_BLADE))
         {
             case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
             case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
@@ -457,7 +458,7 @@ CraftTd_UpdateIngr(playerid, ingredientId = -1)
 
     if(ingredientId == -1 || ingredientId == INGR_ITEM_BINDING)
     {
-        switch(Craft_IngrAmount(playerid, INGR_ITEM_BINDING))
+        switch(GetPlayerItemAmount(playerid, INGR_ITEM_BINDING))
         {
             case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
             case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
@@ -479,7 +480,7 @@ CraftTd_UpdateIngr(playerid, ingredientId = -1)
 
     if(ingredientId == -1 || ingredientId == INGR_ITEM_RAG)
     {
-        switch(Craft_IngrAmount(playerid, INGR_ITEM_RAG))
+        switch(GetPlayerItemAmount(playerid, INGR_ITEM_RAG))
         {
             case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
             case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
@@ -501,7 +502,7 @@ CraftTd_UpdateIngr(playerid, ingredientId = -1)
 
     if(ingredientId == -1 || ingredientId == INGR_ITEM_ALCOHOL)
     {
-        switch(Craft_IngrAmount(playerid, INGR_ITEM_ALCOHOL))
+        switch(GetPlayerItemAmount(playerid, INGR_ITEM_ALCOHOL))
         {
             case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
             case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
@@ -523,7 +524,7 @@ CraftTd_UpdateIngr(playerid, ingredientId = -1)
 
     if(ingredientId == -1 || ingredientId == INGR_ITEM_EXPLOSIVE)
     {
-        switch(Craft_IngrAmount(playerid, INGR_ITEM_EXPLOSIVE))
+        switch(GetPlayerItemAmount(playerid, INGR_ITEM_EXPLOSIVE))
         {
             case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
             case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
@@ -545,7 +546,7 @@ CraftTd_UpdateIngr(playerid, ingredientId = -1)
 
     if(ingredientId == -1 || ingredientId == INGR_ITEM_SUGAR)
     {
-        switch(Craft_IngrAmount(playerid, INGR_ITEM_SUGAR))
+        switch(GetPlayerItemAmount(playerid, INGR_ITEM_SUGAR))
         {
             case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
             case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
