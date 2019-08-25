@@ -100,7 +100,7 @@
 
         new bool:result = false;
 
-        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || GetItemType(itemId) == ITEM_TYPE_MELEE))
+        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || IsItemMeleeWeapon(itemId)))
         {
             result = (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId));
         }
@@ -463,13 +463,28 @@
         return ePlayerItemData[playerid][itemId][e_iItemAmount];
     }
 
+    // Checks if player's melee weapon is upgraded.
+    // Returns:
+    // false - if player hasn't got a melee item
+    // true if player has a melee and its extra CND is higher that 0
+    bool:IsPlayerMeleeUpgraded(playerid)
+    {
+        new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
+        if(playerMeleeItemId == -1)
+        {
+            return false;
+        }
+
+        return (GetPlayerMeleeExtraCnd(playerid, playerMeleeItemId) > 0);
+    }
+
     // Gets player's melee weapon extra CND (upgraded)
     // Returns:
     // (-1) if player hasn't got an item or specified itemId isn't a melee weapon.
     // (x) number (int) of melee's upgraded condition
     GetPlayerMeleeExtraCnd(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsItemMeleeWeapon(itemId))
+        if(!HasPlayerGotItem(playerid, itemId) || !IsPlayerMeleeUpgraded(playerid) || !IsItemMeleeWeapon(itemId))
         {
             return -1;
         }
@@ -479,7 +494,8 @@
 
     // Gets maximal amount of an item type that's possible to get for player.
     // Returns:
-    // (-1) if player hasn't got an item or system tried to check for melee extra CND on item which is not a melee weapon
+    // (-1) if system didn't find max item values in eItemsUpgrade or eItemsMeleeCND
+    // (0) if system tried to check for melee extra CND on item which is not a melee weapon
     // (x) maximal value of an item 
     // (results are possible to be returned from 3 tables - eItemsData | eItemsUpgrades | eItemsMeleeCND)
     GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
@@ -540,21 +556,6 @@
             }
         }
         return maxAmount;
-    }
-
-    // Checks if player's melee weapon is upgraded.
-    // Returns:
-    // false - if player hasn't got a melee item
-    // true if player has a melee and its extra CND is higher that 0
-    bool:IsPlayerMeleeUpgraded(playerid)
-    {
-        new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
-        if(playerMeleeItemId == -1)
-        {
-            return false;
-        }
-
-        return (GetPlayerMeleeExtraCnd(playerid, playerMeleeItemId) > 0);
     }
 
     // Gets player's melee item id (MELEE)
@@ -719,7 +720,7 @@
         }
 
         ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: set item amount to: %d (extraCnd = %d) of item id: %d for charUid: %d", amount, meleeExtraCND, itemId, GetPlayerCharUid(playerid));
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: set item amount to: %d (extraCnd = %d) of item id: %d for charUid: %d", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCND, itemId, GetPlayerCharUid(playerid));
         // DB_UpdatePlayerItemAmount(itemId, calcAmount, .ownerUid = eCharsInfo[playerid][e_iUid]);
 
         UpdateTextDrawsIfNecessary(playerid, itemId);

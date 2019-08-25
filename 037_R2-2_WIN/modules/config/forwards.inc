@@ -97,6 +97,11 @@ forward FCNPC_OnLeaveDynArea(npcid, areaid);
 
 forward OnPlayerLookAtItem(playerid, item_objectId);
 forward OnPlayerPickUpItem(playerid, item_objectId);
+forward OnPlayerPickUpIngredient(playerid, item_objectId, &newItemAmount);
+forward OnPlayerPickUpHealItem(playerid, item_objectId);
+forward OnPlayerPickUpMeleeItem(playerid, item_objectId, &droppedMeleeItemIdx, &droppedMeleeCnd, &droppedMeleeExtCnd);
+forward OnPlayerPickUpThrowableItem(playerid, item_objectId, &droppedThrowableItemIdx);
+forward OnPlayerPickUpWeaponOrAmmo(playerid, item_objectId, &droppedAmmoAmount);
 
 forward OnItemCreate(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId);
 forward OnItemDestroy(uid_item);
