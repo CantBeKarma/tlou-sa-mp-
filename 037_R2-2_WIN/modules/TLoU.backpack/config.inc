@@ -60,7 +60,6 @@
 #define     PlayerBackpackCategory(%0)      ePlayerBpInfo[%0][e_iBackpackSelected_Category]
 
 #define     Craft_GetSelection(%0)          ePlayerBpInfo[%0][e_iBackpackSelected_Craft]
-#define     Craft_IngrAmount(%0,%1)         ePlayerBpInfo[%0][e_iCraft_IngrAmount][%1]
 
 #define     Skill_GetSelection(%0)          ePlayerBpInfo[%0][e_iBackpackSelected_Skill]
 #define     Skill_GetLevel(%0,%1)           eCharsInfo[%0][e_iSkillLevel][%1]
@@ -130,7 +129,6 @@ stock const eBackpack_CollItemsData[MAX_COLL_ITEMS][e_BACKPACK_COLL_DATA] =
 // Player backpack's current data.
 enum e_PLAYER_BACKPACK_DATA
 {
-    e_iCraft_IngrAmount[6],
     e_iBackpackSelected_Craft,
     e_iBackpackSelected_Skill,
 

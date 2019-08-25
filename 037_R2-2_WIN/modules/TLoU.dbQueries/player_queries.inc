@@ -57,7 +57,7 @@
                 // Ingredients.
                 if(0 <= row_idItem <= 5)
                 {
-                    Craft_IngrAmount(playerid, row_idItem) = row_amount;
+                    //Craft_IngrAmount(playerid, row_idItem) = row_amount;
                     continue;
                 }
 
@@ -100,8 +100,8 @@
             switch(i)
             {
                 // Ingredients.
-                case 0..5:
-                    itemAmount = Craft_IngrAmount(playerid, i);
+                // case 0..5:
+                //     itemAmount = Craft_IngrAmount(playerid, i);
                 
                 // Melee weapon CND.
                 case 6..9:
