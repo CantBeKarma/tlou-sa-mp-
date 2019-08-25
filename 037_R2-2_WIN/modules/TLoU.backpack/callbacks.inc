@@ -100,14 +100,18 @@ public OnPlayerUseBackpack(playerid, category, keys)
             if(keys == KEY_UP)
             {
                 if(Skill_GetSelection(playerid) == SKILL_ITEM_MAXHP)
+                {
                     return;
+                }
                 
                 Skill_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
                 if(Skill_GetSelection(playerid) == SKILL_ITEM_SHIV_MASTER)
+                {
                     return;
+                }
 
                 Skill_GetSelection(playerid) += 1;
             }
@@ -124,14 +128,18 @@ public OnPlayerUseBackpack(playerid, category, keys)
             if(keys == KEY_UP)
             {
                 if(Coll_GetSelection(playerid) == COLL_ITEM_ARTIFACTS)
+                {
                     return;
+                }
                 
                 Coll_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
-                if(Coll_GetSelection(playerid) == COLL_ITEM_FIREFLY_PEND) 
+                if(Coll_GetSelection(playerid) == COLL_ITEM_FIREFLY_PEND)
+                {
                     return;
+                }
                 
                 Coll_GetSelection(playerid) += 1;
             }

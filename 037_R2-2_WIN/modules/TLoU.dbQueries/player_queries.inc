@@ -125,7 +125,7 @@
                 }
             }
 
-            DB_UpdatePlayerItemAmount(i, itemAmount, meleeExtCnd, eCharsInfo[playerid][e_iUid]);
+            //DB_UpdatePlayerItemAmount(i, itemAmount, meleeExtCnd, eCharsInfo[playerid][e_iUid]);
             itemAmount = meleeExtCnd = 0;
         }
     }
