@@ -359,27 +359,18 @@ CraftTd_CheckWhatsToCraft(playerid)
             continue;
         }
 
-        new itemId = _:eBackpack_CraftItemsData[i][e_iCraftItemId];
-
-        if(GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId))
-        {
-            if(Iter_Contains(ItemsToCraft<playerid>, i))
-            {
-                Iter_Remove(ItemsToCraft<playerid>, i);
-            }
-            continue;
-        }
-
-        new 
+        new itemId = _:eBackpack_CraftItemsData[i][e_iCraftItemId],
             firstRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftFirstReqIngr],
             secondRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftSecondReqIngr];
 
-        if(GetPlayerItemAmount(playerid, firstRequiredIngr) < requiredMinAmount
+        if(GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId)
+        || GetPlayerItemAmount(playerid, firstRequiredIngr) < requiredMinAmount
         || GetPlayerItemAmount(playerid, secondRequiredIngr) < requiredMinAmount)
         {
             if(Iter_Contains(ItemsToCraft<playerid>, i))
             {
                 Iter_Remove(ItemsToCraft<playerid>, i);
+                CraftTd_UpdateCraftItemWrench(playerid, i);
             }
             continue;
         }
@@ -387,37 +378,48 @@ CraftTd_CheckWhatsToCraft(playerid)
         if(!Iter_Contains(ItemsToCraft<playerid>, i))
         {
             Iter_Add(ItemsToCraft<playerid>, i);
+            CraftTd_UpdateCraftItemWrench(playerid, i);
         }
     }
+}
 
-    // Show wrench icons next to the craft items (backpack).
+// Crafting : Updates wrenches icons in backpack menu (if necessary) & weapon menu with weapon icons if necessary to show.
+CraftTd_UpdateCraftItemWrench(playerid, craftItemId)
+{
     if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
     {
-        // Check which iter is not in the list and hide related textdraw to it if it's visible.
-        for(new i = 0; i != MAX_CRAFT_ITEMS; i++)
+        if(Iter_Contains(ItemsToCraft<playerid>, craftItemId))
         {
-            if(!Iter_Contains(ItemsToCraft<playerid>, i))
-            {
-                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][i]);
-            }
-            else
-            {
-                PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][i]);
-            }
+            PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][craftItemId]);
+        }
+        else
+        {
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_Wrench][craftItemId]);
         }
     }
-    // Show wrench icons next to the craft items (weapon menu).
     else if(IsPlayerUsingWeaponMenu(playerid))
     {
-        foreach(new i : ItemsToCraft<playerid>)
+        new 
+            wrenchTdIdx = -1,
+            weapIconTdIdx = -1;
+
+        switch(craftItemId)
         {
-            switch(i)
-            {
-                case CRAFT_ITEM_BOMB:       PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][0]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][0]);
-                case CRAFT_ITEM_MEDKIT:     PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][1]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][1]);
-                case CRAFT_ITEM_MOLOTOV:    PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][2]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][3]);
-                case CRAFT_ITEM_SMOKE_BOMB: PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][3]), PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][4]);
-            }
+            case CRAFT_ITEM_BOMB:       wrenchTdIdx = 0, weapIconTdIdx = 0;
+            case CRAFT_ITEM_MEDKIT:     wrenchTdIdx = 1, weapIconTdIdx = 1;
+            case CRAFT_ITEM_MOLOTOV:    wrenchTdIdx = 2, weapIconTdIdx = 3;
+            case CRAFT_ITEM_SMOKE_BOMB: wrenchTdIdx = 3, weapIconTdIdx = 4;
+        }
+
+        if(Iter_Contains(ItemsToCraft<playerid>, craftItemId))
+        {
+            PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][wrenchTdIdx]);
+            PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][weapIconTdIdx]);
+        }
+        else
+        {
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][wrenchTdIdx]);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][weapIconTdIdx]);
         }
     }
 }
