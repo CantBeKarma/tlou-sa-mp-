@@ -424,9 +424,72 @@ CraftTd_UpdateCraftItemWrench(playerid, craftItemId)
     }
 }
 
+enum e_INGR_SPRITES
+{
+    ITEM_IDX:e_iIngrId,
+    e_iIngrValue,
+    e_sIngrSprite
+};
+
+stock const eIngrSprites[][e_INGR_SPRITES] =
+{
+    {ITEM_IDX_BLADE,    0,      ""},
+    {ITEM_IDX_BLADE,    25,     "TLoU:ingr_blade_quater"},
+    {ITEM_IDX_BLADE,    50,     "TLoU:ingr_blade_half"},
+    {ITEM_IDX_BLADE,    75,     "TLoU:ingr_blade_3quaters"},
+    {ITEM_IDX_BLADE,    100,    "TLoU:ingr_blade_full"}
+};
+
+FindIngrSpriteIndex(ingr, amount)
+{
+    for(new i = 0; i != sizeof(eIngrSprites); i++)
+    {
+        if(ingr == _:eIngrSprites[i][e_iIngrId]
+        && amount = eIngrSprites[i][e_iIngrValue])
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 // Crafting : Ugly way of checking what ingredients player has and showing its icon on the list (but it works).
 CraftTd_UpdateIngr(playerid, ingredientId = -1)
 {
+    new playerIngrAmount = GetPlayerItemAmount(playerid, ingredientId);
+    new loopCount = (playerIngrAmount % 25);
+
+    if(loopCount == 0)
+    {
+        return;
+    }
+
+    static totalLoopCount = 12;
+    if(loopCount != totalLoopCount)
+    {
+        for(new i = loopCount; i < totalLoopCount; i++)
+        {
+            //PlayerTextDrawHide(playerid, )
+        }
+    }
+
+    new 
+        tdIdxStart = (ingredientId == _:ITEM_IDX_BLADE ? ingredientId : ingredientId * 3),
+        tdIdxEnd = tdIdxStart + 2;
+
+    for(new i = 0; i != loopCount; i++)
+    {
+        for(new tdIdx = tdIdxStart; tdIdx < tdIdxEnd; tdIdx++)
+        {
+            new ingrSpriteIdx = FindIngrSpriteIndex(ingredientId, (playerIngrAmount / 12));
+
+            
+            PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx], eIngrSprites[ingrSpriteIdx][e_sIngrSprite]);
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx]);
+        }
+    }
+
+
     if(ingredientId == -1 || ingredientId == INGR_ITEM_BLADE)
     {
         switch(GetPlayerItemAmount(playerid, INGR_ITEM_BLADE))
