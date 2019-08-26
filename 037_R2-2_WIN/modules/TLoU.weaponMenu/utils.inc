@@ -201,9 +201,10 @@ ResetEnum_ePlayerWeapMenu(playerid)
         {
             case WEAPON_MENU_H_LEFT0:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 345.666656, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 368.999603, 281.244445);
             case WEAPON_MENU_H_LEFT1:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 389.666656, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 413.666351, 281.244445);
-            //case WEAPON_MENU_H_RIGHT0: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 468.666717, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 492.666625, 281.244445);
-            //case WEAPON_MENU_H_RIGHT1: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 519.333312, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 542.999694, 281.244445);
+            case WEAPON_MENU_H_RIGHT0: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 468.666717, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 492.666625, 281.244445);
+            case WEAPON_MENU_H_RIGHT1: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 519.333312, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 542.999694, 281.244445);
         }
+
         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
     }
@@ -211,76 +212,104 @@ ResetEnum_ePlayerWeapMenu(playerid)
     // WeapMenu : Show "how to swap" text in horizontal bar.
     WeapMenuTd_ShowSwapTextHelp(playerid, selectionH)
     {
-        if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
+        switch(selectionH)
         {
-            if(WeapMenu_Ls_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
-            else
+            case WEAPON_MENU_H_LEFT0, WEAPON_MENU_H_LEFT1:
             {
-                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
+                if(WeapMenu_Ls_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
+                else
+                {
+                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
+                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
+                }
+            }
+
+            case WEAPON_MENU_H_RIGHT0, WEAPON_MENU_H_RIGHT1:
+            {
+                if(WeapMenu_Rs_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
+                else
+                {
+                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
+                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
+                }
             }
         }
-
-        if(selectionH == WEAPON_MENU_H_RIGHT0 || selectionH == WEAPON_MENU_H_RIGHT1)
-        {
-            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
-        }
-
-        // case WEAPON_MENU_H_RIGHT0, WEAPON_MENU_H_RIGHT1:
-        // {
-        //     if(WeapMenu_Rs_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
-        //     else
-        //     {
-        //         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-        //         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
-        //     }
-        // }
     }
 
     // Change the position of "Swap weapon icons"
     WeapMenu_MoveSwapWeaponIcons(playerid, selectId)
     {
+        if(selectId == WEAPON_MENU_H_LEFT0 || selectId == WEAPON_MENU_H_LEFT1)
+        {
+            PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 41.000015, 52.681484);
+        }
+        else
+        {
+            PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 35.333316, 40.651855);
+        }
+
         switch(selectId)
         {
-            case WEAPON_MENU_H_LEFT0:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 335.999969, 185.892562), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], 335.999969, 265.892547);
-            case WEAPON_MENU_H_LEFT1:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 384.666656, 180.500000), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], 384.666656, 260.500000);
-            //case WEAPON_MENU_H_RIGHT0: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 468.666717, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 492.666625, 281.244445);
-            //case WEAPON_MENU_H_RIGHT1: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 519.333312, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 542.999694, 281.244445);
+            case WEAPON_MENU_H_LEFT0:
+            {
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 335.999969, 185.892562);
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], 335.999969, 265.892547);
+            }
+
+            case WEAPON_MENU_H_LEFT1:  
+            {
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 384.666656, 180.500000);
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], 384.666656, 260.500000);
+            }
+
+            case WEAPON_MENU_H_RIGHT0:
+            {
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 473.333435, 185.892562);
+            }
+            
+            case WEAPON_MENU_H_RIGHT1:
+            {
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 519.333435, 185.892562);
+            }
         }
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0]);
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1]);
     }
 
     // WeapMenu : Show "Swap weapon icons"
     WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH)
     {
-        if(selectionH != WEAPON_MENU_H_LEFT0 && selectionH != WEAPON_MENU_H_LEFT1)
+        if(selectionH != WEAPON_MENU_H_LEFT0 && selectionH != WEAPON_MENU_H_LEFT1
+        && selectionH != WEAPON_MENU_H_RIGHT0 && selectionH != WEAPON_MENU_H_RIGHT1)
+        {
             return;
+        }
 
         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
 
-        new icon[18];
+        new loopCount = (selectionH == WEAPON_MENU_H_RIGHT0 || selectionH == WEAPON_MENU_H_RIGHT1) ? (2) : (3);
 
-        for(new i = 0; i != 4; i++)
+        for(new i = 0; i <= loopCount; i++)
         {
-            if(WeapMenu_Ls_ItemId(playerid, i) == -1) 
-                continue;
-
-            switch(WeapMenu_Ls_ItemId(playerid, i))
+            new itemId = -1;
+            if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
             {
-                case WEAPON_SHOTGUN:    strcpy(icon, "TLoU:weap_shot");
-                case WEAPON_RIFLE:      strcpy(icon, "TLoU:weap_huntrif");
-                case WEAPON_BOW:        strcpy(icon, "TLoU:weap_bow");
-                case WEAPON_ASSAULT:    strcpy(icon, "TLoU:weap_assault");
+                itemId = WeapMenu_Ls_ItemId(playerid, i);
+            }
+            else if(selectionH == WEAPON_MENU_H_RIGHT0 || selectionH == WEAPON_MENU_H_RIGHT1)
+            {
+                itemId = WeapMenu_Rs_ItemId(playerid, i);
+            }
+            
+            if(itemId == -1)
+            {
+                break;
             }
 
             switch(i)
             {
                 case 0, 1: WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-                case 2:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], icon);
-                case 3:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], icon);
+                case 2:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], eItemsSprites[itemId]);
+                case 3:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], eItemsSprites[itemId]);
             }
         }
     }

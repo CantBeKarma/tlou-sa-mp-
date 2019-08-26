@@ -147,7 +147,17 @@ public OnPlayerFinishSwappingWeaps(playerid)
     }
     
     CLF(#Perform_BackpackClosing, "d", playerid);
-    ePlayerInfo[playerid][e_iLastEquippedItemId] = WeapMenu_Ls_ItemId(playerid, WeapMenu_GetSelectionH(playerid));
+
+    new selectionH = WeapMenu_GetSelectionH(playerid);
+    if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
+    {
+        ePlayerInfo[playerid][e_iLastEquippedItemId] = WeapMenu_Ls_ItemId(playerid, selectionH);
+    }
+    else
+    {
+        ePlayerInfo[playerid][e_iLastEquippedItemId] = WeapMenu_Rs_ItemId(playerid, (selectionH == WEAPON_MENU_H_RIGHT0) ? (0) : (1));
+    }
+    
     return 0;
 }
 
@@ -158,29 +168,52 @@ public OnPlayerUD_SwapWeaps(playerid, keys)
 {
     new 
         selectionH = WeapMenu_GetSelectionH(playerid),
-        oldWeapon = WeapMenu_Ls_ItemId(playerid, selectionH);
+        previousItemId = -1;
         
     if(keys == KEY_UP)
     {
-        new slotIdx = (WeapMenu_Ls_ItemId(playerid, 3) != -1) ? (3) : (2);
-        WeapMenu_Ls_ItemId(playerid, selectionH) = WeapMenu_Ls_ItemId(playerid, slotIdx);
+        if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
+        {
+            previousItemId = WeapMenu_Ls_ItemId(playerid, selectionH);
 
-        if(slotIdx == 3) WeapMenu_Ls_ItemId(playerid, 3) = WeapMenu_Ls_ItemId(playerid, 2);
-        WeapMenu_Ls_ItemId(playerid, 2) = oldWeapon;
+            new slotIdx = (WeapMenu_Ls_ItemId(playerid, 3) != -1) ? (3) : (2);
+            WeapMenu_Ls_ItemId(playerid, selectionH) = WeapMenu_Ls_ItemId(playerid, slotIdx);
+
+            if(slotIdx == 3) WeapMenu_Ls_ItemId(playerid, 3) = WeapMenu_Ls_ItemId(playerid, 2);
+            WeapMenu_Ls_ItemId(playerid, 2) = previousItemId;
+        }
+        else
+        {
+            new selectedSlotId = (selectionH == WEAPON_MENU_H_RIGHT0) ? (0) : (1);
+            previousItemId = WeapMenu_Rs_ItemId(playerid, selectedSlotId);
+            WeapMenu_Rs_ItemId(playerid, selectedSlotId) = WeapMenu_Rs_ItemId(playerid, 2);
+            WeapMenu_Rs_ItemId(playerid, 2) = previousItemId;
+        }
     }
     else if(keys == KEY_DOWN)
     {
-        WeapMenu_Ls_ItemId(playerid, selectionH) = WeapMenu_Ls_ItemId(playerid, 2);
-
-        if(WeapMenu_Ls_ItemId(playerid, 3) == -1) WeapMenu_Ls_ItemId(playerid, 2) = oldWeapon;
-        else 
+        if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
         {
-            WeapMenu_Ls_ItemId(playerid, 2) = WeapMenu_Ls_ItemId(playerid, 3);
-            WeapMenu_Ls_ItemId(playerid, 3) = oldWeapon;
+            previousItemId = WeapMenu_Ls_ItemId(playerid, selectionH);
+            WeapMenu_Ls_ItemId(playerid, selectionH) = WeapMenu_Ls_ItemId(playerid, 2);
+
+            if(WeapMenu_Ls_ItemId(playerid, 3) == -1) WeapMenu_Ls_ItemId(playerid, 2) = previousItemId;
+            else 
+            {
+                WeapMenu_Ls_ItemId(playerid, 2) = WeapMenu_Ls_ItemId(playerid, 3);
+                WeapMenu_Ls_ItemId(playerid, 3) = previousItemId;
+            }
+        }
+        else
+        {
+            new selectedSlotId = (selectionH == WEAPON_MENU_H_RIGHT0) ? (0) : (1);
+            previousItemId = WeapMenu_Rs_ItemId(playerid, selectedSlotId);
+            WeapMenu_Rs_ItemId(playerid, selectedSlotId) = WeapMenu_Rs_ItemId(playerid, 2);
+            WeapMenu_Rs_ItemId(playerid, 2) = previousItemId;
         }
     }
-    Audio_PlayEx(playerid, AUDIO_BP_SWITCH_WEAPS);
 
+    Audio_PlayEx(playerid, AUDIO_BP_SWITCH_WEAPS);
     WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH);
     return 0;
 }
