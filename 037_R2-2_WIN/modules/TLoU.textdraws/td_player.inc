@@ -170,6 +170,20 @@ PlayerTextDraw_HUD(playerid)
 	}
 //#endregion
 
+//#region HUD : bullets -> shorty
+	for(new i = 5, Float:defX_bull_shotgun = 530.666320; i >= 0; i--, defX_bull_shotgun += 4)
+	{
+		ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i] = CreatePlayerTextDraw(playerid, defX_bull_shotgun, 355.436950, "TLoU:bull_shotgun");
+		PlayerTextDrawLetterSize	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 0.000000, 0.000000);
+		PlayerTextDrawTextSize		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 2.666692, 15.348139);
+		PlayerTextDrawAlignment		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 1);
+		PlayerTextDrawColor			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], COLOR_GRAY_TRANS);
+		PlayerTextDrawSetShadow		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 0);
+		PlayerTextDrawSetOutline	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 0);
+		PlayerTextDrawFont			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 4);
+	}
+//#endregion
+
 //#region HUD : bullets -> shotgun
 	//for(new i = 0, Float:defX_bull_shotgun = 522.667236; i != 8; i++, defX_bull_shotgun += 4)
 	for(new i = 7, Float:defX_bull_shotgun = 522.667236; i >= 0; i--, defX_bull_shotgun += 4)
