@@ -428,7 +428,7 @@ enum e_INGR_SPRITES
 {
     ITEM_IDX:e_iIngrId,
     e_iIngrValue,
-    e_sIngrSprite
+    e_sIngrSprite[32]
 };
 
 stock const eIngrSprites[][e_INGR_SPRITES] =
@@ -445,7 +445,7 @@ FindIngrSpriteIndex(ingr, amount)
     for(new i = 0; i != sizeof(eIngrSprites); i++)
     {
         if(ingr == _:eIngrSprites[i][e_iIngrId]
-        && amount = eIngrSprites[i][e_iIngrValue])
+        && amount == eIngrSprites[i][e_iIngrValue])
         {
             return i;
         }
