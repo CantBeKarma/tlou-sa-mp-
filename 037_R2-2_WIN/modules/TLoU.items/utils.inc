@@ -404,6 +404,7 @@
     // Returns:
     // (-1) if player hasn't got an item or didn't find specified item in the list of upgradeable items.
     // (x) value of max clip size for that item
+    // (results are possible to be returned from 2 tables - eItemsData | eItemsUpgrades)
     GetPlayerItemMaxClipSize(playerid, itemId)
     {
         if(!HasPlayerGotItem(playerid, itemId) || !IsItemBulletWeapon(itemId))
@@ -430,18 +431,13 @@
         return -1;
     }
 
-    // Gets player's current clip amount of the item (fire weapon) specified
+    // Gets player's current clip amount of the item specified
     // Returns:
-    // (-1) if player hasn't got an item OR item is not a weapon OR item is a bow
+    // (-1) if player hasn't got an item OR item is not a bullet type weapon
     // (x) current clip amount
     GetPlayerItemClipAmount(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId))
-        {
-            return -1;
-        }
-
-        if(GetItemType(itemId) != ITEM_TYPE_WEAPON || ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW)
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemBulletWeapon(itemId))
         {
             return -1;
         }
