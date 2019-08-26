@@ -1,7 +1,7 @@
 // Maximal values.
 #define     MAX_ITEMS_DATA          (27)
 #define     MAX_MELEE_ITEMS         (4)
-#define     MAX_UPGRADE_ITEMS       (17)
+#define     MAX_UPGRADE_ITEMS       (18)
 
 // Other.
 #define     NO_OWNER_UID            (-1)
@@ -211,6 +211,7 @@ stock const eItemsUpgrades[MAX_UPGRADE_ITEMS][e_ITEM_UPGRADES_DATA] =
     {ITEM_IDX_SHORTY, 1, UPGRADE_TYPE_CLIPSIZE, 3, 22, 30, 4},
     {ITEM_IDX_SHORTY, 2, UPGRADE_TYPE_CLIPSIZE, 4, 24, 40, 4},
     {ITEM_IDX_SHORTY, 3, UPGRADE_TYPE_CLIPSIZE, 5, 26, 50, 5},
+    {ITEM_IDX_SHORTY, 3, UPGRADE_TYPE_CLIPSIZE, 6, 28, 50, 5},
 
     {ITEM_IDX_SHOTGUN, 0, UPGRADE_TYPE_CLIPSIZE, 4, 14,  0, 0},
     {ITEM_IDX_SHOTGUN, 1, UPGRADE_TYPE_CLIPSIZE, 5, 15, 15, 2},
