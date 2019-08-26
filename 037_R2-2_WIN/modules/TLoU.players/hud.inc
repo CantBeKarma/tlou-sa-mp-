@@ -354,16 +354,16 @@ HudTd_UpdateShivs(playerid)
             return false;
         }
 
-        new nativeWeaponId = GetItemNativeWeaponId(itemId);
         for(new tdIdx = 0; tdIdx != maxWeaponClipSize; tdIdx++)
         {
-            switch(nativeWeaponId)
+            switch(ITEM_IDX:itemId)
             {
-                case WEAPON_9MM:      PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
-                case WEAPON_REVOLVER: PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
-                case WEAPON_SHOTGUN:  PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx],  (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx]);
-                case WEAPON_RIFLE:    PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx],    (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx]);
-                case WEAPON_ASSAULT:  PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
+                case ITEM_IDX_9MM:              PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
+                case ITEM_IDX_REVOLVER:         PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
+                case ITEM_IDX_SHORTY:           PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx],   (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx]);
+                case ITEM_IDX_SHOTGUN:          PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx],  (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx]);
+                case ITEM_IDX_RIFLE:            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx],    (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx]);
+                case ITEM_IDX_ASSAULT_RIFLE:    PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
             }
         }
         return true;
@@ -381,6 +381,7 @@ HudTd_UpdateShivs(playerid)
         {
             case ITEM_IDX_9MM:            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      COLOR_GRAY_TRANS);
             case ITEM_IDX_REVOLVER:       PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], COLOR_GRAY_TRANS);
+            case ITEM_IDX_SHORTY:         PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx],   COLOR_GRAY_TRANS);
             case ITEM_IDX_SHOTGUN:        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx],  COLOR_GRAY_TRANS);
             case ITEM_IDX_RIFLE:          PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx],    COLOR_GRAY_TRANS);
             case ITEM_IDX_ASSAULT_RIFLE:  PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  COLOR_GRAY_TRANS);
@@ -408,6 +409,7 @@ HudTd_UpdateShivs(playerid)
             {
                 case ITEM_IDX_9MM:            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
                 case ITEM_IDX_REVOLVER:       PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
+                case ITEM_IDX_SHORTY:         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx]);
                 case ITEM_IDX_SHOTGUN:        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx]);
                 case ITEM_IDX_RIFLE:          PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx]);
                 case ITEM_IDX_ASSAULT_RIFLE:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
