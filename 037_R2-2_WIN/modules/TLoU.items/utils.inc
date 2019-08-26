@@ -56,18 +56,6 @@
         return (eItemsData[itemId][e_iItem_SA_WeaponId]);
     }
 
-    GetItemIdFromCraftItemId(craftItemId)
-    {
-        for(new i = 0; i != MAX_ITEMS_DATA; i++)
-        {
-            if(craftItemId == eItemsData[i][e_iItem_CraftItemId])
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     bool:IsItemUpgradeable(itemId, upgradeType = -1)
     {
         for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
@@ -652,17 +640,13 @@
             return false;
         }
 
-        if(basicCND <= 0)
-        {
-            RemovePlayerItem(playerid, itemId);
-        }
-        else
+        if(basicCND > 0)
         {
             new maxBasicCND = GetPlayerItemMaxAmount(playerid, itemId);
             ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCND > maxBasicCND) ? (maxBasicCND) : (basicCND);
         }
 
-        if(extraCND > 0 && HasPlayerGotItem(playerid, itemId))
+        if(extraCND > 0)
         {
             new maxExtraCND = GetPlayerItemMaxAmount(playerid, itemId, true);
             ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCND > maxExtraCND) ? (maxExtraCND) : (extraCND);
@@ -688,7 +672,8 @@
             return false;
         }
 
-        if(IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
+        if((IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
+        || (GetPlayerItemAmount(playerid, itemId) == amount) && meleeExtraCND == 0)
         {
             return false;
         }
