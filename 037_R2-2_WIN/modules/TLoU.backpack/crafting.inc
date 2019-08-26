@@ -26,12 +26,7 @@ public OnPlayerCanceledCrafting(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerCraftedItem(playerid, craftItemId)
 {
-    new itemId = GetItemIdFromCraftItemId(craftItemId);
-    if(itemId == -1)
-    {
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "%s (charUid: %d) tried to craft (%d) an invalid item. (Couldn't find its index in the table!)", PlayerName(playerid), GetPlayerCharUid(playerid), craftItemId);
-        return 1;
-    }
+    new itemId = _:eBackpack_CraftItemsData[craftItemId][e_iCraftItemId];
 
     if(craftItemId != CRAFT_ITEM_MELEE)
     {
@@ -57,8 +52,8 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     static reductIngrAmount = 100;
 
     new 
-        firstRequiredIngr = eItemsData[itemId][e_iItem_CraftIngrRequired1],
-        secondRequiredIngr = eItemsData[itemId][e_iItem_CraftIngrRequired2];
+        firstRequiredIngr = _:eBackpack_CraftItemsData[craftItemId][e_iCraftFirstReqIngr],
+        secondRequiredIngr = _:eBackpack_CraftItemsData[craftItemId][e_iCraftSecondReqIngr];
 
     SetPlayerItemAmount(playerid, firstRequiredIngr, GetPlayerItemAmount(playerid, firstRequiredIngr) - reductIngrAmount);
     SetPlayerItemAmount(playerid, secondRequiredIngr, GetPlayerItemAmount(playerid, secondRequiredIngr) - reductIngrAmount);
@@ -312,26 +307,22 @@ CraftTd_HighlightSelection(playerid, newSelection, oldSelection = -1)
     PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][newSelection], COLOR_WHITE);
     
     static requiredMinAmount = 100;
-    for(new i = 0; i != MAX_ITEMS_DATA; i++)
+
+    if(newSelection == CRAFT_ITEM_MELEE) // SKIP MELEE FOR NOW. (Remember to work it out later!!!!!!)
     {
-        if(eItemsData[i][e_iItem_CraftItemId] != newSelection
-        || eItemsData[i][e_iItem_CraftItemId] == CRAFT_ITEM_MELEE) // (Remember to work out CRAFT_ITEM_MELEE!!!!!!)
-        {
-            continue;
-        }
+        return;
+    }
 
-        new 
-            firstRequiredIngr = eItemsData[i][e_iItem_CraftIngrRequired1],
-            secondRequiredIngr = eItemsData[i][e_iItem_CraftIngrRequired2];
+    new 
+        firstRequiredIngr = _:eBackpack_CraftItemsData[newSelection][e_iCraftFirstReqIngr],
+        secondRequiredIngr = _:eBackpack_CraftItemsData[newSelection][e_iCraftSecondReqIngr];
 
-        CraftTd_HighlightIngr(playerid, firstRequiredIngr, GetPlayerItemAmount(playerid, firstRequiredIngr) >= requiredMinAmount);
-        CraftTd_HighlightIngr(playerid, secondRequiredIngr, GetPlayerItemAmount(playerid, secondRequiredIngr) >= requiredMinAmount);
+    CraftTd_HighlightIngr(playerid, firstRequiredIngr, GetPlayerItemAmount(playerid, firstRequiredIngr) >= requiredMinAmount);
+    CraftTd_HighlightIngr(playerid, secondRequiredIngr, GetPlayerItemAmount(playerid, secondRequiredIngr) >= requiredMinAmount);
 
-        if(newSelection == CRAFT_ITEM_MELEE)
-        {
-            CraftTd_HighlightIngr(playerid, INGR_ITEM_MELEE, (GetPlayerMeleeItemId(playerid) != -1 && !IsPlayerMeleeUpgraded(playerid) ? true : false));
-        }
-        break;
+    if(newSelection == CRAFT_ITEM_MELEE)
+    {
+        CraftTd_HighlightIngr(playerid, INGR_ITEM_MELEE, (GetPlayerMeleeItemId(playerid) != -1 && !IsPlayerMeleeUpgraded(playerid) ? true : false));
     }
 }
 
@@ -361,41 +352,41 @@ CraftTd_CheckWhatsToCraft(playerid)
 {
     static requiredMinAmount = 100;
 
-    for(new i = 0; i != MAX_ITEMS_DATA; i++)
+    for(new i = 0; i != MAX_CRAFT_ITEMS; i++)
     {
-        new craftItemId = eItemsData[i][e_iItem_CraftItemId];
-        if(craftItemId == -1 || craftItemId == CRAFT_ITEM_MELEE) // (Remember to work out CRAFT_ITEM_MELEE!!!!!!)
+        if(i == CRAFT_ITEM_MELEE) // SKIP MELEE FOR NOW. (Remember to work it out later!!!!!!)
         {
             continue;
         }
 
-        if(GetPlayerItemAmount(playerid, i) >= GetPlayerItemMaxAmount(playerid, i))
+        new itemId = _:eBackpack_CraftItemsData[i][e_iCraftItemId];
+
+        if(GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId))
         {
-            if(Iter_Contains(ItemsToCraft<playerid>, craftItemId))
+            if(Iter_Contains(ItemsToCraft<playerid>, i))
             {
-                Iter_Remove(ItemsToCraft<playerid>, craftItemId);
+                Iter_Remove(ItemsToCraft<playerid>, i);
             }
             continue;
         }
 
         new 
-            firstRequiredIngr = GetPlayerItemAmount(playerid, eItemsData[i][e_iItem_CraftIngrRequired1]),
-            secondRequiredIngr = GetPlayerItemAmount(playerid, eItemsData[i][e_iItem_CraftIngrRequired2]);
+            firstRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftFirstReqIngr],
+            secondRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftSecondReqIngr];
 
-        if(firstRequiredIngr >= requiredMinAmount 
-        && secondRequiredIngr >= requiredMinAmount)
+        if(GetPlayerItemAmount(playerid, firstRequiredIngr) < requiredMinAmount
+        || GetPlayerItemAmount(playerid, secondRequiredIngr) < requiredMinAmount)
         {
-            if(!Iter_Contains(ItemsToCraft<playerid>, craftItemId))
+            if(Iter_Contains(ItemsToCraft<playerid>, i))
             {
-                Iter_Add(ItemsToCraft<playerid>, craftItemId);
+                Iter_Remove(ItemsToCraft<playerid>, i);
             }
+            continue;
         }
-        else
+
+        if(!Iter_Contains(ItemsToCraft<playerid>, i))
         {
-            if(Iter_Contains(ItemsToCraft<playerid>, craftItemId))
-            {
-                Iter_Remove(ItemsToCraft<playerid>, craftItemId);
-            }
+            Iter_Add(ItemsToCraft<playerid>, i);
         }
     }
 
