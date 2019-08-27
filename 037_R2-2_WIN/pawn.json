@@ -3,7 +3,6 @@
 	"repo": "tlou-sa-mp-",
 	"entry": "gamemodes\\tlou.pwn",
 	"output": "gamemodes\\tlou.amx",
-	"local": true,
 	"dependencies": [
 		"sampctl/samp-stdlib",
 		"Zeex/samp-plugin-crashdetect:v4.19.4",
@@ -19,6 +18,7 @@
 		"kristoisberg/pawn-colour-manipulation",
 		"pawn-lang/YSI-Includes@4.x"
 	],
+	"local": true,
 	"builds": [
 		{
 			"name": "main",
@@ -37,6 +37,10 @@
 		"version": "0.3.7",
 		"mode": "server",
 		"echo": "-",
+		"plugins": [
+			"crashdetect",
+			"tlou_server"
+		],
 		"rcon_password": "password",
 		"port": 7777,
 		"hostname": "SA-MP Server",
@@ -45,7 +49,6 @@
 		"mapname": "San Andreas",
 		"weburl": "www.sa-mp.com",
 		"gamemodetext": "Unknown",
-		"plugins": ["crashdetect", "tlou_server"],
 		"announce": true,
 		"lanmode": false,
 		"query": true,
