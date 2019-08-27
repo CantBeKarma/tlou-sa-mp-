@@ -782,7 +782,7 @@
         if(!HasPlayerGotItem(playerid, itemId)
         || GetPlayerEquippedItemId(playerid) == itemId
         || IsPlayerUnableToPerformAction(playerid)
-        || IsPlayerUsingBackpackAnims(playerid)
+        || IsPlayerUsingBackpackAnims(playerid))
         {
             SCMF(playerid, -1, "Stopped at 1st validation");
             return false;
