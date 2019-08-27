@@ -34,6 +34,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             else if(ITEM_IDX:currentItemId != ITEM_IDX:ITEM_IDX_NAIL_BOMB)
             {
                 new meleeItemId = GetPlayerMeleeItemId(playerid);
+                if(meleeItemId == -1)
+                {
+                    meleeItemId = GetPlayerThrowableItemId(playerid);
+                }
 
                 if(meleeItemId != -1)
                 {
@@ -41,7 +45,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 }
                 else
                 {
-                    EquipItem(playerid, GetPlayerThrowableItemId(playerid));
+                    HideItem(playerid);
                 }
             }
         }
