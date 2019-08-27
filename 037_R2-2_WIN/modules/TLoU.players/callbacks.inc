@@ -11,12 +11,22 @@
 		{
 			return 1;
 		}
+		return 1;
+	}
 
-		wait_ms(300);
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//---------------- OnPlayerTLoUClientJoin ------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerTLoUClientJoin(playerid, bool:has_plugin)
+	{
+		if(has_plugin)
+		{
+			wait_ms(400);
 
-		Bit_Vet(ePlayerFlag[e_bLogged], playerid);
-		SetCameraBehindPlayer(playerid);
-		SpawnPlayer(playerid);
+			Bit_Vet(ePlayerFlag[e_bLogged], playerid);
+			SetCameraBehindPlayer(playerid);
+			SpawnPlayer(playerid);
+		}
 		return 1;
 	}
 
@@ -64,7 +74,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerFirstSpawn(playerid)
 {
-	if(!IsUsingSAMPP(playerid))
+	if(!TLoU_IsClientConnected(playerid))
 	{
 		new String:pName = str_new_buf(MAX_PLAYER_NAME);
 		str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
