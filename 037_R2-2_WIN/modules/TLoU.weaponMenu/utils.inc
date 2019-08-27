@@ -11,17 +11,8 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
 //#region Validation
 
-    // Check if player is switching weapons.
-    IsPlayerSwitchingWeapons(playerid)
-    {
-        return Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
-    }
-
-    // Check if player has any weapons to switch in the weapon menu.
-    IsAllowedToSwitchWeaps(playerid)
-    {
-        return IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-    }
+    IsPlayerSwitchingWeapons(playerid)return Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
+    IsAllowedToSwitchWeaps(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
 
 //#endregion
 
@@ -332,76 +323,117 @@ ResetEnum_ePlayerWeapMenu(playerid)
     }
 
     // Hide player's weapon menu.
-    bool:HideWeaponMenu(playerid)
+    bool:HideWeaponMenu(playerid, hidePart = HIDE_WEAPMENU_PART_ALL)
     {
         if(!IsPlayerUsingWeaponMenu(playerid))
         {
             return false;
         }
-        
-        TdHideForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
-        TdHideForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
-        TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);
 
-        for(new tdIdx = 0; tdIdx != 9; tdIdx++)
+        if(hidePart == HIDE_WEAPMENU_PART_ALL || hidePart == HIDE_WEAPMENU_PART_VERT)
         {
-            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
-            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
+            TdHideForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
 
-            if(tdIdx < 2)
+            for(new i = 0; i <= 4; i++)
             {
-                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][tdIdx]);
-            }
+                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][i]);
+                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][i]);
 
-            if(tdIdx < 4)
-            {
-                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][tdIdx]);
+                if(i <= 3)
+                {
+                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][i]);
+                }
             }
+        }
+
+        if(hidePart == HIDE_WEAPMENU_PART_ALL || hidePart == HIDE_WEAPMENU_PART_HORI)
+        {
+            TdHideForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
+
+            for(new i = 5; i <= 8; i++)
+            {
+                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][i]);
+                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][i]);
+            }
+        }
+
+        if(hidePart == HIDE_WEAPMENU_PART_ALL)
+        {
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);
+
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
+
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][0]);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][1]);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][2]);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][3]);
         }
         return true;
     }
 
+
+    WeapMenu_GetTdIdxOfItemId(itemId)
+    {
+        new result = -1;
+
+        new test = WeapMenu_Ls_ItemId(playerid, 0);
+
+        switch(ITEM_IDX:itemId)
+        {
+            case ITEM_IDX_NAIL_BOMB:    result = 0;
+            case ITEM_IDX_MEDKIT:       result = 1;
+            case ITEM_IDX_BRICK, ITEM_IDX_BOTTLE:   result = 2;
+            case ITEM_IDX_MOLOTOV:      result = 3;
+            case ITEM_IDX_SMOKE_BOMB:   result = 4;
+            case test: result = 5;
+        }
+        return result;
+    }
+
     // Display weapons in the weapon menu based on player's ammo and weapons that player have.
-    WeapMenuTd_DisplayWeapsAndAmmo(playerid)
+    WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId = -1)
     {
         new 
             itemAmount = -1,
             String:itemAmountStr = STRING_NULL,
             ITEM_IDX:itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
+
+        tdIdx = WeapMenu_GetTdIdxOfItemId(itemId);
         
-        for(new tdIdx = 0; tdIdx != 9; tdIdx++)
+        // for(new tdIdx = 0; tdIdx != 9; tdIdx++)
+        // {
+        //     switch(tdIdx)
+        //     {
+        //         // Vertical (top -> bottom)
+        //         case 0: itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
+        //         case 1: itemId = ITEM_IDX:ITEM_IDX_MEDKIT;
+        //         case 2: itemId = ITEM_IDX:GetPlayerThrowableItemId(playerid);
+        //         case 3: itemId = ITEM_IDX:ITEM_IDX_MOLOTOV;
+        //         case 4: itemId = ITEM_IDX:ITEM_IDX_SMOKE_BOMB;
+
+        //         // Horizontal (left -> right)
+        //         case 5: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 0);
+        //         case 6: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 1);
+        //         case 7: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 0);
+        //         case 8: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 1);
+        //     }
+
+        if(!HasPlayerGotItem(playerid, _:itemId))
         {
-            switch(tdIdx)
-            {
-                // Vertical (top -> bottom)
-                case 0: itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
-                case 1: itemId = ITEM_IDX:ITEM_IDX_MEDKIT;
-                case 2: itemId = ITEM_IDX:ITEM_IDX_BRICK; // GetPlayerThrowable[playerid] - that needs to return itemId
-                case 3: itemId = ITEM_IDX:ITEM_IDX_MOLOTOV;
-                case 4: itemId = ITEM_IDX:ITEM_IDX_SMOKE_BOMB;
-
-                // Horizontal (left -> right)
-                case 5: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 0);
-                case 6: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 1);
-                case 7: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 0);
-                case 8: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 1);
-            }
-
-            if(!HasPlayerGotItem(playerid, _:itemId))
-            {
-                continue;
-            }
-
-            itemAmount = GetPlayerItemAmount(playerid, _:itemId);
-            PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[_:itemId]);
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
-            PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
-
-            itemAmountStr = str_val(itemAmount);
-            PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
-            PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
+            continue;
         }
+
+        itemAmount = GetPlayerItemAmount(playerid, _:itemId);
+        PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[_:itemId]);
+        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
+
+        itemAmountStr = str_val(itemAmount);
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
+        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
+        //}
     }
 
 //#endregion

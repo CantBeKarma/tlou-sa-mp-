@@ -10,6 +10,12 @@
 #define     WEAPON_MENU_H_RIGHT0      (2)
 #define     WEAPON_MENU_H_RIGHT1      (3)
 
+// Hiding weapon menu partially.
+#define     HIDE_WEAPMENU_PART_ALL      (-1)
+#define     HIDE_WEAPMENU_PART_VERT     (0)
+#define     HIDE_WEAPMENU_PART_HORI     (1)
+
+// Maximal amounts.
 #define     MAX_WEAPMENU_ITEMS        (9)
 
 // Other.

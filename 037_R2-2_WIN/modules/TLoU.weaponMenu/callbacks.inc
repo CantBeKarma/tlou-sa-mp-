@@ -67,7 +67,7 @@ public OnPlayerUD_WeaponMenu(playerid, keys)
     {
         case WEAPON_MENU_V_BOMB:        EquipItem(playerid, _:ITEM_IDX_NAIL_BOMB);
         case WEAPON_MENU_V_MEDKIT:      EquipItem(playerid, _:ITEM_IDX_MEDKIT);
-        case WEAPON_MENU_V_BRICK:       EquipItem(playerid, _:ITEM_IDX_BRICK); // GetPlayerThrowable[playerid];
+        case WEAPON_MENU_V_BRICK:       EquipItem(playerid, GetPlayerThrowableItemId(playerid));
         case WEAPON_MENU_V_MOLOTOV:     EquipItem(playerid, _:ITEM_IDX_MOLOTOV);
         case WEAPON_MENU_V_SMOKE_BOMB:  EquipItem(playerid, _:ITEM_IDX_SMOKE_BOMB);
     }
@@ -130,6 +130,7 @@ public OnPlayerStartSwappingWeaps(playerid)
     new selectionH = WeapMenu_GetSelectionH(playerid);
     WeapMenu_MoveSwapWeaponIcons(playerid, selectionH);
     WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH);
+    HideWeaponMenu(playerid, HIDE_WEAPMENU_PART_VERT);
 
     Perform_BackpackOpening(playerid);
     return 0;
@@ -145,7 +146,12 @@ public OnPlayerFinishSwappingWeaps(playerid)
         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][i]);
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][i]);
     }
-    
+
+    // Restore vertial bar of weapons menu and their icons.
+    TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
+    WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+    CraftTd_CheckWhatsToCraft(playerid);
+
     CLF(#Perform_BackpackClosing, "d", playerid);
 
     new selectionH = WeapMenu_GetSelectionH(playerid);
@@ -156,8 +162,7 @@ public OnPlayerFinishSwappingWeaps(playerid)
     else
     {
         ePlayerInfo[playerid][e_iLastEquippedItemId] = WeapMenu_Rs_ItemId(playerid, (selectionH == WEAPON_MENU_H_RIGHT0) ? (0) : (1));
-    }
-    
+    }    
     return 0;
 }
 
