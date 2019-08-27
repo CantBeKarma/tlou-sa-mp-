@@ -378,8 +378,8 @@ CraftTd_CheckWhatsToCraft(playerid)
         if(!Iter_Contains(ItemsToCraft<playerid>, i))
         {
             Iter_Add(ItemsToCraft<playerid>, i);
-            CraftTd_UpdateCraftItemWrench(playerid, i);
         }
+        CraftTd_UpdateCraftItemWrench(playerid, i);
     }
 }
 
@@ -424,23 +424,8 @@ CraftTd_UpdateCraftItemWrench(playerid, craftItemId)
     }
 }
 
-enum e_INGR_SPRITES
-{
-    ITEM_IDX:e_iIngrId,
-    e_iIngrValue,
-    e_sIngrSprite[32]
-};
-
-stock const eIngrSprites[][e_INGR_SPRITES] =
-{
-    {ITEM_IDX_BLADE,    0,      ""},
-    {ITEM_IDX_BLADE,    25,     "TLoU:ingr_blade_quater"},
-    {ITEM_IDX_BLADE,    50,     "TLoU:ingr_blade_half"},
-    {ITEM_IDX_BLADE,    75,     "TLoU:ingr_blade_3quaters"},
-    {ITEM_IDX_BLADE,    100,    "TLoU:ingr_blade_full"}
-};
-
-FindIngrSpriteIndex(ingr, amount)
+// Crafting : Find ingredient sprite (texture) for specified amount (used internally in CraftTd_UpdateIngr())
+CraftTd_FindIngrSpriteIndex(ingr, amount)
 {
     for(new i = 0; i != sizeof(eIngrSprites); i++)
     {
@@ -453,172 +438,80 @@ FindIngrSpriteIndex(ingr, amount)
     return -1;
 }
 
-// Crafting : Ugly way of checking what ingredients player has and showing its icon on the list (but it works).
+// Crafting : Checking player's ingriedient(s) and displaying them in the backpack menu.
 CraftTd_UpdateIngr(playerid, ingredientId = -1)
 {
-    new playerIngrAmount = GetPlayerItemAmount(playerid, ingredientId);
-    new loopCount = (playerIngrAmount % 25);
-
-    if(loopCount == 0)
+    if(ingredientId == -1)
     {
-        return;
-    }
-
-    static totalLoopCount = 12;
-    if(loopCount != totalLoopCount)
-    {
-        for(new i = loopCount; i < totalLoopCount; i++)
+        for(ingredientId = INGR_ITEM_BLADE; ingredientId != INGR_ITEM_SUGAR; ingredientId++)
         {
-            //PlayerTextDrawHide(playerid, )
+            new Float:amount = (GetPlayerItemAmount(playerid, ingredientId) / 100.0);
+            new fullAmounts = floatround(amount, floatround_floor);
+            new remaining = floatround((amount - fullAmounts) * 100);
+
+            new 
+                tdIdxStart = (ingredientId == INGR_ITEM_BLADE ? 0 : ingredientId * 3),
+                tdIdxEnd = tdIdxStart + 2,
+                ingrSpriteIdx = -1;
+
+            for(new tdIdx = tdIdxStart; tdIdx <= tdIdxEnd; tdIdx++)
+            {
+                if(fullAmounts > 0)
+                {
+                    ingrSpriteIdx = CraftTd_FindIngrSpriteIndex(ingredientId, 100);
+                    fullAmounts -= 1;
+                }
+                else
+                {
+                    ingrSpriteIdx = CraftTd_FindIngrSpriteIndex(ingredientId, remaining);
+                    remaining = 0;
+                }
+
+                if(isnull(eIngrSprites[ingrSpriteIdx][e_sIngrSprite]))
+                {
+                    PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx]);
+                }
+                else
+                {
+                    PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx], eIngrSprites[ingrSpriteIdx][e_sIngrSprite]);
+                    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx]);
+                }
+            }
         }
     }
-
-    new 
-        tdIdxStart = (ingredientId == _:ITEM_IDX_BLADE ? ingredientId : ingredientId * 3),
-        tdIdxEnd = tdIdxStart + 2;
-
-    for(new i = 0; i != loopCount; i++)
+    else
     {
-        for(new tdIdx = tdIdxStart; tdIdx < tdIdxEnd; tdIdx++)
+        new Float:amount = (GetPlayerItemAmount(playerid, ingredientId) / 100.0);
+        new fullAmounts = floatround(amount, floatround_floor);
+        new remaining = floatround((amount - fullAmounts) * 100);
+
+        new 
+            tdIdxStart = (ingredientId == INGR_ITEM_BLADE ? 0 : ingredientId * 3),
+            tdIdxEnd = tdIdxStart + 2,
+            ingrSpriteIdx = -1;
+
+        for(new tdIdx = tdIdxStart; tdIdx <= tdIdxEnd; tdIdx++)
         {
-            new ingrSpriteIdx = FindIngrSpriteIndex(ingredientId, (playerIngrAmount / 12));
+            if(fullAmounts > 0)
+            {
+                ingrSpriteIdx = CraftTd_FindIngrSpriteIndex(ingredientId, 100);
+                fullAmounts -= 1;
+            }
+            else
+            {
+                ingrSpriteIdx = CraftTd_FindIngrSpriteIndex(ingredientId, remaining);
+                remaining = 0;
+            }
 
-            
-            PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx], eIngrSprites[ingrSpriteIdx][e_sIngrSprite]);
-            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx]);
-        }
-    }
-
-
-    if(ingredientId == -1 || ingredientId == INGR_ITEM_BLADE)
-    {
-        switch(GetPlayerItemAmount(playerid, INGR_ITEM_BLADE))
-        {
-            case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-            case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-            case 50: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-            case 75: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-            case 100:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-
-            case 125:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-            case 150:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-            case 175:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-            case 200:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2]);
-
-            case 225:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2], "TLoU:ingr_blade_quater");
-            case 250:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2], "TLoU:ingr_blade_half");
-            case 275:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2], "TLoU:ingr_blade_3quaters");
-            case 300:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][1], "TLoU:ingr_blade_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][2], "TLoU:ingr_blade_full");
-        }
-    }
-
-    if(ingredientId == -1 || ingredientId == INGR_ITEM_BINDING)
-    {
-        switch(GetPlayerItemAmount(playerid, INGR_ITEM_BINDING))
-        {
-            case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-            case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-            case 50: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-            case 75: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-            case 100:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-
-            case 125:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-            case 150:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-            case 175:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-            case 200:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5]);
-
-            case 225:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5], "TLoU:ingr_binding_quater");
-            case 250:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5], "TLoU:ingr_binding_half");
-            case 275:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5], "TLoU:ingr_binding_3quaters");
-            case 300:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][4], "TLoU:ingr_binding_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][5], "TLoU:ingr_binding_full");
-        }
-    }
-
-    if(ingredientId == -1 || ingredientId == INGR_ITEM_RAG)
-    {
-        switch(GetPlayerItemAmount(playerid, INGR_ITEM_RAG))
-        {
-            case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-            case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-            case 50: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-            case 75: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-            case 100:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-
-            case 125:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-            case 150:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-            case 175:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-            case 200:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8]);
-
-            case 225:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8], "TLoU:ingr_rag_quater");
-            case 250:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8], "TLoU:ingr_rag_half");
-            case 275:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8], "TLoU:ingr_rag_3quaters");
-            case 300:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][7], "TLoU:ingr_rag_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][8], "TLoU:ingr_rag_full");
-        }
-    }
-
-    if(ingredientId == -1 || ingredientId == INGR_ITEM_ALCOHOL)
-    {
-        switch(GetPlayerItemAmount(playerid, INGR_ITEM_ALCOHOL))
-        {
-            case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-            case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-            case 50: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-            case 75: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-            case 100:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-
-            case 125:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-            case 150:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-            case 175:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-            case 200:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11]);
-
-            case 225:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11], "TLoU:ingr_alcohol_quater");
-            case 250:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11], "TLoU:ingr_alcohol_half");
-            case 275:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11], "TLoU:ingr_alcohol_3quaters");
-            case 300:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][10], "TLoU:ingr_alcohol_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][11], "TLoU:ingr_alcohol_full");
-        }
-    }
-
-    if(ingredientId == -1 || ingredientId == INGR_ITEM_EXPLOSIVE)
-    {
-        switch(GetPlayerItemAmount(playerid, INGR_ITEM_EXPLOSIVE))
-        {
-            case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-            case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-            case 50: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-            case 75: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-            case 100:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-
-            case 125:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-            case 150:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-            case 175:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-            case 200:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14]);
-
-            case 225:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14], "TLoU:ingr_explosive_quater");
-            case 250:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14], "TLoU:ingr_explosive_half");
-            case 275:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14], "TLoU:ingr_explosive_3quaters");
-            case 300:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][13], "TLoU:ingr_explosive_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][14], "TLoU:ingr_explosive_full");
-        }
-    }
-
-    if(ingredientId == -1 || ingredientId == INGR_ITEM_SUGAR)
-    {
-        switch(GetPlayerItemAmount(playerid, INGR_ITEM_SUGAR))
-        {
-            case 0:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-            case 25: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-            case 50: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-            case 75: PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-            case 100:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16]), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-
-            case 125:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_quater"),   PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-            case 150:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_half"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-            case 175:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_3quaters"), PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-            case 200:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_full"),     PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17]);
-
-            case 225:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17], "TLoU:ingr_sugar_quater");
-            case 250:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17], "TLoU:ingr_sugar_half");
-            case 275:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17], "TLoU:ingr_sugar_3quaters");
-            case 300:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][16], "TLoU:ingr_sugar_full"), PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][17], "TLoU:ingr_sugar_full");
+            if(isnull(eIngrSprites[ingrSpriteIdx][e_sIngrSprite]))
+            {
+                PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx]);
+            }
+            else
+            {
+                PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx], eIngrSprites[ingrSpriteIdx][e_sIngrSprite]);
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx]);
+            }
         }
     }
 }
