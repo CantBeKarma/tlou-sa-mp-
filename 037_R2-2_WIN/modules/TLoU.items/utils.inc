@@ -101,22 +101,27 @@
 
     IsItemBulletWeapon(itemId)
     {
-        return (IsValidItemId(itemId) && GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
+        return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
+    }
+
+    IsItemWeapon(itemId)
+    {
+        return (GetItemType(itemId) == ITEM_TYPE_WEAPON);
     }
 
     IsItemMeleeWeapon(itemId)
     {
-        return (IsValidItemId(itemId) && GetItemType(itemId) == ITEM_TYPE_MELEE);
+        return (GetItemType(itemId) == ITEM_TYPE_MELEE);
     }
 
     IsItemThrowable(itemId)
     {
-        return (IsValidItemId(itemId) && GetItemType(itemId) == ITEM_TYPE_THROWABLE);
+        return (GetItemType(itemId) == ITEM_TYPE_THROWABLE);
     }
 
     IsItemProjectile(itemId)
     {
-        return (IsValidItemId(itemId) && GetItemType(itemId) == ITEM_TYPE_PROJECTILE);
+        return (GetItemType(itemId) == ITEM_TYPE_PROJECTILE);
     }
 
     IsItemMedkit(itemId)
@@ -312,7 +317,15 @@
         // Update database info & give player item.
         // DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
 
-        WeapMenu_AssignItemToFreeSlot(playerid, itemId);
+        if(IsItemWeapon(itemId))
+        {
+            new freeSlotId = WeapMenu_AssignItemToFreeSlot(playerid, itemId);
+            if(freeSlotId == -1)
+            {
+                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d couldn't find a free slot for the weapon in the weapon menu.", GetPlayerCharUid(playerid), itemId);
+                return false;
+            }
+        }
 
         ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
         UpdateTextDrawsIfNecessary(playerid, itemId);
