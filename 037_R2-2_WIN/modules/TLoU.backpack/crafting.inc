@@ -411,6 +411,11 @@ CraftTd_UpdateCraftItemWrench(playerid, craftItemId)
             case CRAFT_ITEM_SMOKE_BOMB: wrenchTdIdx = 3, weapIconTdIdx = 4;
         }
 
+        if(wrenchTdIdx == -1 || weapIconTdIdx == -1)
+        {
+            return;
+        }
+
         if(Iter_Contains(ItemsToCraft<playerid>, craftItemId))
         {
             PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_wrench][wrenchTdIdx]);
@@ -443,7 +448,7 @@ CraftTd_DisplayIngredients(playerid, ingredientId = -1)
 {
     if(ingredientId == -1)
     {
-        for(ingredientId = INGR_ITEM_BLADE; ingredientId != INGR_ITEM_SUGAR; ingredientId++)
+        for(ingredientId = INGR_ITEM_BLADE; ingredientId <= INGR_ITEM_SUGAR; ingredientId++)
         {
             new Float:amount = (GetPlayerItemAmount(playerid, ingredientId) / 100.0);
             new fullAmounts = floatround(amount, floatround_floor);
