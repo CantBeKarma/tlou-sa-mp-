@@ -126,7 +126,12 @@
 
     IsItemMedkit(itemId)
     {
-        return (GetItemType(itemId) == ITEM_TYPE_HEAL && GetItemModel(itemId) == ITEM_MODEL_MEDKIT);
+        return (GetItemType(itemId) == ITEM_TYPE_HEAL && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_MEDKIT);
+    }
+
+    IsItemBow(itemId)
+    {
+        return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW);
     }
 
     bool:HasPlayerGotThrowableItem(playerid)
@@ -825,18 +830,14 @@
         
         // Equipping weapons with no ammo/amount is allowed 
         // only for BOW and items of type WEAPON.
-        if(itemAmount <= 0 
-        && (GetItemType(itemId) == ITEM_TYPE_PROJECTILE 
-        ||  GetItemType(itemId) == ITEM_TYPE_THROWABLE)
-        ||  GetItemType(itemId) == ITEM_TYPE_HEAL
-        ||  GetItemType(itemId) == ITEM_TYPE_MELEE)
+        if(itemAmount <= 0 && !IsItemWeapon(itemId))
         {
             SCMF(playerid, -1, "Stopped at 4th validation");
             return false;
         }
 
         // Hides player's currently equipped itemId if there are any.
-        HideItem(playerid);
+        HideItem(playerid, true);
 
         new nativeWeaponId = GetItemNativeWeaponId(itemId);
         if(itemAmount <= 0)
@@ -884,16 +885,16 @@
                     }
                 }
             
-                case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE:
+                case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE, ITEM_TYPE_HEAL:
                 {
-                    SPAO(playerid, (nativeWeaponId == WEAPON_MEDKIT) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
+                    SPAO(playerid, (IsItemMedkit(itemId)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
                 }
             }
         }
 
         ePlayerInfo[playerid][e_iCurrentEquippedItemId] = itemId;
 
-        OnPlayerWeaponChange(playerid, itemId, ePlayerInfo[playerid][e_iLastEquippedItemId]);
+        OnPlayerWeaponChange(playerid, ePlayerInfo[playerid][e_iCurrentEquippedItemId], ePlayerInfo[playerid][e_iLastEquippedItemId]);
         return true;
     }
 
@@ -901,7 +902,7 @@
     // Returns:
     // false - if player didn't have any item equipped.
     // true - if item hid correctly.
-    HideItem(playerid)
+    HideItem(playerid, bool:equippingNewItem = false)
     {
         if(GetPlayerEquippedItemId(playerid) == -1)
         {
@@ -909,6 +910,12 @@
         }
 
         ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
+
+        if(equippingNewItem == true)
+        {
+            return true;
+        }
+
         ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
         
         PlayerWeaponBodyDamage[playerid] = DAMAGE_VALUE_FISTS;
