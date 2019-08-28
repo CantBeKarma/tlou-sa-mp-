@@ -188,13 +188,10 @@ hook OnPlayerWeaponShoot(playerid, itemId, oldAmmo, oldClipAmmo, newAmmo, newCli
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerReloadWeapon(playerid, itemId, oldClipAmmo, newClipAmmo)
 {
-    if(IsPlayerAimingWeapon(playerid))
-	{
-        PlayPlayerReloadAnim(playerid, itemId);
-		PlayPlayer3D_ReloadSFX(playerid, GetItemNativeWeaponId(itemId));
-        HudTd_DisplayWeaponCurrentAmmo(playerid, itemId);
-		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
-	}
+    PlayPlayerReloadAnim(playerid, itemId);
+    PlayPlayer3D_ReloadSFX(playerid, GetItemNativeWeaponId(itemId));
+    HudTd_DisplayWeaponCurrentAmmo(playerid, itemId);
+    TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
 	return 0;
 }
 
@@ -203,31 +200,48 @@ public OnPlayerReloadWeapon(playerid, itemId, oldClipAmmo, newClipAmmo)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 {
-    // Attach old item to player it if was only a WEAPON type.
-    if(GetItemType(oldItemId) == ITEM_TYPE_WEAPON)
+    if(oldItemId != -1)
     {
-        SPAO(playerid, GetItemNativeWeaponId(oldItemId));
+        // Attach old item to player it if was only a WEAPON type.
+        if(IsItemWeapon(oldItemId))
+        {
+            SPAO(playerid, GetItemModel(oldItemId));
+            HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
+        }
+
+        if(IsItemWeapon(oldItemId) 
+        && (IsItemBow(newItemId) || IsItemMedkit(newItemId)
+        ||  IsItemProjectile(newItemId) || IsItemThrowable(newItemId)))
+        {
+            ResetPlayerWeapons(playerid);
+        }
+
+        if(IsItemWeapon(newItemId)
+        && (IsItemBow(oldItemId) || IsItemMedkit(oldItemId)
+        ||  IsItemProjectile(oldItemId) || IsItemThrowable(oldItemId)))
+        {
+            RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+        }
+
+		// HudTd_HideMeleeWeaponBars(playerid, oldItemId);
+		// HudTd_HideMeleeUpgradedBars(playerid, oldItemId);
     }
 
-    // Update HUD weapon display.
     HudTd_UpdateWeapon(playerid, newItemId);
     HudTd_UpdateWeaponAmmo(playerid, newItemId);
 
     if(newItemId == -1)
     {
-        // Remove attached object if it was a projectile/medkit/throwable/bow.
-		ResetPlayerWeapons(playerid);
-        RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+        ResetPlayerWeapons(playerid);
 
-        HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
-		// HudTd_HideMeleeWeaponBars(playerid, oldItemId);
-		// HudTd_HideMeleeUpgradedBars(playerid, oldItemId);
+        // Remove attached object if it was a projectile/throwable/medkit.
+        RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     }
     else
     {
         if(IsPlayerAimingWeapon(playerid) 
         && ((oldItemId != _:ITEM_IDX_SHOTGUN && (newItemId == _:ITEM_IDX_SHOTGUN || newItemId == _:ITEM_IDX_SHORTY) 
-        || (oldItemId == _:ITEM_IDX_SHOTGUN || oldItemId == _:ITEM_IDX_SHORTY) )))
+        || (oldItemId == _:ITEM_IDX_SHOTGUN || oldItemId == _:ITEM_IDX_SHORTY))))
         {
             // This function is going to be called only if player keeps aiming
             // It is needed here because of different crosshairs for shotgun and other weapons
@@ -237,12 +251,16 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         }
 
 		ShowHud(playerid);
-
         // HudTd_DisplayMeleeWeaponBars(playerid, newItemId);
         HudTd_DisplayWeaponCurrentAmmo(playerid, newItemId);
 
-        // Detach weapon from player's body when it is in use.
-        DetachWeaponFromPlayersBody(playerid, newItemId);
+        // Detach weapon from player's body when it is in use 
+        // (don't detach BOW or projectile/throwable/medkit since it's attached to player's hand).
+        if(!IsItemBow(newItemId) && !IsItemMedkit(newItemId)
+        && !IsItemProjectile(newItemId) && !IsItemThrowable(newItemId))
+        {
+            DetachWeaponFromPlayersBody(playerid, newItemId);
+        }
     }
 
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerWeaponChange: Changed from itemId: %d to itemId %d (charUid: %d)", oldItemId, newItemId, GetPlayerCharUid(playerid));
