@@ -36,15 +36,16 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
         return 1;
     }
 
-    new issuerWeaponId = CurrentPlayerWeaponId[issuerid];
+    new playerItemId = GetPlayerEquippedItemId(issuerid);
+    new issuerWeaponId = GetItemNativeWeaponId(playerItemId);
     new Float:distanceBetweenPlayers = 0.0;
     new Float:damageAmount = CalculateDamageAmount(issuerid, playerid, issuerWeaponId, distanceBetweenPlayers, bodypart);
 
-    if(IsMeleeWeapon(issuerWeaponId))
+    if(IsItemMeleeWeapon(playerItemId))
     {
         OnPlayerHitPlayer(playerid, issuerid, issuerWeaponId, damageAmount);
     }
-    else if(IsBulletWeapon(issuerWeaponId))
+    else if(IsItemBulletWeapon(playerItemId))
     {
         OnPlayerShootPlayer(playerid, issuerid, issuerWeaponId, damageAmount, distanceBetweenPlayers, bodypart);
     }

@@ -25,7 +25,7 @@ FlyBackwardsWhenShot(damagedid)
 // Optional param: bodypart.
 Float:CalculateDamageAmount(damagerid, targetid, damagerWeaponId, &Float:distanceBetweenPlayers, bodypart = -1)
 {
-    if(IsMeleeWeapon(damagerWeaponId))
+    if(IsItemMeleeWeapon(GetItemNativeWeaponId(damagerWeaponId)))
     {
         return PlayerWeaponBodyDamage[damagerid];
     }

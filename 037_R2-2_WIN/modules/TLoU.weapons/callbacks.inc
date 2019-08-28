@@ -215,7 +215,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 
     if(newItemId == -1)
     {
-        // Remove attached object if it was a projectile/medkit/throwable.
+        // Remove attached object if it was a projectile/medkit/throwable/bow.
 		ResetPlayerWeapons(playerid);
         RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 
