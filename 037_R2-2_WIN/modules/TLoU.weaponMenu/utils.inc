@@ -37,19 +37,19 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
         case ITEM_IDX_SMOKE_BOMB:   result = 4;
         default:
         {
-            for(new i = 0; i <= 2; i++)
+            for(new i = 0; i <= 1; i++)
             {
                 if(WeapMenu_Ls_ItemId(playerid, i) != -1
-                && WeapMenu_Ls_ItemId(playerid, i) == itemId) // Mam shotguna pod idx: 0, Mam rifle pod Idx: 1
+                && WeapMenu_Ls_ItemId(playerid, i) == itemId)
                 {
-                    result = 6 - i; // 6 - 0 = 6, 6 - 1 = 5
+                    result = 5 + i; // 6 - 0 = 6, 6 - 1 = 5
                     break;
                 }
 
                 if(WeapMenu_Rs_ItemId(playerid, i) != -1
-                && WeapMenu_Rs_ItemId(playerid, i) == itemId) // Mam revolver pod idx: 0, Mam 9mm post Idx: 1
+                && WeapMenu_Rs_ItemId(playerid, i) == itemId)
                 {
-                    result = 7 + i; // 7 + 0 = 7, 7 + 1 = 8
+                    result = 7 + i;
                     break;
                 }
             }
@@ -61,6 +61,7 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
 //#region SORTING | Horizontal weapon menu bar
 
     // Get free slot in which player's weapon is going to be placed on the LEFT SIDE of the weapon menu
+    // Used internally in WeapMenu_AssignItemToFreeSlot() - DO NOT USE MANUALLY!
     WeapMenuTd_GetFreeSlot_H_Ls(playerid)
     {
         if(WeapMenu_Ls_ItemId(playerid, 1) == -1) return 1;
@@ -71,6 +72,7 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
     }
 
     // Get free slot in which player's weapon is going to be placed on the RIGHT SIDE of the weapon menu
+    // Used internally in WeapMenu_AssignItemToFreeSlot() - DO NOT USE MANUALLY!
     WeapMenuTd_GetFreeSlot_H_Rs(playerid)
     {
         for(new i = 0; i < 3; i++)
@@ -81,6 +83,54 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
         return -1;
     }
 
+    // Assigns item to a first available slot in the weapon menu (horizontal bar).
+    // Used internally in GiveItem() - DO NOT USE MANUALLY!
+    WeapMenu_AssignItemToFreeSlot(playerid, itemId)
+    {
+        new freeSlotId = -1;
+        switch(ITEM_IDX:itemId)
+        {
+            case 
+                ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
+                {
+                    freeSlotId = WeapMenuTd_GetFreeSlot_H_Ls(playerid);
+                    WeapMenu_Ls_ItemId(playerid, freeSlotId) = itemId;
+                }
+
+            case 
+                ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
+                {
+                    freeSlotId = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
+                    WeapMenu_Rs_ItemId(playerid, freeSlotId) = itemId;
+                }
+        }
+        return freeSlotId;
+    }
+
+    // Removes player item and performs sorting of the weapons in the weapon menu (horizonal bar).
+    // Used internally in RemoveItem() - DO NOT USE MANUALLY!
+    WeapMenu_RemoveAndSortItems(playerid, itemId)
+    {
+        switch(ITEM_IDX:itemId)
+        {
+            case 
+                ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
+                {
+                    RemoveItemFromHorizontalBar(playerid, itemId, "left_side");
+                    WeapMenu_Horizontal_SortWeapons(playerid, "left_side");
+                }
+
+            case 
+                ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
+                {
+                    RemoveItemFromHorizontalBar(playerid, itemId, "right_side");
+                    WeapMenu_Horizontal_SortWeapons(playerid, "right_side");
+                }
+        }
+    }
+
+    // Sorts weapons in the horizontal bar of the weapon menu.
+    // Used internally in WeapMenu_RemoveAndSortItems() - DO NOT USE MANUALLY!
     WeapMenu_Horizontal_SortWeapons(playerid, leftOrRight[] = "")
     {
         new 
@@ -151,51 +201,13 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
         }
     }
 
-    WeapMenu_RemoveAndSortItems(playerid, itemId)
-    {
-        switch(ITEM_IDX:itemId)
-        {
-            case 
-                ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
-                {
-                    RemoveItemFromHorizontalBar(playerid, itemId, "left_side");
-                    WeapMenu_Horizontal_SortWeapons(playerid, "left_side");
-                }
-
-            case 
-                ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
-                {
-                    RemoveItemFromHorizontalBar(playerid, itemId, "right_side");
-                    WeapMenu_Horizontal_SortWeapons(playerid, "right_side");
-                }
-        }
-    }
-
-    WeapMenu_AssignItemToFreeSlot(playerid, itemId)
-    {
-        switch(ITEM_IDX:itemId)
-        {
-            case 
-                ITEM_IDX_SHOTGUN, ITEM_IDX_RIFLE, ITEM_IDX_BOW, ITEM_IDX_ASSAULT_RIFLE:
-                {
-                    new freeSlotId = WeapMenuTd_GetFreeSlot_H_Ls(playerid);
-                    WeapMenu_Ls_ItemId(playerid, freeSlotId) = itemId;
-                }
-
-            case 
-                ITEM_IDX_9MM, ITEM_IDX_REVOLVER, ITEM_IDX_SHORTY:
-                {
-                    new freeSlotId = WeapMenuTd_GetFreeSlot_H_Rs(playerid);
-                    WeapMenu_Rs_ItemId(playerid, freeSlotId) = itemId;
-                }
-        }
-    }
-
+    // Resets itemId assignment to variable (dynamically assigned in horizontal bar of the weapon menu).
+    // Used internally in WeapMenu_RemoveAndSortItems() - DO NOT USE MANUALLY!
     RemoveItemFromHorizontalBar(playerid, itemId, leftOrRight[] = "")
     {
         if(!strcmp(leftOrRight, "left_side"))
         {
-            for(new i = 0; i < 4; i++)
+            for(new i = 0; i <= 3; i++)
             {
                 if(itemId == WeapMenu_Ls_ItemId(playerid, i))
                 {
@@ -206,7 +218,7 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
         }
         else if(!strcmp(leftOrRight, "right_side"))
         {
-            for(new i = 0; i < 3; i++)
+            for(new i = 0; i <= 2; i++)
             {
                 if(itemId == WeapMenu_Rs_ItemId(playerid, i))
                 {
@@ -423,24 +435,27 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
 
         if(itemId == -1)
         {
-            for(new i = 0; i != MAX_ITEMS_DATA; i++)
+            for(itemId = 0; itemId != MAX_ITEMS_DATA; itemId++)
             {
-                if(!IsItemBulletWeapon(i) || !IsItemThrowable(i)
-                || !IsItemProjectile(i)   || !IsItemMeleeWeapon(i)
-                || !IsItemMedkit(i) || !HasPlayerGotItem(playerid, i))
+                if(!IsItemWeapon(itemId) && !IsItemThrowable(itemId)
+                && !IsItemProjectile(itemId) && !IsItemMedkit(itemId))
                 {
-                    SCMF(playerid, -1, "WeapMenuTd_DisplayWeapsAndAmmo (LOOP): failed at first validation");
                     continue;
                 }
 
-                new tdIdx = WeapMenu_GetTdIdxOfItemId(playerid, i);
+                if(!HasPlayerGotItem(playerid, itemId))
+                {
+                    continue;
+                }
+
+                new tdIdx = WeapMenu_GetTdIdxOfItemId(playerid, itemId);
                 if(tdIdx == -1)
                 {
                     continue;
                 }
 
-                itemAmount = GetPlayerItemAmount(playerid, i);
-                PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[i]);
+                itemAmount = GetPlayerItemAmount(playerid, itemId);
+                PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[itemId]);
                 PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
                 PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
 
@@ -452,11 +467,14 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
         }
         else
         {
-            if(!IsItemBulletWeapon(itemId) || !IsItemThrowable(itemId)
-            || !IsItemProjectile(itemId)   || !IsItemMeleeWeapon(itemId)
-            || !IsItemMedkit(itemId) || !HasPlayerGotItem(playerid, itemId))
+            if(!IsItemWeapon(itemId) && !IsItemThrowable(itemId)
+            && !IsItemProjectile(itemId) && !IsItemMedkit(itemId))
             {
-                SCMF(playerid, -1, "WeapMenuTd_DisplayWeapsAndAmmo (specified itemId): failed at first validation.");
+                return false;
+            }
+
+            if(!HasPlayerGotItem(playerid, itemId))
+            {
                 return false;
             }
 
@@ -465,8 +483,6 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
             {
                 return false;
             }
-
-            SCMF(playerid, -1, "Returned tdIdx (specified itemId): %d", tdIdx);
 
             itemAmount = GetPlayerItemAmount(playerid, itemId);
             PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[itemId]);
