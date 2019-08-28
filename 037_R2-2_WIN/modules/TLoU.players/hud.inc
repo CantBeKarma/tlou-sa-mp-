@@ -318,7 +318,7 @@ HudTd_UpdateShivs(playerid)
     // HUD : Updates overall ammo display.
     HudTd_UpdateWeaponAmmo(playerid, itemId)
     {
-        if(GetItemType(itemId) != ITEM_TYPE_WEAPON && !IsItemProjectile(itemId))
+        if(!IsItemWeapon(itemId) && !IsItemProjectile(itemId) && !IsItemMedkit(itemId))
         {
             PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
             return true;
@@ -330,10 +330,9 @@ HudTd_UpdateShivs(playerid)
             return false;
         }
 
-        new String:itemAmountStr = STRING_NULL;
-        itemAmountStr = str_val(itemAmount);
+        new String:itemAmountStr = str_val(itemAmount);
         PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo], itemAmountStr);
-        PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
         return true;
     }
 
