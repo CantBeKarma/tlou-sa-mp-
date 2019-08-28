@@ -43,7 +43,7 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 	}
 
 	// Bullet weapons.
-	if(GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX_BOW && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
+	if(IsItemBulletWeapon(itemId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	{
 		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 		OnPlayerStartAimingBulletWeapon(playerid);
