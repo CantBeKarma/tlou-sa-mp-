@@ -309,17 +309,13 @@
             return false;
         }
 
-        // // Update database info & give player item.
-        //     DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
+        // Update database info & give player item.
+        // DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
 
         WeapMenu_AssignItemToFreeSlot(playerid, itemId);
 
         ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
-
-        if(IsPlayerUsingWeaponMenu(playerid))
-        {
-            WeapMenuTd_DisplayWeapsAndAmmo(playerid);
-        }
+        UpdateTextDrawsIfNecessary(playerid, itemId);
 
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d was given itemId: %d", GetPlayerCharUid(playerid), itemId);
         return true;
@@ -717,7 +713,7 @@
     {
         if(IsPlayerUsingWeaponMenu(playerid))
         {
-            WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+            WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId);
             CraftTd_CheckWhatsToCraft(playerid);
         }
 

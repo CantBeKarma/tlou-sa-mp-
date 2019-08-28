@@ -16,6 +16,48 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
 //#endregion
 
+// Return textdraw index (in weapon menu) for specified item.
+WeapMenu_GetTdIdxOfItemId(playerid, itemId)
+{
+    new result = -1;
+
+    switch(itemId)
+    {
+        case ITEM_IDX_NAIL_BOMB:    result = 0;
+        case ITEM_IDX_MEDKIT:       result = 1;
+
+        case 
+            ITEM_IDX_BRICK, 
+            ITEM_IDX_BOTTLE:
+            {
+                result = 2;
+            }
+
+        case ITEM_IDX_MOLOTOV:      result = 3;
+        case ITEM_IDX_SMOKE_BOMB:   result = 4;
+        default:
+        {
+            for(new i = 0; i <= 2; i++)
+            {
+                if(WeapMenu_Ls_ItemId(playerid, i) != -1
+                && WeapMenu_Ls_ItemId(playerid, i) == itemId) // Mam shotguna pod idx: 0, Mam rifle pod Idx: 1
+                {
+                    result = 6 - i; // 6 - 0 = 6, 6 - 1 = 5
+                    break;
+                }
+
+                if(WeapMenu_Rs_ItemId(playerid, i) != -1
+                && WeapMenu_Rs_ItemId(playerid, i) == itemId) // Mam revolver pod idx: 0, Mam 9mm post Idx: 1
+                {
+                    result = 7 + i; // 7 + 0 = 7, 7 + 1 = 8
+                    break;
+                }
+            }
+        }
+    }
+    return result;
+}
+
 //#region SORTING | Horizontal weapon menu bar
 
     // Get free slot in which player's weapon is going to be placed on the LEFT SIDE of the weapon menu
@@ -298,7 +340,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
 
             switch(i)
             {
-                case 0, 1: WeapMenuTd_DisplayWeapsAndAmmo(playerid);
+                case 0, 1: WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId);
                 case 2:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], eItemsSprites[itemId]);
                 case 3:PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], eItemsSprites[itemId]);
             }
@@ -372,68 +414,71 @@ ResetEnum_ePlayerWeapMenu(playerid)
         return true;
     }
 
-
-    WeapMenu_GetTdIdxOfItemId(itemId)
-    {
-        new result = -1;
-
-        new test = WeapMenu_Ls_ItemId(playerid, 0);
-
-        switch(ITEM_IDX:itemId)
-        {
-            case ITEM_IDX_NAIL_BOMB:    result = 0;
-            case ITEM_IDX_MEDKIT:       result = 1;
-            case ITEM_IDX_BRICK, ITEM_IDX_BOTTLE:   result = 2;
-            case ITEM_IDX_MOLOTOV:      result = 3;
-            case ITEM_IDX_SMOKE_BOMB:   result = 4;
-            case test: result = 5;
-        }
-        return result;
-    }
-
     // Display weapons in the weapon menu based on player's ammo and weapons that player have.
     WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId = -1)
     {
         new 
-            itemAmount = -1,
-            String:itemAmountStr = STRING_NULL,
-            ITEM_IDX:itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
+            itemAmount,
+            String:itemAmountStr = STRING_NULL;
 
-        tdIdx = WeapMenu_GetTdIdxOfItemId(itemId);
-        
-        // for(new tdIdx = 0; tdIdx != 9; tdIdx++)
-        // {
-        //     switch(tdIdx)
-        //     {
-        //         // Vertical (top -> bottom)
-        //         case 0: itemId = ITEM_IDX:ITEM_IDX_NAIL_BOMB;
-        //         case 1: itemId = ITEM_IDX:ITEM_IDX_MEDKIT;
-        //         case 2: itemId = ITEM_IDX:GetPlayerThrowableItemId(playerid);
-        //         case 3: itemId = ITEM_IDX:ITEM_IDX_MOLOTOV;
-        //         case 4: itemId = ITEM_IDX:ITEM_IDX_SMOKE_BOMB;
-
-        //         // Horizontal (left -> right)
-        //         case 5: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 0);
-        //         case 6: itemId = ITEM_IDX:WeapMenu_Ls_ItemId(playerid, 1);
-        //         case 7: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 0);
-        //         case 8: itemId = ITEM_IDX:WeapMenu_Rs_ItemId(playerid, 1);
-        //     }
-
-        if(!HasPlayerGotItem(playerid, _:itemId))
+        if(itemId == -1)
         {
-            continue;
+            for(new i = 0; i != MAX_ITEMS_DATA; i++)
+            {
+                if(!IsItemBulletWeapon(i) || !IsItemThrowable(i)
+                || !IsItemProjectile(i)   || !IsItemMeleeWeapon(i)
+                || !IsItemMedkit(i) || !HasPlayerGotItem(playerid, i))
+                {
+                    SCMF(playerid, -1, "WeapMenuTd_DisplayWeapsAndAmmo (LOOP): failed at first validation");
+                    continue;
+                }
+
+                new tdIdx = WeapMenu_GetTdIdxOfItemId(playerid, i);
+                if(tdIdx == -1)
+                {
+                    continue;
+                }
+
+                itemAmount = GetPlayerItemAmount(playerid, i);
+                PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[i]);
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
+
+                itemAmountStr = str_val(itemAmount);
+                PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
+            }
         }
+        else
+        {
+            if(!IsItemBulletWeapon(itemId) || !IsItemThrowable(itemId)
+            || !IsItemProjectile(itemId)   || !IsItemMeleeWeapon(itemId)
+            || !IsItemMedkit(itemId) || !HasPlayerGotItem(playerid, itemId))
+            {
+                SCMF(playerid, -1, "WeapMenuTd_DisplayWeapsAndAmmo (specified itemId): failed at first validation.");
+                return false;
+            }
 
-        itemAmount = GetPlayerItemAmount(playerid, _:itemId);
-        PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[_:itemId]);
-        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
+            new tdIdx = WeapMenu_GetTdIdxOfItemId(playerid, itemId);
+            if(tdIdx == -1)
+            {
+                return false;
+            }
 
-        itemAmountStr = str_val(itemAmount);
-        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
-        PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
-        //}
+            SCMF(playerid, -1, "Returned tdIdx (specified itemId): %d", tdIdx);
+
+            itemAmount = GetPlayerItemAmount(playerid, itemId);
+            PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], eItemsSprites[itemId]);
+            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx], (itemAmount <= 0 ? COLOR_GRAY : COLOR_WHITE));
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Icons][tdIdx]);
+
+            itemAmountStr = str_val(itemAmount);
+            PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], itemAmountStr);
+            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx], (itemAmount <= 0 ? COLOR_RED_TRANS : COLOR_WHITE));
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_Amounts][tdIdx]);
+        }
+        return true;
     }
 
 //#endregion
