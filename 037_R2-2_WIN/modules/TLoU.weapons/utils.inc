@@ -80,18 +80,6 @@ ResetEnum_ePlayerWeapon(playerid)
 
 //#region Validations
 
-	// Check if a weapon is bullet type weapon.
-	IsBulletWeapon(weaponId)
-	{
-		return weaponId == WEAPON_9MM
-			|| weaponId == WEAPON_REVOLVER
-			|| weaponId == WEAPON_SHORTY
-			|| weaponId == WEAPON_SHOTGUN
-			|| weaponId == WEAPON_RIFLE
-			|| weaponId == WEAPON_ASSAULT;
-		//return (WEAPON_COLT45 <= weaponid <= WEAPON_SNIPER) || weaponid == WEAPON_MINIGUN;
-	}
-
 	// Check if a weapon is melee type weapon.
 	IsMeleeWeapon(weaponId)
 	{
