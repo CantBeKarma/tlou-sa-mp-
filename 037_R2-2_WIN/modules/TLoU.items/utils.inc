@@ -735,6 +735,11 @@
             CraftTd_CheckWhatsToCraft(playerid);
         }
 
+        if(GetPlayerEquippedItemId(playerid) == itemId)
+        {
+            HudTd_UpdateWeaponAmmo(playerid, itemId);
+        }
+
         switch(GetItemType(itemId))
         {
             case ITEM_TYPE_INGREDIENT:
@@ -767,14 +772,6 @@
                 else
                 {
                     ShowHud(playerid);
-                }
-            }
-
-            case ITEM_TYPE_WEAPON:
-            {
-                if(GetPlayerEquippedItemId(playerid) == itemId)
-                {
-                    HudTd_UpdateWeaponAmmo(playerid, itemId);
                 }
             }
 

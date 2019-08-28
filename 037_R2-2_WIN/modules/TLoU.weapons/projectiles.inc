@@ -45,7 +45,8 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerDropNailbomb(playerid)
     {
-        new newProjectileAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB);
+        new newProjectileAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB) - 1;
+        SetPlayerItemAmount(playerid, _:ITEM_IDX_NAIL_BOMB, newProjectileAmount);
 
         if(newProjectileAmount <= 0)
         {
