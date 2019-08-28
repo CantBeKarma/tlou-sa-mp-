@@ -424,7 +424,7 @@ CraftTd_UpdateCraftItemWrench(playerid, craftItemId)
     }
 }
 
-// Crafting : Find ingredient sprite (texture) for specified amount (used internally in CraftTd_UpdateIngr())
+// Crafting : Find ingredient sprite (texture) for specified amount (used internally in CraftTd_DisplayIngredients())
 CraftTd_FindIngrSpriteIndex(ingr, amount)
 {
     for(new i = 0; i != sizeof(eIngrSprites); i++)
@@ -439,7 +439,7 @@ CraftTd_FindIngrSpriteIndex(ingr, amount)
 }
 
 // Crafting : Checking player's ingriedient(s) and displaying them in the backpack menu.
-CraftTd_UpdateIngr(playerid, ingredientId = -1)
+CraftTd_DisplayIngredients(playerid, ingredientId = -1)
 {
     if(ingredientId == -1)
     {

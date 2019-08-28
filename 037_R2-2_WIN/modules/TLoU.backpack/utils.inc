@@ -216,7 +216,7 @@ ShowBackpackCategory(playerid, category)
             CraftTd_CheckWhatsToCraft(playerid);
             CraftTd_UpdateViewingItem(playerid, selectedCraft);
             CraftTd_HighlightSelection(playerid, selectedCraft);
-            CraftTd_UpdateIngr(playerid);
+            CraftTd_DisplayIngredients(playerid);
             CraftTd_UpdateItemAmount(playerid);
 
             TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Ls_Bg]);

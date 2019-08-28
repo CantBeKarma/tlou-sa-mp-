@@ -119,6 +119,11 @@
         return (IsValidItemId(itemId) && GetItemType(itemId) == ITEM_TYPE_PROJECTILE);
     }
 
+    IsItemMedkit(itemId)
+    {
+        return (GetItemType(itemId) == ITEM_TYPE_HEAL && GetItemModel(itemId) == ITEM_MODEL_MEDKIT);
+    }
+
     bool:HasPlayerGotThrowableItem(playerid)
     {
         return HasPlayerGotItem(playerid, _:ITEM_IDX_BRICK) || HasPlayerGotItem(playerid, _:ITEM_IDX_BOTTLE);
@@ -726,7 +731,7 @@
                     CraftTd_CheckWhatsToCraft(playerid);
                     CraftTd_UpdateViewingItem(playerid, selectedCraft);
                     CraftTd_HighlightSelection(playerid, selectedCraft);
-                    CraftTd_UpdateIngr(playerid, itemId);
+                    CraftTd_DisplayIngredients(playerid, itemId);
                 }
                 
                 UpdateNavItemsColors(playerid);

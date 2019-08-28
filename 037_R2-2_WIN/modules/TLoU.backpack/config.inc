@@ -68,7 +68,7 @@
 
 #define     Coll_GetSelection(%0)           ePlayerBpInfo[%0][e_iBackpackSelected_Coll]
 
-// Sprites and values of the ingredients in the backpack (for CraftTd_UpdateIngr() func).
+// Sprites and values of the ingredients in the backpack (for CraftTd_DisplayIngredients() func).
 enum e_INGR_SPRITES
 {
     ITEM_IDX:e_iIngrId,
