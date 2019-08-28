@@ -43,12 +43,12 @@ function PrepareDataAfterLogin(playerid)
         ePlayerItemData[playerid][i][e_iItemAmount] = 0;
         ePlayerItemData[playerid][i][e_iItemClipAmount] = -1;
 
-        if(i < 4)
+        if(i <= 3)
         {
             WeapMenu_Ls_ItemId(playerid, i) = -1;
         }
 
-        if(i < 3)
+        if(i <= 2)
         {
             WeapMenu_Rs_ItemId(playerid, i) = -1;
         }

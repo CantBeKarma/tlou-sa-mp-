@@ -398,7 +398,9 @@ RemovePlayerAttachedObj(playerid, slotId)
 SPAO(playerid, modelId, bool:extraInfo = false)
 {
 	if(modelId == -1)
-		return;
+	{
+		return;	
+	}
 		
 	new 
 		slotIndex = -1, 
@@ -419,6 +421,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 	}
 
 //#region Slot assignment based on model id
+
 	if(slotIndex == -1 || attachmentIndex == -1)
 		return;
 
@@ -448,7 +451,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 					eCharsInfo[playerid][e_iAttachSlot_Melee] = slotIndex;
 			}
 
-		case ITEM_MODEL_9MM:
+		case ITEM_MODEL_9MM, ITEM_MODEL_SHORTY:
 		{
 			if(eCharsInfo[playerid][e_iAttachSlot_9mm] != -1)
 				slotIndex = eCharsInfo[playerid][e_iAttachSlot_9mm];
@@ -490,6 +493,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 				eCharsInfo[playerid][e_iAttachSlot_Dynamic] = slotIndex;
 		}
 	}
+	
 //#endregion
 
 	SetPlayerAttachedObject(playerid, slotIndex, eAttachmentsData[attachmentIndex][e_iModelId], eAttachmentsData[attachmentIndex][e_iBoneId], \
@@ -510,8 +514,17 @@ DetachWeaponFromPlayersBody(playerid, itemId)
     new slotId = -1;
     switch(ITEM_IDX:itemId)
     {
-        case ITEM_IDX_9MM:        slotId = eCharsInfo[playerid][e_iAttachSlot_9mm];
-        case ITEM_IDX_REVOLVER:   slotId = eCharsInfo[playerid][e_iAttachSlot_Revolver];
+        case 
+			ITEM_IDX_9MM, 
+			ITEM_IDX_SHORTY:        
+			{
+				slotId = eCharsInfo[playerid][e_iAttachSlot_9mm];
+			}
+
+        case ITEM_IDX_REVOLVER:
+		{
+			slotId = eCharsInfo[playerid][e_iAttachSlot_Revolver];
+		}
         
         case 
             ITEM_IDX_SHOTGUN,
