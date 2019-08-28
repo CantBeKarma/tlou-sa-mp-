@@ -21,11 +21,23 @@
 	{
 		if(has_plugin)
 		{
-			wait_ms(400);
+			wait_ms(500);
 
 			Bit_Vet(ePlayerFlag[e_bLogged], playerid);
 			SetCameraBehindPlayer(playerid);
 			SpawnPlayer(playerid);
+		}
+		else
+		{
+			if(!TLoU_IsClientConnected(playerid))
+			{
+				new String:pName = str_new_buf(MAX_PLAYER_NAME);
+				str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
+
+				Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] connected (possibly?) without a tlou_client.asi file. Kicked.", _:pName, playerid);
+				Kick(playerid);
+				return 0;
+			}
 		}
 		return 1;
 	}
@@ -301,6 +313,7 @@ hook OnPlayerUpdate@000(playerid)
 		Audio_PlayEx(playerid, AUDIO_BANDAGE_FINISH);
 
 		new newMedkitAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_MEDKIT) - 1;
+		SetPlayerItemAmount(playerid, _:ITEM_IDX_MEDKIT, newMedkitAmount);
 
 		if(newMedkitAmount <= 0)
 		{
