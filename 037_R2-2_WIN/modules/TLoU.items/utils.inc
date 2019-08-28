@@ -371,7 +371,7 @@
 			HudTd_UpdateShivs(playerid);
 		}
 
-		DetachWeaponFromPlayersBody(playerid, GetItemNativeWeaponId(itemId));
+		DetachWeaponFromPlayersBody(playerid, itemId);
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "RemovePlayerItem: charUid: %d got his itemId: %d removed", GetPlayerCharUid(playerid), itemId);
         return true;
     }
@@ -903,17 +903,13 @@
     // true - if item hid correctly.
     HideItem(playerid)
     {
-        SCMF(playerid, -1, "HideItem");
         if(GetPlayerEquippedItemId(playerid) == -1)
         {
-            SCMF(playerid, -1, "No weapon to hide.");
             return false;
         }
 
         ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
         ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
-
-        SCMF(playerid, -1, "Saved as lastweap: %d.", ePlayerInfo[playerid][e_iLastEquippedItemId]);
         
         PlayerWeaponBodyDamage[playerid] = DAMAGE_VALUE_FISTS;
 		PlayerWeaponHeadDamage[playerid] = DAMAGE_VALUE_FISTS;

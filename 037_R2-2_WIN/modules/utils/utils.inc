@@ -358,20 +358,20 @@ AttachBackpackToPlayer(playerid, bool:isInFrontOfPlayer = false)
 // Attach : attach weapons to player (happens during respawn).
 AttachWeaponsToPlayer(playerid)
 {
-	new weaponId = -1;
-    for(new i = 0; i != MAX_WEAPON_SLOTS; i++)
-    {
-        weaponId = ePlayerWeapon[playerid][e_iWeaponsId][i];
-		if(!weaponId)
+	for(new i = 0; i != MAX_ITEMS_DATA; i++)
+	{
+		if(!IsItemWeapon(i) && !IsItemMeleeWeapon(i))
 		{
 			continue;
 		}
 
-        if(IsMeleeWeapon(weaponId) || IsBulletWeapon(weaponId))
-        {
-            //SPAO(playerid, GetWeaponModelFromWeaponId(weaponId));
-        }
-    }
+		if(!HasPlayerGotItem(playerid, i))
+		{
+			continue;
+		}
+
+		SPAO(playerid, GetItemModel(i));
+	}
 }
 
 // Gets a free available attachment slot.
@@ -480,7 +480,6 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 				slotIndex = eCharsInfo[playerid][e_iAttachSlot_LongGunTwo];
 			else
 				eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] = slotIndex;
-
 		}
 
 		default: 
@@ -500,37 +499,39 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 }
 
 // Detach weapon models from player's body.
-DetachWeaponFromPlayersBody(playerid, weaponId)
+DetachWeaponFromPlayersBody(playerid, itemId)
 {
-	if(!IsBulletWeapon(weaponId) && !IsMeleeWeapon(weaponId))
-		return 1;
+	if(!IsItemWeapon(itemId) && !IsItemMeleeWeapon(itemId))
+	{
+		return false;
+	}
 
     // Depends on the weapon Id - if new weapon is equipped then remove its attached object from player's body.
     new slotId = -1;
-    switch(weaponId)
+    switch(ITEM_IDX:itemId)
     {
-        case WEAPON_9MM:        slotId = eCharsInfo[playerid][e_iAttachSlot_9mm];
-        case WEAPON_REVOLVER:   slotId = eCharsInfo[playerid][e_iAttachSlot_Revolver];
+        case ITEM_IDX_9MM:        slotId = eCharsInfo[playerid][e_iAttachSlot_9mm];
+        case ITEM_IDX_REVOLVER:   slotId = eCharsInfo[playerid][e_iAttachSlot_Revolver];
         
         case 
-            WEAPON_SHOTGUN,
-            WEAPON_ASSAULT:
+            ITEM_IDX_SHOTGUN,
+            ITEM_IDX_ASSAULT_RIFLE:
             {
                 slotId = eCharsInfo[playerid][e_iAttachSlot_LongGunOne];
             }
             
         case 
-            WEAPON_RIFLE,
-            WEAPON_BOW:
+            ITEM_IDX_RIFLE,
+            ITEM_IDX_BOW:
             {
                 slotId = eCharsInfo[playerid][e_iAttachSlot_LongGunTwo];
             }
 
         case 
-            WEAPON_PIPE,
-            WEAPON_SCISSOR_PIPE,
-            WEAPON_HATCHET,
-            WEAPON_MACHETE:
+            ITEM_IDX_PIPE,
+            ITEM_IDX_SCSR_PIPE,
+            ITEM_IDX_HATCHET,
+            ITEM_IDX_MACHETE:
             {
                 slotId = eCharsInfo[playerid][e_iAttachSlot_Melee];
             }
@@ -542,12 +543,12 @@ DetachWeaponFromPlayersBody(playerid, weaponId)
             // so in fact, they are not going to be removed so we stop the code here from going any further.
 
             // slotId = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
-            return 1;
+            return true;
         }
     }
 
     RemovePlayerAttachedObj(playerid, slotId);
-	return 0;
+	return true;
 }
 
 // Stuns all nearby players and FCNPCs that are in range of x, y, z coordinates.
