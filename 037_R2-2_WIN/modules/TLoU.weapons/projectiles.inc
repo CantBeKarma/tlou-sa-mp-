@@ -106,7 +106,7 @@ public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Fl
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 {
-    CreateProjectileDestroyEffect(WEAPON_MOLOTOV, projid, x, y, z, throwerid);
+    CreateProjectileDestroyEffect(_:ITEM_IDX_MOLOTOV, projid, x, y, z, throwerid);
 
     if(IsPlayerNPC(hitid) && !FCNPC_IsBurning(hitid))
     {
@@ -126,7 +126,7 @@ public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 {
-    CreateProjectileDestroyEffect(WEAPON_SMOKE_BOMB, projid, x, y, z);
+    CreateProjectileDestroyEffect(_:ITEM_IDX_SMOKE_BOMB, projid, x, y, z);
     StunNearbyPlayersAndNpcs(x, y, z, throwerid);
 
     // foreach(new npcid : FCNPC)
@@ -193,7 +193,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         #pragma unused triggererid
         #pragma unused throwerid
         
-        CreateProjectileDestroyEffect(WEAPON_NAIL_BOMB, nailBmbIdx, x, y, z);
+        CreateProjectileDestroyEffect(_:ITEM_IDX_NAIL_BOMB, nailBmbIdx, x, y, z);
         return 0;
     }
 //#endregion
