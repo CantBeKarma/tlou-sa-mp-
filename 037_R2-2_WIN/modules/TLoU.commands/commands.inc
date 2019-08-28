@@ -440,3 +440,13 @@ CMD:removeatt(playerid, params[])
     }
     return 1;
 }
+
+CMD:ingrs(playerid, params[])
+{
+    for(new i = INGR_ITEM_BLADE; i <= INGR_ITEM_SUGAR; i++)
+    {
+        GivePlayerItem(playerid, i);
+        SetPlayerItemAmount(playerid, i, 300);
+    }
+    return 1;
+}
