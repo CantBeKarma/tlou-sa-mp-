@@ -259,7 +259,7 @@ hook OnPlayerHoldingKey(playerid, key)
 {
     if(key & KEY_FIRE)
     {
-        if(IsPlayerUsingWeaponMenu(playerid) && IsAllowedToSwitchWeaps(playerid) && !IsPlayerSwitchingWeapons(playerid)
+        if(IsPlayerUsingWeaponMenu(playerid) && IsAllowedToSwitchWeaps(playerid))
         {
             Bit_Let(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
             OnPlayerStartSwappingWeaps(playerid);

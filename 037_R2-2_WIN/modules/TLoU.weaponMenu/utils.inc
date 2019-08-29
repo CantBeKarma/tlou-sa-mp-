@@ -16,7 +16,7 @@ ResetEnum_ePlayerWeapMenu(playerid)
     IsAllowedToSwitchWeaps(playerid)
     {
         new selectionH = WeapMenu_GetSelectionH(playerid);
-        if(selectionH == -1)
+        if(selectionH == -1 || IsPlayerSwitchingWeapons(playerid))
         {
             return false;
         }
