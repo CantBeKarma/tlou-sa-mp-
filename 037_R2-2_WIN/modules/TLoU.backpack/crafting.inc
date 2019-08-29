@@ -26,7 +26,10 @@ public OnPlayerCanceledCrafting(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerCraftedItem(playerid, craftItemId)
 {
-    new itemId = _:eBackpack_CraftItemsData[craftItemId][e_iCraftItemId];
+    new itemId = 
+        (craftItemId == CRAFT_ITEM_MELEE) 
+        ? (GetPlayerMeleeItemId(playerid)) 
+        : (_:eBackpack_CraftItemsData[craftItemId][e_iCraftItemId]);
 
     if(craftItemId != CRAFT_ITEM_MELEE)
     {
@@ -35,14 +38,14 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     }
     else
     {
-        new 
-            playerMeleeItemId = GetPlayerMeleeItemId(playerid),
-            playerMeleeCnd = GetPlayerItemAmount(playerid, playerMeleeItemId);
+        new playerMeleeCnd = GetPlayerItemAmount(playerid, itemId);
 
-        if(playerMeleeItemId == _:ITEM_IDX_PIPE)
+        if(itemId == _:ITEM_IDX_PIPE)
         {
-            RemovePlayerItem(playerid, playerMeleeItemId);
-            GivePlayerItem(playerid, _:ITEM_IDX_SCSR_PIPE);
+            RemovePlayerItem(playerid, itemId);
+
+            itemId = _:ITEM_IDX_SCSR_PIPE;
+            GivePlayerItem(playerid, itemId);
         }
 
         SetPlayerItemAmount(playerid, itemId, playerMeleeCnd, GetPlayerItemMaxAmount(playerid, itemId, true));
@@ -58,8 +61,8 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     SetPlayerItemAmount(playerid, firstRequiredIngr, GetPlayerItemAmount(playerid, firstRequiredIngr) - reductIngrAmount);
     SetPlayerItemAmount(playerid, secondRequiredIngr, GetPlayerItemAmount(playerid, secondRequiredIngr) - reductIngrAmount);
 
-    // Set newly crafted item as a last item used.
-    if(craftItemId != CRAFT_ITEM_SHIV)
+    // Set newly crafted item as last item used.
+    if(IsItemProjectile(itemId))
     {
         ePlayerInfo[playerid][e_iLastEquippedItemId] = itemId;
     }
@@ -308,11 +311,6 @@ CraftTd_HighlightSelection(playerid, newSelection, oldSelection = -1)
     
     static requiredMinAmount = 100;
 
-    if(newSelection == CRAFT_ITEM_MELEE) // SKIP MELEE FOR NOW. (Remember to work it out later!!!!!!)
-    {
-        return;
-    }
-
     new 
         firstRequiredIngr = _:eBackpack_CraftItemsData[newSelection][e_iCraftFirstReqIngr],
         secondRequiredIngr = _:eBackpack_CraftItemsData[newSelection][e_iCraftSecondReqIngr];
@@ -322,7 +320,7 @@ CraftTd_HighlightSelection(playerid, newSelection, oldSelection = -1)
 
     if(newSelection == CRAFT_ITEM_MELEE)
     {
-        CraftTd_HighlightIngr(playerid, INGR_ITEM_MELEE, (GetPlayerMeleeItemId(playerid) != -1 && !IsPlayerMeleeUpgraded(playerid) ? true : false));
+        CraftTd_HighlightIngr(playerid, INGR_ITEM_MELEE, (GetPlayerMeleeItemId(playerid) != -1 && !IsPlayerMeleeUpgraded(playerid)));
     }
 }
 
@@ -354,18 +352,15 @@ CraftTd_CheckWhatsToCraft(playerid)
 
     for(new i = 0; i != MAX_CRAFT_ITEMS; i++)
     {
-        if(i == CRAFT_ITEM_MELEE) // SKIP MELEE FOR NOW. (Remember to work it out later!!!!!!)
-        {
-            continue;
-        }
-
         new itemId = _:eBackpack_CraftItemsData[i][e_iCraftItemId],
             firstRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftFirstReqIngr],
             secondRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftSecondReqIngr];
 
         if(GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId)
         || GetPlayerItemAmount(playerid, firstRequiredIngr) < requiredMinAmount
-        || GetPlayerItemAmount(playerid, secondRequiredIngr) < requiredMinAmount)
+        || GetPlayerItemAmount(playerid, secondRequiredIngr) < requiredMinAmount
+        || i == 0 && IsPlayerMeleeUpgraded(playerid)
+        || i == 0 && GetPlayerMeleeItemId(playerid) == -1)
         {
             if(Iter_Contains(ItemsToCraft<playerid>, i))
             {
@@ -482,6 +477,11 @@ CraftTd_DisplayIngredients(playerid, ingredientId = -1)
                     PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIdx]);
                 }
             }
+        }
+
+        if(GetPlayerMeleeItemId(playerid) != -1 && !IsPlayerMeleeUpgraded(playerid))
+        {
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][18]);
         }
     }
     else
