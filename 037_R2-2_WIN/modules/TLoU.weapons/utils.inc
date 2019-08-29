@@ -95,10 +95,15 @@ ResetEnum_ePlayerWeapon(playerid)
 // Reduces condition of player's melee weapon by one.
 DegradePlayerMeleeWeapon(playerid)
 {
-	new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
+	new 
+		playerMeleeItemId = GetPlayerMeleeItemId(playerid),
+		playerMeleeBasicCnd = GetPlayerItemAmount(playerid, playerMeleeItemId),
+		playerMeleeExtCnd = GetPlayerMeleeExtraCnd(playerid, playerMeleeItemId);
 
-	// Durability logic (reduce upgraded durability or basic one?)
-	new newMeleeDurability = (IsPlayerMeleeUpgraded(playerid)) ? (GetPlayerMeleeExtraCnd(playerid, playerMeleeItemId)-1) : (GetPlayerItemAmount(playerid, playerMeleeItemId)-1);
+	// // Durability logic (reduce upgraded durability or basic one?)
+	new newMeleeDurability = (IsPlayerMeleeUpgraded(playerid)) ? (playerMeleeExtCnd-1) : (playerMeleeBasicCnd-1);
+	
+	SCMF(playerid, -1, "newMeleeDurability: %d", newMeleeDurability);
 	HudTd_UpdateMeleeWeaponCND(playerid, playerMeleeItemId, newMeleeDurability);
 
 	if(newMeleeDurability > 0)

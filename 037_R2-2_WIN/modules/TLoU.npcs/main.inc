@@ -8,7 +8,6 @@
 hook OnGameModeInit()
 {
     SendRconCommandf("maxnpc %d", MAX_FCNPCS);
-    printf("maxnpc: %d", MAX_FCNPCS);
 
     Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "Creating FCNPCs...");
     //FCNPC_CreateInfected();

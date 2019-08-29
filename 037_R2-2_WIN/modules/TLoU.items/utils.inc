@@ -373,6 +373,7 @@
 
         if(IsItemMeleeWeapon(itemId))
 		{
+            ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = 0;
 			HudTd_UpdateMelee(playerid);
 		}
 
@@ -675,6 +676,10 @@
             new maxExtraCnd = GetPlayerItemMaxAmount(playerid, itemId, true);
             ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCnd > maxExtraCnd) ? (maxExtraCnd) : (extraCnd);
         }
+        else
+        {
+            ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = 0;
+        }
         return true;
     }
 
@@ -697,7 +702,7 @@
         }
 
         if((IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
-        || (GetPlayerItemAmount(playerid, itemId) == amount) && meleeExtraCND == 0)
+        || (GetPlayerItemAmount(playerid, itemId) == amount && GetPlayerMeleeExtraCnd(playerid, itemId) == meleeExtraCND))
         {
             return false;
         }
