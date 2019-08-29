@@ -153,8 +153,8 @@ public OnPlayerFinishSwappingWeaps(playerid)
 
     ePlayerInfo[playerid][e_iLastEquippedItemId] =
         (WeapMenu_GetSelectionH(playerid) == WEAPON_MENU_H_LEFT0 || WeapMenu_GetSelectionH(playerid) == WEAPON_MENU_H_LEFT1) 
-        ? WeapMenu_Ls_ItemId(playerid, selectionH)
-        : WeapMenu_Rs_ItemId(playerid, selectionH-2);
+        ? WeapMenu_Ls_ItemId(playerid, WeapMenu_GetSelectionH(playerid))
+        : WeapMenu_Rs_ItemId(playerid, WeapMenu_GetSelectionH(playerid)-2);
 
     return 0;
 }
