@@ -209,6 +209,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
         }
 
+        // If old item was a weapon and new item is attachable (custom item)
         if(IsItemWeapon(oldItemId) 
         && (IsItemBow(newItemId) || IsItemMedkit(newItemId)
         ||  IsItemProjectile(newItemId) || IsItemThrowable(newItemId)))
@@ -216,6 +217,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             ResetPlayerWeapons(playerid);
         }
 
+        // If old item was attachable and new item is standard weapon.
         if(IsItemWeapon(newItemId)
         && (IsItemBow(oldItemId) || IsItemMedkit(oldItemId)
         ||  IsItemProjectile(oldItemId) || IsItemThrowable(oldItemId)))

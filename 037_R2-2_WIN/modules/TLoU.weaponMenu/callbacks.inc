@@ -144,22 +144,18 @@ public OnPlayerFinishSwappingWeaps(playerid)
         PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][i]);
     }
 
-    // Restore vertial bar of weapons menu and their icons.
+    // Restore vertical bar of weapons menu and their icons.
     TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
     WeapMenuTd_DisplayWeapsAndAmmo(playerid);
     CraftTd_CheckWhatsToCraft(playerid);
 
     CLF(#Perform_BackpackClosing, "d", playerid);
 
-    new selectionH = WeapMenu_GetSelectionH(playerid);
-    if(selectionH == WEAPON_MENU_H_LEFT0 || selectionH == WEAPON_MENU_H_LEFT1)
-    {
-        ePlayerInfo[playerid][e_iLastEquippedItemId] = WeapMenu_Ls_ItemId(playerid, selectionH);
-    }
-    else
-    {
-        ePlayerInfo[playerid][e_iLastEquippedItemId] = WeapMenu_Rs_ItemId(playerid, (selectionH == WEAPON_MENU_H_RIGHT0) ? (0) : (1));
-    }    
+    ePlayerInfo[playerid][e_iLastEquippedItemId] =
+        (WeapMenu_GetSelectionH(playerid) == WEAPON_MENU_H_LEFT0 || WeapMenu_GetSelectionH(playerid) == WEAPON_MENU_H_LEFT1) 
+        ? WeapMenu_Ls_ItemId(playerid, selectionH)
+        : WeapMenu_Rs_ItemId(playerid, selectionH-2);
+
     return 0;
 }
 
