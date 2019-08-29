@@ -109,137 +109,148 @@ HudTd_UpdateShivs(playerid)
     // HUD : Checks if player has any melee weapon. If so, displays appropriate melee icon.
     HudTd_UpdateMelee(playerid)
     {
-        if(GetPlayerMelee[playerid] == NO_MELEE) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Melee]);
+        new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
+        if(playerMeleeItemId == -1) 
+        {
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Melee]);
+        }
         else
         {
-            new tmp_weapIcon[20];
-            switch(GetPlayerMelee[playerid])
-            {
-                case WEAPON_PIPE:         strcpy(tmp_weapIcon, "TLoU:weap_pipe");
-                case WEAPON_SCISSOR_PIPE: strcpy(tmp_weapIcon, "TLoU:weap_scsr_pipe");
-                case WEAPON_HATCHET:      strcpy(tmp_weapIcon, "TLoU:weap_hatchet");
-                case WEAPON_MACHETE:      strcpy(tmp_weapIcon, "TLoU:weap_machete");
-            }
-            PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Melee], tmp_weapIcon);
+            PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Melee], eItemsSprites[playerMeleeItemId]);
         }
     }
 
     // HUD : Display melee's weapon bars.
-    HudTd_DisplayMeleeWeaponBars(playerid, weaponId)
+    HudTd_DisplayMeleeWeaponBars(playerid, itemId)
     {
-        if(!IsMeleeWeapon(weaponId) || weaponId == WEAPON_UNARMED) return 1;
+        if(!IsItemMeleeWeapon(itemId))
+        {
+            return false;
+        }
 
         new 
-            meleeBasicCnd = GetMeleeWeapon_Durability(weaponId, false),
-            maxMeleeBars = meleeBasicCnd + GetMeleeWeapon_Durability(weaponId, true),
+            maxBasicCND = GetPlayerItemMaxAmount(playerid, itemId),
+            maxMeleeBars = maxBasicCND + GetPlayerItemMaxAmount(playerid, itemId, true);
 
-            playerMeleeCnd = GetPlayerItemAmount(playerid, weaponid),
-            playerMeleeExtCnd = GetPlayerMeleeExtraCnd(playerid, weaponId);
+            playerMeleeCnd = GetPlayerItemAmount(playerid, itemId),
+            playerMeleeExtCnd = GetPlayerMeleeExtraCnd(playerid, itemId);
 
         for(new tdIdx = 0; tdIdx != maxMeleeBars; tdIdx++)
         {
-            switch(weaponId)
+            switch(ITEM_IDX:itemId)
             {
-                case WEAPON_PIPE:
+                case ITEM_IDX_PIPE:
                 {
                     PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx], (tdIdx < playerMeleeCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                     PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx]);
                 }
 
-                case WEAPON_SCISSOR_PIPE:
+                case ITEM_IDX_SCSR_PIPE:
                 {
-                    if(tdIdx < meleeBasicCnd)
+                    if(tdIdx < maxBasicCND)
                     {
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx], (tdIdx < playerMeleeCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx]);
                     }
-                    else if(tdIdx >= meleeBasicCnd)
+                    else if(tdIdx >= maxBasicCND)
                     {
-                        if(!IsPlayerMeleeUpgraded[playerid]) break;
+                        if(!IsPlayerMeleeUpgraded(playerid))
+                        {
+                            break;
+                        }
                         
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx], COLOR_WHITE);
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx]);
                     }
                 }
 
-                case WEAPON_HATCHET:
+                case ITEM_IDX_HATCHET:
                 {
-                    if(tdIdx < meleeBasicCnd)
+                    if(tdIdx < maxBasicCND)
                     {
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx], (tdIdx < playerMeleeCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx]);
                     }
-                    else if(tdIdx >= meleeBasicCnd)
+                    else if(tdIdx >= maxBasicCND)
                     {
-                        if(!IsPlayerMeleeUpgraded[playerid]) break;
+                        if(!IsPlayerMeleeUpgraded(playerid))
+                        {
+                            break;
+                        }
 
-                        new upgradedTdIdx = (tdIdx - meleeBasicCnd);
+                        new upgradedTdIdx = (tdIdx - maxBasicCND);
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx], (upgradedTdIdx < playerMeleeExtCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
                     } 
                 }
 
-                case WEAPON_MACHETE:
+                case ITEM_IDX_MACHETE:
                 {
-                    if(tdIdx < meleeBasicCnd)
+                    if(tdIdx < maxBasicCND)
                     {
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx], (tdIdx < playerMeleeCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx]);
                     }
-                    else if(tdIdx >= meleeBasicCnd)
+                    else if(tdIdx >= maxBasicCND)
                     {
-                        if(!IsPlayerMeleeUpgraded[playerid]) break;
+                        if(!IsPlayerMeleeUpgraded(playerid))
+                        {
+                            break;
+                        }
 
-                        new upgradedTdIdx = (tdIdx - meleeBasicCnd);
+                        new upgradedTdIdx = (tdIdx - maxBasicCND);
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx], (upgradedTdIdx < playerMeleeExtCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
                     }
                 }
             }
         }
-        return 0;
+        return true;
     }
 
     // HUD : Update certain bar of the melee weapon (reduct it from the condition of the melee).
-    HudTd_UpdateMeleeWeaponCND(playerid, weaponId, tdIdx)
+    HudTd_UpdateMeleeWeaponCND(playerid, itemId, tdIdx)
     {
-        if(!IsMeleeWeapon(weaponId) || weaponId == WEAPON_UNARMED)
+        if(!IsItemMeleeWeapon(itemId))
         {
-            return;
+            return false;
         }
 
-        if(!IsPlayerMeleeUpgraded[playerid]) 
+        if(!IsPlayerMeleeUpgraded(playerid))
         {
-            //SetPlayerWeaponAmmo(playerid, weaponId, tdIdx);
+            SetPlayerItemAmount(playerid, itemId, tdIdx);
         }
         else
         {
-            ePlayerItemData[playerid][weaponId][e_iItemMeleeExtraCND] = tdIdx;
+            new playerMeleeCnd = GetPlayerItemAmount(playerid, itemId);
+            SetPlayerItemAmount(playerid, itemId, playerMeleeCnd, tdIdx);
         }
 
-        switch(weaponId)
+        switch(ITEM_IDX:itemId)
         {
             case 
-                WEAPON_PIPE, 
-                WEAPON_SCISSOR_PIPE:
+                ITEM_IDX_PIPE, 
+                ITEM_IDX_SCSR_PIPE:
                 {
                     PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx], COLOR_GRAY_TRANS, true);
                 }
 
-            case WEAPON_HATCHET:
+            case ITEM_IDX_HATCHET:
             {
                 PlayerTdSetColor(playerid, \
-                    (IsPlayerMeleeUpgraded[playerid]) ? (ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][tdIdx]) : (ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx]), \
+                    (IsPlayerMeleeUpgraded(playerid)) ? (ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][tdIdx]) : (ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx]), \
                     COLOR_GRAY_TRANS, true);
             }
                 
-            case WEAPON_MACHETE:
+            case ITEM_IDX_MACHETE:
             {
                 PlayerTdSetColor(playerid, \
-                    (IsPlayerMeleeUpgraded[playerid]) ? (ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][tdIdx]) : (ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx]), \
+                    (IsPlayerMeleeUpgraded(playerid)) ? (ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][tdIdx]) : (ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx]), \
                     COLOR_GRAY_TRANS, true);
             }
         }
+
+        return true;
     }
 
     // HUD : Hide melee conditions bars.
@@ -252,39 +263,43 @@ HudTd_UpdateShivs(playerid)
         
         new 
             maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId),
-            maxExtraCnd = GetPlayerItemMaxAmount(playerid, itemId, true);
+            maxMeleeBars = maxBasicCND + GetPlayerItemMaxAmount(playerid, itemId, true);
 
-        for(new tdIdx = 0; tdIdx != maxExtraCnd; tdIdx++)
+        for(new tdIdx = 0; tdIdx != maxMeleeBars; tdIdx++)
         {
-            switch(itemId)
+            switch(ITEM_IDX:itemId)
             {
                 case 
-                    WEAPON_PIPE,
-                    WEAPON_SCISSOR_PIPE:
+                    ITEM_IDX_PIPE,
+                    ITEM_IDX_SCSR_PIPE:
                     {
                         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx]);
                     }
 
-                case WEAPON_HATCHET:
+                case ITEM_IDX_HATCHET:
                 {
                     if(tdIdx < maxBasicCnd) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx]);
                     else if(tdIdx >= maxBasicCnd)
                     {
-                        if(!IsPlayerMeleeUpgraded[playerid]) 
+                        if(!IsPlayerMeleeUpgraded(playerid))
+                        {
                             break;
+                        }
 
                         new upgradedTdIdx = (tdIdx - maxBasicCnd);
                         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
                     } 
                 }
 
-                case WEAPON_MACHETE:
+                case ITEM_IDX_MACHETE:
                 {
                     if(tdIdx < maxBasicCnd) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx]);
                     else if(tdIdx >= maxBasicCnd)
                     {
-                        if(!IsPlayerMeleeUpgraded[playerid]) 
+                        if(!IsPlayerMeleeUpgraded(playerid))
+                        {
                             break;
+                        }
 
                         new upgradedTdIdx = (tdIdx - maxBasicCnd);
                         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
@@ -296,19 +311,22 @@ HudTd_UpdateShivs(playerid)
     }
 
     // HUD : Hide melee upgraded condition bars.
-    HudTd_HideMeleeUpgradedBars(playerid, weaponId)
+    HudTd_HideMeleeUpgradedBars(playerid, itemId)
     {
-        if(!IsMeleeWeapon(weaponId) || weaponId == WEAPON_UNARMED || !IsPlayerMeleeUpgraded[playerid])
-            return;
-
-        if(weaponId == WEAPON_SCISSOR_PIPE) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][9]);
-        else if(weaponId == WEAPON_HATCHET || weaponId == WEAPON_MACHETE)
+        if(!IsItemMeleeWeapon(itemId) || !IsPlayerMeleeUpgraded(playerid))
         {
-            for(new tdIdx = 0; tdIdx != 3; tdIdx++)
+            return false;
+        }
+
+        if(itemId == _:ITEM_IDX_SCSR_PIPE) PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][9]);
+        else if(itemId == _:ITEM_IDX_HATCHET || itemId == _:ITEM_IDX_MACHETE)
+        {
+            for(new tdIdx = 0; tdIdx <= 2; tdIdx++)
             {
                 PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][tdIdx]);
             }
         }
+        return true;
     }
 
 //#endregion
