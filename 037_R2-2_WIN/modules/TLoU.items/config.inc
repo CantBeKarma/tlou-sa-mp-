@@ -181,8 +181,8 @@ stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
     {"Brick",               ITEM_TYPE_THROWABLE,    ITEM_MODEL_BRICK,       -1,      1,          AUDIO_BRICK_PICKUP,         WEAPON_BRICK,           10.0,   10.0},
     {"Bottle",              ITEM_TYPE_THROWABLE,    ITEM_MODEL_BOTTLE,      -1,      1,          AUDIO_BOTTLE_PICKUP,        WEAPON_BOTTLE,          10.0,   10.0},
 
-    {"Note #1",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_PAPER,       -1,      0,         -1,                         -1,                     0.0,    0.0},
-    {"Note #2",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_NOTES,       -1,      0,         -1,                         -1,                     0.0,    0.0}
+    {"Note #1",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_PAPER,       -1,      0,          -1,                         -1,                     0.0,    0.0},
+    {"Note #2",             ITEM_TYPE_COLLECTIBLE,  ITEM_MODEL_NOTES,       -1,      0,          -1,                         -1,                     0.0,    0.0}
 };
 
 // Item upgrade's data.
