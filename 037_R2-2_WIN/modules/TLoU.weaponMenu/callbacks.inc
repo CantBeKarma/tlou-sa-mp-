@@ -110,7 +110,7 @@ public OnPlayerLR_WeaponMenu(playerid, keys)
     }
 
     WeapMenu_MoveSelectBox(playerid, eWeapMenu_Items[newSelection+5][e_fSelBoxX], eWeapMenu_Items[newSelection+5][e_fSelBoxY]);
-    WeapMenuTd_ShowSwapTextHelp(playerid, newSelection);
+    WeapMenuTd_ShowSwapTextHelp(playerid);
 
     switch(newSelection)
     {
@@ -127,11 +127,8 @@ public OnPlayerLR_WeaponMenu(playerid, keys)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStartSwappingWeaps(playerid)
 {
-    new selectionH = WeapMenu_GetSelectionH(playerid);
-    WeapMenu_MoveSwapWeaponIcons(playerid, selectionH);
-    WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH);
+    WeapMenuTd_ShowSwapWeapIcons(playerid);
     HideWeaponMenu(playerid, HIDE_WEAPMENU_PART_VERT);
-
     Perform_BackpackOpening(playerid);
     return 0;
 }
@@ -219,7 +216,7 @@ public OnPlayerUD_SwapWeaps(playerid, keys)
     }
 
     Audio_PlayEx(playerid, AUDIO_BP_SWITCH_WEAPS);
-    WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH);
+    WeapMenuTd_UpdateSwapWeapIcons(playerid);
     return 0;
 }
 
@@ -262,7 +259,7 @@ hook OnPlayerHoldingKey(playerid, key)
 {
     if(key & KEY_FIRE)
     {
-        if(IsPlayerUsingWeaponMenu(playerid) && IsAllowedToSwitchWeaps(playerid) && !IsPlayerSwitchingWeapons(playerid))
+        if(IsPlayerUsingWeaponMenu(playerid) && IsAllowedToSwitchWeaps(playerid) && !IsPlayerSwitchingWeapons(playerid)
         {
             Bit_Let(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
             OnPlayerStartSwappingWeaps(playerid);

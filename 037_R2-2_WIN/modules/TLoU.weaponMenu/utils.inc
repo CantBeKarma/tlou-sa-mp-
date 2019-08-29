@@ -12,7 +12,23 @@ ResetEnum_ePlayerWeapMenu(playerid)
 //#region Validation
 
     IsPlayerSwitchingWeapons(playerid)return Bit_Get(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
-    IsAllowedToSwitchWeaps(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
+    
+    IsAllowedToSwitchWeaps(playerid)
+    {
+        new selectionH = WeapMenu_GetSelectionH(playerid);
+        if(selectionH == -1)
+        {
+            return false;
+        }
+
+        switch(selectionH)
+        {
+            case WEAPON_MENU_H_LEFT0,  WEAPON_MENU_H_LEFT1:  return (WeapMenu_Ls_ItemId(playerid, 2) != -1);
+            case WEAPON_MENU_H_RIGHT0, WEAPON_MENU_H_RIGHT1: return (WeapMenu_Rs_ItemId(playerid, 2) != -1);
+        }
+
+        return false;
+    }
 
 //#endregion
 
@@ -233,58 +249,58 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
 
 //#region Swap weapon icons & help text
 
-    // Change the position of selection box
+    // Change the position of selection box.
     WeapMenu_MoveSelectBox(playerid, Float:x, Float:y)
     {
         Backpack_MoveSelectBox(playerid, x, y);
     }
 
-    // Change the position of "How to Swap" text
-    WeapMenu_MoveSwapTextHelp(playerid, selectId)
+    // Shows message "HOLD LMB TO SWAP".
+    WeapMenuTd_ShowSwapTextHelp(playerid)
     {
-        switch(selectId)
+        if(!IsAllowedToSwitchWeaps(playerid))
+        {
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
+            return;
+        }
+        
+        WeapMenu_MoveSwapTextHelp(playerid, WeapMenu_GetSelectionH(playerid));
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
+    }
+
+    // Changes the position of "HOLD LMB TO SWAP" textdraw in weapon menu (horizontal bar).
+    // DO NOT USE ANYWHERE ! - Used internally in WeapMenuTd_ShowSwapTextHelp().
+    WeapMenu_MoveSwapTextHelp(playerid, selectionH)
+    {
+        switch(selectionH)
         {
             case WEAPON_MENU_H_LEFT0:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 345.666656, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 368.999603, 281.244445);
             case WEAPON_MENU_H_LEFT1:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 389.666656, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 413.666351, 281.244445);
             case WEAPON_MENU_H_RIGHT0: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 468.666717, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 492.666625, 281.244445);
             case WEAPON_MENU_H_RIGHT1: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 519.333312, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 542.999694, 281.244445);
         }
-
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
     }
 
-    // WeapMenu : Show "how to swap" text in horizontal bar.
-    WeapMenuTd_ShowSwapTextHelp(playerid, selectionH)
+    // Shows swap weapon icons and hides "HOLD LMB TO SWAP" text help.
+    WeapMenuTd_ShowSwapWeapIcons(playerid)
     {
-        switch(selectionH)
-        {
-            case WEAPON_MENU_H_LEFT0, WEAPON_MENU_H_LEFT1:
-            {
-                if(WeapMenu_Ls_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
-                else
-                {
-                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
-                }
-            }
+        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
+        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
 
-            case WEAPON_MENU_H_RIGHT0, WEAPON_MENU_H_RIGHT1:
-            {
-                if(WeapMenu_Rs_ItemId(playerid, 2) != -1) WeapMenu_MoveSwapTextHelp(playerid, selectionH);
-                else
-                {
-                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-                    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
-                }
-            }
-        }
+        WeapMenuTd_MoveSwapWeaponIcons(playerid);
+        WeapMenuTd_UpdateSwapWeapIcons(playerid);
     }
 
-    // Change the position of "Swap weapon icons"
-    WeapMenu_MoveSwapWeaponIcons(playerid, selectId)
+    // Changes the position of swap weapons icons.
+    // DO NOT USE ANYWHERE ! - Used internally in WeapMenuTd_ShowSwapWeapIcons().
+    WeapMenuTd_MoveSwapWeaponIcons(playerid)
     {
-        if(selectId == WEAPON_MENU_H_LEFT0 || selectId == WEAPON_MENU_H_LEFT1)
+        new selectionH = WeapMenu_GetSelectionH(playerid);
+
+        if(selectionH == WEAPON_MENU_H_LEFT0 
+        || selectionH == WEAPON_MENU_H_LEFT1)
         {
             PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 41.000015, 52.681484);
         }
@@ -293,7 +309,7 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
             PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 35.333316, 40.651855);
         }
 
-        switch(selectId)
+        switch(selectionH)
         {
             case WEAPON_MENU_H_LEFT0:
             {
@@ -307,30 +323,15 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
                 PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][1], 384.666656, 260.500000);
             }
 
-            case WEAPON_MENU_H_RIGHT0:
-            {
-                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 473.333435, 185.892562);
-            }
-            
-            case WEAPON_MENU_H_RIGHT1:
-            {
-                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 519.333435, 185.892562);
-            }
+            case WEAPON_MENU_H_RIGHT0: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 473.333435, 185.892562);
+            case WEAPON_MENU_H_RIGHT1: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_swapWeapIcons][0], 519.333435, 185.892562);
         }
     }
 
-    // WeapMenu : Show "Swap weapon icons"
-    WeapMenuTd_ShowSwapWeapIcons(playerid, selectionH)
+    // Updates swap weapon icons while swapping weapons.
+    WeapMenuTd_UpdateSwapWeapIcons(playerid)
     {
-        if(selectionH != WEAPON_MENU_H_LEFT0 && selectionH != WEAPON_MENU_H_LEFT1
-        && selectionH != WEAPON_MENU_H_RIGHT0 && selectionH != WEAPON_MENU_H_RIGHT1)
-        {
-            return;
-        }
-
-        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0]);
-        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1]);
-
+        new selectionH = WeapMenu_GetSelectionH(playerid);
         new loopCount = (selectionH == WEAPON_MENU_H_RIGHT0 || selectionH == WEAPON_MENU_H_RIGHT1) ? (2) : (3);
 
         for(new i = 0; i <= loopCount; i++)
