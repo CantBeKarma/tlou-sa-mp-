@@ -186,7 +186,7 @@ hook OnPlayerUpdate@000(playerid)
 	// 	new keys, updown, leftright;
 	// 	GetPlayerKeys(playerid, keys, updown, leftright);
 
-	// 	new playerWeaponId = CurrentPlayerWeaponId[playerid];
+	// 	new playerWeaponId = ...
 
 	// 	if(updown & KEY_UP || updown & KEY_DOWN || leftright & KEY_LEFT || leftright & KEY_RIGHT)
 	// 	{

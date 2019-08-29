@@ -64,13 +64,12 @@
                 weaponId = eItemsData[row_idItem][e_iItem_SA_WeaponId];
 
                 // Melee weapon durability.
-                if(IsMeleeWeapon(weaponId))
+                if(IsItemMeleeWeapon(weaponId))
                 {
                     cache_get_value_name_int(i, "meleeExtCnd", row_meleeExtCnd);
 
                     if(row_meleeExtCnd > 0)
                     {
-                        IsPlayerMeleeUpgraded[playerid] = true;
                         ePlayerItemData[playerid][i][e_iItemMeleeExtraCND] = row_meleeExtCnd;
                     }
                 }
@@ -110,8 +109,10 @@
                     {
                         itemAmount = GetPlayerItemAmount(playerid, i);
 
-                        if(IsPlayerMeleeUpgraded[playerid])
+                        if(IsPlayerMeleeUpgraded(playerid))
+                        {
                             meleeExtCnd = ePlayerItemData[playerid][i][e_iItemMeleeExtraCND];
+                        }
                     }
                 }
 

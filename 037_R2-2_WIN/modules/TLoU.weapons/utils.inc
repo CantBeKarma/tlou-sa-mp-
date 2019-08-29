@@ -80,17 +80,6 @@ ResetEnum_ePlayerWeapon(playerid)
 
 //#region Validations
 
-	// Check if a weapon is melee type weapon.
-	IsMeleeWeapon(weaponId)
-	{
-		return weaponId == WEAPON_UNARMED 
-			|| weaponId == WEAPON_PIPE 
-			|| weaponId == WEAPON_SCISSOR_PIPE 
-			|| weaponId == WEAPON_HATCHET 
-			|| weaponId == WEAPON_MACHETE;
-		//return (WEAPON_UNARMED <= weaponid <= WEAPON_KATANA) || (WEAPON_DILDO <= weaponid <= WEAPON_CANE) || weaponid == WEAPON_PISTOLWHIP;
-	}
-
 	// Return for which weapon id the specified ammo is for.
 	GetWeaponIdForAmmoType(ammoModelId)
 	{
@@ -103,40 +92,39 @@ ResetEnum_ePlayerWeapon(playerid)
 
 //#endregion
 
-//#region Weapons functions
+// Reduces condition of player's melee weapon by one.
+DegradePlayerMeleeWeapon(playerid)
+{
+	new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
 
-	// Reduces condition of player's melee weapon by one.
-	DegradePlayerMeleeWeapon(playerid)
+	// Durability logic (reduce upgraded durability or basic one?)
+	new newMeleeDurability = (IsPlayerMeleeUpgraded(playerid)) ? (GetPlayerMeleeExtraCnd(playerid, playerMeleeItemId)-1) : (GetPlayerItemAmount(playerid, playerMeleeItemId)-1);
+	HudTd_UpdateMeleeWeaponCND(playerid, playerMeleeItemId, newMeleeDurability);
+
+	if(newMeleeDurability > 0)
 	{
-		new weaponid = GetPlayerMelee[playerid];
-
-		// Durability logic (reduce upgraded durability or basic one?)
-		// new newMeleeDurability = (IsPlayerMeleeUpgraded[playerid]) ? (GetPlayerMeleeExtraCnd(playerid, weaponid)-1) : (GetPlayerItemAmount(playerid, weaponid)-1);
-		// HudTd_UpdateMeleeWeaponCND(playerid, weaponid, newMeleeDurability);
-
-		// if(newMeleeDurability > 0)
-		// {
-		// 	return;
-		// }
-
-		// Removes melee weapon if broke.
-		// if(!IsPlayerMeleeUpgraded[playerid])
-		// {
-		// 	RemovePlayerWeapon(playerid, weaponid);
-		// 	return;
-		// }
-
-		// If melee is upgraded - remove its upgraded feature and hide bars of it.
-		//IsPlayerMeleeUpgraded[playerid] = false;
-		HudTd_HideMeleeUpgradedBars(playerid, weaponid);
-
-		if(weaponid == WEAPON_SCISSOR_PIPE)
-		{
-			GetPlayerMelee[playerid] = WEAPON_PIPE;
-			//SetPlayerWeapon(playerid, GetPlayerMelee[playerid], GetPlayerMeleeCnd[playerid]);
-		}
+		return;
 	}
-//#endregion
+
+	// Removes melee weapon if broke.
+	if(!IsPlayerMeleeUpgraded(playerid))
+	{
+		RemovePlayerItem(playerid, playerMeleeItemId);
+		return;
+	}
+
+	// If melee is upgraded - remove its upgraded feature and hide bars of it.
+	HudTd_HideMeleeUpgradedBars(playerid, playerMeleeItemId);
+
+	if(playerMeleeItemId == WEAPON_SCISSOR_PIPE)
+	{
+		new playerMeleeCnd = GetPlayerItemAmount(playerid, playerMeleeItemId);
+		RemovePlayerItem(playerid, playerMeleeItemId);
+		GivePlayerItem(playerid, _:ITEM_IDX_PIPE);
+		SetPlayerItemAmount(playerid, _:ITEM_IDX_PIPE, playerMeleeCnd);
+		EquipItem(playerid, GetPlayerMeleeItemId(playerid));
+	}
+}
 
 // Reloads player's weapon
 ReloadWeapon(playerid)

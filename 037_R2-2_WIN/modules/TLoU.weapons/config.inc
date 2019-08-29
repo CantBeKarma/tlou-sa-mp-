@@ -103,16 +103,10 @@
 #define     TICK_RATE_HIDE_CROSSHAIR_SYMBOL     (200)
 
 //#region Helpers.
-    #define     CurrentPlayerWeaponId[%0]           ePlayerWeapon[%0][e_iWeaponId]
-    #define     CurrentPlayerWeaponAmmo[%0]         ePlayerWeapon[%0][e_iWeaponAmmo]
 
     #define     PlayerWeaponBodyDamage[%0]          ePlayerWeapon[%0][e_fWeapon_BodyDamage]
     #define     PlayerWeaponHeadDamage[%0]          ePlayerWeapon[%0][e_fWeapon_HeadDamage]
-    #define     PlayerWeaponSlotAmmo[%0,%1]         ePlayerWeapon[%0][e_iWeaponsAmmo][%1]
 
-    #define     IsPlayerMeleeUpgraded[%0]           ePlayerWeapon[%0][e_iWeaponMeleeUpgraded]
-    #define     GetPlayerMelee[%0]                  ePlayerWeapon[%0][e_iWeaponsId][WEAPON_SLOT_MELEE]
-    #define     GetPlayerShivCnd[%0]                ePlayerWeapon[%0][e_iShivCnd]
 //#endregion
 
 // Projectiles data.
@@ -132,17 +126,8 @@ new Iterator:NailBmbsList<MAX_THROWABLES>;
 // Player weapon's data.
 enum e_PLAYER_WEAPONS_DATA
 {
-    e_iWeaponId,
-    e_iWeaponClipSize,
-	e_iWeaponAmmo,
-    
-    e_iShivCnd,
-    bool:e_iWeaponMeleeUpgraded,
     Float:e_fWeapon_BodyDamage,
     Float:e_fWeapon_HeadDamage,
-
-	e_iWeaponsId[MAX_WEAPON_SLOTS],
-	e_iWeaponsAmmo[MAX_WEAPON_SLOTS],
     
     e_iArrowObjectId,
 
