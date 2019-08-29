@@ -97,10 +97,10 @@ hook OnPlayerHoldingKey(playerid, key)
             new iter = -1;
             switch(WeapMenu_GetSelectionV(playerid))
             {
-                case WEAPON_MENU_V_BOMB:        iter = WEAPON_SLOT_BOMB;
-                case WEAPON_MENU_V_MEDKIT:      iter = WEAPON_SLOT_MEDKIT;
-                case WEAPON_MENU_V_MOLOTOV:     iter = WEAPON_SLOT_MOLOTOV;
-                case WEAPON_MENU_V_SMOKE_BOMB:  iter = WEAPON_SLOT_SMOKE_BOMB;
+                case WEAPON_MENU_V_BOMB:        iter = CRAFT_ITEM_BOMB;
+                case WEAPON_MENU_V_MEDKIT:      iter = CRAFT_ITEM_MEDKIT;
+                case WEAPON_MENU_V_MOLOTOV:     iter = CRAFT_ITEM_MOLOTOV;
+                case WEAPON_MENU_V_SMOKE_BOMB:  iter = CRAFT_ITEM_SMOKE_BOMB;
             }
 
             if(iter == -1

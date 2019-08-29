@@ -134,6 +134,11 @@
         return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW);
     }
 
+    IsItemIngredient(itemId)
+    {
+        return (GetItemType(itemId) == ITEM_TYPE_INGREDIENT);
+    }
+
     bool:HasPlayerGotThrowableItem(playerid)
     {
         return HasPlayerGotItem(playerid, _:ITEM_IDX_BRICK) || HasPlayerGotItem(playerid, _:ITEM_IDX_BOTTLE);
@@ -697,11 +702,6 @@
             return false;
         }
 
-        if(meleeExtraCND == 0 && GetPlayerItemAmount(playerid, itemId) == amount)
-        {
-            return false;
-        }
-
         new bool:success = true;
         if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
         {
@@ -729,7 +729,9 @@
 
     UpdateTextDrawsIfNecessary(playerid, itemId)
     {
-        if(IsPlayerUsingWeaponMenu(playerid))
+        if(IsPlayerUsingWeaponMenu(playerid)
+        && (IsItemWeapon(itemId) || IsItemProjectile(itemId)
+        ||  IsItemThrowable(itemId) || IsItemMedkit(itemId) || IsItemIngredient(itemId)))
         {
             WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId);
             CraftTd_CheckWhatsToCraft(playerid);

@@ -31,23 +31,6 @@
     #define     WEAPON_ASSAULT          WEAPON_M4
 //#endregion
 
-//#region Weapon slots.
-    #define     WEAPON_SLOT_MELEE        (0)
-    #define     WEAPON_SLOT_SHIV         (1)
-    #define     WEAPON_SLOT_MEDKIT       (2)
-    #define     WEAPON_SLOT_MOLOTOV      (3)
-    #define     WEAPON_SLOT_BOMB         (4)
-    #define     WEAPON_SLOT_SMOKE_BOMB   (5)
-    #define     WEAPON_SLOT_9MM          (6)
-    #define     WEAPON_SLOT_REVOLVER     (7)
-    #define     WEAPON_SLOT_SHORTY       (8)
-    #define     WEAPON_SLOT_BOW          (9)
-    #define		WEAPON_SLOT_SHOTGUN		 (10)
-    #define     WEAPON_SLOT_ASSAULT      (11)
-    #define     WEAPON_SLOT_RIFLE        (12) 
-    #define		WEAPON_SLOT_BRICK_BOTTLE (13)
-//#endregion
-
 //#region Projectiles.
     #define     MAX_PROJECTILE_SPEED            (12.0)
 
