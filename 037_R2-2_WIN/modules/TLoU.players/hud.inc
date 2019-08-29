@@ -133,10 +133,10 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
         }
 
         new 
-            maxBasicCND = GetPlayerItemMaxAmount(playerid, itemId),
-            maxMeleeBars = maxBasicCND + GetPlayerItemMaxAmount(playerid, itemId, true);
+            maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId),
+            maxMeleeBars = maxBasicCnd + GetPlayerItemMaxAmount(playerid, itemId, true);
 
-        new
+        new 
             playerMeleeCnd = GetPlayerItemAmount(playerid, itemId),
             playerMeleeExtCnd = GetPlayerMeleeExtraCnd(playerid, itemId);
 
@@ -152,12 +152,12 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
                 case ITEM_IDX_SCSR_PIPE:
                 {
-                    if(tdIdx < maxBasicCND)
+                    if(tdIdx < maxBasicCnd)
                     {
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx], (tdIdx < playerMeleeCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Pipe][tdIdx]);
                     }
-                    else if(tdIdx >= maxBasicCND)
+                    else if(tdIdx >= maxBasicCnd)
                     {
                         if(!IsPlayerMeleeUpgraded(playerid))
                         {
@@ -171,19 +171,19 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
                 case ITEM_IDX_HATCHET:
                 {
-                    if(tdIdx < maxBasicCND)
+                    if(tdIdx < maxBasicCnd)
                     {
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx], (tdIdx < playerMeleeCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Hatchet][tdIdx]);
                     }
-                    else if(tdIdx >= maxBasicCND)
+                    else if(tdIdx >= maxBasicCnd)
                     {
                         if(!IsPlayerMeleeUpgraded(playerid))
                         {
                             break;
                         }
 
-                        new upgradedTdIdx = (tdIdx - maxBasicCND);
+                        new upgradedTdIdx = (tdIdx - maxBasicCnd);
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx], (upgradedTdIdx < playerMeleeExtCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
                     } 
@@ -191,19 +191,19 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
                 case ITEM_IDX_MACHETE:
                 {
-                    if(tdIdx < maxBasicCND)
+                    if(tdIdx < maxBasicCnd)
                     {
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx], (tdIdx < playerMeleeCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_Machete][tdIdx]);
                     }
-                    else if(tdIdx >= maxBasicCND)
+                    else if(tdIdx >= maxBasicCnd)
                     {
                         if(!IsPlayerMeleeUpgraded(playerid))
                         {
                             break;
                         }
 
-                        new upgradedTdIdx = (tdIdx - maxBasicCND);
+                        new upgradedTdIdx = (tdIdx - maxBasicCnd);
                         PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx], (upgradedTdIdx < playerMeleeExtCnd) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
                         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bars_MeleeUpgraded][upgradedTdIdx]);
                     }

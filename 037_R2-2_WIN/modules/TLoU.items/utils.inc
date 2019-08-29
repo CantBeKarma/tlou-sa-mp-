@@ -492,7 +492,7 @@
     // (x) number (int) of melee's upgraded condition
     GetPlayerMeleeExtraCnd(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsPlayerMeleeUpgraded(playerid) || !IsItemMeleeWeapon(itemId))
+        if(!HasPlayerGotItem(playerid, itemId) && !IsPlayerMeleeUpgraded(playerid) && !IsItemMeleeWeapon(itemId))
         {
             return -1;
         }
@@ -516,7 +516,7 @@
         new maxAmount = 0;
         if(checkMeleeExtraCND == true)
         {
-            if(GetItemType(itemId) != ITEM_TYPE_MELEE)
+            if(!IsItemMeleeWeapon(itemId))
             {
                 return 0;
             }
@@ -657,23 +657,23 @@
     // Returns:
     // false - if player hasn't got an item OR item isn't a melee weapon
     // true - if melee's weapon CND set correctly
-    bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCND, extraCND = 0)
+    bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCnd, extraCnd = 0)
     {
         if(!HasPlayerGotItem(playerid, itemId) || !IsItemMeleeWeapon(itemId))
         {
             return false;
         }
 
-        if(basicCND > 0)
+        if(basicCnd > 0)
         {
-            new maxBasicCND = GetPlayerItemMaxAmount(playerid, itemId);
-            ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCND > maxBasicCND) ? (maxBasicCND) : (basicCND);
+            new maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId);
+            ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCnd > maxBasicCnd) ? (maxBasicCnd) : (basicCnd);
         }
 
-        if(extraCND > 0)
+        if(extraCnd > 0)
         {
-            new maxExtraCND = GetPlayerItemMaxAmount(playerid, itemId, true);
-            ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCND > maxExtraCND) ? (maxExtraCND) : (extraCND);
+            new maxExtraCnd = GetPlayerItemMaxAmount(playerid, itemId, true);
+            ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCnd > maxExtraCnd) ? (maxExtraCnd) : (extraCnd);
         }
         return true;
     }
@@ -740,6 +740,7 @@
         if(GetPlayerEquippedItemId(playerid) == itemId)
         {
             HudTd_UpdateWeaponAmmo(playerid, itemId);
+            HudTd_DisplayMeleeWeaponBars(playerid, itemId);
         }
 
         switch(GetItemType(itemId))
@@ -903,12 +904,16 @@
     // true - if item hid correctly.
     HideItem(playerid, bool:equippingNewItem = false)
     {
-        if(GetPlayerEquippedItemId(playerid) == -1)
+        new playerEquippedItemId = GetPlayerEquippedItemId(playerid);
+        if(playerEquippedItemId == -1)
         {
             return false;
         }
 
-        ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
+        if(IsItemWeapon(playerEquippedItemId) || IsItemProjectile(playerEquippedItemId))
+        {
+            ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
+        }
 
         if(equippingNewItem == true)
         {
@@ -922,7 +927,7 @@
 
         ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] = 0;
 
-        OnPlayerWeaponChange(playerid, -1, ePlayerInfo[playerid][e_iLastEquippedItemId]);
+        OnPlayerWeaponChange(playerid, -1, playerEquippedItemId);
         return true;
     }
 
