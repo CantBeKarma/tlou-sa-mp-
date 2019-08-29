@@ -225,8 +225,10 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
         }
 
-		// HudTd_HideMeleeWeaponBars(playerid, oldItemId);
-		// HudTd_HideMeleeUpgradedBars(playerid, oldItemId);
+        if(IsItemMeleeWeapon(oldItemId))
+        {
+            HudTd_HideMeleeWeaponBars(playerid, oldItemId);
+        }
     }
 
     HudTd_UpdateWeapon(playerid, newItemId);
@@ -253,7 +255,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         }
 
 		ShowHud(playerid);
-        // HudTd_DisplayMeleeWeaponBars(playerid, newItemId);
+        HudTd_DisplayMeleeWeaponBars(playerid, newItemId);
         HudTd_DisplayWeaponCurrentAmmo(playerid, newItemId);
 
         // Detach weapon from player's body when it is in use 

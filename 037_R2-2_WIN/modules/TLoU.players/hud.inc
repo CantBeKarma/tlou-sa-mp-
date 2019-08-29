@@ -1,108 +1,112 @@
 // Check if HUD is visible to the player right now.
 IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
 
-// HUD : Showing.
-ShowHud(playerid)
-{
-    PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+//#region Overall HUD functions (Showing/Hiding)
 
-    HudTd_UpdateCraftingWrench(playerid);
-    HudTd_UpdateShivs(playerid);
-    HudTd_UpdateMelee(playerid);
-
-    TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
-    TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Underneath]);
-    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status]);
-
-    // Weapon HUD showing is being done inside 'SetPlayerWeapon' !
-    RestartHideHudTimer(playerid);
-}
-
-// HUD : Hiding
-timer HideHud[TIMER_HIDE_HUD](playerid)
-{
-    if(!IsHudVisibleForPlayer(playerid))
+    // HUD : Showing.
+    ShowHud(playerid)
     {
-        return false;
+        PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+
+        HudTd_UpdateCraftingWrench(playerid);
+        HudTd_UpdateShivs(playerid);
+        HudTd_UpdateMelee(playerid);
+
+        TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
+        TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Underneath]);
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status]);
+
+        // Weapon HUD showing is being done inside 'SetPlayerWeapon' !
+        RestartHideHudTimer(playerid);
     }
 
-    // Weapon HUD hiding is being done inside 'OnPlayerWeaponChange' !
-    HideItem(playerid);
-    
-    if(IsPlayerHudFlashing(playerid))
+    // HUD : Hiding
+    timer HideHud[TIMER_HIDE_HUD](playerid)
     {
-        return false;
-    }
+        if(!IsHudVisibleForPlayer(playerid))
+        {
+            return false;
+        }
 
-    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+        // Weapon HUD hiding is being done inside 'OnPlayerWeaponChange' !
+        HideItem(playerid);
+        
+        if(IsPlayerHudFlashing(playerid))
+        {
+            return false;
+        }
 
-    TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Wrench]);
-    TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
-    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
-    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Melee]);
+        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
 
-    TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
-    TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Underneath]);
-    PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status]);
-    return true;
-}
+        TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Wrench]);
+        TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
+        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
+        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Melee]);
 
-// HUD : Checks player's armed weapon and displays it.
-HudTd_UpdateWeapon(playerid, itemId)
-{
-    if(itemId == -1)
-    {
-        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
+        TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
+        TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Underneath]);
+        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status]);
         return true;
     }
 
-    for(new i = 0; i != MAX_HUD_WEAPONS; i++)
+    // HUD : Checks player's armed weapon and displays it.
+    HudTd_UpdateWeapon(playerid, itemId)
     {
-        if(itemId != _:eHudMenu_Items[i][e_iHud_itemId])
+        if(itemId == -1)
         {
-            continue;
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
+            return true;
         }
 
-        PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_sHud_WeapIcon]);
-        PlayerTextDrawTextSize(playerid,  ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconTextSize_X], eHudMenu_Items[i][e_fHud_WeapIconTextSize_Y]);
-        PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconPos_X], eHudMenu_Items[i][e_fHud_WeapIconPos_Y]);
-        PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Ammo],   eHudMenu_Items[i][e_fHud_WeapAmmoPos_X], eHudMenu_Items[i][e_fHud_WeapAmmoPos_Y]);
+        for(new i = 0; i != MAX_HUD_WEAPONS; i++)
+        {
+            if(itemId != _:eHudMenu_Items[i][e_iHud_itemId])
+            {
+                continue;
+            }
 
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
-        break;
+            PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_sHud_WeapIcon]);
+            PlayerTextDrawTextSize(playerid,  ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconTextSize_X], eHudMenu_Items[i][e_fHud_WeapIconTextSize_Y]);
+            PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Weapon], eHudMenu_Items[i][e_fHud_WeapIconPos_X], eHudMenu_Items[i][e_fHud_WeapIconPos_Y]);
+            PlayerTextDrawSetPos(playerid,    ePlayerTextDrawInfo[playerid][e_Hud_Ammo],   eHudMenu_Items[i][e_fHud_WeapAmmoPos_X], eHudMenu_Items[i][e_fHud_WeapAmmoPos_Y]);
+
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon]);
+            break;
+        }
+        return true;
     }
-    return true;
-}
 
-// HUD : Checking if there's anything to craft and displays wrench icon if so.
-HudTd_UpdateCraftingWrench(playerid)
-{
-    if(Iter_Count(ItemsToCraft<playerid>) <= 0)
+    // HUD : Checking if there's anything to craft and displays wrench icon if so.
+    HudTd_UpdateCraftingWrench(playerid)
     {
-        CraftTd_CheckWhatsToCraft(playerid);
+        if(Iter_Count(ItemsToCraft<playerid>) <= 0)
+        {
+            CraftTd_CheckWhatsToCraft(playerid);
+        }
+
+        if(Iter_Count(ItemsToCraft<playerid>) <= 0)
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Wrench]);
+        else 
+            TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Wrench]);
     }
 
-    if(Iter_Count(ItemsToCraft<playerid>) <= 0)
-        TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Wrench]);
-    else 
-        TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Wrench]);
-}
-
-// HUD : Checking if player has any shivs - if so, displays shiv icon and amount.
-HudTd_UpdateShivs(playerid)
-{
-    if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0) TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
-    else
+    // HUD : Checking if player has any shivs - if so, displays shiv icon and amount.
+    HudTd_UpdateShivs(playerid)
     {
-        TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
-        
-        new String:itemAmountStr = STRING_NULL;
-        itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV));
+        if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0) TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
+        else
+        {
+            TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
+            
+            new String:itemAmountStr = STRING_NULL;
+            itemAmountStr = str_val(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV));
 
-        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount], itemAmountStr);
-        PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
+            PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount], itemAmountStr);
+            PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
+        }
     }
-}
+
+//#endregion
 
 //#region Melee HUD textdraws functions
 
@@ -132,6 +136,7 @@ HudTd_UpdateShivs(playerid)
             maxBasicCND = GetPlayerItemMaxAmount(playerid, itemId),
             maxMeleeBars = maxBasicCND + GetPlayerItemMaxAmount(playerid, itemId, true);
 
+        new
             playerMeleeCnd = GetPlayerItemAmount(playerid, itemId),
             playerMeleeExtCnd = GetPlayerMeleeExtraCnd(playerid, itemId);
 
@@ -263,7 +268,7 @@ HudTd_UpdateShivs(playerid)
         
         new 
             maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId),
-            maxMeleeBars = maxBasicCND + GetPlayerItemMaxAmount(playerid, itemId, true);
+            maxMeleeBars = maxBasicCnd + GetPlayerItemMaxAmount(playerid, itemId, true);
 
         for(new tdIdx = 0; tdIdx != maxMeleeBars; tdIdx++)
         {
@@ -437,55 +442,59 @@ HudTd_UpdateShivs(playerid)
 
 //#endregion
 
-// HUD : Change hud background color from Red to Black (used when lost some health).
-function HudTd_Bg_RedToBlack(playerid, Float:amount)
-{
-    new color = InterpolateColors(COLOR_DARK_RED, COLOR_BLACK_TRANS, amount);
-    PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg], color);
+//#region Hud flashing (red-to-black and red-dark red)
 
-    if(!IsPlayerUsingBackpack(playerid))
+    // HUD : Change hud background color from Red to Black (used when lost some health).
+    function HudTd_Bg_RedToBlack(playerid, Float:amount)
     {
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
-    }
-
-    if(amount < 1.0)
-    {
-        SetTimerEx("HudTd_Bg_RedToBlack", 100, false, "df", playerid, amount += 0.1);
-    }
-}
-
-// HUD : Switch colors from RED <-> DARK RED (if wounded) of the hud background.
-function HudTd_Bg_FlashRed(playerid, colorId, Float:amount)
-{
-    if(!IsPlayerHudFlashing(playerid))
-    {
-        return;
-    }
-
-    if(GetPlayerHealthEx(playerid) <= 30.0)
-    {
-        new color;
-        switch(colorId)
-        {
-            case 0:color = InterpolateColors(COLOR_RED, COLOR_DARK_RED, amount);
-            case 1:color = InterpolateColors(COLOR_DARK_RED, COLOR_RED, amount);
-        }
+        new color = InterpolateColors(COLOR_DARK_RED, COLOR_BLACK_TRANS, amount);
         PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg], color);
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+
+        if(!IsPlayerUsingBackpack(playerid))
+        {
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+        }
 
         if(amount < 1.0)
         {
-            SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, colorId, amount += 0.1);
+            SetTimerEx("HudTd_Bg_RedToBlack", 100, false, "df", playerid, amount += 0.1);
         }
-        else
-        {
-            SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, (colorId == 0) ? (1) : (0), 0.0);
-        }
-        return;
     }
 
-    Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
-    HudTd_Bg_RedToBlack(playerid, 0.0);
+    // HUD : Switch colors from RED <-> DARK RED (if wounded) of the hud background.
+    function HudTd_Bg_FlashRed(playerid, colorId, Float:amount)
+    {
+        if(!IsPlayerHudFlashing(playerid))
+        {
+            return;
+        }
 
-    RestartHideHudTimer(playerid);
-}
+        if(GetPlayerHealthEx(playerid) <= 30.0)
+        {
+            new color;
+            switch(colorId)
+            {
+                case 0:color = InterpolateColors(COLOR_RED, COLOR_DARK_RED, amount);
+                case 1:color = InterpolateColors(COLOR_DARK_RED, COLOR_RED, amount);
+            }
+            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg], color);
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bg]);
+
+            if(amount < 1.0)
+            {
+                SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, colorId, amount += 0.1);
+            }
+            else
+            {
+                SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, (colorId == 0) ? (1) : (0), 0.0);
+            }
+            return;
+        }
+
+        Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+        HudTd_Bg_RedToBlack(playerid, 0.0);
+
+        RestartHideHudTimer(playerid);
+    }
+
+//#endregion
