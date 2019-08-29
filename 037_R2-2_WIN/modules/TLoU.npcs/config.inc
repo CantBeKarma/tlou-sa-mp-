@@ -1,5 +1,3 @@
-#include	<YSI\y_hooks>
-
 // NPCs Configuration.
 #define     TIMER_FCNPC_RESPAWN         (1000 * 5)
 #define     TIMER_FCNPC_UPDATE          (200)
@@ -135,27 +133,3 @@ enum e_NPC_FLAGS
     e_bIsUpdateTimerRunning
 }
 new BitArray:eNpcFlag[e_NPC_FLAGS]<MAX_PLAYERS>;
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- OnGameModeInit --------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnGameModeInit()
-{
-    SendRconCommandf("maxnpc %d", MAX_FCNPCS);
-
-    Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "Creating FCNPCs...");
-    //FCNPC_CreateInfected();
-    return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- OnGameModeExit --------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnGameModeExit()
-{
-    foreach(new npcid : FCNPC)
-	{
-	    FCNPC_Destroy(npcid);
-	}
-    return 1;
-}
