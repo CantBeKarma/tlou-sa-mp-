@@ -129,6 +129,11 @@ forward OnPlayerDrinkSprunk(playerid);
 
 public OnPlayerConnect(playerid)
 {
+	if(IsPlayerNPC(playerid))
+	{
+		return 0;
+	}
+
 	SAMPP_ExecuteCallback(0, playerid);
 
 #if defined SAMPP_OnPlayerConnect
@@ -150,6 +155,11 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	if(IsPlayerNPC(playerid))
+	{
+		return 0;
+	}
+
 	SAMPP_ExecuteCallback(1, playerid, reason);
 
 #if defined SAMPP_OnPlayerDisconnect

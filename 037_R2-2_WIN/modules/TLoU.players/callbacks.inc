@@ -19,11 +19,6 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public OnPlayerTLoUClientJoin(playerid, bool:has_plugin)
 	{
-		if(IsPlayerNPC(playerid))
-		{
-			return 0;
-		}
-
 		if(has_plugin)
 		{
 			wait_ms(500);
