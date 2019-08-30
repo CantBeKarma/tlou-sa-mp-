@@ -3,9 +3,9 @@ CMD:giveitem(playerid, params[])
     new itemId, amount;
     if(sscanf(params, "dd", itemId, amount))return SCM(playerid, -1, "/giveitem [itemId] [amount]");
     {
-        if(IsItemMeleeWeapon(itemId))
+        if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
         {
-            SCMF(playerid, -1, "To give melee use /givemlee cmd instead");
+            SCMF(playerid, -1, "To give melee use /givemelee cmd instead");
             return 0;
         }
 
@@ -24,7 +24,7 @@ CMD:givemelee(playerid, params[])
     new itemId, amount, meleeExtraCnd;
     if(sscanf(params, "ddd", itemId, amount, meleeExtraCnd))return SCM(playerid, -1, "/givemelee [itemId] [cnd] [extraCnd]");
     {
-        if(!IsItemMeleeWeapon(itemId))
+        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
         {
             SCMF(playerid, -1, "It's not a melee!");
             return 0;

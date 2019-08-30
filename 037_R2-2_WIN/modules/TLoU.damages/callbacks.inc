@@ -39,9 +39,9 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
     new playerItemId = GetPlayerEquippedItemId(issuerid);
     new issuerWeaponId = GetItemNativeWeaponId(playerItemId);
     new Float:distanceBetweenPlayers = 0.0;
-    new Float:damageAmount = CalculateDamageAmount(issuerid, playerid, issuerWeaponId, distanceBetweenPlayers, bodypart);
+    new Float:damageAmount = CalculateDamageAmount(issuerid, playerid, playerItemId, distanceBetweenPlayers, bodypart);
 
-    if(IsItemMeleeWeapon(playerItemId))
+    if(IsItemType(playerItemId, ITEM_TYPE:ITEM_TYPE_MELEE))
     {
         OnPlayerHitPlayer(playerid, issuerid, issuerWeaponId, damageAmount);
     }

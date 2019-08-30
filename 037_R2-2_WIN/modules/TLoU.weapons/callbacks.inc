@@ -225,7 +225,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
         }
 
-        if(IsItemMeleeWeapon(oldItemId))
+        if(IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_MELEE))
         {
             HudTd_HideMeleeWeaponBars(playerid, oldItemId);
         }

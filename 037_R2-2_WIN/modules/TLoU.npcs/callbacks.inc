@@ -237,9 +237,9 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		new playerItemId = GetPlayerEquippedItemId(issuerid);
 		new issuerWeaponId = GetItemNativeWeaponId(playerItemId);
 		new Float:distanceBetweenPlayers = 0.0;
-		new Float:damageAmount = CalculateDamageAmount(issuerid, npcid, issuerWeaponId, distanceBetweenPlayers, bodypart);
+		new Float:damageAmount = CalculateDamageAmount(issuerid, npcid, playerItemId, distanceBetweenPlayers, bodypart);
 
-		if(IsItemMeleeWeapon(playerItemId))
+		if(IsItemType(playerItemId, ITEM_TYPE:ITEM_TYPE_MELEE))
 		{
 			FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, damageAmount);
 		}

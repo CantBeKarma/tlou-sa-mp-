@@ -64,7 +64,7 @@
                 weaponId = eItemsData[row_idItem][e_iItem_SA_WeaponId];
 
                 // Melee weapon durability.
-                if(IsItemMeleeWeapon(weaponId))
+                if(IsItemType(i, ITEM_TYPE:ITEM_TYPE_MELEE))
                 {
                     cache_get_value_name_int(i, "meleeExtCnd", row_meleeExtCnd);
 
