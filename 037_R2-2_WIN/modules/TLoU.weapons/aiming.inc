@@ -123,16 +123,16 @@ public OnPlayerStopAimingWeapon(playerid)
 	HidePlayerHitMarker(playerid);
 	SetPlayerDrunkLevel(playerid, 0);
 
-	new equippedItemid = GetPlayerEquippedItemId(playerid);
-	if(IsItemType(equippedItemid, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+	new equippedItemId = GetPlayerEquippedItemId(playerid);
+	if(IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
 	{
 		OnPlayerStopAimingBulletWeapon(playerid);
 	}
-	else if(equippedItemid == _:ITEM_IDX_BOW)
+	else if(equippedItemId == _:ITEM_IDX_BOW)
 	{
 		OnPlayerStopAimingBow(playerid);
 	}
-	else if(IsItemType(equippedItemid, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(equippedItemid, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
+	else if(IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
 	{
 		OnPlayerStopAimingProjectile(playerid);
 	}
