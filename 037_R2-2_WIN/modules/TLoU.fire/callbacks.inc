@@ -14,7 +14,7 @@
 
         if(IsPlayerInFireArea(areaid))
         {
-            PutPlayerOnFire(playerid);
+            PutPlayerOnFire(playerid, areaid);
         }
         return 1;
     }
