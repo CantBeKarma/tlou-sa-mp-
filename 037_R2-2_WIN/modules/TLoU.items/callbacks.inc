@@ -35,15 +35,15 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         new nextAction = NEXT_ACTION_NONE;
 
-        new itemId, ITEM_TYPE:itemType;
-        ReadItemRelation(item_objectId, .itemId = itemId, .itemType = itemType);
+        new itemId;
+        ReadItemRelation(item_objectId, .itemId = itemId);
 
         new
             newItemIdx,
             newItemAmount,
             newItemExtAmount;
 
-        switch(itemType)
+        switch(GetItemType(itemId))
         {
             case ITEM_TYPE_INGREDIENT:  nextAction = OnPlayerPickUpIngredient(playerid, item_objectId, newItemAmount);
             case ITEM_TYPE_HEAL:        nextAction = OnPlayerPickUpHealItem(playerid, item_objectId);
@@ -74,8 +74,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         if(updateItem)
         {
-            if(itemType == ITEM_TYPE:ITEM_TYPE_MELEE
-            || itemType == ITEM_TYPE:ITEM_TYPE_THROWABLE)
+            if(IsItemType(itemId, ITEM_TYPE_MELEE) || IsItemType(itemId, ITEM_TYPE_THROWABLE))
             {
                 itemId = newItemIdx;
             }
