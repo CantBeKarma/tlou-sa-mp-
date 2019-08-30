@@ -102,13 +102,21 @@ DegradePlayerMeleeWeapon(playerid)
 
 	// Durability logic (reduce upgraded durability or basic one?)
 	new newMeleeDurability = (IsPlayerMeleeUpgraded(playerid)) ? (playerMeleeExtCnd-1) : (playerMeleeBasicCnd-1);
-	
-	SCMF(playerid, -1, "newMeleeDurability: %d", newMeleeDurability);
+
 	HudTd_UpdateMeleeWeaponCND(playerid, playerMeleeItemId, newMeleeDurability);
+
+	if(!IsPlayerMeleeUpgraded(playerid))
+	{
+		SetPlayerItemAmount(playerid, playerMeleeItemId, newMeleeDurability);
+	}
+	else
+	{
+		SetPlayerItemAmount(playerid, playerMeleeItemId, playerMeleeBasicCnd, newMeleeDurability);
+	}
 
 	if(newMeleeDurability <= 0)
 	{
-		if(!IsPlayerMeleeUpgraded(playerid))
+		if(!IsPlayerMeleeUpgraded(playerid) && GetPlayerItemAmount(playerid, playerMeleeItemId) <= 0)
 		{
 			RemovePlayerItem(playerid, playerMeleeItemId);
 		}
@@ -116,7 +124,7 @@ DegradePlayerMeleeWeapon(playerid)
 		{
 			HudTd_HideMeleeUpgradedBars(playerid, playerMeleeItemId);
 
-			if(playerMeleeItemId == WEAPON_SCISSOR_PIPE)
+			if(playerMeleeItemId == _:ITEM_IDX_SCSR_PIPE)
 			{
 				RemovePlayerItem(playerid, playerMeleeItemId);
 

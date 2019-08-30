@@ -216,19 +216,9 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Update certain bar of the melee weapon (reduct it from the condition of the melee).
     HudTd_UpdateMeleeWeaponCND(playerid, itemId, tdIdx)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return false;
-        }
-
-        if(!IsPlayerMeleeUpgraded(playerid))
-        {
-            SetPlayerItemAmount(playerid, itemId, tdIdx);
-        }
-        else
-        {
-            new playerMeleeCnd = GetPlayerItemAmount(playerid, itemId);
-            SetPlayerItemAmount(playerid, itemId, playerMeleeCnd, tdIdx);
         }
 
         switch(ITEM_IDX:itemId)
@@ -254,7 +244,6 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
                     COLOR_GRAY_TRANS, true);
             }
         }
-
         return true;
     }
 
@@ -318,7 +307,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Hide melee upgraded condition bars.
     HudTd_HideMeleeUpgradedBars(playerid, itemId)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return false;
         }
