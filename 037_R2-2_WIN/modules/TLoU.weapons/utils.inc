@@ -100,34 +100,32 @@ DegradePlayerMeleeWeapon(playerid)
 		playerMeleeBasicCnd = GetPlayerItemAmount(playerid, playerMeleeItemId),
 		playerMeleeExtCnd = GetPlayerMeleeExtraCnd(playerid, playerMeleeItemId);
 
-	// // Durability logic (reduce upgraded durability or basic one?)
+	// Durability logic (reduce upgraded durability or basic one?)
 	new newMeleeDurability = (IsPlayerMeleeUpgraded(playerid)) ? (playerMeleeExtCnd-1) : (playerMeleeBasicCnd-1);
 	
 	SCMF(playerid, -1, "newMeleeDurability: %d", newMeleeDurability);
 	HudTd_UpdateMeleeWeaponCND(playerid, playerMeleeItemId, newMeleeDurability);
 
-	if(newMeleeDurability > 0)
+	if(newMeleeDurability <= 0)
 	{
-		return;
-	}
+		if(!IsPlayerMeleeUpgraded(playerid))
+		{
+			RemovePlayerItem(playerid, playerMeleeItemId);
+		}
+		else
+		{
+			HudTd_HideMeleeUpgradedBars(playerid, playerMeleeItemId);
 
-	// Removes melee weapon if broke.
-	if(!IsPlayerMeleeUpgraded(playerid))
-	{
-		RemovePlayerItem(playerid, playerMeleeItemId);
-		return;
-	}
+			if(playerMeleeItemId == WEAPON_SCISSOR_PIPE)
+			{
+				RemovePlayerItem(playerid, playerMeleeItemId);
 
-	// If melee is upgraded - remove its upgraded feature and hide bars of it.
-	HudTd_HideMeleeUpgradedBars(playerid, playerMeleeItemId);
-
-	if(playerMeleeItemId == WEAPON_SCISSOR_PIPE)
-	{
-		new playerMeleeCnd = GetPlayerItemAmount(playerid, playerMeleeItemId);
-		RemovePlayerItem(playerid, playerMeleeItemId);
-		GivePlayerItem(playerid, _:ITEM_IDX_PIPE);
-		SetPlayerItemAmount(playerid, _:ITEM_IDX_PIPE, playerMeleeCnd);
-		EquipItem(playerid, GetPlayerMeleeItemId(playerid));
+				playerMeleeItemId = _:ITEM_IDX_PIPE;
+				GivePlayerItem(playerid, playerMeleeItemId);
+				SetPlayerItemAmount(playerid, playerMeleeItemId, playerMeleeBasicCnd);
+				EquipItem(playerid, playerMeleeItemId);
+			}
+		}
 	}
 }
 
@@ -136,7 +134,7 @@ ReloadWeapon(playerid)
 {
     new currentEquippedItemId = GetPlayerEquippedItemId(playerid);
 
-    if(currentEquippedItemId == -1 || !IsItemBulletWeapon(currentEquippedItemId)
+    if(currentEquippedItemId == -1 || !IsItemType(currentEquippedItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON)
     || IsPlayerUnableToPerformAction(playerid) || IsPlayerUsingBackpack(playerid) || IsPlayerUsingWeaponMenu(playerid)
     || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_CROUCHLOAD || GetPlayerAnimationIndex(playerid) == RIFLE_RIFLE_LOAD)
     {
