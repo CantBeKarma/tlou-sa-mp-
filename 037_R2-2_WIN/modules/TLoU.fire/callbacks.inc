@@ -14,7 +14,7 @@
 
         if(IsPlayerInFireArea(areaid))
         {
-            SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_BURNING);
+            PutPlayerOnFire(playerid);
         }
         return 1;
     }
@@ -44,9 +44,7 @@
 public OnPlayerStartBurning(playerid, fireCreatorId)
 {
     HideItem(playerid);
-
     SPAO(playerid, OBJECT_MODEL_BURNING);
-    ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, fireCreatorId);
     return 0;
 }
 
@@ -70,14 +68,7 @@ timer OnPlayerBurn[FIRE_DAMAGE_RATE](playerid, fireCreatorId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStopBurning(playerid)
 {
-    stop ePlayerInfo[playerid][e_iTimer_Burning];
-    
-    if(IsPlayerDead(playerid))
-    {
-        return 1;
-    }
-    
-    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+    RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     return 0;
 }
 

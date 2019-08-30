@@ -81,7 +81,7 @@ ResetBits_ePlayerFlag(playerid)
 
 				if(IsPlayerBurning(playerid))
 				{
-					RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+					OnPlayerStopBurning(playerid);
 				}
 			}
 
