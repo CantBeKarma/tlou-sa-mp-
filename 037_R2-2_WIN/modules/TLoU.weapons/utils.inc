@@ -78,20 +78,6 @@ ResetEnum_ePlayerWeapon(playerid)
 
 //#endregion
 
-//#region Validations
-
-	// Return for which weapon id the specified ammo is for.
-	GetWeaponIdForAmmoType(ammoModelId)
-	{
-		switch(ammoModelId)
-		{
-			case ITEM_MODEL_ARROW:	return WEAPON_BOW;
-		}
-		return -1;
-	}
-
-//#endregion
-
 // Reduces condition of player's melee weapon by one.
 DegradePlayerMeleeWeapon(playerid)
 {
