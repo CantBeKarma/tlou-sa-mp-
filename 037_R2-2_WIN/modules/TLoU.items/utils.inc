@@ -5,11 +5,11 @@
         return (itemId >= 0 && itemId < MAX_ITEMS_DATA);
     }
 
-    GetItemType(itemId)
+    ITEM_TYPE:GetItemType(itemId)
     {
         if(!IsValidItemId(itemId))
         {
-            return -1;
+            return ITEM_TYPE:-1;
         }
 
         return (eItemsData[itemId][e_iItem_Type]);
@@ -88,7 +88,7 @@
 
         new bool:result = false;
 
-        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || IsItemMeleeWeapon(itemId)))
+        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE)))
         {
             result = (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId));
         }
@@ -99,44 +99,15 @@
         return result;
     }
 
-    IsItemBulletWeapon(itemId)
+    IsItemType(itemId, ITEM_TYPE:typeId)
     {
-        return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
-    }
-
-    IsItemWeapon(itemId)
-    {
-        return (GetItemType(itemId) == ITEM_TYPE_WEAPON);
-    }
-
-    IsItemMeleeWeapon(itemId)
-    {
-        return (GetItemType(itemId) == ITEM_TYPE_MELEE);
-    }
-
-    IsItemThrowable(itemId)
-    {
-        return (GetItemType(itemId) == ITEM_TYPE_THROWABLE);
-    }
-
-    IsItemProjectile(itemId)
-    {
-        return (GetItemType(itemId) == ITEM_TYPE_PROJECTILE);
-    }
-
-    IsItemMedkit(itemId)
-    {
-        return (GetItemType(itemId) == ITEM_TYPE_HEAL && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_MEDKIT);
-    }
-
-    IsItemBow(itemId)
-    {
-        return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW);
-    }
-
-    IsItemIngredient(itemId)
-    {
-        return (GetItemType(itemId) == ITEM_TYPE_INGREDIENT);
+        switch(typeId)
+        {
+            case ITEM_TYPE_BULLET_WEAPON: return (GetItemType(itemId) == ITEM_TYPE:ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
+            case ITEM_TYPE_MEDKIT:        return (GetItemType(itemId) == ITEM_TYPE:ITEM_TYPE_HEAL && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_MEDKIT);
+            case ITEM_TYPE_BOW:           return (GetItemType(itemId) == ITEM_TYPE:ITEM_TYPE_WEAPON && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW);
+        }
+        return (GetItemType(itemId) == typeId);
     }
 
     bool:HasPlayerGotThrowableItem(playerid)
@@ -327,7 +298,7 @@
         // Update database info & give player item.
         // DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
 
-        if(IsItemWeapon(itemId))
+        if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON))
         {
             new freeSlotId = WeapMenu_AssignItemToFreeSlot(playerid, itemId);
             if(freeSlotId == -1)
@@ -371,7 +342,7 @@
         ePlayerItemData[playerid][itemId][e_iItemId] = -1;
         ePlayerItemData[playerid][itemId][e_iItemAmount] = 0;
 
-        if(IsItemMeleeWeapon(itemId))
+        if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
 		{
             ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = 0;
 			HudTd_UpdateMelee(playerid);
@@ -420,7 +391,7 @@
     // (results are possible to be returned from 2 tables - eItemsData | eItemsUpgrades)
     GetPlayerItemMaxClipSize(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsItemBulletWeapon(itemId))
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
         {
             return -1;
         }
@@ -450,7 +421,7 @@
     // (x) current clip amount
     GetPlayerItemClipAmount(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsItemBulletWeapon(itemId))
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
         {
             return -1;
         }
@@ -493,7 +464,7 @@
     // (x) number (int) of melee's upgraded condition
     GetPlayerMeleeExtraCnd(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) && !IsPlayerMeleeUpgraded(playerid) && !IsItemMeleeWeapon(itemId))
+        if(!HasPlayerGotItem(playerid, itemId) && !IsPlayerMeleeUpgraded(playerid) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
         {
             return -1;
         }
@@ -517,7 +488,7 @@
         new maxAmount = 0;
         if(checkMeleeExtraCND == true)
         {
-            if(!IsItemMeleeWeapon(itemId))
+            if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
             {
                 return 0;
             }
@@ -660,7 +631,7 @@
     // true - if melee's weapon CND set correctly
     bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCnd, extraCnd = 0)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsItemMeleeWeapon(itemId))
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
         {
             return false;
         }
@@ -735,8 +706,8 @@
     UpdateTextDrawsIfNecessary(playerid, itemId)
     {
         if(IsPlayerUsingWeaponMenu(playerid)
-        && (IsItemWeapon(itemId) || IsItemProjectile(itemId)
-        ||  IsItemThrowable(itemId) || IsItemMedkit(itemId) || IsItemIngredient(itemId)))
+        && (IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE)
+        ||  IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MEDKIT) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_INGREDIENT)))
         {
             WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId);
             CraftTd_CheckWhatsToCraft(playerid);
@@ -835,7 +806,7 @@
         
         // Equipping weapons with no ammo/amount is allowed 
         // only for BOW and items of type WEAPON.
-        if(itemAmount <= 0 && !IsItemWeapon(itemId))
+        if(itemAmount <= 0 && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON))
         {
             SCMF(playerid, -1, "Stopped at 4th validation");
             return false;
@@ -892,7 +863,7 @@
             
                 case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE, ITEM_TYPE_HEAL:
                 {
-                    SPAO(playerid, (IsItemMedkit(itemId)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
+                    SPAO(playerid, (IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MEDKIT)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
                 }
             }
         }
@@ -915,7 +886,7 @@
             return false;
         }
 
-        if(IsItemWeapon(playerEquippedItemId) || IsItemProjectile(playerEquippedItemId))
+        if(IsItemType(playerEquippedItemId, ITEM_TYPE:ITEM_TYPE_WEAPON) || IsItemType(playerEquippedItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
         {
             ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
         }
@@ -941,7 +912,7 @@
 // Show player item label of the objectid.
 ShowPlayerItemLabel(playerid, item_objectId)
 {
-    new itemUid, itemId, Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, bool:itemCreated, itemModel, itemType, itemWeaponId;
+    new itemUid, itemId, Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, bool:itemCreated, itemModel, ITEM_TYPE:itemType, itemWeaponId;
     ReadItemRelations(item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated, itemModel, itemType, itemWeaponId);
 
     if(!itemCreated)
