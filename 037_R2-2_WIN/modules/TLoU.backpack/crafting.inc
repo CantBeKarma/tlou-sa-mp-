@@ -356,11 +356,11 @@ CraftTd_CheckWhatsToCraft(playerid)
             firstRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftFirstReqIngr],
             secondRequiredIngr = _:eBackpack_CraftItemsData[i][e_iCraftSecondReqIngr];
 
-        if(GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId)
-        || GetPlayerItemAmount(playerid, firstRequiredIngr) < requiredMinAmount
-        || GetPlayerItemAmount(playerid, secondRequiredIngr) < requiredMinAmount
-        || i == 0 && IsPlayerMeleeUpgraded(playerid)
-        || i == 0 && GetPlayerMeleeItemId(playerid) == -1)
+        if(i == 0 && IsPlayerMeleeUpgraded(playerid)
+        || i == 0 && GetPlayerMeleeItemId(playerid) == -1
+        || i > 0 && (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId))
+        || (GetPlayerItemAmount(playerid, firstRequiredIngr) < requiredMinAmount)
+        || (GetPlayerItemAmount(playerid, secondRequiredIngr) < requiredMinAmount))
         {
             if(Iter_Contains(ItemsToCraft<playerid>, i))
             {
