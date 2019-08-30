@@ -1,6 +1,6 @@
 // Reads all item data relation and returns its values to variables sent by reference.
 ReadItemRelations(item_objectId, &itemUid, &itemId, &Float:itemPosX, &Float:itemPosY, &Float:itemPosZ, &itemVw, &itemIntId, \
-    &itemAmount, &itemExtAmount, &itemCreated, &itemModel, &ITEM_TYPE:itemType, &itemWeaponId)
+    &itemAmount, &itemExtAmount, &itemCreated)
 {
     Streamer_GetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
@@ -14,15 +14,12 @@ ReadItemRelations(item_objectId, &itemUid, &itemId, &Float:itemPosX, &Float:item
     itemAmount = eObjData[e_iObj_ItemAmount];
     itemExtAmount = eObjData[e_iObj_MeleeUpgradedCnd];
     itemCreated = eObjData[e_bObj_Created];
-    itemModel = eItemsData[itemId][e_iItem_ModelId];
-    itemType = ITEM_TYPE:eItemsData[itemId][e_iItem_Type];
-    itemWeaponId = (itemType == ITEM_TYPE:ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId];
 }
 
 // Reads single item data relation and returns its value to variable sent by reference.
 // May be used to return many relations/data.
 ReadItemRelation(item_objectId, &itemUid = -1, &itemId = -1, &Float:itemPosX = 1.0, &Float:itemPosY = 1.0, &Float:itemPosZ = 1.0, &itemVw = -1, &itemIntId = -1, \
-    &itemAmount = -1, &itemExtAmount = -1, &itemCreated = -1, &itemModel = -1, &ITEM_TYPE:itemType = ITEM_TYPE:-1, &itemWeaponId = -1)
+    &itemAmount = -1, &itemExtAmount = -1, &itemCreated = -1)
 {
     Streamer_GetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
@@ -74,23 +71,5 @@ ReadItemRelation(item_objectId, &itemUid = -1, &itemId = -1, &Float:itemPosX = 1
     if(itemCreated != -1)
     {
         itemCreated = eObjData[e_bObj_Created];
-    }
-
-    if(itemModel != -1)
-    {
-        itemModel = eItemsData[ eObjData[e_iObj_ItemId] ][e_iItem_ModelId];
-    }
-
-    if(itemType != ITEM_TYPE:-1)
-    {
-        itemType = ITEM_TYPE:eItemsData[ eObjData[e_iObj_ItemId] ][e_iItem_Type];
-    }
-
-    if(itemWeaponId != -1)
-    {
-        itemId = eObjData[e_iObj_ItemId];
-        itemModel = eItemsData[itemId][e_iItem_ModelId];
-        itemType = ITEM_TYPE:eItemsData[itemId][e_iItem_Type];
-        itemWeaponId = (itemType == ITEM_TYPE:ITEM_TYPE_AMMO) ? GetWeaponIdForAmmoType(itemModel) : eItemsData[itemId][e_iItem_SA_WeaponId];
     }
 }
