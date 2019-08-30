@@ -88,7 +88,7 @@
 
         new bool:result = false;
 
-        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE)))
+        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || IsItemType(itemId, ITEM_TYPE_MELEE)))
         {
             result = (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId));
         }
@@ -290,7 +290,7 @@
     // true - if item has been given correctly
     bool:GivePlayerItem(playerid, itemId)
     {
-        if(HasPlayerGotItem(playerid, itemId))
+        if(HasPlayerGotItem(playerid, itemId) || IsItemType(itemId, ITEM_TYPE_MELEE) && GetPlayerMeleeItemId(playerid) != -1)
         {
             return false;
         }
@@ -298,7 +298,7 @@
         // Update database info & give player item.
         // DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
 
-        if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON))
+        if(IsItemType(itemId, ITEM_TYPE_WEAPON))
         {
             new freeSlotId = WeapMenu_AssignItemToFreeSlot(playerid, itemId);
             if(freeSlotId == -1)
@@ -342,7 +342,7 @@
         ePlayerItemData[playerid][itemId][e_iItemId] = -1;
         ePlayerItemData[playerid][itemId][e_iItemAmount] = 0;
 
-        if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(IsItemType(itemId, ITEM_TYPE_MELEE))
 		{
             ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = 0;
 			HudTd_UpdateMelee(playerid);
@@ -464,7 +464,7 @@
     // (x) number (int) of melee's upgraded condition
     GetPlayerMeleeExtraCnd(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) && !IsPlayerMeleeUpgraded(playerid) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(!HasPlayerGotItem(playerid, itemId) && !IsPlayerMeleeUpgraded(playerid) && !IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return -1;
         }
@@ -631,7 +631,7 @@
     // true - if melee's weapon CND set correctly
     bool:SetPlayerMeleeWeaponCND(playerid, itemId, basicCnd, extraCnd = 0)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return false;
         }
@@ -640,6 +640,10 @@
         {
             new maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId);
             ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCnd > maxBasicCnd) ? (maxBasicCnd) : (basicCnd);
+        }
+        else
+        {
+            ePlayerItemData[playerid][itemId][e_iItemAmount] = 0;
         }
 
         if(extraCnd > 0)
@@ -658,7 +662,7 @@
     // Returns:
     // false - if player hasn't got an item OR player is full on that item already OR amount for ingredient is not specified correctly (every 25) OR can't find MaxAmount for the item!
     // true - if player item's amount has been set correctly
-    SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCND = 0)
+    SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCnd = 0)
     {
         if(!HasPlayerGotItem(playerid, itemId))
         {
@@ -672,10 +676,12 @@
             return false;
         }
 
-        if((IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
-        || (GetPlayerItemAmount(playerid, itemId) == amount && GetPlayerMeleeExtraCnd(playerid, itemId) == meleeExtraCND))
+        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
         {
-            return false;
+            if(IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
+            {
+                return false;
+            }
         }
 
         new bool:success = true;
@@ -686,7 +692,7 @@
 
         if(IsItemType(itemId, ITEM_TYPE_MELEE))
         {
-            success = SetPlayerMeleeWeaponCND(playerid, itemId, amount, meleeExtraCND);
+            success = SetPlayerMeleeWeaponCND(playerid, itemId, amount, meleeExtraCnd);
         }
 
         if(!success)
@@ -695,8 +701,12 @@
             return false;
         }
 
-        ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: set item amount to: %d (extraCnd = %d) of item id: %d for charUid: %d", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCND, itemId, GetPlayerCharUid(playerid));
+        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
+        {
+            ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
+        }
+
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: set item amount to: %d (extraCnd = %d) of item id: %d for charUid: %d", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, GetPlayerCharUid(playerid));
         // DB_UpdatePlayerItemAmount(itemId, calcAmount, .ownerUid = eCharsInfo[playerid][e_iUid]);
 
         UpdateTextDrawsIfNecessary(playerid, itemId);
