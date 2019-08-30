@@ -239,11 +239,11 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 		new Float:distanceBetweenPlayers = 0.0;
 		new Float:damageAmount = CalculateDamageAmount(issuerid, npcid, playerItemId, distanceBetweenPlayers, bodypart);
 
-		if(IsItemType(playerItemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+		if(IsItemType(playerItemId, ITEM_TYPE_MELEE))
 		{
 			FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, damageAmount);
 		}
-		else if(IsItemType(playerItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+		else if(IsItemType(playerItemId, ITEM_TYPE_BULLET_WEAPON))
 		{
 			FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, damageAmount, distanceBetweenPlayers, bodypart);
 		}
