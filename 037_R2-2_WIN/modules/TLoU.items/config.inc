@@ -93,14 +93,14 @@ enum ITEM_TYPE
     ITEM_TYPE_WEAPON,
     ITEM_TYPE_BULLET_WEAPON,
     ITEM_TYPE_MEDKIT,
+    ITEM_TYPE_SHIV,
     ITEM_TYPE_BOW,
     ITEM_TYPE_HEAL,
     ITEM_TYPE_INGREDIENT,
     ITEM_TYPE_PROJECTILE,
     ITEM_TYPE_THROWABLE,
     ITEM_TYPE_COLLECTIBLE,
-    ITEM_TYPE_AMMO,
-    ITEM_TYPE_MISC
+    ITEM_TYPE_AMMO
 };
 
 stock const eItemsSprites[MAX_ITEMS_DATA][25] =
@@ -177,7 +177,7 @@ stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
     {"Bow",                 ITEM_TYPE_WEAPON,       ITEM_MODEL_BOW,         -1,      9,         -1,                         WEAPON_BOW,             45.0,   35.0},
     {"Arrow",               ITEM_TYPE_AMMO,         ITEM_MODEL_ARROW,       -1,      0,         -1,                         -1,                     0.0,    0.0},
 
-    {"Shiv",                ITEM_TYPE_MISC,         ITEM_MODEL_SHIV,        -1,      3,          -1,                         WEAPON_SHIV,            0.0,    0.0},
+    {"Shiv",                ITEM_TYPE_SHIV,         ITEM_MODEL_SHIV,        -1,      3,          -1,                         WEAPON_SHIV,            0.0,    0.0},
     {"Medkit",              ITEM_TYPE_HEAL,         ITEM_MODEL_MEDKIT,      -1,      3,          AUDIO_PICKUP_MEDKIT,        WEAPON_MEDKIT,          0.0,    0.0},
     {"Molotov Cocktail",    ITEM_TYPE_PROJECTILE,   ITEM_MODEL_MOLOTOV,     -1,      3,          -1,                         WEAPON_MOLOTOV,         5.0,    5.0},
     {"Nail bomb",           ITEM_TYPE_PROJECTILE,   ITEM_MODEL_BOMB,        -1,      3,          -1,                         WEAPON_NAIL_BOMB,       85.0,   85.0},
