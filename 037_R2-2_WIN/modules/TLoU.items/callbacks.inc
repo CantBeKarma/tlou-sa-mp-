@@ -247,7 +247,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         SetPlayerItemAmount(playerid, itemId, newItemAmount);
 
         new nextAction;
-        if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
+        if(IsItemType(itemId, ITEM_TYPE_WEAPON))
         {
             new playerWeapon_MaxAmmo = GetPlayerItemMaxAmount(playerid, itemId);
             nextAction = (newItemAmount > playerWeapon_MaxAmmo) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);

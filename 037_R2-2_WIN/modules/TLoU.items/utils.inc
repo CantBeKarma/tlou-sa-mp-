@@ -507,7 +507,7 @@
             maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
             if(maxAmount == -1)
             {
-                if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
+                if(IsItemType(itemId, ITEM_TYPE_WEAPON))
                 {
                     new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
                 
@@ -522,7 +522,7 @@
                         }
                     }
                 }
-                else if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+                else if(IsItemType(itemId, ITEM_TYPE_MELEE))
                 {
                     for(new i = 0; i != MAX_MELEE_ITEMS; i++)
                     {
@@ -546,7 +546,7 @@
     {
         for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
-            if(GetItemType(i) != ITEM_TYPE_MELEE)
+            if(!IsItemType(i, ITEM_TYPE_MELEE))
             {
                 continue;
             }
@@ -589,7 +589,7 @@
 	{
         for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
-            if(GetItemType(i) != ITEM_TYPE_WEAPON || !HasPlayerGotItem(playerid, i) || GetPlayerItemAmount(playerid, i) <= 0)
+            if(!IsItemType(i, ITEM_TYPE_WEAPON) || !HasPlayerGotItem(playerid, i) || GetPlayerItemAmount(playerid, i) <= 0)
             {
                 continue;
             }
@@ -679,12 +679,12 @@
         }
 
         new bool:success = true;
-        if(GetItemType(itemId) == ITEM_TYPE_INGREDIENT)
+        if(IsItemType(itemId, ITEM_TYPE_INGREDIENT))
         {
             success = ((amount % 25) == 0);
         }
 
-        if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+        if(IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             success = SetPlayerMeleeWeaponCND(playerid, itemId, amount, meleeExtraCND);
         }
@@ -785,7 +785,7 @@
 
         // If player is allowed to shiv, do not equip melee weapon
         // and hide player weapon.
-        if(IsPlayerAllowedToShiv(playerid) && GetItemType(itemId) == ITEM_TYPE_MELEE)
+        if(IsPlayerAllowedToShiv(playerid) && IsItemType(itemId, ITEM_TYPE_MELEE))
 		{
             SCMF(playerid, -1, "Stopped at 2nd validation");
             HideItem(playerid);
@@ -818,9 +818,9 @@
         new nativeWeaponId = GetItemNativeWeaponId(itemId);
         if(itemAmount <= 0)
         {
-            if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
+            if(IsItemType(itemId, ITEM_TYPE_WEAPON))
             {
-                if(ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW)
+                if(IsItemType(itemId, ITEM_TYPE_BOW))
                 {
                     SPAO(playerid, GetItemModel(itemId), true);
                 }

@@ -52,12 +52,12 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 	// Projectiles / Bow.
 	if(GetPlayerItemAmount(playerid, itemId) > 0)
 	{
-		if(ITEM_IDX:itemId == ITEM_IDX_BOW)
+		if(IsItemType(itemId, ITEM_TYPE_BOW))
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingBow(playerid);
 		}
-		else if(GetItemType(itemId) == ITEM_TYPE_PROJECTILE || GetItemType(itemId) == ITEM_TYPE_THROWABLE)
+		else if(IsItemType(itemId, ITEM_TYPE_PROJECTILE) || IsItemType(itemId, ITEM_TYPE_THROWABLE))
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingProjectile(playerid, itemId);

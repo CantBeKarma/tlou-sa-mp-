@@ -22,7 +22,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         if(IsPlayerIdle(playerid))
         {
             // Healing
-            if(GetItemType(currentItemId) == ITEM_TYPE_HEAL)
+            if(IsItemType(currentItemId, ITEM_TYPE_MEDKIT))
             {
                 if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < 100.0)
                 {
