@@ -211,7 +211,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 
         // If old item was a weapon and new item is attachable (custom item)
         if(IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_WEAPON)
-        && (IsItemBow(newItemId) || IsItemType(newItemId, ITEM_TYPE:ITEM_IDX_MEDKIT)
+        && (IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_MEDKIT)
         ||  IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)))
         {
             ResetPlayerWeapons(playerid);
@@ -219,7 +219,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 
         // If old item was attachable and new item is standard weapon.
         if(IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_WEAPON)
-        && (IsItemBow(oldItemId) || IsItemType(oldItemId, ITEM_TYPE:ITEM_IDX_MEDKIT)
+        && (IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_MEDKIT)
         ||  IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) || IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)))
         {
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
@@ -260,7 +260,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 
         // Detach weapon from player's body when it is in use 
         // (don't detach BOW or projectile/throwable/medkit since it's attached to player's hand).
-        if(!IsItemBow(newItemId) && !IsItemType(newItemId, ITEM_TYPE:ITEM_IDX_MEDKIT)
+        if(!IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_BOW) && !IsItemType(newItemId, ITEM_TYPE:ITEM_IDX_MEDKIT)
         && !IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) && !IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE))
         {
             DetachWeaponFromPlayersBody(playerid, newItemId);
