@@ -42,7 +42,7 @@ timer Key_AimingCustomWeapon[100](playerid)
     else if(leftright == KEY_RIGHT) ApplyAnimation(playerid, "PED", "GUNMOVE_R", 4.1, 1, 1, 1, 0, 0);
     else
     {
-        if(IsItemThrowable(currentItemId) || IsItemProjectile(currentItemId))
+        if(IsItemType(currentItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(currentItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
         {
             ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
         }
@@ -57,7 +57,7 @@ timer Key_AimingCustomWeapon[100](playerid)
     {
         if(keys & KEY_FIRE)
         {
-            if(IsItemThrowable(currentItemId) || IsItemProjectile(currentItemId))
+            if(IsItemType(currentItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(currentItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
             {
                 Projectile_Throw(playerid, currentItemId);
             }

@@ -438,8 +438,8 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
         {
             for(itemId = 0; itemId != MAX_ITEMS_DATA; itemId++)
             {
-                if(!IsItemWeapon(itemId) && !IsItemThrowable(itemId)
-                && !IsItemProjectile(itemId) && !IsItemMedkit(itemId))
+                if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)
+                && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) && !IsItemMedkit(itemId))
                 {
                     continue;
                 }
@@ -468,8 +468,8 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
         }
         else
         {
-            if(!IsItemWeapon(itemId) && !IsItemThrowable(itemId)
-            && !IsItemProjectile(itemId) && !IsItemMedkit(itemId))
+            if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)
+            && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) && !IsItemMedkit(itemId))
             {
                 return false;
             }

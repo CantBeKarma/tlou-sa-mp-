@@ -96,6 +96,7 @@
 
         for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
+            
             switch(i)
             {
                 // Ingredients.

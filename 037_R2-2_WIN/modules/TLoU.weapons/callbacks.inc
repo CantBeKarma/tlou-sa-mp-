@@ -51,7 +51,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         }
 
         // If player uses bullet weapon and has no ammo in a weapon magazine...
-        if(IsPlayerAimingWeapon(playerid) && IsItemBulletWeapon(currentItemId) && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
+        if(IsPlayerAimingWeapon(playerid) && IsItemType(currentItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON) && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
         {
             // perform a sound effect when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
@@ -203,24 +203,24 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
     if(oldItemId != -1)
     {
         // Attach old item to player it if was only a WEAPON type.
-        if(IsItemWeapon(oldItemId))
+        if(IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_WEAPON))
         {
             SPAO(playerid, GetItemModel(oldItemId));
             HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
         }
 
         // If old item was a weapon and new item is attachable (custom item)
-        if(IsItemWeapon(oldItemId) 
+        if(IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_WEAPON)
         && (IsItemBow(newItemId) || IsItemMedkit(newItemId)
-        ||  IsItemProjectile(newItemId) || IsItemThrowable(newItemId)))
+        ||  IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)))
         {
             ResetPlayerWeapons(playerid);
         }
 
         // If old item was attachable and new item is standard weapon.
-        if(IsItemWeapon(newItemId)
+        if(IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_WEAPON)
         && (IsItemBow(oldItemId) || IsItemMedkit(oldItemId)
-        ||  IsItemProjectile(oldItemId) || IsItemThrowable(oldItemId)))
+        ||  IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) || IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)))
         {
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
         }
@@ -261,7 +261,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         // Detach weapon from player's body when it is in use 
         // (don't detach BOW or projectile/throwable/medkit since it's attached to player's hand).
         if(!IsItemBow(newItemId) && !IsItemMedkit(newItemId)
-        && !IsItemProjectile(newItemId) && !IsItemThrowable(newItemId))
+        && !IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) && !IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE))
         {
             DetachWeaponFromPlayersBody(playerid, newItemId);
         }

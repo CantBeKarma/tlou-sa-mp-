@@ -360,7 +360,7 @@ AttachWeaponsToPlayer(playerid)
 {
 	for(new i = 0; i != MAX_ITEMS_DATA; i++)
 	{
-		if(!IsItemWeapon(i) && !IsItemMeleeWeapon(i))
+		if(!IsItemType(i, ITEM_TYPE:ITEM_TYPE_WEAPON) && !IsItemType(i, ITEM_TYPE:ITEM_TYPE_MELEE))
 		{
 			continue;
 		}
@@ -505,7 +505,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 // Detach weapon models from player's body.
 DetachWeaponFromPlayersBody(playerid, itemId)
 {
-	if(!IsItemWeapon(itemId) && !IsItemMeleeWeapon(itemId))
+	if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
 	{
 		return false;
 	}

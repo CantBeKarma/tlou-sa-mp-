@@ -43,7 +43,7 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 	}
 
 	// Bullet weapons.
-	if(IsItemBulletWeapon(itemId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
+	if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	{
 		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
 		OnPlayerStartAimingBulletWeapon(playerid);
@@ -78,7 +78,7 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 public OnPlayerAimsWeapon(playerid, itemId)
 {
 	// Weapon Sway.
-	if(IsItemBulletWeapon(itemId))
+	if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
 	{
 		new drunkLevel = 
 			  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
@@ -124,7 +124,7 @@ public OnPlayerStopAimingWeapon(playerid)
 	SetPlayerDrunkLevel(playerid, 0);
 
 	new equippedItemid = GetPlayerEquippedItemId(playerid);
-	if(IsItemBulletWeapon(equippedItemid))
+	if(IsItemType(equippedItemid, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
 	{
 		OnPlayerStopAimingBulletWeapon(playerid);
 	}
@@ -132,7 +132,7 @@ public OnPlayerStopAimingWeapon(playerid)
 	{
 		OnPlayerStopAimingBow(playerid);
 	}
-	else if(IsItemThrowable(equippedItemid) || IsItemProjectile(equippedItemid))
+	else if(IsItemType(equippedItemid, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(equippedItemid, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
 	{
 		OnPlayerStopAimingProjectile(playerid);
 	}

@@ -9,17 +9,6 @@
 #define     HEAL_ITEM_RECOVER_HP    (5.0)
 #define     DAMAGE_VALUE_FISTS      (8.0)
 
-// Types of the items available.
-#define     ITEM_TYPE_MELEE         (0)
-#define     ITEM_TYPE_WEAPON        (1)
-#define     ITEM_TYPE_HEAL          (2)
-#define     ITEM_TYPE_INGREDIENT    (3)
-#define     ITEM_TYPE_PROJECTILE    (4)
-#define     ITEM_TYPE_THROWABLE     (5)
-#define     ITEM_TYPE_COLLECTIBLE   (6)
-#define     ITEM_TYPE_AMMO          (7)
-#define     ITEM_TYPE_MISC          (8)
-
 //#region Item models.
     // -> Craftable
     #define     ITEM_MODEL_SHIV         (15071)
@@ -98,6 +87,20 @@ enum ITEM_IDX
     ITEM_IDX_BOTTLE
 };
 
+enum ITEM_TYPE
+{
+    ITEM_TYPE_MELEE,
+    ITEM_TYPE_WEAPON,
+    ITEM_TYPE_BULLET_WEAPON,
+    ITEM_TYPE_HEAL,
+    ITEM_TYPE_INGREDIENT,
+    ITEM_TYPE_PROJECTILE,
+    ITEM_TYPE_THROWABLE,
+    ITEM_TYPE_COLLECTIBLE,
+    ITEM_TYPE_AMMO,
+    ITEM_TYPE_MISC
+};
+
 stock const eItemsSprites[MAX_ITEMS_DATA][25] =
 {
     "TLoU:ingr_blade_full",
@@ -138,7 +141,7 @@ stock const eItemsSprites[MAX_ITEMS_DATA][25] =
 enum e_ITEM_DATA
 {
     e_sItem_Name[24],
-    e_iItem_Type,
+    ITEM_TYPE:e_iItem_Type,
     e_iItem_ModelId,
     e_iItem_MaxClipSize,
     e_iItem_MaxAmount,

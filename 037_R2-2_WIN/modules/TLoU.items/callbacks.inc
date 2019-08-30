@@ -35,7 +35,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         new nextAction = NEXT_ACTION_NONE;
 
-        new itemId, itemType;
+        new itemId, ITEM_TYPE:itemType;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemType = itemType);
 
         new
@@ -74,8 +74,8 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         if(updateItem)
         {
-            if(itemType == ITEM_TYPE_MELEE
-            || itemType == ITEM_TYPE_THROWABLE)
+            if(itemType == ITEM_TYPE:ITEM_TYPE_MELEE
+            || itemType == ITEM_TYPE:ITEM_TYPE_THROWABLE)
             {
                 itemId = newItemIdx;
             }

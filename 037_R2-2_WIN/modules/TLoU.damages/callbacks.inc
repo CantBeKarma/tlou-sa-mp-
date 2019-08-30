@@ -45,7 +45,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
     {
         OnPlayerHitPlayer(playerid, issuerid, issuerWeaponId, damageAmount);
     }
-    else if(IsItemBulletWeapon(playerItemId))
+    else if(IsItemType(playerItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
     {
         OnPlayerShootPlayer(playerid, issuerid, issuerWeaponId, damageAmount, distanceBetweenPlayers, bodypart);
     }
