@@ -103,62 +103,76 @@
     {
         switch(typeId)
         {
-            case ITEM_TYPE_BULLET_WEAPON: return (GetItemType(itemId) == ITEM_TYPE:ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX:ITEM_IDX_BOW);
-            case ITEM_TYPE_MEDKIT:        return (GetItemType(itemId) == ITEM_TYPE:ITEM_TYPE_HEAL && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_MEDKIT);
-            case ITEM_TYPE_BOW:           return (GetItemType(itemId) == ITEM_TYPE:ITEM_TYPE_WEAPON && ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW);
+            case ITEM_TYPE_BULLET_WEAPON: return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX_BOW);
+            case ITEM_TYPE_MEDKIT:        return (GetItemType(itemId) == ITEM_TYPE_HEAL && ITEM_IDX:itemId == ITEM_IDX_MEDKIT);
+            case ITEM_TYPE_BOW:           return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId == ITEM_IDX_BOW);
         }
         return (GetItemType(itemId) == typeId);
     }
 
-    bool:HasPlayerGotThrowableItem(playerid)
+    bool:ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Float:rY, &Float:rZ)
     {
-        return HasPlayerGotItem(playerid, _:ITEM_IDX_BRICK) || HasPlayerGotItem(playerid, _:ITEM_IDX_BOTTLE);
-    }
+        if(GetItemType(itemId) == ITEM_TYPE_SHIV
+        || GetItemType(itemId) == ITEM_TYPE_PROJECTILE
+        || GetItemType(itemId) == ITEM_TYPE_THROWABLE
+        || IsItemType(itemId, ITEM_TYPE_MEDKIT))
+        {
+            if(itemAmount > 1)
+            {
+                itemAmount = 1;
+            }
+        }
 
-    ValidateItemCreation(itemId, &itemAmount, &meleeExtCnd, &Float:z, &Float:rX, &Float:rY, &Float:rZ)
-    {
         switch(GetItemType(itemId))
         {
-            // Ingredients.
             case ITEM_TYPE_INGREDIENT:
             {
-                // Validate if the specified value is only every 25.
-                if((itemAmount % 25) != 0 || itemAmount <= 0 || itemAmount > 300)
+                if((itemAmount % 25) != 0 || itemAmount > 300)
                 {
-                    return 1;
+                    return false;
                 }
                 rZ = float(random(360));
             }
 
-            // Melee weapons.
             case ITEM_TYPE_MELEE:
             {
-                if(meleeExtCnd > 0)
+                if(meleeExtCnd > 0 && itemId != _:ITEM_IDX_PIPE)
                 {
-                    meleeExtCnd = GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId, true);
+                    new maxMeleeExtCnd = GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId, true);
+                    meleeExtCnd = (meleeExtCnd > maxMeleeExtCnd) ? (maxMeleeExtCnd) : (meleeExtCnd);
+                }
+                else
+                {
+                    meleeExtCnd = 0;
                 }
 
-                itemAmount = GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId);
+                new maxMeleeBasicCnd = GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId);
+                itemAmount = (itemAmount > maxMeleeBasicCnd) ? (maxMeleeBasicCnd) : (itemAmount);
 
                 rX = 90.0;
                 rY = float(random(360));
             }
 
-            // Weapons.
-            case ITEM_TYPE_BULLET_WEAPON:
+            case ITEM_TYPE_WEAPON:
             {
-                rX = 90.0;
-                rY = float(random(360));
+                if(itemId == _:ITEM_IDX_BOW)
+                {
+                    z += 0.06;
+                    rZ = float(random(360));
+                }
+                else
+                {
+                    rX = 90.0;
+                    rY = float(random(360));
+                }
             }
 
-            // Bow, Shiv, Medkit.
-            case ITEM_TYPE_BOW, ITEM_TYPE_SHIV, ITEM_TYPE_MEDKIT:
+            case ITEM_TYPE_SHIV, ITEM_TYPE_HEAL:
             {
                 z += 0.06;
                 rZ = float(random(360));
             }
 
-            // Molotov Cocktail, Nail bomb, Smoke bomb.
             case ITEM_TYPE_PROJECTILE:
             {
                 switch(random(2))
@@ -169,17 +183,19 @@
                 rZ = float(random(360));
             }
 
-            // Bottle.
-            case 23://ITEM_TYPE_THROWABLE:
+            case ITEM_TYPE_THROWABLE:
             {
-                switch(random(2))
+                if(itemId == _:ITEM_IDX_BOTTLE)
                 {
-                    case 0: z += 0.1783;
-                    case 1: rX = 90.0, rY = float(random(360)), rZ = float(random(360)), z += 0.04;
+                    switch(random(2))
+                    {
+                        case 0: z += 0.1783;
+                        case 1: rX = 90.0, rY = float(random(360)), rZ = float(random(360)), z += 0.04;
+                    }
                 }
             }
         }
-        return 0;
+        return true;
     }
 
 //#endregion
@@ -193,7 +209,7 @@
         // Unable to create item if item amount is invalid.
         if(itemAmount <= 0 || meleeExtCnd < 0)
         {
-            return 1;
+            return false;
         }
 
         // Create item at position where the player is if creatorId is specified 
@@ -209,20 +225,22 @@
 
         // Validation position & rotation of the item.
         new Float:rX, Float:rY, Float:rZ;
-        if(ValidateItemCreation(itemId, itemAmount, meleeExtCnd, z, rX, rY, rZ) == 1)
+        if(ValidateItemCreation(itemId, itemAmount, meleeExtCnd, z, rX, rY, rZ) == false)
         {
-            return 1;
+            return false;
         }
 
-        if(update)
+        if(update && updateItemUid != -1)
         {
-            DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
+            //DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
+            OnItemUpdate(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
         }
         else
         {
-            DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
+            //DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
+            OnItemCreate(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
         }
-        return 0;
+        return true;
     }
 
     // Destroying item (object) and clear its data.
@@ -365,7 +383,7 @@
     // (results are possible to be returned from 2 tables - eItemsData | eItemsUpgrades)
     GetPlayerItemMaxClipSize(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
         {
             return -1;
         }
@@ -395,7 +413,7 @@
     // (x) current clip amount
     GetPlayerItemClipAmount(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+        if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
         {
             return -1;
         }
@@ -870,7 +888,7 @@
             return false;
         }
 
-        if(IsItemType(playerEquippedItemId, ITEM_TYPE:ITEM_TYPE_WEAPON) || IsItemType(playerEquippedItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
+        if(IsItemType(playerEquippedItemId, ITEM_TYPE_WEAPON) || IsItemType(playerEquippedItemId, ITEM_TYPE_PROJECTILE))
         {
             ePlayerInfo[playerid][e_iLastEquippedItemId] = GetPlayerEquippedItemId(playerid);
         }
@@ -896,12 +914,12 @@
 // Show player item label of the objectid.
 ShowPlayerItemLabel(playerid, item_objectId)
 {
-    new itemUid, itemId, Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, bool:itemCreated;
-    ReadItemRelations(item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated);
+    new bool:itemCreated;
+    ReadItemRelation(item_objectId, .itemCreated = itemCreated);
 
     if(!itemCreated)
     {
-        return;
+        return false;
     }
 
     if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
@@ -909,8 +927,11 @@ ShowPlayerItemLabel(playerid, item_objectId)
         DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
     }
 
+    new itemUid, itemId, Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount;
+    ReadItemRelations(item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated);
+
     new labelStr[32];
-    if(IsPlayerFullOnItem(playerid, itemId))
+    if(IsPlayerFullOnItem(playerid, itemId) && !IsItemType(itemId, ITEM_TYPE_MELEE))
     {
         format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
 
@@ -919,7 +940,6 @@ ShowPlayerItemLabel(playerid, item_objectId)
         return true;
     }
 
-    new labelStr[32];
     switch(GetItemType(itemId))
     {
         case ITEM_TYPE_MELEE:
@@ -938,4 +958,5 @@ ShowPlayerItemLabel(playerid, item_objectId)
 
     ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel(labelStr, COLOR_WHITE_TRANS, itemPosX, itemPosY, itemPosZ, ITEM_LABEL_DRAW_DIST, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, itemVw, itemIntId, playerid);
     Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
+    return true;
 }
