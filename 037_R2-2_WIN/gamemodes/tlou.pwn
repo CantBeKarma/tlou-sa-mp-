@@ -31,7 +31,6 @@
 #include    <TLoU.audio\main>
 #include    <TLoU.backpack\main>
 #include    <TLoU.characters\main>
-#include    <TLoU.commands\main>
 #include    <TLoU.players\main>
 #include    <TLoU.damages\main>
 #include    <TLoU.fire\main>
@@ -44,5 +43,4 @@
 #include    <TLoU.weaponMenu\main>
 #include    <TLoU.weapons\main>
 #include    <TLoU.weaponsUpgrades\main>
-
-#include    <TLoU.items\refactoring>
+#include    <TLoU.commands\main>
