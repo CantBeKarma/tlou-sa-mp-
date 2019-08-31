@@ -203,30 +203,31 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
     if(oldItemId != -1)
     {
         // Attach old item to player it if was only a WEAPON type.
-        if(IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_WEAPON))
+        if(IsItemType(oldItemId, ITEM_TYPE_WEAPON))
         {
             SPAO(playerid, GetItemModel(oldItemId));
             HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
         }
 
         // If old item was a weapon and new item is attachable (custom item)
-        if(IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_WEAPON)
-        && (IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_MEDKIT)
-        ||  IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)))
+        if(IsItemType(oldItemId, ITEM_TYPE_WEAPON)
+        && (IsItemType(newItemId, ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE_MEDKIT)
+        ||  IsItemType(newItemId, ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE_THROWABLE)))
         {
             ResetPlayerWeapons(playerid);
         }
 
         // If old item was attachable and new item is standard weapon.
-        if(IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_WEAPON)
-        && (IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_MEDKIT)
-        ||  IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) || IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE)))
+        if(IsItemType(newItemId, ITEM_TYPE_WEAPON)
+        && (IsItemType(oldItemId, ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE_MEDKIT)
+        ||  IsItemType(oldItemId, ITEM_TYPE_PROJECTILE) || IsItemType(oldItemId, ITEM_TYPE_THROWABLE)))
         {
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
         }
 
-        if(IsItemType(oldItemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(IsItemType(oldItemId, ITEM_TYPE_MELEE))
         {
+            SPAO(playerid, GetItemModel(oldItemId));
             HudTd_HideMeleeWeaponBars(playerid, oldItemId);
         }
     }
