@@ -79,26 +79,26 @@
 		return 1;
 	}
 
-//#endregion
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------- OnPlayerFirstSpawn ------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerFirstSpawn(playerid)
-{
-	if(!TLoU_IsClientConnected(playerid))
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------- OnPlayerFirstSpawn ------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerFirstSpawn(playerid)
 	{
-		new String:pName = str_new_buf(MAX_PLAYER_NAME);
-		str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
+		if(!TLoU_IsClientConnected(playerid))
+		{
+			new String:pName = str_new_buf(MAX_PLAYER_NAME);
+			str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
 
-		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] connected (possibly?) without a tlou_client.asi file. Kicked.", _:pName, playerid);
-		Kick(playerid);
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] connected (possibly?) without a tlou_client.asi file. Kicked.", _:pName, playerid);
+			Kick(playerid);
+			return 0;
+		}
+
+		OnPlayerPrepareToSign(playerid);
 		return 0;
 	}
 
-	OnPlayerPrepareToSign(playerid);
-	return 0;
-}
+//#endregion
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- OnPlayerRespawn --------------------

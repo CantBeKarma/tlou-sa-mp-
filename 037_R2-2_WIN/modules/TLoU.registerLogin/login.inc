@@ -32,43 +32,7 @@ function PrepareDataAfterLogin(playerid)
     cache_get_value_name_int(0, "skill_weaponsway", Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY));
     cache_get_value_name_int(0, "skill_shivmaster", Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER));
 
-//#region Reset variables
-    Iter_Clear(ItemsToCraft<playerid>);
-    Iter_Clear(SkillsToUpgrade<playerid>);
-    Iter_Clear(iAudioHandle3D<playerid>);
-
-    for(new i = 0; i != MAX_ITEMS_DATA; i++)
-    {
-        ePlayerItemData[playerid][i][e_iItemId] = -1;
-        ePlayerItemData[playerid][i][e_iItemAmount] = 0;
-        ePlayerItemData[playerid][i][e_iItemClipAmount] = -1;
-
-        if(i <= 3)
-        {
-            WeapMenu_Ls_ItemId(playerid, i) = -1;
-        }
-
-        if(i <= 2)
-        {
-            WeapMenu_Rs_ItemId(playerid, i) = -1;
-        }
-    }
-
-    ePlayerWeapon[playerid][e_iArrowObjectId] = -1;
-
-    ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
-    ePlayerInfo[playerid][e_iLastEquippedItemId] = -1;
-    
-    eCharsInfo[playerid][e_iAttachSlot_Backpack] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_9mm] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_Revolver] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_LongGunOne] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_Melee] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_GasMask] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_Dynamic] = -1;
-//#endregion
-
+    ResetVariables(playerid);
     DB_LoadPlayerItems(playerid, eCharsInfo[playerid][e_iUid]);
 
     TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);

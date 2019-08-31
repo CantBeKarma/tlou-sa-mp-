@@ -13,19 +13,7 @@ PrepareDataAfterRegister(playerid)
 
     Bit_Let(ePlayerFlag[e_bLogged], playerid);
 
-    // Give player empty ingredient values to DB.
-    for(new i = 0; i != 5; i++)
-    {
-        DB_GivePlayerItem(i, 0, .ownerUid = eCharsInfo[playerid][e_iUid]);
-
-        if(i <= 3) 
-            WeapMenu_Ls_ItemId(playerid, i) = -1;
-
-        if(i <= 2) 
-            WeapMenu_Rs_ItemId(playerid, i) = -1;
-    }
-
-    Iter_Clear(iAudioHandle3D<playerid>);
+    ResetVariables(playerid);
 
     TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
     TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);
@@ -36,10 +24,8 @@ PrepareDataAfterRegister(playerid)
     CreatePlayerLabel(playerid);
     SetPlayerVirtualWorld(playerid, 0);
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
-    
     SpawnPlayer(playerid);
 
-    FadePlayerScreen(playerid, FADE_OUT);
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] has signed up for the first time!", ePlayerInfo[playerid][e_sName], playerid);
     return 0;
 }
