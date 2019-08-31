@@ -9,6 +9,11 @@
 #define     HEAL_ITEM_RECOVER_HP    (5.0)
 #define     DAMAGE_VALUE_FISTS      (8.0)
 
+// Pickup actions.
+#define     NEXT_ACTION_NONE        (0)
+#define     NEXT_ACTION_UPDATE      (1)
+#define     NEXT_ACTION_DESTROY     (2)
+
 //#region Item models.
     // -> Craftable
     #define     ITEM_MODEL_SHIV         (15071)

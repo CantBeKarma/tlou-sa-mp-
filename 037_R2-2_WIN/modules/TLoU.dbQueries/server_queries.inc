@@ -3,7 +3,7 @@ DB_CommitNewItem(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ
 {
     new query[512];
     mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), 
-        "INSERT INTO `items_data` (`id_item`, `x`, `y`, `z`, `rX`, `rY`, `rZ`, `virtualWorld`, `interiorId`, `amount`, `meleeExtCnd`, `collectibleTitle`, `collectibleInnerMsg` ) \ 
+        "INSERT INTO items_data (id_item, x, y, z, rX, rY, rZ, virtualWorld, interiorId, amount, meleeExtCnd, collectibleTitle, collectibleInnerMsg) \ 
         VALUES \
         (%d, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d, '%s', '%s')", \
         itemId, \
@@ -19,7 +19,7 @@ DB_CommitNewItem(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ
 DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, creatorId)
 {
     new query[128];
-    mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE `items_data` SET `id_item` = %d, `amount` = %d, `meleeExtCnd` = %d WHERE `uid` = %d", itemId, itemAmount, meleeExtCnd, updateItemUid);
+    mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET id_item = %d, amount = %d, meleeExtCnd = %d WHERE uid = %d", itemId, itemAmount, meleeExtCnd, updateItemUid);
     mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemUpdate", "ddddffffffddd", updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
 }
 
@@ -27,7 +27,7 @@ DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, Float:x, F
 DB_DestroyItem(uid_item)
 {
     new query[64];
-    mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE `items_data` SET `is_created` = 0 WHERE `uid` = %d", uid_item);
+    mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET is_created = 0 WHERE uid = %d", uid_item);
     mysql_tquery(eServerInfo[e_SqlHandler], query);
 }
 
@@ -72,7 +72,7 @@ DB_LoadItems()
                 row_itemTitle, row_itemInnerMsg, row_itemX, row_itemY, row_itemZ, row_virtualWorld, row_interiorId, true, row_itemUid);
         }
     }
-    mysql_tquery_inline(eServerInfo[e_SqlHandler], "SELECT * FROM `items_data` WHERE `uid_owner` = -1", using inline OnItemsLoad);
+    mysql_tquery_inline(eServerInfo[e_SqlHandler], "SELECT * FROM items_data WHERE uid_owner = -1", using inline OnItemsLoad);
     
     return rows;
 }
