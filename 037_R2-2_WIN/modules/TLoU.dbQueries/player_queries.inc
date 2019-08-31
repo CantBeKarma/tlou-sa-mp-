@@ -4,7 +4,7 @@
     DB_GivePlayerItem(itemId, amount, meleeExtCnd = 0, ownerUid)
     {
         new query[128];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `items_data` (`id_item`, `amount`, `meleeExtCnd`, `uid_owner`, `is_created`) VALUES (%d, %d, %d, %d, 0)", itemId, amount, meleeExtCnd, ownerUid);
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, meleeExtCnd, uid_owner, is_created) VALUES (%d, %d, %d, %d, 0)", itemId, amount, meleeExtCnd, ownerUid);
         mysql_tquery(eServerInfo[e_SqlHandler], query);
     }
 
@@ -12,7 +12,7 @@
     DB_UpdatePlayerItemAmount(itemId, amount, meleeExtCnd = 0, ownerUid)
     {
         new query[128];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE `items_data` SET `amount` = %d, `meleeExtCnd` = %d WHERE `id_item` = %d AND `uid_owner` = %d", amount, meleeExtCnd, itemId, ownerUid);
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET amount = %d, meleeExtCnd = %d WHERE id_item = %d AND uid_owner = %d", amount, meleeExtCnd, itemId, ownerUid);
         mysql_tquery(eServerInfo[e_SqlHandler], query);
     }
 
@@ -20,7 +20,7 @@
     DB_RemovePlayerItem(playerid, itemId, bool:recreateInWorld = false, amount = 0, meleeExtCnd = 0)
     {
         new query[128];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE `items_data` SET `uid_owner` = -1 WHERE `id_item` = %d AND `uid_owner` = %d", itemId, eCharsInfo[playerid][e_iUid]);
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = -1 WHERE id_item = %d AND uid_owner = %d", itemId, GetPlayerCharUid(playerid)));
         mysql_tquery(eServerInfo[e_SqlHandler], query);
 
         if(recreateInWorld)
@@ -39,7 +39,7 @@
 
             if(!rows)
             {
-                return 1;
+                return true;
             }
 
             new 
@@ -47,43 +47,29 @@
                 row_amount,
                 row_meleeExtCnd;
 
-            new weaponId;
-
             for(new i = 0; i != rows; i++)
             {
                 cache_get_value_name_int(i, "id_item", row_idItem);
                 cache_get_value_name_int(i, "amount", row_amount);
 
-                // Ingredients.
-                if(0 <= row_idItem <= 5)
-                {
-                    //Craft_IngrAmount(playerid, row_idItem) = row_amount;
-                    continue;
-                }
+                GivePlayerItem(playerid, row_idItem);
 
-                weaponId = eItemsData[row_idItem][e_iItem_SA_WeaponId];
-
-                // Melee weapon durability.
-                if(IsItemType(i, ITEM_TYPE:ITEM_TYPE_MELEE))
+                if(IsItemType(row_idItem, ITEM_TYPE_MELEE))
                 {
                     cache_get_value_name_int(i, "meleeExtCnd", row_meleeExtCnd);
-
-                    if(row_meleeExtCnd > 0)
-                    {
-                        ePlayerItemData[playerid][i][e_iItemMeleeExtraCND] = row_meleeExtCnd;
-                    }
+                    SetPlayerItemAmount(playerid, row_idItem, row_amount, row_meleeExtCnd);
                 }
-
-                // Other weapons.
-                //GivePlayerWeaponInSlot(playerid, weaponId);
-                //SetPlayerWeaponAmmo(playerid, weaponId, row_amount);
+                else
+                {
+                    SetPlayerItemAmount(playerid, row_idItem, row_amount);
+                }
             }
         }
 
         new query[110];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `id_item`, `amount`, `meleeExtCnd` FROM `items_data` WHERE `uid_owner` = %d ORDER BY `uid_owner`", charUid);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharsItemsDataReceived);
-        return 0;
+        return true;
     }
 
     // Save all player items to the DB.
@@ -96,35 +82,16 @@
 
         for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
-            
-            switch(i)
+            if(!HasPlayerGotItem(playerid, i))
             {
-                // Ingredients.
-                // case 0..5:
-                //     itemAmount = Craft_IngrAmount(playerid, i);
-                
-                // Melee weapon CND.
-                case 6..9:
-                {
-                    if(HasPlayerGotItem(playerid, i))
-                    {
-                        itemAmount = GetPlayerItemAmount(playerid, i);
+                continue;
+            }
 
-                        if(IsPlayerMeleeUpgraded(playerid))
-                        {
-                            meleeExtCnd = ePlayerItemData[playerid][i][e_iItemMeleeExtraCND];
-                        }
-                    }
-                }
+            itemAmount = GetPlayerItemAmount(playerid, i);
 
-                // Other weapons.
-                default:
-                {
-                    if(eItemsData[i][e_iItem_SA_WeaponId] != -1)
-                    {
-                        itemAmount = GetPlayerItemAmount(playerid, i);
-                    }
-                }
+            if(IsItemType(i, ITEM_TYPE_MELEE) && IsPlayerMeleeUpgraded(playerid))
+            {
+                meleeExtCnd = GetPlayerMeleeExtraCnd(playerid, i);
             }
 
             //DB_UpdatePlayerItemAmount(i, itemAmount, meleeExtCnd, eCharsInfo[playerid][e_iUid]);
