@@ -95,6 +95,7 @@ ResetBits_ePlayerFlag(playerid)
 
 				ePlayerInfo[playerid][e_iCurrentStatus] = status;
 				OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
+				Disable_OnPlayerLookAt(playerid);
 				return;
 			}
 
@@ -113,6 +114,7 @@ ResetBits_ePlayerFlag(playerid)
 
 				ePlayerInfo[playerid][e_iCurrentStatus] = status;
 				OnPlayerOpenWeaponMenu(playerid);
+				Disable_OnPlayerLookAt(playerid);
 				return;
 			}
 

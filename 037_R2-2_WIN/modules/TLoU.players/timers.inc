@@ -22,7 +22,7 @@ timer DelayedTimer_EnableJumping[TIMER_BUNNYHOP_DELAY](playerid)
 }
 
 // Check for how long player's been holding key for.
-timer Callback_HoldKeyTimer[100](playerid, key)
+timer Callback_HoldKeyTimer[TIMER_HOLDKEY_RATE](playerid, key)
 {
 	if(IsPlayerHoldingKey(playerid, key))
 	{
@@ -45,6 +45,15 @@ timer Callback_HoldKeyTimer[100](playerid, key)
 // Check what is player looking at the current moment (players & items supported).
 timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 {
+	if(!IsPlayerLookingTimerRunning(playerid))
+	{
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		}
+		return 0;
+	}
+
 //#region Looking at items...
 	
 	// Looking at invalid object.
