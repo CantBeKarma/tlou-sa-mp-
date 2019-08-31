@@ -181,6 +181,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerTriggerNailbomb(triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
     {
+        ApplyAnimation(triggererid, "PED", "EV_STEP", 4.1, 0, 1, 1, 0, 0, 0);
         Audio3D_Play(triggererid, AUDIO_NAILBMB_TRIGGER, x, y, z, 10.0);
         defer OnNailbombExplode(triggererid, throwerid, nailBmbIdx, x, y, z);
         return 0;
@@ -191,9 +192,19 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     timer OnNailbombExplode[NAILBMB_TRIGGERED_EXPLODE](triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
     {
-        #pragma unused triggererid
         #pragma unused throwerid
         
+        if(IsPlayerInRangeOfPoint(triggererid, 3.0, x, y, z))
+        {
+            SetPlayerHealthEx(triggererid, GetPlayerHealthEx(triggererid) - DAMAGE_AMOUNT_NAIL_BOMB, throwerid, WEAPON_NAIL_BOMB);
+            ApplyAnimation(triggererid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);
+
+            if(!IsPlayerDead(triggererid))
+            {
+                defer DelayedTimer_AnimGetUp[1000](triggererid);
+            }
+        }
+
         CreateProjectileDestroyEffect(_:ITEM_IDX_NAIL_BOMB, nailBmbIdx, x, y, z);
         return 0;
     }

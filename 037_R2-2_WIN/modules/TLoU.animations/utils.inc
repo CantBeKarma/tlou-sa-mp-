@@ -137,6 +137,15 @@ PlayDeathAnimation(playerid, bodypart, weaponid)
 		return;
 	}
 
+	if(weaponid == WEAPON_NAIL_BOMB)
+	{
+		if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
+		{
+			ApplyAnimation(playerid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);
+		}
+		return;
+	}
+
 	if(weaponid == WEAPON_SHIV)
 	{
 		ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");

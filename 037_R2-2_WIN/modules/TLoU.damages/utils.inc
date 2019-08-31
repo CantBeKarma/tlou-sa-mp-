@@ -17,7 +17,7 @@ FlyBackwardsWhenShot(damagedid)
     if(!IsPlayerDead(damagedid))
     {
         defer DelayedTimer_AnimGetUp[1000](damagedid);
-    } 
+    }
     return 0;
 }
 

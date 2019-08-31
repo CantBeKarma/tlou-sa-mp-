@@ -346,7 +346,7 @@ ConnectionIntroProcedure(playerid)
 }
 
 // Play that procedure when player dies.
-PlayDeathProcedureForPlayer(playerid)
+function PlayDeathProcedureForPlayer(playerid)
 {
 	if(!IsPlayerDead(playerid))
 	{
