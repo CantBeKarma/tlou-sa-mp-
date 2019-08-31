@@ -785,8 +785,7 @@
             return false;
         }
 
-        // If player is allowed to shiv, do not equip melee weapon
-        // and hide player weapon.
+        // If player is allowed to shiv, do not equip melee weapon and hide player weapon.
         if(IsPlayerAllowedToShiv(playerid) && IsItemType(itemId, ITEM_TYPE_MELEE))
 		{
             SCMF(playerid, -1, "Stopped at 2nd validation");
@@ -795,7 +794,7 @@
         }
 
         // Tries to equip last weapon but has some weapon equipped already (and not using weapon menu).
-        if(GetPlayerEquippedItemId(playerid) != -1 
+        if(GetPlayerEquippedItemId(playerid) != -1
         && GetPlayerLastEquippedItemId(playerid) == itemId
         && !IsPlayerUsingWeaponMenu(playerid)
         && ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] == 0)
@@ -808,7 +807,7 @@
         
         // Equipping weapons with no ammo/amount is allowed 
         // only for BOW and items of type WEAPON.
-        if(itemAmount <= 0 && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON))
+        if(itemAmount <= 0 && !IsItemType(itemId, ITEM_TYPE_WEAPON))
         {
             SCMF(playerid, -1, "Stopped at 4th validation");
             return false;
@@ -870,9 +869,11 @@
             }
         }
 
-        ePlayerInfo[playerid][e_iCurrentEquippedItemId] = itemId;
 
-        OnPlayerWeaponChange(playerid, ePlayerInfo[playerid][e_iCurrentEquippedItemId], ePlayerInfo[playerid][e_iLastEquippedItemId]);
+        new oldItemId = (IsItemType(GetPlayerEquippedItemId(playerid), ITEM_TYPE_MELEE)) ? (GetPlayerEquippedItemId(playerid)) : (ePlayerInfo[playerid][e_iLastEquippedItemId]);
+        new newItemId = ePlayerInfo[playerid][e_iCurrentEquippedItemId] = itemId;
+
+        OnPlayerWeaponChange(playerid, newItemId, oldItemId);
         return true;
     }
 
