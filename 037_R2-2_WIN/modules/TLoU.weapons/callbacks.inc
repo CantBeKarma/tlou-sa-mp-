@@ -261,8 +261,8 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 
         // Detach weapon from player's body when it is in use 
         // (don't detach BOW or projectile/throwable/medkit since it's attached to player's hand).
-        if(!IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_BOW) && !IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_MEDKIT)
-        && !IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) && !IsItemType(newItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE))
+        if(!IsItemType(newItemId, ITEM_TYPE_BOW) && !IsItemType(newItemId, ITEM_TYPE_MEDKIT)
+        && !IsItemType(newItemId, ITEM_TYPE_PROJECTILE) && !IsItemType(newItemId, ITEM_TYPE_THROWABLE))
         {
             DetachWeaponFromPlayersBody(playerid, newItemId);
         }

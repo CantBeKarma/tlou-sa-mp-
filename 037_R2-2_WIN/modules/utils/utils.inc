@@ -505,7 +505,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 // Detach weapon models from player's body.
 DetachWeaponFromPlayersBody(playerid, itemId)
 {
-	if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+	if(!IsItemType(itemId, ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE_MELEE))
 	{
 		return false;
 	}
