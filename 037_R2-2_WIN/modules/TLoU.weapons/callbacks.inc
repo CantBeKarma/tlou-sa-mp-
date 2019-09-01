@@ -222,8 +222,8 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
         }
 
-        // If old item was a weapon and new item is attachable (custom item)
-        if(IsItemType(oldItemId, ITEM_TYPE_WEAPON)
+        // If old item was a weapon OR melee AND new item is either bow/medkit/projectile/throwable.
+        if((IsItemType(oldItemId, ITEM_TYPE_WEAPON) || IsItemType(oldItemId, ITEM_TYPE_MELEE))
         && (IsItemType(newItemId, ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE_MEDKIT)
         ||  IsItemType(newItemId, ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE_THROWABLE)))
         {
@@ -231,8 +231,8 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             ResetPlayerWeapons(playerid);
         }
 
-        // If old item was attachable and new item is standard weapon.
-        if(IsItemType(newItemId, ITEM_TYPE_WEAPON)
+        // If old item was either bow/medkit/projectile/throwable AND new item is weapon OR melee.
+        if((IsItemType(newItemId, ITEM_TYPE_WEAPON) || IsItemType(newItemId, ITEM_TYPE_MELEE))
         && (IsItemType(oldItemId, ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE_MEDKIT)
         ||  IsItemType(oldItemId, ITEM_TYPE_PROJECTILE) || IsItemType(oldItemId, ITEM_TYPE_THROWABLE)))
         {
