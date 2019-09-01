@@ -59,7 +59,7 @@ timer OnPlayerBurn[FIRE_DAMAGE_RATE](playerid, fireCreatorId)
         return 1;
     }
 
-    SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - FIRE_DAMAGE_AMOUNT, fireCreatorId, WEAPON_MOLOTOV);
+    SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - FIRE_DAMAGE_AMOUNT, fireCreatorId, _:ITEM_IDX_MOLOTOV);
     return 0;
 }
 

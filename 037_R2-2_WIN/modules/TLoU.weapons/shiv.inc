@@ -16,7 +16,7 @@ public OnPlayerShivPlayer(playerid, shivedId)
 	ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PLAYER");
 
 	SPAO(playerid, ITEM_MODEL_SHIV);
-	SetPlayerHealthEx(shivedId, 0.0, playerid, WEAPON_SHIV);
+	SetPlayerHealthEx(shivedId, 0.0, playerid, _:ITEM_IDX_SHIV);
 	return 0;
 }
 

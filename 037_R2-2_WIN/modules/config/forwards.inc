@@ -4,7 +4,7 @@ forward OnPlayerAnimFinish(playerid, animIdx);
 forward OnPlayerFirstSpawn(playerid);
 forward OnPlayerRespawn(playerid);
 forward OnPlayerPrepareToSign(playerid);
-forward OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart);
+forward OnPlayerDie(playerid, issuerid, itemId, bodypart);
 forward OnPlayerWeaponChange(playerid, newItemId, oldItemId);
 forward OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId);
 forward OnPlayerLookAtPlayer(playerid, lookingAt_playerId); 
@@ -12,8 +12,8 @@ forward OnPlayerLookAtNPC(playerid, lookingAt_NpcId);
 forward OnPlayerShivPlayer(playerid, shivedId);
 
 forward OnPlayerDamageHimself(playerid, Float:damageAmount);
-forward OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount);
-forward OnPlayerShootPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount, Float:distance, bodypart);
+forward OnPlayerHitPlayer(damagedId, issuerId, issuerItemId, Float:damageAmount);
+forward OnPlayerShootPlayer(damagedId, issuerId, issuerItemId, Float:damageAmount, Float:distance, bodypart);
 forward OnPlayerGetAttackedByNpc(playerid, npcid);
 
 forward OnPlayerHoldingKey(playerid, key);

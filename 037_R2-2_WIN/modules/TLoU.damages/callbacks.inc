@@ -36,18 +36,17 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
         return 1;
     }
 
-    new playerItemId = GetPlayerEquippedItemId(issuerid);
-    new issuerWeaponId = GetItemNativeWeaponId(playerItemId);
+    new issuerItemId = GetPlayerEquippedItemId(issuerid);
     new Float:distanceBetweenPlayers = 0.0;
-    new Float:damageAmount = CalculateDamageAmount(issuerid, playerid, playerItemId, distanceBetweenPlayers, bodypart);
+    new Float:damageAmount = CalculateDamageAmount(issuerid, playerid, issuerItemId, distanceBetweenPlayers, bodypart);
 
-    if(IsItemType(playerItemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+    if(IsItemType(issuerItemId, ITEM_TYPE_MELEE))
     {
-        OnPlayerHitPlayer(playerid, issuerid, issuerWeaponId, damageAmount);
+        OnPlayerHitPlayer(playerid, issuerid, issuerItemId, damageAmount);
     }
-    else if(IsItemType(playerItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+    else if(IsItemType(issuerItemId, ITEM_TYPE_BULLET_WEAPON))
     {
-        OnPlayerShootPlayer(playerid, issuerid, issuerWeaponId, damageAmount, distanceBetweenPlayers, bodypart);
+        OnPlayerShootPlayer(playerid, issuerid, issuerItemId, damageAmount, distanceBetweenPlayers, bodypart);
     }
     return 1;
 }
@@ -64,16 +63,11 @@ public OnPlayerDamageHimself(playerid, Float:damageAmount)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnPlayerHitPlayer -----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount)
+public OnPlayerHitPlayer(damagedId, issuerId, issuerItemId, Float:damageAmount)
 {
-    SetPlayerHealthEx(damagedId, GetPlayerHealthEx(damagedId) - damageAmount, issuerId, issuerWeaponId, BODY_PART_TORSO);
-    PlayPlayerDamageAnimations(damagedId, BODY_PART_TORSO, issuerId, issuerWeaponId);
+    SetPlayerHealthEx(damagedId, GetPlayerHealthEx(damagedId) - damageAmount, issuerId, issuerItemId, BODY_PART_TORSO);
+    PlayPlayerDamageAnimations(damagedId, BODY_PART_TORSO, issuerId, issuerItemId);
 
-    if(issuerWeaponId == WEAPON_UNARMED)
-    {
-        return 0;
-    }
-    
     // Doesn't hide weapon if we are hitting someone.
     RestartHideHudTimer(issuerId);
     DegradePlayerMeleeWeapon(issuerId);    
@@ -83,14 +77,14 @@ public OnPlayerHitPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- OnPlayerShootPlayer ----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerShootPlayer(damagedId, issuerId, issuerWeaponId, Float:damageAmount, Float:distance, bodypart)
+public OnPlayerShootPlayer(damagedId, issuerId, issuerItemId, Float:damageAmount, Float:distance, bodypart)
 {
-    SCMF(damagedId, -1, "Got shot by another player (%d), with weapon (%d). Damage done: %f to bodypart: %d", issuerId, issuerWeaponId, damageAmount, bodypart);
-    SCMF(issuerId, -1, "You shot another player (%d), with weapon (%d). Damage done: %f to bodypart: %d", damagedId, issuerWeaponId, damageAmount, bodypart);
+    SCMF(damagedId, -1, "Got shot by another player (%d), with item (%d). Damage done: %f to bodypart: %d", issuerId, issuerItemId, damageAmount, bodypart);
+    SCMF(issuerId, -1, "You shot another player (%d), with item (%d). Damage done: %f to bodypart: %d", damagedId, issuerItemId, damageAmount, bodypart);
     
     ShowPlayerHitMarker(issuerId, bodypart);
-    SetPlayerHealthEx(damagedId, GetPlayerHealthEx(damagedId) - damageAmount, issuerId, issuerWeaponId, bodypart);
-    PlayPlayerDamageAnimations(damagedId, bodypart, issuerId, issuerWeaponId, distance);
+    SetPlayerHealthEx(damagedId, GetPlayerHealthEx(damagedId) - damageAmount, issuerId, issuerItemId, bodypart);
+    PlayPlayerDamageAnimations(damagedId, bodypart, issuerId, issuerItemId, distance);
     return 1;
 }
 

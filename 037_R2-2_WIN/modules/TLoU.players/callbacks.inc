@@ -124,25 +124,28 @@ public OnPlayerRespawn(playerid)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//-------------------- OnPlayerDeathEx --------------------
+//---------------------- OnPlayerDie ----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
+public OnPlayerDie(playerid, issuerid, itemId, bodypart)
 {
 	if(issuerid == INVALID_PLAYER_ID)
 	{
 		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s [%d] has killed himself", \
 				PlayerName(playerid), playerid);
 
-		weaponid = WEAPON_COLLISION;
+		if(itemId != _:ITEM_IDX_NAIL_BOMB)
+		{
+			itemId = WEAPON_COLLISION;
+		}
 	}
 	else
 	{
 		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s [%d] has been killed by %s [%d] using weapon id: %d to body part: %d", \
-				PlayerName(playerid), playerid, PlayerName(issuerid), issuerid, weaponid, bodypart);
+				PlayerName(playerid), playerid, PlayerName(issuerid), issuerid, itemId, bodypart);
 	}
 
 	FreezePlayer(playerid, true, -1);
-	PlayDeathAnimation(playerid, bodypart, weaponid);
+	PlayDeathAnimation(playerid, bodypart, itemId);
 	CLF(#PlayDeathProcedureForPlayer, "d", playerid);
     return 1;
 }
