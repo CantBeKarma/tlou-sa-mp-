@@ -357,6 +357,15 @@ HideBackpackCategory(playerid, category)
 
         case BACKPACK_CATEGORY_COLLECTIBLES:
         {
+            for(new i = 0; i < 9; i++)
+            {
+                if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]))
+                {
+                    break;
+                }
+                PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+            }
+
             TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MiddleLine]);
 
             for(new i = 0; i != 2; i++)
