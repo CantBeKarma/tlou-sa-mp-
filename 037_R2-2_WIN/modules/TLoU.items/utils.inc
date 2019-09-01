@@ -203,9 +203,13 @@
 //#region Item Create/Update/Destroy
 
     // Create an item.
-    CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, \
-                itemTitle[] = "", innerMsg[] = "", Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
+    CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
     {
+        if(itemId < 0 || itemId > MAX_ITEMS_DATA)
+        {
+            return false;
+        }
+
         // Unable to create item if item amount is invalid.
         if(itemAmount <= 0 || meleeExtCnd < 0)
         {
@@ -238,8 +242,41 @@
         else
         {
             //DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
-            OnItemCreate(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
+            OnItemCreate(itemId, ITEM_TYPE_ITEM, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, "", "", creatorId);
         }
+        return true;
+    }
+
+    CreateCollectible(itemId, title[], innerMsg[], Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, creatorId = -1)
+    {
+        if(itemId < 0 || itemId > MAX_COLLECTIBLES)
+        {
+            SCMF(creatorId, -1, "Only allowed itemIds are between: 0 and %d", MAX_COLLECTIBLES-1);
+            return false;
+        }
+
+        if(isnull(title) || isnull(innerMsg))
+        {
+            SCMF(creatorId, -1, "Can't leave TITLE or innerMsg empty!");
+            return false;
+        }
+
+        if(strlen(title) > 32 || strlen(innerMsg) > 128)
+        {
+            SCMF(creatorId, -1, "Invalid length");
+            return false;
+        }
+
+        if(creatorId != INVALID_PLAYER_ID)
+        {
+            GetPlayerPos(creatorId, x, y, z);
+            CA_FindZ_For2DCoord(x, y, z);
+
+            virtualWorld = GetPlayerVirtualWorld(creatorId);
+            interiorId = GetPlayerInterior(creatorId);
+        }
+
+        OnItemCreate(itemId, ITEM_TYPE_ARTIFACT, x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId, 0, 0, title, innerMsg, creatorId);
         return true;
     }
 
@@ -867,34 +904,45 @@ ShowPlayerItemLabel(playerid, item_objectId)
         DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
     }
 
-    new itemUid, itemId, Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount;
-    ReadItemRelations(item_objectId, itemUid, itemId, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, itemAmount, itemExtAmount, itemCreated);
+    new itemTypeId;
+    ReadItemRelation(item_objectId, .itemTypeId = itemTypeId);
 
     new labelStr[32];
-    if(IsPlayerFullOnItem(playerid, itemId) && !IsItemType(itemId, ITEM_TYPE_MELEE))
+    if(itemTypeId == ITEM_TYPE_ARTIFACT)
     {
-        format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
-
-        ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel(labelStr, COLOR_WHITE_TRANS, itemPosX, itemPosY, itemPosZ, ITEM_LABEL_DRAW_DIST, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, itemVw, itemIntId, playerid);
-        Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
-        return true;
+        format(labelStr, sizeof(labelStr), "Artifact");
     }
-
-    switch(GetItemType(itemId))
+    else
     {
-        case ITEM_TYPE_MELEE:
+        new itemId, itemAmount, itemExtAmount;
+        ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount, .itemExtAmount = itemExtAmount);
+
+        if(IsPlayerFullOnItem(playerid, itemId) && !IsItemType(itemId, ITEM_TYPE_MELEE))
         {
-            new bool:isItemMeleeUpgraded = (itemExtAmount > 0);
-
-            format(labelStr, sizeof(labelStr), "%s\n(CND: %d/%d)", eItemsData[itemId][e_sItem_Name], \
-                    (isItemMeleeUpgraded) ? (itemAmount + itemExtAmount) : (itemAmount), \
-                    (isItemMeleeUpgraded) ? GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId) + GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId, true) : GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId));
+            format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
         }
+        else
+        {
+            switch(GetItemType(itemId))
+            {
+                case ITEM_TYPE_MELEE:
+                {
+                    new bool:isItemMeleeUpgraded = (itemExtAmount > 0);
 
-        case ITEM_TYPE_INGREDIENT:  format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
-        case ITEM_TYPE_WEAPON:      format(labelStr, sizeof(labelStr), "%s\n(ammo: %d)", eItemsData[itemId][e_sItem_Name], floatround(itemAmount));
-        default:                    format(labelStr, sizeof(labelStr), "%s", eItemsData[itemId][e_sItem_Name]);
+                    format(labelStr, sizeof(labelStr), "%s\n(CND: %d/%d)", eItemsData[itemId][e_sItem_Name], \
+                            (isItemMeleeUpgraded) ? (itemAmount + itemExtAmount) : (itemAmount), \
+                            (isItemMeleeUpgraded) ? GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId) + GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId, true) : GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId));
+                }
+
+                case ITEM_TYPE_INGREDIENT:  format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
+                case ITEM_TYPE_WEAPON:      format(labelStr, sizeof(labelStr), "%s\n(ammo: %d)", eItemsData[itemId][e_sItem_Name], floatround(itemAmount));
+                default:                    format(labelStr, sizeof(labelStr), "%s", eItemsData[itemId][e_sItem_Name]);
+            }
+        }
     }
+    
+    new Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId;
+    ReadItemRelation(item_objectId, .itemPosX = itemPosX, .itemPosY = itemPosY, .itemPosZ = itemPosZ, .itemVw = itemVw, .itemIntId = itemIntId);
 
     ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel(labelStr, COLOR_WHITE_TRANS, itemPosX, itemPosY, itemPosZ, ITEM_LABEL_DRAW_DIST, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, itemVw, itemIntId, playerid);
     Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
