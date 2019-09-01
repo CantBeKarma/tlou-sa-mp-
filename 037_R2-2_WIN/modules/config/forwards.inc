@@ -104,6 +104,7 @@ forward OnPlayerPickUpMeleeItem(playerid, itemId, itemAmount, itemExtAmount, &dr
 forward OnPlayerPickUpThrowableItem(playerid, itemId, &dropItemId);
 forward OnPlayerPickUpProjectileItem(playerid, itemId, itemAmount);
 forward OnPlayerPickUpWeapon(playerid, itemId, itemAmount, &dropItemAmount);
+forward OnPlayerPickUpCollectible(playerid, itemId, itemUid, item_objectId);
 
 forward OnItemCreate(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId);
 forward OnItemDestroy(uid_item);

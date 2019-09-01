@@ -29,19 +29,24 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerTryPickupItem(playerid, item_objectId)
     {
-        new itemId;
-        ReadItemRelation(item_objectId, .itemId = itemId);
+        new itemUid, itemId, itemTypeId;
+        ReadItemRelation(item_objectId, .itemUid = itemUid, .itemId = itemId, .itemTypeId = itemTypeId);
+
+        if(itemTypeId == ITEM_TYPE_ARTIFACT)
+        {
+            OnPlayerPickUpCollectible(playerid, itemId, itemUid, item_objectId);
+            return 0;
+        }
 
         if(IsPlayerFullOnItem(playerid, itemId)
         && (IsItemType(itemId, ITEM_TYPE_INGREDIENT) || IsItemType(itemId, ITEM_TYPE_MEDKIT)
         || IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_THROWABLE)
         || IsItemType(itemId, ITEM_TYPE_PROJECTILE)))
         {
-            SCMF(playerid, -1, "Failed picking up at 1st validation");
             return NEXT_ACTION_NONE;
         }
 
-        new itemUid, itemAmount, itemExtAmount;
+        new itemAmount, itemExtAmount;
         if(IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             ReadItemRelation(item_objectId, .itemUid = itemUid, .itemAmount = itemAmount, .itemExtAmount = itemExtAmount);
@@ -98,8 +103,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
                 new recreateItemId = (IsItemType(itemId, ITEM_TYPE_MELEE) || IsItemType(itemId, ITEM_TYPE_THROWABLE) ? (dropItemId) : (itemId));
 
-                CreateOrUpdateItem(recreateItemId, dropItemAmount, dropItemExtCnd, playerid, \
-                        "", "", itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, true, itemUid);
+                CreateOrUpdateItem(recreateItemId, dropItemAmount, dropItemExtCnd, playerid, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, true, itemUid);
             }
         }
 
@@ -245,6 +249,28 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         return nextAction;
     }
 
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //---------------- OnPlayerPickUpCollectible --------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpCollectible(playerid, itemId, itemUid, item_objectId)
+    {
+        Iter_Add(CollectiblesOwned<playerid>, itemUid);
+        DB_GiveCollectibleOwnership(playerid, itemUid);
+        DestroyItem(item_objectId);
+
+        if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+        {
+            GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
+            DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+        }
+
+        ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);
+
+        Audio_PlayEx(playerid, eCollectiblesData[itemId][e_iCollectible_AudioPickupId]);
+
+        return NEXT_ACTION_DESTROY;
+    }
+
 //#endregion
 
 //#region Items management callbacks (Create/Destroy/Update)
@@ -252,9 +278,22 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //--------------------- OnItemCreate ----------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnItemCreate(itemId, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
+    public OnItemCreate(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
     {
-        new objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+        new objectId = -1;
+        if(itemType == ITEM_TYPE_ARTIFACT)
+        {
+            objectId = CreateDynamicObject(eCollectiblesData[itemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+        }
+        else
+        {
+            objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+        }
+
+        if(objectId == -1)
+        {
+            return 1;
+        }
 
         if(creatorId != INVALID_PLAYER_ID)
         {
@@ -263,6 +302,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         eObjData[e_iObj_Uid] = cache_insert_id();
         eObjData[e_iObj_ItemId] = itemId;
+        eObjData[e_iObj_TypeId] = itemType;
         eObjData[e_fObj_X] = x;
         eObjData[e_fObj_Y] = y;
         eObjData[e_fObj_Z] = z;
@@ -270,8 +310,13 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_iObj_Int] = interiorId;
         eObjData[e_iObj_ItemAmount] = itemAmount;
         eObjData[e_iObj_MeleeUpgradedCnd] = meleeExtCnd;
-        strcpy(eObjData[e_sObj_Title], itemTitle, sizeof(eObjData[e_sObj_Title]));
-        strcpy(eObjData[e_sObj_InnerMessage], innerMsg, sizeof(eObjData[e_sObj_InnerMessage]));
+
+        if(!isnull(itemTitle) && !isnull(innerMsg))
+        {
+            strcpy(eObjData[e_sObj_Title], itemTitle, sizeof(eObjData[e_sObj_Title]));
+            strcpy(eObjData[e_sObj_InnerMessage], innerMsg, sizeof(eObjData[e_sObj_InnerMessage]));
+        }
+
         eObjData[e_bObj_Created] = true;
 
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
