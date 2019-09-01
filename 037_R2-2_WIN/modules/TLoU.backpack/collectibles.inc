@@ -1,9 +1,14 @@
-// Display_ArtifactsList(playerid)
-// {
-//     SCMF(playerid, -1, "My iter count: %d", Iter_Count(ArtifactsOwned<playerid>));
-//     foreach(new i : ArtifactsOwned<playerid>)
-//     {
-//         SCMF(playerid, -1, ePlayerBpInfo[playerid][e_iColl_ArtifTitle]);
-//         SCMF(playerid, -1, ePlayerBpInfo[playerid][e_iColl_ArtifInnerMsg]);
-//     }
-// }
+// Display collectibles titles (artifacts & firefly pendants).
+CollTd_ShowTitles(playerid)
+{
+    if(!IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) != BACKPACK_CATEGORY_COLLECTIBLES)
+    {
+        SCMF(playerid, -1, "Not using BP or in wrong category");
+        return false;
+    }
+
+    new selectedCategory = Coll_GetSelection(playerid);
+    DB_LoadPlayerCollectibles(playerid, selectedCategory);
+
+    return true;
+}

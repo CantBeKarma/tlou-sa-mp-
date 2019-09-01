@@ -12,6 +12,11 @@
 #define     NEXT_ACTION_UPDATE      (1)
 #define     NEXT_ACTION_DESTROY     (2)
 
+// Overall item types (this part here separates items when picking up/displaying its labels).
+#define     ITEM_TYPE_ARTIFACT      (0)
+#define     ITEM_TYPE_FIREFLY_PEND  (1)
+#define     ITEM_TYPE_ITEM          (2)
+
 //#region Item models.
     // -> Craftable
     #define     ITEM_MODEL_SHIV         (15071)

@@ -1,3 +1,4 @@
+// Object models.
 #define     OBJECT_MODEL_JOELBP     (15065)
 #define     OBJECT_MODEL_ELLIEBP    (15066)
 #define     OBJECT_MODEL_TESSBP     (15067)
@@ -8,6 +9,7 @@
 
 #define     OBJECT_MODEL_BURNING    (18692)
 
+// Maximal values.
 #define     MAX_REMOVE_OBJECTS      (37)
 #define		MAX_ATTACHMENTS_DATA	(31)
 

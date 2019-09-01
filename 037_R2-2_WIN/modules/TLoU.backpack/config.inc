@@ -160,9 +160,6 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
 
 //#endregion
 
-#define ITEM_TYPE_ITEM      (0)
-#define ITEM_TYPE_ARTIFACT  (1)
-
 //#region Backpacks data : COLLECTIBLES
 
     // Collectibles backpack section information (X, Y positions of select box).

@@ -267,8 +267,8 @@ ShowBackpackCategory(playerid, category)
 
         case BACKPACK_CATEGORY_COLLECTIBLES:
         {
-            new selectedColl = Coll_GetSelection(playerid);
-            //Display_ArtifactsList(playerid);
+            new selectedCategory = Coll_GetSelection(playerid);
+            CollTd_ShowTitles(playerid);
             
             PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CatName], "COLLECTIBLES");
             PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_NavSelectBox], 490.333557, 30.696300);
@@ -282,7 +282,7 @@ ShowBackpackCategory(playerid, category)
                 TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemIcon][i]);
                 TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemName][i]);
             }
-            Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selectedColl][e_fSelBoxX], eBackpack_CollItemsData[selectedColl][e_fSelBoxY]);
+            Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selectedCategory][e_fSelBoxX], eBackpack_CollItemsData[selectedCategory][e_fSelBoxY]);
         }
     }
 }
