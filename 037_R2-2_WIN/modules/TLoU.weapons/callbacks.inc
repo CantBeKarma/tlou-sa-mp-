@@ -124,9 +124,10 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
         new nailBmbIdx = FindNailbombIdx(objectid);
         if(nailBmbIdx != INVALID_ITERATOR_SLOT)
         {
+            Bit_Let(ePlayerFlag[e_bShotNailbomb], playerid);
+
             new Float:objX, Float:objY, Float:objZ;
             GetDynamicObjectPos(objectid, objX, objY, objZ);
-
             OnNailbombExplode(playerid, eProjectileData[nailBmbIdx][e_iProjectile_ThrowerId], nailBmbIdx, objX, objY, objZ);
         }
     }
@@ -139,10 +140,11 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
     new currentItemId = GetPlayerEquippedItemId(playerid);
+    
     if(currentItemId == -1)
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [charUid: %d] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), GetPlayerCharUid(playerid), weaponid);
-        return 0;
+        return 1;
     }
 
     new
@@ -175,12 +177,19 @@ hook OnPlayerWeaponShoot(playerid, itemId, oldAmmo, oldClipAmmo, newAmmo, newCli
     HudTd_UpdateWeaponAmmo(playerid, itemId);
     HudTd_ReduceWeaponCurrentAmmo(playerid, itemId, newClipAmmo);
 
+    if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid))
+    {
+        HideItem(playerid);
+        return 0;
+    }
+
     // Every rifle shot perform "reload" animation
     // applies to rifle because "SetWeaponNoReload" caused a rapid fire.
     if(ITEM_IDX:itemId == ITEM_IDX_RIFLE && newClipAmmo > 0)
     {
         ApplyAnimation(playerid, "RIFLE", (IsPlayerCrouched(playerid) ? "RIFLE_CROUCHLOAD" : "RIFLE_LOAD"), 4.1, 0, 1, 1, 0, 0);
     }
+    return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -191,7 +200,11 @@ public OnPlayerReloadWeapon(playerid, itemId, oldClipAmmo, newClipAmmo)
     PlayPlayerReloadAnim(playerid, itemId);
     PlayPlayer3D_ReloadSFX(playerid, GetItemNativeWeaponId(itemId));
     HudTd_DisplayWeaponCurrentAmmo(playerid, itemId);
-    TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+
+    if(IsPlayerAimingWeapon(playerid))
+    {
+        TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+    }
 	return 0;
 }
 
@@ -214,6 +227,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         && (IsItemType(newItemId, ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE_MEDKIT)
         ||  IsItemType(newItemId, ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE_THROWABLE)))
         {
+            SPAO(playerid, GetItemModel(newItemId));
             ResetPlayerWeapons(playerid);
         }
 
@@ -225,6 +239,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
         }
 
+        // If old item is melee weapon.
         if(IsItemType(oldItemId, ITEM_TYPE_MELEE))
         {
             SPAO(playerid, GetItemModel(oldItemId));
@@ -238,8 +253,6 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
     if(newItemId == -1)
     {
         ResetPlayerWeapons(playerid);
-
-        // Remove attached object if it was a projectile/throwable/medkit.
         RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     }
     else
@@ -252,20 +265,13 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
             // It is needed here because of different crosshairs for shotgun and other weapons
             // and when weapon changes automatically with "GetFirstWeaponWithAmmo"
             ShowPlayerCrosshair(playerid, .forceUpdate = true);
-            TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
         }
 
 		ShowHud(playerid);
         HudTd_DisplayMeleeWeaponBars(playerid, newItemId);
         HudTd_DisplayWeaponCurrentAmmo(playerid, newItemId);
 
-        // Detach weapon from player's body when it is in use 
-        // (don't detach BOW or projectile/throwable/medkit since it's attached to player's hand).
-        if(!IsItemType(newItemId, ITEM_TYPE_BOW) && !IsItemType(newItemId, ITEM_TYPE_MEDKIT)
-        && !IsItemType(newItemId, ITEM_TYPE_PROJECTILE) && !IsItemType(newItemId, ITEM_TYPE_THROWABLE))
-        {
-            DetachWeaponFromPlayersBody(playerid, newItemId);
-        }
+        DetachWeaponFromPlayersBody(playerid, newItemId);
     }
 
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerWeaponChange: Changed from itemId: %d to itemId %d (charUid: %d)", oldItemId, newItemId, GetPlayerCharUid(playerid));

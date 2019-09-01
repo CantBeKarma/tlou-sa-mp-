@@ -6,7 +6,15 @@ timer DelayedTimer_AnimGetUp[TIMER_GETUP_DELAY](playerid)
         Bit_Vet(ePlayerFlag[e_bDoingCrouchBug], playerid);
     }
 
+	if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid))
+	{
+		Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
+	}
+
+	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 	ApplyAnimation(playerid, "PED", "GETUP", 4.1, 0, 1, 1, 0, 0);
+	
+	return true;
 }
 
 // Enable player jump action (anti-bunny hopping).
