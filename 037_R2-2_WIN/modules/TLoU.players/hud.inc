@@ -12,8 +12,8 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
         HudTd_UpdateShivs(playerid);
         HudTd_UpdateMelee(playerid);
 
-        TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
-        TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Underneath]);
+        TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
+        TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Underneath]);
         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status]);
 
         // Weapon HUD showing is being done inside 'SetPlayerWeapon' !
