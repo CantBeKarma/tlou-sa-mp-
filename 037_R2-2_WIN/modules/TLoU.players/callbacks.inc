@@ -495,7 +495,7 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 		ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
 		wait_ms(2000);
 
-		OnPlayerShakeOffStun(playerid);
+		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		return 0;
 	}
 
@@ -505,7 +505,6 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 	public OnPlayerShakeOffStun(playerid)
 	{
 		ClearAnims(playerid);
-		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		return 0;
 	}
 

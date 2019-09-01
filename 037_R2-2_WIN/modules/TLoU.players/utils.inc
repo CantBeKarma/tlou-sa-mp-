@@ -85,6 +85,11 @@ ResetBits_ePlayerFlag(playerid)
 					OnPlayerStopBurning(playerid);
 				}
 
+				if(IsPlayerStunned(playerid))
+				{
+					OnPlayerShakeOffStun(playerid);
+				}
+
 				if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid))
 				{
 					Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
