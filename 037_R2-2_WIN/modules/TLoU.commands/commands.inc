@@ -173,13 +173,58 @@ YCMD:createitem(playerid, params[], help)
 	}
 	else
 	{
-        new itemId, itemAmount, meleeExtCnd, title[32], innerMessage[256];
-        if(sscanf(params, "ddds[32]s[256]", itemId, itemAmount, meleeExtCnd, title, innerMessage))return SCM(playerid, -1, "/createitem [itemId] [itemAmount] [meleeExtCnd] [title] [innerMsg]");
+        new itemId, itemAmount, meleeExtCnd;
+        if(sscanf(params, "ddd", itemId, itemAmount, meleeExtCnd))return SCM(playerid, -1, "/createitem [itemId] [itemAmount] [meleeExtCnd]");
         {
-            CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd, playerid, title, innerMessage);
+            CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd, playerid);
         }
 	}
 	return 1;
+}
+
+CMD:createnote(playerid, params[])
+{
+    new itemId, title[32], innerMsg[128];
+    if(sscanf(params, "ds[32]s[128]", itemId, title, innerMsg))return SCM(playerid, -1, "/createnote [itemId] [title] [innerMsg]");
+    {
+        CreateCollectible(itemId, title, innerMsg, .creatorId = playerid);
+    }
+    return 1;
+}
+
+CMD:iteminfo(playerid, params[])
+{
+    new objectId;
+    if(sscanf(params, "d", objectId))return SCM(playerid, -1, "/iteminfo [objectId]");
+    {
+        new itemTitle[32];
+        new itemInnerMsg[128];
+
+        Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
+
+        strcpy(eObjData[e_sObj_Title], itemTitle, sizeof(eObjData[e_sObj_Title]));
+        strcpy(eObjData[e_sObj_InnerMessage], itemInnerMsg, sizeof(eObjData[e_sObj_InnerMessage]));
+
+        SCMF(playerid, -1, "itemUid: %d | itemTitle: %s | itemInnerMsg: %s", eObjData[e_iObj_Uid], itemTitle, itemInnerMsg);            
+    }
+    return 1;
+}
+
+CMD:mycolls(playerid, params[])
+{
+    SCMF(playerid, -1, "Your collectibles:");
+    for(new i = 0; i < MAX_PLAYER_COLLECTIBLES; i++)
+    {
+        SCMF(playerid, -1, "IDX: %d", i);
+        if(ePlayerCollsData[playerid][i][e_bCollectibleSlotTaken] == false)
+        {
+            break;
+        }
+
+        SCMF(playerid, -1, "Title: %s", ePlayerCollsData[playerid][i][e_sArtifactTitle]);
+        SCMF(playerid, -1, "InnerMsg: %s", ePlayerCollsData[playerid][i][e_sArtifactInnerMsg]);
+    }
+    return 1;
 }
 
 CMD:ls(playerid, params[])
