@@ -142,7 +142,6 @@ public OnPlayerDeathEx(playerid, issuerid, weaponid, bodypart)
 	}
 
 	FreezePlayer(playerid, true, -1);
-	HideItem(playerid);
 	PlayDeathAnimation(playerid, bodypart, weaponid);
 	CLF(#PlayDeathProcedureForPlayer, "d", playerid);
     return 1;

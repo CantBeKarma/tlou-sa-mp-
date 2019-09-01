@@ -28,6 +28,7 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
 	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
+	Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
 
 	print("ResetBits_ePlayerFlag");
 }
@@ -82,6 +83,16 @@ ResetBits_ePlayerFlag(playerid)
 				if(IsPlayerBurning(playerid))
 				{
 					OnPlayerStopBurning(playerid);
+				}
+
+				if(IsPlayerFall(playerid))
+				{
+					ApplyAnimation(playerid, "PED", "GETUP", 4.1, 0, 1, 1, 0, 0);
+				}
+
+				if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid))
+				{
+					Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
 				}
 			}
 
@@ -384,6 +395,7 @@ function PlayDeathProcedureForPlayer(playerid)
 	Audio_PlayEx(playerid, AUDIO_DEATH_SFX);
 	wait_ms(1200);
 
+	HideItem(playerid);
 	ShowPlayerBlackScreen(playerid);
 	wait_ms(1600);
 
