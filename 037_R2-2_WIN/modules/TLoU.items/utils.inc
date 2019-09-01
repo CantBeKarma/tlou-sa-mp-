@@ -800,7 +800,8 @@
         new oldItemId = ePlayerInfo[playerid][e_iLastEquippedItemId];
         if(playerEquippedItemId != -1)
         {
-            if(IsItemType(playerEquippedItemId, ITEM_TYPE_MELEE) || IsItemType(playerEquippedItemId, ITEM_TYPE_THROWABLE))
+            if(IsItemType(playerEquippedItemId, ITEM_TYPE_MELEE) || IsItemType(playerEquippedItemId, ITEM_TYPE_THROWABLE)
+            || IsItemType(playerEquippedItemId, ITEM_TYPE_MEDKIT))
             {
                 oldItemId = playerEquippedItemId;
             }
