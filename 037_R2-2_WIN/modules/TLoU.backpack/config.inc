@@ -32,17 +32,9 @@
 #define     INGR_ITEM_SUGAR         (5)
 #define     INGR_ITEM_MELEE         (6)
 
-// MAX AMOUNTS OF ITEMS.
-#define     MAX_AMOUNT_ITEMS        (3)
-
-#define     MAX_AMOUNT_SHIV         (3)
-#define     MAX_AMOUNT_MEDKIT       (3)
-#define     MAX_AMOUNT_MOLOTOV      (3)
-#define     MAX_AMOUNT_BOMB         (3)
-#define     MAX_AMOUNT_SMOKE_BOMB   (3)
-
 // MAX AMOUNTS OF COLLECTIBLES.
 #define     MAX_ARTIFACTS           (100)
+#define     MAX_COLLECTIBLES        (100)
 
 // MAX AMOUNT OF SUPPS
 #define     MAX_PLAYER_SUPPS_AMOUNT     (530)
@@ -75,7 +67,6 @@ enum e_INGR_SPRITES
     e_iIngrValue,
     e_sIngrSprite[32]
 };
-
 stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
 {
     {ITEM_IDX_BLADE,         0,     ""},
@@ -115,79 +106,83 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
     {ITEM_IDX_SUGAR,       100,     "TLoU:ingr_sugar_full"}
 };
 
-// Backpacks data : CRAFT
-new Iterator:ItemsToCraft<MAX_PLAYERS, MAX_CRAFT_ITEMS>;
+//#region Backpacks data : CRAFT
 
-enum e_BACKPACK_CRAFT_DATA
-{
-    ITEM_IDX:e_iCraftItemId,
-    Float:e_fSelBoxX,
-    Float:e_fSelBoxY,
+    enum e_BACKPACK_CRAFT_DATA
+    {
+        ITEM_IDX:e_iCraftItemId,
+        Float:e_fSelBoxX,
+        Float:e_fSelBoxY,
 
-    e_sCurrentItemIcon[32],
-    e_sCurrentItemName[32],
-    e_sCurrentItemDescr[32],
-    ITEM_IDX:e_iCraftFirstReqIngr,
-    ITEM_IDX:e_iCraftSecondReqIngr,
-    e_iCraftSfx
-};
-stock const eBackpack_CraftItemsData[MAX_CRAFT_ITEMS][e_BACKPACK_CRAFT_DATA] =
-{
-    {ITEM_IDX_PIPE,         309.666656,  55.674072,     "TLoU:weap_scsr_2x4_icon", "MELEE WEAPON",     "Improves your melee weapon",    ITEM_IDX_BLADE,     ITEM_IDX_BINDING,   AUDIO_CRAFT_MELEE},
-    {ITEM_IDX_SHIV,         309.666656, 101.674072,     "TLoU:weap_shiv",          "SHIV",             "Crafts a shiv",                 ITEM_IDX_BLADE,     ITEM_IDX_BINDING,   AUDIO_CRAFT_SHIV},
-    {ITEM_IDX_MEDKIT,       309.666656, 147.674072,     "TLoU:weap_medkit",        "HEALTH KIT",       "Crafts a health kit",           ITEM_IDX_RAG,       ITEM_IDX_ALCOHOL,   AUDIO_CRAFT_MEDKIT_MOLOTOV},
-    {ITEM_IDX_MOLOTOV,      309.666656, 193.674072,     "TLoU:weap_molotov",       "MOLOTOV COCKTAIL", "Crafts a molotov cocktail",     ITEM_IDX_RAG,       ITEM_IDX_ALCOHOL,   AUDIO_CRAFT_MEDKIT_MOLOTOV},
-    {ITEM_IDX_NAIL_BOMB,    309.666656, 239.674072,     "TLoU:weap_nailbomb",      "BOMB",             "Crafts a bomb",                 ITEM_IDX_BLADE,     ITEM_IDX_EXPLOSIVE, AUDIO_CRAFT_BOMB},
-    {ITEM_IDX_SMOKE_BOMB,   309.666656, 285.674072,     "TLoU:weap_smkbmb",        "SMOKE BOMB",       "Crafts a smoke bomb",           ITEM_IDX_EXPLOSIVE, ITEM_IDX_SUGAR,     AUDIO_CRAFT_SMKBMB}
-};
+        e_sCurrentItemIcon[32],
+        e_sCurrentItemName[32],
+        e_sCurrentItemDescr[32],
+        ITEM_IDX:e_iCraftFirstReqIngr,
+        ITEM_IDX:e_iCraftSecondReqIngr,
+        e_iCraftSfx
+    };
+    stock const eBackpack_CraftItemsData[MAX_CRAFT_ITEMS][e_BACKPACK_CRAFT_DATA] =
+    {
+        {ITEM_IDX_PIPE,         309.666656,  55.674072,     "TLoU:weap_scsr_2x4_icon", "MELEE WEAPON",     "Improves your melee weapon",    ITEM_IDX_BLADE,     ITEM_IDX_BINDING,   AUDIO_CRAFT_MELEE},
+        {ITEM_IDX_SHIV,         309.666656, 101.674072,     "TLoU:weap_shiv",          "SHIV",             "Crafts a shiv",                 ITEM_IDX_BLADE,     ITEM_IDX_BINDING,   AUDIO_CRAFT_SHIV},
+        {ITEM_IDX_MEDKIT,       309.666656, 147.674072,     "TLoU:weap_medkit",        "HEALTH KIT",       "Crafts a health kit",           ITEM_IDX_RAG,       ITEM_IDX_ALCOHOL,   AUDIO_CRAFT_MEDKIT_MOLOTOV},
+        {ITEM_IDX_MOLOTOV,      309.666656, 193.674072,     "TLoU:weap_molotov",       "MOLOTOV COCKTAIL", "Crafts a molotov cocktail",     ITEM_IDX_RAG,       ITEM_IDX_ALCOHOL,   AUDIO_CRAFT_MEDKIT_MOLOTOV},
+        {ITEM_IDX_NAIL_BOMB,    309.666656, 239.674072,     "TLoU:weap_nailbomb",      "BOMB",             "Crafts a bomb",                 ITEM_IDX_BLADE,     ITEM_IDX_EXPLOSIVE, AUDIO_CRAFT_BOMB},
+        {ITEM_IDX_SMOKE_BOMB,   309.666656, 285.674072,     "TLoU:weap_smkbmb",        "SMOKE BOMB",       "Crafts a smoke bomb",           ITEM_IDX_EXPLOSIVE, ITEM_IDX_SUGAR,     AUDIO_CRAFT_SMKBMB}
+    };
 
-// Backpacks data : SKILLS
-new Iterator:SkillsToUpgrade<MAX_PLAYERS, MAX_SKILLS_ITEMS>;
+    new Iterator:ItemsToCraft<MAX_PLAYERS, MAX_CRAFT_ITEMS>;
 
-enum e_BACKPACK_SKILL_DATA
-{
-    Float:e_fSelBoxX,
-    Float:e_fSelBoxY,
+//#endregion
 
-    e_iSkill_MaxLvl,
-    e_iSupps_Required,
-    e_iSkill_Description[64]
-};
-stock const eBackpack_SkillItemsData[MAX_SKILLS_ITEMS][e_BACKPACK_SKILL_DATA] =
-{
-    {385.0,  95.911079, 2, 50, "Increases your maximum health"},
-    {385.0, 133.659271, 3, 20, "Increases the radius of listen mode"},
-    {385.0, 170.992584, 3, 20, "Reduces crafting time"},
-    {385.0, 208.325881, 3, 20, "Use health kits faster"},
-    {385.0, 246.488891, 2, 50, "Reduces weapon sway"},
-    {385.0, 283.82,     2, 75, "Use a shiv to save yourself when~n~grabbed by a clicker"}
-};
+//#region Backpacks data : SKILLS
 
-// Backpacks data : COLLECTIBLES
-enum e_BACKPACK_COLL_DATA
-{
-    Float:e_fSelBoxX,
-    Float:e_fSelBoxY
-};
-stock const eBackpack_CollItemsData[MAX_COLL_ITEMS][e_BACKPACK_COLL_DATA] =
-{
-    {376.333312, 123.703620},
-    {376.333312, 152.703613}
-};
+    enum e_BACKPACK_SKILL_DATA
+    {
+        Float:e_fSelBoxX,
+        Float:e_fSelBoxY,
 
-//new Iterator:ArtifactsOwned<MAX_PLAYERS, MAX_ARTIFACTS>;
+        e_iSkill_MaxLvl,
+        e_iSupps_Required,
+        e_iSkill_Description[64]
+    };
+    stock const eBackpack_SkillItemsData[MAX_SKILLS_ITEMS][e_BACKPACK_SKILL_DATA] =
+    {
+        {385.0,  95.911079, 2, 50, "Increases your maximum health"},
+        {385.0, 133.659271, 3, 20, "Increases the radius of listen mode"},
+        {385.0, 170.992584, 3, 20, "Reduces crafting time"},
+        {385.0, 208.325881, 3, 20, "Use health kits faster"},
+        {385.0, 246.488891, 2, 50, "Reduces weapon sway"},
+        {385.0, 283.82,     2, 75, "Use a shiv to save yourself when~n~grabbed by a clicker"}
+    };
+
+    new Iterator:SkillsToUpgrade<MAX_PLAYERS, MAX_SKILLS_ITEMS>;
+
+//#endregion
+
+//#region Backpacks data : COLLECTIBLES
+
+    enum e_BACKPACK_COLL_DATA
+    {
+        Float:e_fSelBoxX,
+        Float:e_fSelBoxY
+    };
+    stock const eBackpack_CollItemsData[MAX_COLL_ITEMS][e_BACKPACK_COLL_DATA] =
+    {
+        {376.333312, 123.703620},
+        {376.333312, 152.703613}
+    };
+
+    new Iterator:CollectiblesOwned<MAX_PLAYERS, MAX_COLLECTIBLES>;
+    //new Iterator:ArtifactsOwned<MAX_PLAYERS, MAX_ARTIFACTS>;
+
+//#endregion
 
 // Player backpack's current data.
 enum e_PLAYER_BACKPACK_DATA
 {
     e_iBackpackSelected_Craft,
     e_iBackpackSelected_Skill,
-
-    e_iColl_Uid,
-    e_iColl_ArtifTitle[32],
-    e_iColl_ArtifInnerMsg[128],
-
-    e_Coll_iArtifCount,
     e_iBackpackSelected_Coll,
 
     e_iBackpackSelected_Category,
