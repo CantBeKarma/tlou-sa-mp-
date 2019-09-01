@@ -116,7 +116,6 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
 // Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
 PlayDeathAnimation(playerid, bodypart, itemId)
 {
-	SCMF(playerid, -1, "PlayDeathAnimation: bodypart: %d | itemId: %d", bodypart, itemId);
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		new 
@@ -138,39 +137,35 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 		return;
 	}
 
-	if(itemId == _:ITEM_IDX_NAIL_BOMB)
+	switch(itemId)
 	{
-		SCMF(playerid, -1, "weapon nail bomb");
-		if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
+		case _:ITEM_IDX_SHIV:
 		{
-			ApplyAnimation(playerid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);
+			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
 		}
-		return;
-	}
 
-	if(itemId == _:ITEM_IDX_SHIV)
-	{
-		ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
-		return;
-	}
+		case
+			_:ITEM_IDX_MOLOTOV,
+			WEAPON_COLLISION:
+			{
+				ApplyAnimation(playerid, "PED", "KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
+			}
 
-	if(itemId == _:ITEM_IDX_MOLOTOV || itemId == WEAPON_COLLISION)
-	{
-		ApplyAnimation(playerid, "PED", "KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
-		return;
-	}
-
-	switch(bodypart)
-	{
-		case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
 		default:
 		{
-			// If player wasn't killed stealthly or 
-			// shot in stomach by shotgun (Flew backwards)
-			if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
-			&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
+			switch(bodypart)
 			{
-				ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
+				case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
+				default:
+				{
+					// If player hasn't flew backwards (nailbomb explosion/shotgun shot)
+					// AND not died by shiv
+					if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
+					&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
+					{
+						ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
+					}
+				}
 			}
 		}
 	}
