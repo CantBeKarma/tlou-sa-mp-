@@ -15,6 +15,7 @@ enum e_OBJECT_DATA
 {
     e_iObj_Uid,
     e_iObj_ItemId,
+    e_iObj_TypeId,
     Float:e_fObj_X,
     Float:e_fObj_Y,
     Float:e_fObj_Z,
