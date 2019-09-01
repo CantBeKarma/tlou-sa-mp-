@@ -39,7 +39,7 @@ enum e_GLOBAL_TD_DATA
 };
 new eTextDrawInfo[e_GLOBAL_TD_DATA];
 
-// PlayerTds (current count: 241 | limit: 256)
+// PlayerTds (current count: 251 | limit: 256)
 enum e_PLAYER_TD_DATA
 {
 	PlayerText:e_BlackScreen,
@@ -73,6 +73,9 @@ enum e_PLAYER_TD_DATA
 	PlayerText:e_Bp_Rs_Skills_SuppsRequire[6],
 	PlayerText:e_Bp_Rs_Skills_Description,
 	PlayerText:e_Bp_Rs_SkillProg_Status[15],
+
+	PlayerText:e_Bp_Rs_Coll_SelectBox,
+	PlayerText:e_Bp_Rs_Coll_Titles[9],
 
 	PlayerText:e_Hud_Bg,
 	PlayerText:e_Hud_Melee,
