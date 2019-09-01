@@ -77,8 +77,9 @@ function ShowRegisterLoginDialog(playerid, registered)
 ResetVariables(playerid)
 {
 	Iter_Clear(ItemsToCraft<playerid>);
-    Iter_Clear(SkillsToUpgrade<playerid>);
-    Iter_Clear(iAudioHandle3D<playerid>);
+	Iter_Clear(SkillsToUpgrade<playerid>);
+	Iter_Clear(CollectiblesOwned<playerid>);
+	Iter_Clear(iAudioHandle3D<playerid>);
 
     for(new i = 0; i != MAX_ITEMS_DATA; i++)
     {
@@ -96,6 +97,10 @@ ResetVariables(playerid)
             WeapMenu_Rs_ItemId(playerid, i) = -1;
         }
     }
+
+	ePlayerBpInfo[playerid][e_iBackpackSelected_Craft] = 0;
+	ePlayerBpInfo[playerid][e_iBackpackSelected_Skill] = 0;
+	ePlayerBpInfo[playerid][e_iBackpackSelected_ViewColl] = 0;
 
     ePlayerWeapon[playerid][e_iArrowObjectId] = -1;
 
