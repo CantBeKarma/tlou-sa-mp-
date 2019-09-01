@@ -23,6 +23,7 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bHoldingKey], playerid);
 	Bit_Vet(ePlayerFlag[e_bKeyPress], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsCrafting], playerid);
+	Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
 	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);

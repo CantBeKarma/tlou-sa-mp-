@@ -97,6 +97,7 @@
 		e_bKeyPress,
 		e_bIsCrafting,
 		e_bIsUpgradingSkill,
+		e_bIsCheckingColls,
 		e_bIsSwitchingWeapons,
 		e_bLookingAtTimerRunning,
 		e_bIsHudBgFlashing,

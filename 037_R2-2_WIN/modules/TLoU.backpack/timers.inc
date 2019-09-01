@@ -23,7 +23,15 @@ timer Key_BackpackMenu[50](playerid)
 		}
 
         ePlayerBpInfo[playerid][e_iBackpackKeysUpDown] = updown;
-        OnPlayerUseBackpack(playerid, PlayerBackpackCategory(playerid), updown);
+
+        if(!Bit_Get(ePlayerFlag[e_bIsCheckingColls], playerid))
+        {
+            OnPlayerUseBackpack(playerid, PlayerBackpackCategory(playerid), updown);
+        }
+        else
+        {
+            OnPlayerViewCollectibles(playerid, updown);
+        }
     }
 
     if(leftright != ePlayerBpInfo[playerid][e_iBackpackKeysLeftRight])

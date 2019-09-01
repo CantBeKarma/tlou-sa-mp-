@@ -59,6 +59,7 @@
 #define     Skill_SuppsAmount(%0)           eCharsInfo[%0][e_iSkills_SuppsAmount]
 
 #define     Coll_GetSelection(%0)           ePlayerBpInfo[%0][e_iBackpackSelected_Coll]
+#define     Coll_ViewingGetSelection(%0)    ePlayerBpInfo[%0][e_iBackpackSelected_ViewColl]
 
 // Sprites and values of the ingredients in the backpack (for CraftTd_DisplayIngredients() func).
 enum e_INGR_SPRITES
@@ -198,6 +199,7 @@ enum e_PLAYER_BACKPACK_DATA
     e_iBackpackSelected_Craft,
     e_iBackpackSelected_Skill,
     e_iBackpackSelected_Coll,
+    e_iBackpackSelected_ViewColl,
 
     e_iBackpackSelected_Category,
     e_iTickCounter_backpackOpening,
