@@ -33,7 +33,7 @@
 #define     INGR_ITEM_MELEE         (6)
 
 // MAX AMOUNTS OF COLLECTIBLES.
-#define     MAX_COLLECTIBLES            (2)
+#define     MAX_COLLECTIBLES_DATA       (2)
 #define     MAX_PLAYER_COLLECTIBLES     (100)
 
 // MAX AMOUNT OF SUPPS
@@ -178,17 +178,7 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
     };
 
     // Player's collectibles data information (Artifacts & Firefly Pendants).
-    enum e_PLAYER_COLLECTIBLES_DATA
-    {
-        e_sArtifactTitle[32],
-        e_sArtifactInnerMsg[128],
-
-        e_sFireflyPendTitle[32],
-        e_sFireflyPendInnerMsg[128],
-
-        bool:e_bCollectibleSlotTaken
-    };
-    new ePlayerCollsData[MAX_PLAYERS][MAX_PLAYER_COLLECTIBLES][e_PLAYER_COLLECTIBLES_DATA];
+    new Iterator:CollectiblesOwned<MAX_PLAYERS, MAX_PLAYER_COLLECTIBLES>;
 
     // List of available types of collectibles.
     enum e_COLLECTIBLE_TYPES
@@ -197,7 +187,7 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
         e_iCollectible_ModelId,
         e_iCollectible_AudioPickupId
     };
-    stock const eCollectiblesData[MAX_COLLECTIBLES][e_COLLECTIBLE_TYPES] =
+    stock const eCollectiblesData[MAX_COLLECTIBLES_DATA][e_COLLECTIBLE_TYPES] =
     {
         { ITEM_TYPE_ARTIFACT,    ITEM_MODEL_PAPER,       AUDIO_PICKUP_RAG },
         { ITEM_TYPE_ARTIFACT,    ITEM_MODEL_NOTES,       AUDIO_PICKUP_EXPLOSIVE }

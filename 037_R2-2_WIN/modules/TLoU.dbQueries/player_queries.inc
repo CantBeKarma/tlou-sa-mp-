@@ -1,10 +1,3 @@
-// DB_GivePlayerItemOwnership(playerid, itemUid)
-// {
-//     new query[85];
-//     mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = %d, is_created = 0 WHERE uid = %d", GetPlayerCharUid(playerid), itemUid);
-//     mysql_tquery(eServerInfo[e_SqlHandler], query);
-// }
-
 //#region Items manipulation give/update/save/load
 
     // Gives player an ownership over a weapon.
@@ -22,7 +15,7 @@
             {
                 mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, meleeExtCnd, uid_owner, is_created) VALUES (%d, %d, %d, %d, 0)", itemId, amount, meleeExtCnd, ownerUid);
             }
-            default
+            default:
             {
                 return false;
             }
@@ -127,34 +120,70 @@
 
 //#region Collectibles manipulation
 
-    // DB_LoadPlayerCollectibles(playerid)
-    // {
-    //     inline OnCollectiblesDataReceived()
-    //     {
-    //         new rows;
-    //         cache_get_row_count(rows);
+    // Gives player ownership of the collectible UID in DB.
+    DB_GiveCollectibleOwnership(playerid, itemUid)
+    {
+        new query[85];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE collectibles_data SET uid_owner = %d, is_created = 0 WHERE uid = %d", GetPlayerCharUid(playerid), itemUid);
+        mysql_tquery(eServerInfo[e_SqlHandler], query);
+    }
 
-    //         if(!rows)
-    //         {
-    //             return true;
-    //         }
+    // Read top 10 collectibles player has in DB and display its title.
+    DB_LoadPlayerCollectibles(playerid)
+    {
+        inline OnCollectiblesDataReceived()
+        {
+            new rowsCount;
+            cache_get_row_count(rowsCount);
 
-    //         new 
-    //             row_collectibleTitle[32],
-    //             row_collectibleInnerMsg[128];
+            if(!rowsCount)
+            {
+                return true;
+            }
 
-    //         for(new i = 0; i != rows; i++)
-    //         {
-    //             // cache_get_value_name(i, "collectibleTitle", row_itemTitle, sizeof(row_itemTitle));
-    //             // cache_get_value_name(i, "collectibleInnerMsg", row_itemInnerMsg, sizeof(row_itemInnerMsg));
-    //         }
-    //     }
+            new row_title[32];
+            for(new i = 0; i != rowsCount; i++)
+            {
+                cache_get_value_name(i, "title", row_title, sizeof(row_title));
+            }
+        }
 
-    //     new query[50];
-    //     mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT * FROM artifacts_data WHERE uid_owner = %d", GetPlayerCharUid(playerid));
-    //     mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
-    //     return true;
-    // }
+        new query[70];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title FROM collectibles_data WHERE uid_owner = %d LIMIT 9", GetPlayerCharUid(playerid));
+        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
+        return true;
+    }
+
+    // Read single player's artifact from DB with title and its message content.
+    DB_ReadArtifact(playerid, uid)
+    {
+        inline ReadArtifactsData()
+        {
+            new rowsCount;
+            cache_get_row_count(rowsCount);
+
+            if(!rowsCount)
+            {
+                return false;
+            }
+
+            new
+                row_title[32],
+                row_message[128];
+
+            SCMF(playerid, -1, "Your artifact data:");
+
+            cache_get_value_name(0, "title", row_title, sizeof(row_title));
+            cache_get_value_name(0, "message", row_message, sizeof(row_message));
+
+            SCMF(playerid, -1, "Uid: %d | Title: %s | Message: %s", row_title, row_message);
+        }
+
+        new query[100];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title, message FROM collectibles_data WHERE uid = %d AND uid_owner = %d LIMIT 1", uid, GetPlayerCharUid(playerid));
+        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline ReadArtifactsData);
+        return true;
+    }
 
 //#endregion
 

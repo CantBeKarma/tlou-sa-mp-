@@ -212,18 +212,7 @@ CMD:iteminfo(playerid, params[])
 
 CMD:mycolls(playerid, params[])
 {
-    SCMF(playerid, -1, "Your collectibles:");
-    for(new i = 0; i < MAX_PLAYER_COLLECTIBLES; i++)
-    {
-        SCMF(playerid, -1, "IDX: %d", i);
-        if(ePlayerCollsData[playerid][i][e_bCollectibleSlotTaken] == false)
-        {
-            break;
-        }
-
-        SCMF(playerid, -1, "Title: %s", ePlayerCollsData[playerid][i][e_sArtifactTitle]);
-        SCMF(playerid, -1, "InnerMsg: %s", ePlayerCollsData[playerid][i][e_sArtifactInnerMsg]);
-    }
+    DB_LoadPlayerCollectibles(playerid);
     return 1;
 }
 

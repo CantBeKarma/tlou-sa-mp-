@@ -1,4 +1,5 @@
 //#region Items manipulation (create/update/destroy/load items from DB)
+
     // Create new item in database.
     DB_CommitNewItem(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId)
     {
@@ -13,7 +14,7 @@
             virtualWorld, interiorId, \
             itemAmount, meleeExtCnd);
 
-        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "ddffffffddddd", itemId, itemType, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId);
+        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "ddffffffddddssd", itemId, itemType, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, "", "", creatorId);
     }
 
     // Update an existing item in database.
@@ -71,6 +72,27 @@
         mysql_tquery_inline(eServerInfo[e_SqlHandler], "SELECT * FROM items_data WHERE uid_owner = -1 AND is_created = 1", using inline OnItemsLoad);
         
         return rows;
+    }
+
+//#endregion
+
+//#region Collectibles manipulation (create)
+
+    // Create new collectible in database.
+    DB_CommitNewCollectible(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, title[], message[], creatorId)
+    {
+        new query[512];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), 
+            "INSERT INTO collectibles_data (id_item, id_type, x, y, z, rX, rY, rZ, virtualWorld, interiorId, title, message) \ 
+            VALUES \
+            (%d, %d, %f, %f, %f, %f, %f, %f, %d, %d, '%s', '%s')", \
+            itemId, itemType, \
+            x, y, z, \
+            rX, rY, rZ, \
+            virtualWorld, interiorId, \
+            title, message);
+
+        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "ddffffffddddssd", itemId, itemType, x, y, z, rX, rY, rZ, virtualWorld, interiorId, 0, 0, title, message, creatorId);
     }
 
 //#endregion
