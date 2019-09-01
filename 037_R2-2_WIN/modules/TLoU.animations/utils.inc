@@ -137,15 +137,23 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 		return;
 	}
 
-	switch(itemId)
+	switch(ITEM_IDX:itemId)
 	{
-		case _:ITEM_IDX_SHIV:
+		case ITEM_IDX_NAIL_BOMB:
+		{
+			if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
+			{
+				ApplyAnimation(playerid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);	
+			}
+		}
+		
+		case ITEM_IDX_SHIV:
 		{
 			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
 		}
 
 		case
-			_:ITEM_IDX_MOLOTOV,
+			ITEM_IDX_MOLOTOV,
 			WEAPON_COLLISION:
 			{
 				ApplyAnimation(playerid, "PED", "KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
