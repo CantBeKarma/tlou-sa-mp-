@@ -749,16 +749,13 @@
         new nativeWeaponId = GetItemNativeWeaponId(itemId);
         if(itemAmount <= 0)
         {
-            if(IsItemType(itemId, ITEM_TYPE_WEAPON))
+            if(IsItemType(itemId, ITEM_TYPE_BOW))
             {
-                if(IsItemType(itemId, ITEM_TYPE_BOW))
-                {
-                    SPAO(playerid, GetItemModel(itemId), true);
-                }
-                else
-                {
-                    GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
-                }
+                SPAO(playerid, GetItemModel(itemId), true);
+            }
+            else
+            {
+                GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
             }
         }
         else
@@ -775,7 +772,7 @@
 
                 case ITEM_TYPE_WEAPON:
                 {
-                    if(ITEM_IDX:itemId == ITEM_IDX:ITEM_IDX_BOW)
+                    if(ITEM_IDX:itemId == ITEM_IDX_BOW)
                     {
                         SPAO(playerid, GetItemModel(itemId), true);
                     }
@@ -794,13 +791,21 @@
             
                 case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE, ITEM_TYPE_HEAL:
                 {
-                    SPAO(playerid, (IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MEDKIT)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
+                    SPAO(playerid, (IsItemType(itemId, ITEM_TYPE_MEDKIT)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
                 }
             }
         }
 
+        new playerEquippedItemId = GetPlayerEquippedItemId(playerid);
+        new oldItemId = ePlayerInfo[playerid][e_iLastEquippedItemId];
+        if(playerEquippedItemId != -1)
+        {
+            if(IsItemType(playerEquippedItemId, ITEM_TYPE_MELEE) || IsItemType(playerEquippedItemId, ITEM_TYPE_THROWABLE))
+            {
+                oldItemId = playerEquippedItemId;
+            }
+        }
 
-        new oldItemId = (IsItemType(GetPlayerEquippedItemId(playerid), ITEM_TYPE_MELEE)) ? (GetPlayerEquippedItemId(playerid)) : (ePlayerInfo[playerid][e_iLastEquippedItemId]);
         new newItemId = ePlayerInfo[playerid][e_iCurrentEquippedItemId] = itemId;
 
         OnPlayerWeaponChange(playerid, newItemId, oldItemId);
