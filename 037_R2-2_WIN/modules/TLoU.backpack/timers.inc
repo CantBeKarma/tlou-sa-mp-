@@ -36,6 +36,11 @@ timer Key_BackpackMenu[50](playerid)
 
     if(leftright != ePlayerBpInfo[playerid][e_iBackpackKeysLeftRight])
     {
+        if(IsPlayerCheckingCollectibles(playerid))
+        {
+            return 1;
+        }
+
         if(!leftright)
 		{
 		    ePlayerBpInfo[playerid][e_iBackpackKeysLeftRight] = 0;
