@@ -249,9 +249,9 @@
 
     CreateCollectible(itemId, title[], innerMsg[], Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, creatorId = -1)
     {
-        if(itemId < 0 || itemId > MAX_COLLECTIBLES)
+        if(itemId < 0 || itemId > MAX_COLLECTIBLES_DATA)
         {
-            SCMF(creatorId, -1, "Only allowed itemIds are between: 0 and %d", MAX_COLLECTIBLES-1);
+            SCMF(creatorId, -1, "Only allowed itemIds are between: 0 and %d", MAX_COLLECTIBLES_DATA-1);
             return false;
         }
 
@@ -276,7 +276,7 @@
             interiorId = GetPlayerInterior(creatorId);
         }
 
-        OnItemCreate(itemId, ITEM_TYPE_ARTIFACT, x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId, 0, 0, title, innerMsg, creatorId);
+        DB_CommitNewCollectible(itemId, ITEM_TYPE_ARTIFACT, x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId, title, innerMsg, creatorId);
         return true;
     }
 
