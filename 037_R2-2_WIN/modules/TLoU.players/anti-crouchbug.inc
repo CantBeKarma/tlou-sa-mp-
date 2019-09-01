@@ -6,7 +6,11 @@
 public OnPlayerCrouchBug(playerid)
 {
 	ApplyAnimation(playerid, "PED", "FLOOR_HIT", 4.1, 0, 1, 1, 1, 0);
-	defer DelayedTimer_AnimGetUp(playerid);
+
+	if(!IsPlayerDead(playerid))
+	{
+		defer DelayedTimer_AnimGetUp(playerid);
+	}
 	return 0;
 }
 
