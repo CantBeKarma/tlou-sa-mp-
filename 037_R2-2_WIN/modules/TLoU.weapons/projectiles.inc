@@ -156,7 +156,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         for(new i = 0; i != MAX_PLAYERS; i++)
         {
             if(!IsPlayerConnected(i) || i == throwerid
-            || !IsPlayerInRangeOfPoint(i, NAILBMB_EXPLODE_RANGE, x, y, z))
+            || !IsPlayerInRangeOfPoint(i, NAILBOMB_INITIATE_RANGE, x, y, z))
             {
                 continue;
             }
@@ -192,9 +192,9 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     timer OnNailbombExplode[NAILBMB_TRIGGERED_EXPLODE](triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
     {
-        #pragma unused throwerid
+        SCMF(triggererid, -1, "OnNailbombExplode");
         
-        if(IsPlayerInRangeOfPoint(triggererid, 3.0, x, y, z))
+        if(IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, x, y, z))
         {
             SetPlayerHealthEx(triggererid, GetPlayerHealthEx(triggererid) - DAMAGE_AMOUNT_NAIL_BOMB, throwerid, WEAPON_NAIL_BOMB);
             ApplyAnimation(triggererid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);

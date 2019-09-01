@@ -124,7 +124,7 @@ public OnPlayerStopAimingWeapon(playerid)
 	SetPlayerDrunkLevel(playerid, 0);
 
 	new equippedItemId = GetPlayerEquippedItemId(playerid);
-	if(IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+	if(IsItemType(equippedItemId, ITEM_TYPE_BULLET_WEAPON))
 	{
 		OnPlayerStopAimingBulletWeapon(playerid);
 	}
@@ -132,7 +132,7 @@ public OnPlayerStopAimingWeapon(playerid)
 	{
 		OnPlayerStopAimingBow(playerid);
 	}
-	else if(IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
+	else if(IsItemType(equippedItemId, ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE_PROJECTILE))
 	{
 		OnPlayerStopAimingProjectile(playerid);
 	}

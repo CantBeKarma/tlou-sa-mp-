@@ -39,7 +39,8 @@
     #define     TICK_RATE_SMOKEBMB_EFFECT       (10000)
     #define     TICK_RATE_PROJECTILE_THROW      (1100)
 
-    #define     NAILBMB_EXPLODE_RANGE           (2.0)
+    #define     NAILBOMB_INITIATE_RANGE         (2.0)
+    #define     NAILBOMB_EXPLODE_RANGE          (5.0)
     #define     SMOKEBMB_AFFECT_RANGE           (5.5)
 
     #define     PROJ_PHYS_SPHERECOL_RADIUS      (0.19)
