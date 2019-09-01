@@ -85,6 +85,38 @@ ResetBits_ePlayerFlag(playerid)
 				}
 			}
 
+			case PLAYER_STATUS_FALL:
+			{
+				if(IsPlayerAimingWeapon(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
+				{
+					OnPlayerStopAimingWeapon(playerid);
+				}
+
+				if(IsPlayerUsingBackpack(playerid))
+				{
+					new bool:successfullyClosed = HideBackpack(playerid, (statusIssuerId != INVALID_PLAYER_ID) ? (true) : (false));
+					if(!successfullyClosed)
+					{
+						return;
+					}
+
+					OnPlayerCloseBackpack(playerid);
+				}
+
+				if(IsPlayerUsingWeaponMenu(playerid))
+				{
+					new bool:successfullyClosed = HideWeaponMenu(playerid);
+					if(!successfullyClosed)
+					{
+						return;
+					}
+
+					OnPlayerCloseWeaponMenu(playerid);
+				}
+
+				ApplyAnimation(playerid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);
+			}
+
 			case PLAYER_STATUS_USING_BACKPACK:
 			{
 				new bool:successfullyOpened = ShowBackpack(playerid);
@@ -207,6 +239,7 @@ ResetBits_ePlayerFlag(playerid)
 
 	IsPlayerBurning(playerid) 				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_BURNING);
 	IsPlayerStunned(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_STUNNED);
+	IsPlayerFall(playerid)					return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_FALL);
 	IsPlayerDead(playerid)					return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_DEAD);
 	IsPlayerHealing(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_HEALING);
 	IsPlayerUsingBackpack(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);

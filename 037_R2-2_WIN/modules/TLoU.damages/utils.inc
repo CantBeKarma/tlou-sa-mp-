@@ -12,7 +12,7 @@ FlyBackwardsWhenShot(damagedid)
         return 1;
     }
 
-    ApplyAnimation(damagedid, "BASEBALL", "BAT_HIT_3", 4.0, 0, 1, 1, 1, 0, 1);
+    SetPlayerStatus(damagedid, PLAYER_STATUS:PLAYER_STATUS_FALL);
 
     if(!IsPlayerDead(damagedid))
     {

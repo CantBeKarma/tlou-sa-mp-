@@ -100,7 +100,8 @@
 		e_bIsSwitchingWeapons,
 		e_bLookingAtTimerRunning,
 		e_bIsHudBgFlashing,
-		e_bShootingCustomWeapon
+		e_bShootingCustomWeapon,
+		e_bShotNailbomb
 	}
 	new BitArray:ePlayerFlag[e_PLAYER_FLAGS]<MAX_PLAYERS>;
 
@@ -119,7 +120,8 @@
 		PLAYER_STATUS_STUNNED,
 		PLAYER_STATUS_HEALING,
 		PLAYER_STATUS_PLAYING_ANIM,
-		PLAYER_STATUS_DEAD
+		PLAYER_STATUS_DEAD,
+		PLAYER_STATUS_FALL
 	};
 
 //#endregion

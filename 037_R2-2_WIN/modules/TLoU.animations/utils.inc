@@ -210,6 +210,7 @@ IsPlayerUnableToPerformAction(playerid)
 		|| IsPlayerDead(playerid)
 		|| IsPlayerBurning(playerid)
 		|| IsPlayerStunned(playerid)
+		|| IsPlayerFall(playerid)
     ;
 }
 
