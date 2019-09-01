@@ -193,9 +193,19 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     {        
         if(IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, x, y, z))
         {
-            if(GetPlayerEquippedItemId(triggererid) != -1 && !IsItemType(GetPlayerEquippedItemId(triggererid), ITEM_TYPE_BULLET_WEAPON))
+            if(GetPlayerEquippedItemId(triggererid) != -1)
             {
-                HideItem(triggererid);
+                if(!IsItemType(GetPlayerEquippedItemId(triggererid), ITEM_TYPE_BULLET_WEAPON))
+                {
+                    HideItem(triggererid);
+                }
+                else
+                {
+                    if(!Bit_Get(ePlayerFlag[e_bShotNailbomb], triggererid))
+                    {
+                        HideItem(triggererid);
+                    }
+                }
             }
 
             SetPlayerStatus(triggererid, PLAYER_STATUS:PLAYER_STATUS_FALL);
