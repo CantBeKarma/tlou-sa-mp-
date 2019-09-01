@@ -50,7 +50,7 @@ ResetBits_ePlayerFlag(playerid)
 
 		switch(status)
 		{
-			case PLAYER_STATUS_NONE:
+			case PLAYER_STATUS_NONE, PLAYER_STATUS_DEAD:
 			{
 				if(IsPlayerAimingWeapon(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
 				{
@@ -171,14 +171,9 @@ ResetBits_ePlayerFlag(playerid)
 
 		if(GetPlayerHealthEx(playerid) <= 0.0)
 		{
-			if(weaponid == WEAPON_MOLOTOV)
-			{
-				stop ePlayerInfo[playerid][e_iTimer_Burning];
-			}
-
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_DEAD);
 			OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
-		}	
+		}
 	}
 
 	// Changes player health bar length

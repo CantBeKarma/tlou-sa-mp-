@@ -17,6 +17,7 @@ PrepareDataAfterRegister(playerid)
 
     TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
     TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);
+    SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN, 50);
 
     SetPlayerHealth(playerid, FLOAT_INFINITY);
     SetPlayerHealthEx(playerid, 100.0);
