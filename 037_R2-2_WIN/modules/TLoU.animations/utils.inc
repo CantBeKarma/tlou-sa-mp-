@@ -73,7 +73,7 @@ PlayPlayerReloadAnim(playerid, itemId)
 }
 
 // Plays damage animations on player.
-bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLAYER_ID, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
+bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLAYER_ID, issuerItemId = -1, Float:distanceBetweenPlayers = 0.0)
 {
     if(IsPlayerUnableToPerformAction(damagedId)
     || (GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
@@ -100,7 +100,7 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
         case BODY_PART_RIGHT_LEG: ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 9], 4.1, 0, 1, 1, 0, 0);
         case BODY_PART_TORSO:
         {
-            if(issuerWeaponId == WEAPON_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
+            if(issuerItemId == _:ITEM_IDX_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
             {
                 FlyBackwardsWhenShot(damagedId);
             }
@@ -114,8 +114,9 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
 }
 
 // Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
-PlayDeathAnimation(playerid, bodypart, weaponid)
+PlayDeathAnimation(playerid, bodypart, itemId)
 {
+	SCMF(playerid, -1, "PlayDeathAnimation: bodypart: %d | itemId: %d", bodypart, itemId);
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		new 
@@ -137,8 +138,9 @@ PlayDeathAnimation(playerid, bodypart, weaponid)
 		return;
 	}
 
-	if(weaponid == WEAPON_NAIL_BOMB)
+	if(itemId == _:ITEM_IDX_NAIL_BOMB)
 	{
+		SCMF(playerid, -1, "weapon nail bomb");
 		if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
 		{
 			ApplyAnimation(playerid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);
@@ -146,13 +148,13 @@ PlayDeathAnimation(playerid, bodypart, weaponid)
 		return;
 	}
 
-	if(weaponid == WEAPON_SHIV)
+	if(itemId == _:ITEM_IDX_SHIV)
 	{
 		ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
 		return;
 	}
 
-	if(weaponid == WEAPON_MOLOTOV || weaponid == WEAPON_COLLISION)
+	if(itemId == _:ITEM_IDX_MOLOTOV || itemId == WEAPON_COLLISION)
 	{
 		ApplyAnimation(playerid, "PED", "KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
 		return;

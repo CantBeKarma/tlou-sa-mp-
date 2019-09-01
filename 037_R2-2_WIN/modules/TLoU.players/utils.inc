@@ -85,11 +85,6 @@ ResetBits_ePlayerFlag(playerid)
 					OnPlayerStopBurning(playerid);
 				}
 
-				if(IsPlayerFall(playerid))
-				{
-					ApplyAnimation(playerid, "PED", "GETUP", 4.1, 0, 1, 1, 0, 0);
-				}
-
 				if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid))
 				{
 					Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
@@ -200,7 +195,7 @@ ResetBits_ePlayerFlag(playerid)
 	Float:GetPlayerHealthEx(playerid) return eCharsInfo[playerid][e_fHealth];
 
 	// Set player health (avoid going over 100 health points or lower than 0.0).
-	SetPlayerHealthEx(playerid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
+	SetPlayerHealthEx(playerid, Float:health, killerid = INVALID_PLAYER_ID, itemId = -1, bodypart = -1)
 	{
 		if(playerid == INVALID_PLAYER_ID || IsPlayerDead(playerid))
 		{
@@ -215,7 +210,7 @@ ResetBits_ePlayerFlag(playerid)
 		if(GetPlayerHealthEx(playerid) <= 0.0)
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_DEAD);
-			OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
+			OnPlayerDie(playerid, killerid, itemId, bodypart);
 		}
 	}
 
