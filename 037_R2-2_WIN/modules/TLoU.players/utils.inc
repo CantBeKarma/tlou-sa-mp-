@@ -80,7 +80,7 @@ ResetBits_ePlayerFlag(playerid)
 					OnPlayerCloseWeaponMenu(playerid);
 				}
 
-				if(IsPlayerBurning(playerid))
+				if(IsPlayerBurning(playerid) && status == PLAYER_STATUS_NONE)
 				{
 					OnPlayerStopBurning(playerid);
 				}
