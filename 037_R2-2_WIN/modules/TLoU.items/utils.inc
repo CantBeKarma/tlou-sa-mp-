@@ -282,7 +282,9 @@
     // true - if item has been given correctly
     bool:GivePlayerItem(playerid, itemId)
     {
-        if(HasPlayerGotItem(playerid, itemId) || IsItemType(itemId, ITEM_TYPE_MELEE) && GetPlayerMeleeItemId(playerid) != -1)
+        if(HasPlayerGotItem(playerid, itemId) 
+        || IsItemType(itemId, ITEM_TYPE_MELEE) && GetPlayerMeleeItemId(playerid) != -1
+        || IsItemType(itemId, ITEM_TYPE_THROWABLE) && GetPlayerThrowableItemId(playerid) != -1)
         {
             return false;
         }
