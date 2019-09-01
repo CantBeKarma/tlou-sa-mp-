@@ -42,13 +42,17 @@ timer Key_AimingCustomWeapon[100](playerid)
     else if(leftright == KEY_RIGHT) ApplyAnimation(playerid, "PED", "GUNMOVE_R", 4.1, 1, 1, 1, 0, 0);
     else
     {
-        if(IsItemType(equippedItemId, ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE_PROJECTILE))
+        if(GetPlayerAnimationIndex(playerid) != PED_GETUP
+        && GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
         {
-            ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
-        }
-        else if(equippedItemId == _:ITEM_IDX_BOW)
-        {
-            Bow_PullString(playerid);
+            if(IsItemType(equippedItemId, ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE_PROJECTILE))
+            {
+                ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
+            }
+            else if(equippedItemId == _:ITEM_IDX_BOW)
+            {
+                Bow_PullString(playerid);
+            }
         }
     }
 

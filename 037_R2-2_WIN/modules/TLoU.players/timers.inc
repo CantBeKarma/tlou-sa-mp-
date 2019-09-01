@@ -11,9 +11,9 @@ timer DelayedTimer_AnimGetUp[TIMER_GETUP_DELAY](playerid)
 		Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
 	}
 
-	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 	ApplyAnimation(playerid, "PED", "GETUP", 4.1, 0, 1, 1, 0, 0);
-	
+	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+		
 	return true;
 }
 

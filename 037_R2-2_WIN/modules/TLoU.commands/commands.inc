@@ -547,3 +547,18 @@ CMD:removeitem(playerid, params[])
     }
     return 1;
 }
+
+CMD:allin(playerid, params[])
+{
+    for(new i = 0; i < MAX_ITEMS_DATA; i++)
+    {
+        GivePlayerItem(playerid, i);
+
+        new 
+            maxItemAmount = GetPlayerItemMaxAmount(playerid, i),
+            maxMeleeCnd = GetPlayerItemMaxAmount(playerid, i, true);
+            
+        SetPlayerItemAmount(playerid, i, maxItemAmount, maxMeleeCnd);
+    }
+    return 1;
+}
