@@ -18,6 +18,9 @@
 #define     MAX_PROJECTILES_SFX     (5)
 
 //#region LOCAL AUDIO FILES (INDEXES)
+    #define     AUDIO_COLL_UPDWN            (49)
+    #define     AUDIO_COLL_VIEW             (50)
+    
     #define     AUDIO_RELOAD_SHORTY         (51)
     #define     AUDIO_RELOAD_SHOTGUN        (52)
     #define     AUDIO_RELOAD_RIFLE          (53)
