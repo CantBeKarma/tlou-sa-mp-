@@ -6,7 +6,6 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerStartAimingProjectile(playerid, itemId)
     {
-        ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
         Key_AimingCustomWeapon(playerid);
         return 0;
     }
@@ -194,6 +193,11 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     {        
         if(IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, x, y, z))
         {
+            if(GetPlayerEquippedItemId(triggererid) != -1 && !IsItemType(GetPlayerEquippedItemId(triggererid), ITEM_TYPE_BULLET_WEAPON))
+            {
+                HideItem(triggererid);
+            }
+
             SetPlayerStatus(triggererid, PLAYER_STATUS:PLAYER_STATUS_FALL);
             SetPlayerHealthEx(triggererid, GetPlayerHealthEx(triggererid) - DAMAGE_AMOUNT_NAIL_BOMB, throwerid, _:ITEM_IDX_NAIL_BOMB);
 
