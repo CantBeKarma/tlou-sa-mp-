@@ -35,6 +35,13 @@ Backpack_ResizeSelectBox(playerid)
     }
 }
 
+// Change position of collectibles select box.
+Backpack_MoveCollSelectBox(playerid, Float:x, Float:y)
+{
+    PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], x, y);
+    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+}
+
 // Crafting : Returns index of textdraw which displays amount of the item
 GetBackpackItemAmountTdIdx(itemId)
 {
@@ -278,10 +285,11 @@ ShowBackpackCategory(playerid, category)
 
             for(new i = 0; i != 2; i++)
             {
-                TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
                 TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemIcon][i]);
                 TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemName][i]);
             }
+
+            PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
             Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selectedCategory][e_fSelBoxX], eBackpack_CollItemsData[selectedCategory][e_fSelBoxY]);
         }
     }

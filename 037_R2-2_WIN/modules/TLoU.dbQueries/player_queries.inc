@@ -128,7 +128,7 @@
         mysql_tquery(eServerInfo[e_SqlHandler], query);
     }
 
-    // Read top 10 collectibles player has in DB and display its title.
+    // Read top 9 collectibles player has in DB and display its title.
     DB_LoadPlayerCollectibles(playerid, selectedCategory = -1)
     {
         if(selectedCategory == -1)
@@ -141,8 +141,17 @@
             new rowsCount;
             cache_get_row_count(rowsCount);
 
+            Iter_Clear(CollectiblesOwned<playerid>);
+
             if(!rowsCount)
             {
+                // Hide "LMB TO VIEW" if no collectibles found.
+                for(new i = 0; i < 2; i++)
+                {
+                    TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
+                }
+
+                // Hiding collectibles titles.
                 for(new i = 0; i < 9; i++)
                 {
                     if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]))
@@ -154,18 +163,45 @@
                 return true;
             }
 
-            new row_title[32];
+            // Show "LMB TO VIEW" if player has any collectibles.
+            for(new i = 0; i < 2; i++)
+            {
+                TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
+            }
+            
+            new
+                row_uid,
+                row_title[32];
+
             for(new i = 0; i != rowsCount; i++)
             {
+                cache_get_value_name_int(i, "uid", row_uid);
                 cache_get_value_name(i, "title", row_title, sizeof(row_title));
 
                 PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], row_title);
                 PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+
+                Iter_Add(CollectiblesOwned<playerid>, row_uid);
+            }
+
+            // Hiding remaining collectibles titles (if any were present).
+            if(rowsCount < 9)
+            {
+                for(new i = rowsCount; i < 9; i++)
+                {
+                    if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]))
+                    {
+                        break;
+                    }
+
+                    Iter_Remove(CollectiblesOwned<playerid>, i);
+                    PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+                }
             }
         }
 
-        new query[85];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title FROM collectibles_data WHERE uid_owner = %d AND id_type = %d LIMIT 9", GetPlayerCharUid(playerid), selectedCategory);
+        new query[128];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT uid, title FROM collectibles_data WHERE uid_owner = %d AND id_type = %d LIMIT 9", GetPlayerCharUid(playerid), selectedCategory);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
         return true;
     }
@@ -192,7 +228,7 @@
             cache_get_value_name(0, "title", row_title, sizeof(row_title));
             cache_get_value_name(0, "message", row_message, sizeof(row_message));
 
-            SCMF(playerid, -1, "Uid: %d | Title: %s | Message: %s", row_title, row_message);
+            SCMF(playerid, -1, "Uid: %d | Title: %s | Message: %s", uid, row_title, row_message);
         }
 
         new query[100];
