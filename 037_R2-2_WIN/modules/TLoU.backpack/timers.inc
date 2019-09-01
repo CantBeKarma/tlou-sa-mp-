@@ -24,13 +24,13 @@ timer Key_BackpackMenu[50](playerid)
 
         ePlayerBpInfo[playerid][e_iBackpackKeysUpDown] = updown;
 
-        if(!Bit_Get(ePlayerFlag[e_bIsCheckingColls], playerid))
+        if(IsPlayerCheckingCollectibles(playerid))
         {
-            OnPlayerUseBackpack(playerid, PlayerBackpackCategory(playerid), updown);
+            OnPlayerViewCollectibles(playerid, updown);
         }
         else
         {
-            OnPlayerViewCollectibles(playerid, updown);
+            OnPlayerUseBackpack(playerid, PlayerBackpackCategory(playerid), updown);
         }
     }
 

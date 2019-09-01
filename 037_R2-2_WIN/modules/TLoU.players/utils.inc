@@ -24,6 +24,7 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bKeyPress], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsCrafting], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
+	Bit_Vet(ePlayerFlag[e_bIsViewingColl], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
 	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
@@ -261,6 +262,8 @@ ResetBits_ePlayerFlag(playerid)
 	
 	IsPlayerCrafting(playerid)				return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
 	IsPlayerUpgradingSkill(playerid)		return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
+	IsPlayerCheckingCollectibles(playerid)	return Bit_Get(ePlayerFlag[e_bIsCheckingColls], playerid);
+	IsPlayerViewingCollectible(playerid)	return Bit_Get(ePlayerFlag[e_bIsViewingColl], playerid);
 	IsPlayerCrouched(playerid)				return (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK);
 	IsPlayerLookingAtPlayer(playerid)		return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID);
 	IsPlayerLookingAtItem(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID);
