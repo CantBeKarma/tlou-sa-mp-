@@ -303,6 +303,7 @@
         ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
         UpdateTextDrawsIfNecessary(playerid, itemId);
 
+        AttachItemsToPlayer(playerid, itemId);
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d was given itemId: %d", GetPlayerCharUid(playerid), itemId);
         return true;
     }

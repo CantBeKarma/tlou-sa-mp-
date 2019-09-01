@@ -356,22 +356,41 @@ AttachBackpackToPlayer(playerid, bool:isInFrontOfPlayer = false)
 }
 
 // Attach : attach weapons to player (happens during respawn).
-AttachWeaponsToPlayer(playerid)
+AttachItemsToPlayer(playerid, itemId = -1)
 {
-	for(new i = 0; i != MAX_ITEMS_DATA; i++)
+	if(itemId == -1)
 	{
-		if(!IsItemType(i, ITEM_TYPE:ITEM_TYPE_WEAPON) && !IsItemType(i, ITEM_TYPE:ITEM_TYPE_MELEE))
+		for(new i = 0; i != MAX_ITEMS_DATA; i++)
 		{
-			continue;
-		}
+			if(!IsItemType(i, ITEM_TYPE_WEAPON) && !IsItemType(i, ITEM_TYPE_MELEE))
+			{
+				continue;
+			}
 
-		if(!HasPlayerGotItem(playerid, i))
-		{
-			continue;
-		}
+			if(!HasPlayerGotItem(playerid, i))
+			{
+				continue;
+			}
 
-		SPAO(playerid, GetItemModel(i));
+			SPAO(playerid, GetItemModel(i));
+		}
 	}
+	else
+	{
+		if(!IsItemType(itemId, ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE_MELEE))
+		{
+			return false;
+		}
+
+		if(!HasPlayerGotItem(playerid, itemId))
+		{
+			return false;
+		}
+
+		SPAO(playerid, GetItemModel(itemId));
+	}
+
+	return true;
 }
 
 // Gets a free available attachment slot.

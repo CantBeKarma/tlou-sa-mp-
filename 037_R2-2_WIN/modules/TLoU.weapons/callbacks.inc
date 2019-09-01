@@ -218,7 +218,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         // Attach old item to player it if was only a WEAPON type.
         if(IsItemType(oldItemId, ITEM_TYPE_WEAPON))
         {
-            SPAO(playerid, GetItemModel(oldItemId));
+            AttachItemsToPlayer(playerid, oldItemId);
             HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
         }
 
@@ -242,7 +242,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         // If old item is melee weapon.
         if(IsItemType(oldItemId, ITEM_TYPE_MELEE))
         {
-            SPAO(playerid, GetItemModel(oldItemId));
+            AttachItemsToPlayer(playerid, oldItemId);
             HudTd_HideMeleeWeaponBars(playerid, oldItemId);
         }
     }
