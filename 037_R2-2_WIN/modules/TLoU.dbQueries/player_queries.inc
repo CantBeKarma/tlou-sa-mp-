@@ -1,11 +1,35 @@
+// DB_GivePlayerItemOwnership(playerid, itemUid)
+// {
+//     new query[85];
+//     mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = %d, is_created = 0 WHERE uid = %d", GetPlayerCharUid(playerid), itemUid);
+//     mysql_tquery(eServerInfo[e_SqlHandler], query);
+// }
+
 //#region Items manipulation give/update/save/load
 
     // Gives player an ownership over a weapon.
     DB_GivePlayerItem(itemId, amount, meleeExtCnd = 0, ownerUid)
     {
         new query[128];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, meleeExtCnd, uid_owner, is_created) VALUES (%d, %d, %d, %d, 0)", itemId, amount, meleeExtCnd, ownerUid);
+        switch(GetItemType(itemId))
+        {
+            case ITEM_TYPE_WEAPON:
+            {
+                mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, uid_owner, is_created) VALUES (%d, %d, %d, 0)", itemId, amount, ownerUid);
+            }
+
+            case ITEM_TYPE_MELEE:
+            {
+                mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, meleeExtCnd, uid_owner, is_created) VALUES (%d, %d, %d, %d, 0)", itemId, amount, meleeExtCnd, ownerUid);
+            }
+            default
+            {
+                return false;
+            }
+        }
+        
         mysql_tquery(eServerInfo[e_SqlHandler], query);
+        return true;
     }
 
     // Updates player weapon ammo/amount | melee condition
@@ -98,6 +122,39 @@
             itemAmount = meleeExtCnd = 0;
         }
     }
+
+//#endregion
+
+//#region Collectibles manipulation
+
+    // DB_LoadPlayerCollectibles(playerid)
+    // {
+    //     inline OnCollectiblesDataReceived()
+    //     {
+    //         new rows;
+    //         cache_get_row_count(rows);
+
+    //         if(!rows)
+    //         {
+    //             return true;
+    //         }
+
+    //         new 
+    //             row_collectibleTitle[32],
+    //             row_collectibleInnerMsg[128];
+
+    //         for(new i = 0; i != rows; i++)
+    //         {
+    //             // cache_get_value_name(i, "collectibleTitle", row_itemTitle, sizeof(row_itemTitle));
+    //             // cache_get_value_name(i, "collectibleInnerMsg", row_itemInnerMsg, sizeof(row_itemInnerMsg));
+    //         }
+    //     }
+
+    //     new query[50];
+    //     mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT * FROM artifacts_data WHERE uid_owner = %d", GetPlayerCharUid(playerid));
+    //     mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
+    //     return true;
+    // }
 
 //#endregion
 
