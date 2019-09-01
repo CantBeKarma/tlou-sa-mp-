@@ -129,8 +129,13 @@
     }
 
     // Read top 10 collectibles player has in DB and display its title.
-    DB_LoadPlayerCollectibles(playerid)
+    DB_LoadPlayerCollectibles(playerid, selectedCategory = -1)
     {
+        if(selectedCategory == -1)
+        {
+            return false;
+        }
+
         inline OnCollectiblesDataReceived()
         {
             new rowsCount;
@@ -138,6 +143,14 @@
 
             if(!rowsCount)
             {
+                for(new i = 0; i < 9; i++)
+                {
+                    if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]))
+                    {
+                        break;
+                    }
+                    PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+                }
                 return true;
             }
 
@@ -145,11 +158,14 @@
             for(new i = 0; i != rowsCount; i++)
             {
                 cache_get_value_name(i, "title", row_title, sizeof(row_title));
+
+                PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], row_title);
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
             }
         }
 
-        new query[70];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title FROM collectibles_data WHERE uid_owner = %d LIMIT 9", GetPlayerCharUid(playerid));
+        new query[85];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title FROM collectibles_data WHERE uid_owner = %d AND id_type = %d LIMIT 9", GetPlayerCharUid(playerid), selectedCategory);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
         return true;
     }

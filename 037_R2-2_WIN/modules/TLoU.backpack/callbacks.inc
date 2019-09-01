@@ -143,11 +143,13 @@ public OnPlayerUseBackpack(playerid, category, keys)
                 
                 Coll_GetSelection(playerid) += 1;
             }
-
+            
             Audio_PlayEx(playerid, AUDIO_SKILL_UPDWN);
 
             new selection = Coll_GetSelection(playerid);
             Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selection][e_fSelBoxX], eBackpack_CollItemsData[selection][e_fSelBoxY]);
+
+            CollTd_ShowTitles(playerid);
         }
     }
 }
