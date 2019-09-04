@@ -210,12 +210,6 @@ CMD:iteminfo(playerid, params[])
     return 1;
 }
 
-CMD:mycolls(playerid, params[])
-{
-    DB_LoadPlayerCollectibles(playerid);
-    return 1;
-}
-
 CMD:ls(playerid, params[])
 {
     SetPlayerPos(playerid, 2466.2358,-1659.0228,13.2723);
