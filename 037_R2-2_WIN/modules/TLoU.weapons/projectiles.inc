@@ -160,6 +160,8 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
                 continue;
             }
 
+            stop eProjectileData[nailBmbIdx][e_iNailBmb_Timer];
+            
             if(IsPlayerNPC(i))
             {
                 FCNPC_OnTriggerNailbomb(i, throwerid, nailBmbIdx, x, y, z);
@@ -168,8 +170,6 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
             {
                 OnPlayerTriggerNailbomb(i, throwerid, nailBmbIdx, x, y, z);
             }
-
-            stop eProjectileData[nailBmbIdx][e_iNailBmb_Timer];
             break;
         }
         return 0;
@@ -190,7 +190,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     //-------------------- OnNailbombExplode ------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     timer OnNailbombExplode[NAILBMB_TRIGGERED_EXPLODE](triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
-    {        
+    {
         if(IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, x, y, z))
         {
             if(GetPlayerEquippedItemId(triggererid) != -1)
