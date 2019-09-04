@@ -157,6 +157,11 @@ public OnPlayerUseBackpack(playerid, category, keys)
 
         case BACKPACK_CATEGORY_COLLECTIBLES:
         {
+            if((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_changeCollTypes]) < TICK_RATE_CHANGE_COLL_TYPES)
+            {
+                return;
+            }
+
             if(keys == KEY_UP)
             {
                 if(Coll_GetSelection(playerid) == COLL_ITEM_ARTIFACTS)
@@ -177,7 +182,8 @@ public OnPlayerUseBackpack(playerid, category, keys)
             }
             
             Audio_PlayEx(playerid, AUDIO_SKILL_UPDWN);
-
+            ePlayerBpInfo[playerid][e_iTickCounter_changeCollTypes] = GetConnectedTime(playerid);
+            
             new selection = Coll_GetSelection(playerid);
             Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selection][e_fSelBoxX], eBackpack_CollItemsData[selection][e_fSelBoxY]);
 

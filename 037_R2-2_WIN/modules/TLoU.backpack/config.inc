@@ -1,6 +1,7 @@
 // Other defs.
-#define     TICK_RATE_BP_OPENING    (1250)
-#define		TIMER_USE_BACKPACK		(50)
+#define     TICK_RATE_BP_OPENING            (1250)
+#define		TIMER_USE_BACKPACK		        (50)
+#define     TICK_RATE_CHANGE_COLL_TYPES     (800)
 
 // CRAFT ITEMS IDs.
 #define     CRAFT_ITEM_MELEE        (0)
@@ -34,7 +35,7 @@
 #define     INGR_ITEM_MELEE         (6)
 
 // MAX AMOUNTS OF COLLECTIBLES.
-#define     MAX_COLLECTIBLES_DATA       (2)
+#define     MAX_COLLECTIBLES_DATA       (3)
 #define     MAX_PLAYER_COLLECTIBLES     (100)
 
 // MAX AMOUNT OF SUPPS
@@ -188,8 +189,9 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
     };
     stock const eCollectiblesData[MAX_COLLECTIBLES_DATA][e_COLLECTIBLE_TYPES] =
     {
-        { ITEM_TYPE_ARTIFACT,    ITEM_MODEL_PAPER,       AUDIO_PICKUP_RAG },
-        { ITEM_TYPE_ARTIFACT,    ITEM_MODEL_NOTES,       AUDIO_PICKUP_EXPLOSIVE }
+        { ITEM_TYPE_ARTIFACT,       ITEM_MODEL_PAPER,       AUDIO_PICKUP_NOTE },
+        { ITEM_TYPE_ARTIFACT,       ITEM_MODEL_NOTES,       AUDIO_PICKUP_NOTE },
+        { ITEM_TYPE_FIREFLY_PEND,   ITEM_MODEL_NOTES,       AUDIO_PICKUP_PENDANT }
     };
 
 //#endregion
@@ -204,6 +206,7 @@ enum e_PLAYER_BACKPACK_DATA
 
     e_iBackpackSelected_Category,
     e_iTickCounter_backpackOpening,
+    e_iTickCounter_changeCollTypes,
 
     e_iBackpackKeysUpDown,
 	e_iBackpackKeysLeftRight,
