@@ -18,6 +18,9 @@
 #define     MAX_PROJECTILES_SFX     (5)
 
 //#region LOCAL AUDIO FILES (INDEXES)
+    #define     AUDIO_PICKUP_PENDANT        (47)
+    #define     AUDIO_PICKUP_NOTE           (48)
+
     #define     AUDIO_COLL_UPDWN            (49)
     #define     AUDIO_COLL_VIEW             (50)
     
