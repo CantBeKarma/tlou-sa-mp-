@@ -16,6 +16,11 @@ timer Key_BackpackMenu[TIMER_USE_BACKPACK](playerid)
 
     if(updown != ePlayerBpInfo[playerid][e_iBackpackKeysUpDown])
     {
+        if(IsPlayerViewingCollectible(playerid))
+        {
+            return 1;
+        }
+        
         if(!updown)
 		{
 		    ePlayerBpInfo[playerid][e_iBackpackKeysUpDown] = 0;

@@ -38,38 +38,34 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             if(IsPlayerCheckingCollectibles(playerid))
             {
                 Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
-                PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+                OnPlayerStopCheckingCollectible(playerid);
             }
             else if(IsPlayerViewingCollectible(playerid))
             {
                 Bit_Vet(ePlayerFlag[e_bIsViewingColl], playerid);
+                OnPlayerStopReadingCollectible(playerid);
             }
         }
     }
 
     if(PRESSED(KEY_FIRE))
     {
-        if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES)
+        if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES && HasPlayerGotAnyCollectible(playerid))
         {
-            if(HasPlayerGotCollectible(playerid))
+            if(!IsPlayerCheckingCollectibles(playerid))
             {
-                if(!IsPlayerCheckingCollectibles(playerid))
-                {
-                    Bit_Let(ePlayerFlag[e_bIsCheckingColls], playerid);
-                    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
-                    Audio_PlayEx(playerid, AUDIO_COLL_UPDWN);
-                }
-                else
-                {
-                    Bit_Let(ePlayerFlag[e_bIsViewingColl], playerid);
-                    DB_ReadArtifact(playerid, Iter_Index(CollectiblesOwned<playerid>, Coll_ViewingGetSelection(playerid)));
-                }
+                Bit_Let(ePlayerFlag[e_bIsCheckingColls], playerid);
+                OnPlayerCheckCollectibles(playerid, false);
+            }
+            else
+            {
+                Bit_Let(ePlayerFlag[e_bIsViewingColl], playerid);
+                OnPlayerCheckCollectibles(playerid, true);
             }
         }
     }
     return 1;
 }
-
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------- OnPlayerOpenBackpack ----------------
@@ -222,58 +218,4 @@ public OnPlayerSwitchBpCtgry(playerid, leftRight)
 
     HideBackpackCategory(playerid, oldCategory);
     ShowBackpackCategory(playerid, newCategory);    
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- OnPlayerViewCollectibles ---------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-forward OnPlayerViewCollectibles(playerid, updown);
-public OnPlayerViewCollectibles(playerid, updown)
-{
-    new Float:playerCollSelectBoxX, Float:playerCollSelectBoxY;
-    PlayerTextDrawGetPos(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], playerCollSelectBoxX, playerCollSelectBoxY);
-    
-    new oldSelection = Coll_ViewingGetSelection(playerid);
-    if(updown == KEY_UP)
-    {
-        if(Coll_ViewingGetSelection(playerid) == 0)
-        {
-            return 1;
-        }
-
-        Coll_ViewingGetSelection(playerid) -= 1;
-        playerCollSelectBoxY -= 24.0;
-    }
-    else if(updown == KEY_DOWN)
-    {
-        if(Coll_ViewingGetSelection(playerid) == 8)
-        {
-            return 1;
-        }
-        
-        Coll_ViewingGetSelection(playerid) += 1;
-        playerCollSelectBoxY += 24.0;
-    }
-
-    if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][Coll_ViewingGetSelection(playerid)]))
-    {
-        Coll_ViewingGetSelection(playerid) = oldSelection;
-        return 1;
-    }
-
-    Audio_PlayEx(playerid, AUDIO_COLL_UPDWN);
-
-    Backpack_MoveCollSelectBox(playerid, playerCollSelectBoxX, playerCollSelectBoxY);
-    return 0;
-}
-
-HasPlayerGotCollectible(playerid)
-{
-    return IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][0]);
-}
-
-CMD:mycoll(playerid, params[])
-{
-    SCMF(playerid, -1, "Coll_ViewingGetSelection(playerid) = %d", Coll_ViewingGetSelection(playerid));
-    return 1;
 }
