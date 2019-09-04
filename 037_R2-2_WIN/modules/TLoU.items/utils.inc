@@ -913,9 +913,9 @@ ShowPlayerItemLabel(playerid, item_objectId)
         format(labelStr, sizeof(labelStr), "Artifact");
     }
     else if(itemTypeId == ITEM_TYPE_FIREFLY_PEND)
-    [
+    {
         format(labelStr, sizeof(labelStr), "Firefly Pendant");
-    ]
+    }
     else
     {
         new itemId, itemAmount, itemExtAmount;
