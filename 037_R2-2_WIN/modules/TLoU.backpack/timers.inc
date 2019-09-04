@@ -1,5 +1,5 @@
 // Player pressing keys in backpack / using backpack.
-timer Key_BackpackMenu[50](playerid)
+timer Key_BackpackMenu[TIMER_USE_BACKPACK](playerid)
 {
     if(IsPlayerUsingBackpack(playerid))
     {
@@ -26,7 +26,7 @@ timer Key_BackpackMenu[50](playerid)
 
         if(IsPlayerCheckingCollectibles(playerid))
         {
-            OnPlayerViewCollectibles(playerid, updown);
+            OnPlayerViewingCollectibles(playerid, updown);
         }
         else
         {

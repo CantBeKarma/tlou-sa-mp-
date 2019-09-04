@@ -1,5 +1,6 @@
 // Other defs.
 #define     TICK_RATE_BP_OPENING    (1250)
+#define		TIMER_USE_BACKPACK		(50)
 
 // CRAFT ITEMS IDs.
 #define     CRAFT_ITEM_MELEE        (0)
