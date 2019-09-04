@@ -207,9 +207,9 @@
     }
 
     // Read single player's artifact from DB with title and its message content.
-    DB_ReadArtifact(playerid, uid)
+    DB_ReadCollectibleData(playerid, uid)
     {
-        inline ReadArtifactsData()
+        inline OnCollectiblesDataReceived()
         {
             new rowsCount;
             cache_get_row_count(rowsCount);
@@ -223,17 +223,15 @@
                 row_title[32],
                 row_message[128];
 
-            SCMF(playerid, -1, "Your artifact data:");
-
             cache_get_value_name(0, "title", row_title, sizeof(row_title));
             cache_get_value_name(0, "message", row_message, sizeof(row_message));
 
-            SCMF(playerid, -1, "Uid: %d | Title: %s | Message: %s", uid, row_title, row_message);
+            OnPlayerReadCollectible(playerid, row_title, row_message);
         }
 
         new query[100];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title, message FROM collectibles_data WHERE uid = %d AND uid_owner = %d LIMIT 1", uid, GetPlayerCharUid(playerid));
-        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline ReadArtifactsData);
+        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
         return true;
     }
 
