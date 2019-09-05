@@ -678,8 +678,8 @@
     UpdateTextDrawsIfNecessary(playerid, itemId)
     {
         if(IsPlayerUsingWeaponMenu(playerid)
-        && (IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE)
-        ||  IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MEDKIT) || IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_INGREDIENT)))
+        && (IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_PROJECTILE)
+        ||  IsItemType(itemId, ITEM_TYPE_THROWABLE) || IsItemType(itemId, ITEM_TYPE_MEDKIT) || IsItemType(itemId, ITEM_TYPE_INGREDIENT)))
         {
             WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId);
             CraftTd_CheckWhatsToCraft(playerid);
