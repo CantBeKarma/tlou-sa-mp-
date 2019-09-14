@@ -289,7 +289,11 @@ ShowBackpackCategory(playerid, category)
                 TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemName][i]);
             }
 
-            PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+            if(IsPlayerCheckingCollectibles(playerid))
+            {
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+            }
+
             Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selectedCategory][e_fSelBoxX], eBackpack_CollItemsData[selectedCategory][e_fSelBoxY]);
         }
     }
@@ -381,6 +385,15 @@ HideBackpackCategory(playerid, category)
                 TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
                 TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemIcon][i]);
                 TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemName][i]);
+            }
+
+            PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+            TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);
+            
+            if(!IsPlayerViewingCollectible(playerid))
+            {
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_PaperNote]);
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
             }
         }
     }
