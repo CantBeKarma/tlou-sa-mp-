@@ -32,7 +32,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         new itemUid, itemId, itemTypeId;
         ReadItemRelation(item_objectId, .itemUid = itemUid, .itemId = itemId, .itemTypeId = itemTypeId);
 
-        if(itemTypeId == ITEM_TYPE_ARTIFACT)
+        if(itemTypeId == ITEM_TYPE_ARTIFACT || itemTypeId == ITEM_TYPE_FIREFLY_PEND)
         {
             OnPlayerPickUpCollectible(playerid, itemId, itemUid, item_objectId);
             return 0;
