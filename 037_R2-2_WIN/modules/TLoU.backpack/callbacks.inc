@@ -35,7 +35,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
         if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES)
         {
-            if(IsPlayerCheckingCollectibles(playerid))
+            if(IsPlayerCheckingCollectibles(playerid) && !IsPlayerViewingCollectible(playerid))
             {
                 Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
                 OnPlayerStopCheckingCollectible(playerid);
