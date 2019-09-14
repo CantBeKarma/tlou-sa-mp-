@@ -1,4 +1,4 @@
-// GlobalTds (current count: 110 | limit: 2048)
+// GlobalTds (current count: 111 | limit: 2048)
 enum e_GLOBAL_TD_DATA
 {
 	Text:e_Punish,
@@ -35,7 +35,10 @@ enum e_GLOBAL_TD_DATA
 	Text:e_Bp_Rs_Coll_MiddleLine,
 	Text:e_Bp_Rs_Coll_HowToView[2],
 	Text:e_Bp_Rs_Coll_ItemIcon[2],
-	Text:e_Bp_Rs_Coll_ItemName[2]
+	Text:e_Bp_Rs_Coll_ItemName[2],
+	
+	Text:e_Bp_Rs_Coll_PaperNote,
+	Text:e_Bp_Rs_Coll_MessageText[MAX_PLAYERS]
 };
 new eTextDrawInfo[e_GLOBAL_TD_DATA];
 
