@@ -399,8 +399,15 @@ function PlayDeathProcedureForPlayer(playerid)
 	Audio_PlayEx(playerid, AUDIO_DEATH_SFX);
 	wait_ms(1200);
 
+	if(IsPlayerHudFlashing(playerid))
+    {
+        Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+    }
+
+    HideHud(playerid);
 	HideItem(playerid);
 	ShowPlayerBlackScreen(playerid);
+	
 	wait_ms(1600);
 
 	PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][0], CombatTips[random(sizeof(CombatTips))]);

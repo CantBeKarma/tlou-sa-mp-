@@ -62,7 +62,6 @@ Perform_BackpackOpening(playerid)
 {
     if(!IsPlayerLogged(playerid))
     {
-        SCMF(playerid, -1, "Isn't logged in!");
         return 1;
     }
 
