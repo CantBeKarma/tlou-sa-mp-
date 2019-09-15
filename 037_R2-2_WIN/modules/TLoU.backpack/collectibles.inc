@@ -148,6 +148,9 @@ public OnPlayerStopReadingCollectible(playerid)
         TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend]);
     }
 
+    TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][0]);
+    TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][1]);
+
     TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
     ShowBackpackCategory(playerid, BACKPACK_CATEGORY_COLLECTIBLES, false);
     return 0;
@@ -261,6 +264,14 @@ public OnPlayerCollectibleLoad(playerid, title[])
                 DB_LoadCollectibleData(playerid, selectedCategory, pendant);
                 count += 1;
             }
+        }
+
+        // If no collectibles were loaded, hide textdraw
+        // "HOW TO VIEW" if visible (for example changed sections).
+        if(count == 0)
+        {
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][0]);
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][1]);
         }
         return true;
     }

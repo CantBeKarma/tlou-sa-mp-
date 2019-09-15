@@ -195,8 +195,6 @@
 
             if(!rowsCount)
             {
-                TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][0]);
-                TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][1]);
                 return false;
             }
 
