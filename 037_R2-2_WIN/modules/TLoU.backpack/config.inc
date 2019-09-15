@@ -37,6 +37,7 @@
 // MAX AMOUNTS OF COLLECTIBLES.
 #define     MAX_COLLECTIBLES_DATA       (3)
 #define     MAX_PLAYER_COLLECTIBLES     (100)
+#define     MAX_DISPLAY_COLLECTIBLES    (9)
 
 // MAX AMOUNT OF SUPPS
 #define     MAX_PLAYER_SUPPS_AMOUNT     (530)
@@ -178,7 +179,8 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
     };
 
     // Player's collectibles data information (Artifacts & Firefly Pendants).
-    new Iterator:CollectiblesOwned<MAX_PLAYERS, MAX_PLAYER_COLLECTIBLES>;
+    new Iterator:ArtifactsOwned<MAX_PLAYERS, MAX_PLAYER_COLLECTIBLES>;
+    new Iterator:PendantsOwned<MAX_PLAYERS, MAX_PLAYER_COLLECTIBLES>;
 
     // List of available types of collectibles.
     enum e_COLLECTIBLE_TYPES
@@ -191,7 +193,7 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
     {
         { ITEM_TYPE_ARTIFACT,       ITEM_MODEL_PAPER,       AUDIO_PICKUP_NOTE },
         { ITEM_TYPE_ARTIFACT,       ITEM_MODEL_NOTES,       AUDIO_PICKUP_NOTE },
-        { ITEM_TYPE_FIREFLY_PEND,   ITEM_MODEL_NOTES,       AUDIO_PICKUP_PENDANT }
+        { ITEM_TYPE_FIREFLY_PEND,   ITEM_MODEL_PENDANT,     AUDIO_PICKUP_PENDANT }
     };
 
 //#endregion

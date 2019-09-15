@@ -78,7 +78,8 @@ ResetVariables(playerid)
 {
 	Iter_Clear(ItemsToCraft<playerid>);
 	Iter_Clear(SkillsToUpgrade<playerid>);
-	Iter_Clear(CollectiblesOwned<playerid>);
+	Iter_Clear(ArtifactsOwned<playerid>);
+	Iter_Clear(PendantsOwned<playerid>);
 	Iter_Clear(iAudioHandle3D<playerid>);
 
     for(new i = 0; i != MAX_ITEMS_DATA; i++)

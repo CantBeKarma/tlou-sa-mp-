@@ -33,7 +33,9 @@ function PrepareDataAfterLogin(playerid)
     cache_get_value_name_int(0, "skill_shivmaster", Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER));
 
     ResetVariables(playerid);
-    DB_LoadPlayerItems(playerid, eCharsInfo[playerid][e_iUid]);
+    //DB_LoadPlayerItems(playerid, eCharsInfo[playerid][e_iUid]);
+    DB_LoadPlayerCollectibles(playerid, COLL_ITEM_ARTIFACTS);
+    DB_LoadPlayerCollectibles(playerid, COLL_ITEM_FIREFLY_PEND);
 
     TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
     TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);

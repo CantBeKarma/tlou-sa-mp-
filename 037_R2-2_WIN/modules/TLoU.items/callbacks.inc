@@ -34,7 +34,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         if(itemTypeId == ITEM_TYPE_ARTIFACT || itemTypeId == ITEM_TYPE_FIREFLY_PEND)
         {
-            OnPlayerPickUpCollectible(playerid, itemId, itemUid, item_objectId);
+            OnPlayerPickUpCollectible(playerid, itemId, itemUid, itemTypeId, item_objectId);
             return 0;
         }
 
@@ -252,9 +252,21 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerPickUpCollectible --------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerPickUpCollectible(playerid, itemId, itemUid, item_objectId)
+    public OnPlayerPickUpCollectible(playerid, itemId, itemUid, itemTypeId, item_objectId)
     {
-        Iter_Add(CollectiblesOwned<playerid>, itemUid);
+        if(itemTypeId == ITEM_TYPE_ARTIFACT)
+        {
+            Iter_Add(ArtifactsOwned<playerid>, itemUid);
+        }
+        else if(itemTypeId == ITEM_TYPE_FIREFLY_PEND)
+        {
+            Iter_Add(PendantsOwned<playerid>, itemUid);
+        }
+        else
+        {
+            return NEXT_ACTION_NONE;
+        }
+
         DB_GiveCollectibleOwnership(playerid, itemUid);
         DestroyItem(item_objectId);
 

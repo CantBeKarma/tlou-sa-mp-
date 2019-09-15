@@ -56,6 +56,7 @@
     // -> Collectibles
     #define     ITEM_MODEL_PAPER        (2953)
     #define     ITEM_MODEL_NOTES        (2059)
+    #define     ITEM_MODEL_PENDANT      (2680)
 //#endregion
 
 enum ITEM_IDX
