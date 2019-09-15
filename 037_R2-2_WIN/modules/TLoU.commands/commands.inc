@@ -184,8 +184,8 @@ YCMD:createitem(playerid, params[], help)
 
 CMD:createnote(playerid, params[])
 {
-    new itemId, title[32], innerMsg[128];
-    if(sscanf(params, "ds[32]s[128]", itemId, title, innerMsg))return SCM(playerid, -1, "/createnote [itemId] [title] [innerMsg]");
+    new itemId, title[MAX_COLL_TIT_LEN], innerMsg[MAX_COLL_MSG_LEN];
+    if(sscanf(params, "ds[32]s[512]", itemId, title, innerMsg))return SCM(playerid, -1, "/createnote [itemId] [title] [innerMsg]");
     {
         CreateCollectible(itemId, title, innerMsg, .creatorId = playerid);
     }
@@ -197,8 +197,8 @@ CMD:iteminfo(playerid, params[])
     new objectId;
     if(sscanf(params, "d", objectId))return SCM(playerid, -1, "/iteminfo [objectId]");
     {
-        new itemTitle[32];
-        new itemInnerMsg[128];
+        new itemTitle[MAX_COLL_TIT_LEN];
+        new itemInnerMsg[MAX_COLL_MSG_LEN];
 
         Streamer_GetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
 

@@ -1,5 +1,7 @@
 // Maximal values.
 #define     MAX_ITEMS_DATA          (25)
+#define     MAX_COLL_TIT_LEN        (32)
+#define     MAX_COLL_MSG_LEN        (512)
 
 // Other.
 #define     NO_OWNER_UID            (-1)

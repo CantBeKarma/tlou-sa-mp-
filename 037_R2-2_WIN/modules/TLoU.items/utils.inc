@@ -261,7 +261,7 @@
             return false;
         }
 
-        if(strlen(title) > 32 || strlen(innerMsg) > 128)
+        if(strlen(title) > MAX_COLL_TIT_LEN || strlen(innerMsg) > MAX_COLL_MSG_LEN)
         {
             SCMF(creatorId, -1, "Invalid length");
             return false;
@@ -276,7 +276,7 @@
             interiorId = GetPlayerInterior(creatorId);
         }
 
-        DB_CommitNewCollectible(itemId, ITEM_TYPE_ARTIFACT, x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId, title, innerMsg, creatorId);
+        DB_CommitNewCollectible(itemId, eCollectiblesData[itemId][e_iCollectibleType], x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId, title, innerMsg, creatorId);
         return true;
     }
 
