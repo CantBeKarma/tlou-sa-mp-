@@ -211,7 +211,7 @@ bool:HideBackpack(playerid, forceClose = false)
 }
 
 // Display backpack's category.
-ShowBackpackCategory(playerid, category)
+ShowBackpackCategory(playerid, category, bool:firstTime = true)
 {
     UpdateNavItemsColors(playerid);
     switch(category)
@@ -274,7 +274,18 @@ ShowBackpackCategory(playerid, category)
         case BACKPACK_CATEGORY_COLLECTIBLES:
         {
             new selectedCategory = Coll_GetSelection(playerid);
-            CollTd_ShowTitles(playerid);
+
+            if(firstTime == true)
+            {
+                CollTd_ShowTitles(playerid);
+            }
+            else
+            {
+                for(new i = 0; i < MAX_DISPLAY_COLLECTIBLES; i++)
+                {
+                    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+                }
+            }
             
             PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CatName], "COLLECTIBLES");
             PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_NavSelectBox], 490.333557, 30.696300);

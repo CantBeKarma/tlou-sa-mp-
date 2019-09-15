@@ -206,6 +206,8 @@ enum e_PLAYER_BACKPACK_DATA
     e_iBackpackSelected_Coll,
     e_iBackpackSelected_ViewColl,
 
+    e_iBackpack_CollTrackList,
+
     e_iBackpackSelected_Category,
     e_iTickCounter_backpackOpening,
     e_iTickCounter_changeCollTypes,

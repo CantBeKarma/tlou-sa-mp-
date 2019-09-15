@@ -128,7 +128,7 @@
         mysql_tquery(eServerInfo[e_SqlHandler], query);
     }
 
-    // Read top 9 collectibles player has in DB and display its title.
+    // Load player's collectibles from DB (during sign-in) and assign their UIDs to player's iterator.
     DB_LoadPlayerCollectibles(playerid, selectedCategory = -1)
     {
         if(selectedCategory == -1)
@@ -141,75 +141,81 @@
             new rowsCount;
             cache_get_row_count(rowsCount);
 
-            Iter_Clear(CollectiblesOwned<playerid>);
+            if(selectedCategory == COLL_ITEM_ARTIFACTS)
+            {
+                Iter_Clear(ArtifactsOwned<playerid>);
+            }
+            else if(selectedCategory == COLL_ITEM_FIREFLY_PEND)
+            {
+                Iter_Clear(PendantsOwned<playerid>);
+            }
 
             if(!rowsCount)
             {
-                // Hide "LMB TO VIEW" if no collectibles found.
-                for(new i = 0; i < 2; i++)
-                {
-                    TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
-                }
-
-                // Hiding collectibles titles.
-                for(new i = 0; i < 9; i++)
-                {
-                    if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]))
-                    {
-                        break;
-                    }
-                    PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
-                }
-                return true;
-            }
-
-            // Show "LMB TO VIEW" if player has any collectibles.
-            for(new i = 0; i < 2; i++)
-            {
-                TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
+                return false;
             }
             
-            new
-                row_uid,
-                row_title[32];
+            new row_uid;
 
             for(new i = 0; i != rowsCount; i++)
             {
                 cache_get_value_name_int(i, "uid", row_uid);
-                cache_get_value_name(i, "title", row_title, sizeof(row_title));
 
-                PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], row_title);
-                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
-
-                Iter_Add(CollectiblesOwned<playerid>, row_uid);
-            }
-
-            // Hiding remaining collectibles titles (if any were present).
-            if(rowsCount < 9)
-            {
-                for(new i = rowsCount; i < 9; i++)
+                if(selectedCategory == COLL_ITEM_ARTIFACTS)
                 {
-                    if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]))
-                    {
-                        break;
-                    }
-
-                    Iter_Remove(CollectiblesOwned<playerid>, i);
-                    PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+                    Iter_Add(ArtifactsOwned<playerid>, row_uid);
+                }
+                else if(selectedCategory == COLL_ITEM_FIREFLY_PEND)
+                {
+                    Iter_Add(PendantsOwned<playerid>, row_uid);
                 }
             }
         }
 
-        new query[128];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT uid, title FROM collectibles_data WHERE uid_owner = %d AND id_type = %d LIMIT 9", GetPlayerCharUid(playerid), selectedCategory);
+        new query[100];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT uid FROM collectibles_data WHERE uid_owner = %d AND id_type = %d", GetPlayerCharUid(playerid), selectedCategory);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
+        return true;
+    }
+
+    // Load single collectible data (title) and display it on the collectibles list.
+    // Textdraw showing happens in OnPlayerCollectibleLoad()
+    DB_LoadCollectibleData(playerid, selectedCategory, uid)
+    {
+        if(selectedCategory == COLL_ITEM_ARTIFACTS && !Iter_Contains(ArtifactsOwned<playerid>, uid)
+        || selectedCategory == COLL_ITEM_FIREFLY_PEND && !Iter_Contains(PendantsOwned<playerid>, uid))
+        {
+            return false;
+        }
+
+        inline OnCollectibleDataReceived()
+        {
+            new rowsCount;
+            cache_get_row_count(rowsCount);
+
+            if(!rowsCount)
+            {
+                TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][0]);
+                TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][1]);
+                return false;
+            }
+
+            new row_title[MAX_COLL_TIT_LEN];
+            cache_get_value_name(0, "title", row_title, sizeof(row_title));
+
+            OnPlayerCollectibleLoad(playerid, row_title);
+        }
+
+        new query[128];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title FROM collectibles_data WHERE uid = %d AND uid_owner = %d AND id_type = %d LIMIT 1", uid, GetPlayerCharUid(playerid), selectedCategory);
+        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectibleDataReceived);
         return true;
     }
 
     // Read single player's artifact from DB with title and its message content.
     DB_ReadCollectibleData(playerid, uid)
     {
-        inline OnCollectiblesDataReceived()
+        inline OnCollectibleDataReceived()
         {
             new rowsCount;
             cache_get_row_count(rowsCount);
@@ -220,8 +226,8 @@
             }
 
             new
-                row_title[32],
-                row_message[128];
+                row_title[MAX_COLL_TIT_LEN],
+                row_message[MAX_COLL_MSG_LEN];
 
             cache_get_value_name(0, "title", row_title, sizeof(row_title));
             cache_get_value_name(0, "message", row_message, sizeof(row_message));
@@ -231,7 +237,7 @@
 
         new query[100];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT title, message FROM collectibles_data WHERE uid = %d AND uid_owner = %d LIMIT 1", uid, GetPlayerCharUid(playerid));
-        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectiblesDataReceived);
+        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCollectibleDataReceived);
         return true;
     }
 
@@ -258,10 +264,8 @@
             cache_delete(result);
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     // Requests all player's data (during sign-in)

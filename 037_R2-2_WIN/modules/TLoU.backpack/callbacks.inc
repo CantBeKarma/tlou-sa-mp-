@@ -188,6 +188,7 @@ public OnPlayerUseBackpack(playerid, category, keys)
             Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selection][e_fSelBoxX], eBackpack_CollItemsData[selection][e_fSelBoxY]);
 
             CollTd_ShowTitles(playerid);
+            Coll_ManageMessageTextPosition(playerid);
         }
     }
 }

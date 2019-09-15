@@ -133,7 +133,7 @@ GlobalTextDraw_Backpack_Coll()
 	for(new i = 0; i != MAX_PLAYERS; i++)
 	{
 		// Overlay textdraw for paper note/firefly pendant to display its message
-		eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i] = TextDrawCreate(402.666778, 152.237045, "Ellie,~n~~n~I know I did a lot of bad to you,~n~I lied to you about firefl~n~ies. I'm sorry~n~~n~Joel");
+		eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i] = TextDrawCreate(402.666778, 152.237045, "");
 		TextDrawLetterSize		(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 0.248998, 1.143702);
 		TextDrawAlignment		(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 1);
 		TextDrawColor			(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], -1);
