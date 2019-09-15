@@ -57,7 +57,6 @@ public OnPlayerViewingCollectibles(playerid, updown)
     {
         if(ePlayerBpInfo[playerid][e_iBackpack_CollTrackList] == 0)
         {
-            SCMF(playerid, -1, "You've reached the beginning of the list!");
             return 1;
         }
 
@@ -76,7 +75,6 @@ public OnPlayerViewingCollectibles(playerid, updown)
     {
         if(ePlayerBpInfo[playerid][e_iBackpack_CollTrackList] == (Iter_Count(ArtifactsOwned<playerid>)-1))
         {
-            SCMF(playerid, -1, "You've reached the end of the list!");
             return 1;
         }
 
