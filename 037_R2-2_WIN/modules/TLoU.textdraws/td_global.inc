@@ -120,6 +120,16 @@ GlobalTextDraw_Backpack_Coll()
 	TextDrawSetOutline	(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 0);
 	TextDrawFont		(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 4);
 
+	// Right side-bar : Pendant texture (to display collectibles text over it).
+	eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend] = TextDrawCreate(425.333679, 177.540771, "TLoU:pendant");
+	TextDrawLetterSize	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 0.000000, 0.000000);
+	TextDrawTextSize	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 95.333343, 120.710922);
+	TextDrawAlignment	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 1);
+	TextDrawColor		(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], -1);
+	TextDrawSetShadow	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 0);
+	TextDrawSetOutline	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 0);
+	TextDrawFont		(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 4);
+
 	for(new i = 0; i != MAX_PLAYERS; i++)
 	{
 		// Overlay textdraw for paper note/firefly pendant to display its message
