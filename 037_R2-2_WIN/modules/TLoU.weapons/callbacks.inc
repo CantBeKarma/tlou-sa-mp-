@@ -177,8 +177,7 @@ hook OnPlayerWeaponShoot(playerid, itemId, oldAmmo, oldClipAmmo, newAmmo, newCli
     HudTd_UpdateWeaponAmmo(playerid, itemId);
     HudTd_ReduceWeaponCurrentAmmo(playerid, itemId, newClipAmmo);
 
-    if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid)
-    && IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, fX, fY, fZ))
+    if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid) && IsPlayerFall(playerid))
     {
         HideItem(playerid);
         return 0;
