@@ -190,6 +190,16 @@ bool:HideBackpack(playerid, forceClose = false)
         }
     }
 
+    if(IsPlayerViewingCollectible(playerid))
+    {
+        Bit_Vet(ePlayerFlag[e_bIsViewingColl], playerid);
+    }
+
+    if(IsPlayerCheckingCollectibles(playerid))
+    {
+        Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
+    }
+
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Bg]);
 
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);
@@ -388,7 +398,7 @@ HideBackpackCategory(playerid, category)
                 PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
             }
 
-            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MiddleLine]);
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MiddleLine]);            
 
             for(new i = 0; i != 2; i++)
             {
@@ -403,6 +413,7 @@ HideBackpackCategory(playerid, category)
             if(!IsPlayerViewingCollectible(playerid))
             {
                 TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_PaperNote]);
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend]);
                 TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
             }
         }
