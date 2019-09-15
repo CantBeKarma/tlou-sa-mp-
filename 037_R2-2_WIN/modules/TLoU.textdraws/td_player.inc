@@ -782,7 +782,7 @@ PlayerTextDraw_Backpack_Colls(playerid)
 	new Float:posY_collTitle = 127.348159;
 	for(new i = 0; i < 9; i++)
 	{
-		ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i] = CreatePlayerTextDraw(playerid, 491.666778, posY_collTitle, "collectible_title");
+		ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i] = CreatePlayerTextDraw(playerid, 491.666778, posY_collTitle, "");
 		PlayerTextDrawLetterSize		(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 0.223995, 1.239109);
 		PlayerTextDrawAlignment			(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 1);
 		PlayerTextDrawColor				(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], -1);
