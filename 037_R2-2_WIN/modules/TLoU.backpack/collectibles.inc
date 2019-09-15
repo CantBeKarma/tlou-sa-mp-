@@ -117,6 +117,16 @@ public OnPlayerReadCollectible(playerid, row_title[], row_message[])
         TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend]);
     }
 
+    new count = 0;
+    for(new i = 0; i < strlen(row_message); i++)
+    {
+        count += 1;
+        if(count == 35)
+        {
+            strins(row_message, "-~n~", i, MAX_COLL_MSG_LEN);
+            count = 0;
+        }
+    }
     TextDrawSetString(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], row_message);
 
     TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
@@ -182,7 +192,7 @@ public OnPlayerCollectibleLoad(playerid, title[])
         }
         else if(selectedCategory == COLL_ITEM_FIREFLY_PEND)
         {
-            TextDrawSetPos(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], 474.333587, 228.562805);
+            TextDrawSetPos(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], 454.333587, 228.562805);
         }
     }
 
