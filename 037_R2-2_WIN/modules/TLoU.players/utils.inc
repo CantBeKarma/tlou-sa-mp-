@@ -416,6 +416,19 @@ function PlayDeathProcedureForPlayer(playerid)
 	PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][1]);
 }
 
+// Creates firefly pendant on player's death.
+CreatePlayerPendant(playerid)
+{
+	static fireflyPendantItemId = 2;
+	new string[MAX_PLAYER_NAME + 24];
+	
+	new year, month, day;
+	getdate(year, month, day);
+
+	format(string, sizeof(string), "%s~n~%02d-%02d-%02d", PlayerName(playerid), year, month, day);
+	CreateCollectible(fireflyPendantItemId, "Firefly Pendant", string, .creatorId = playerid);
+}
+
 // Hide death procedure textdraws.
 HideDeathProcedureTds(playerid)
 {
