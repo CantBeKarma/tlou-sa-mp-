@@ -293,7 +293,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     public OnItemCreate(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
     {
         new objectId = -1;
-        if(itemType == ITEM_TYPE_ARTIFACT)
+        if(itemType == ITEM_TYPE_ARTIFACT || itemType == ITEM_TYPE_FIREFLY_PEND)
         {
             objectId = CreateDynamicObject(eCollectiblesData[itemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
         }
