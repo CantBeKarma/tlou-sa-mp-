@@ -251,19 +251,16 @@
     {
         if(itemId < 0 || itemId > MAX_COLLECTIBLES_DATA)
         {
-            SCMF(creatorId, -1, "Only allowed itemIds are between: 0 and %d", MAX_COLLECTIBLES_DATA-1);
             return false;
         }
 
         if(isnull(title) || isnull(innerMsg))
         {
-            SCMF(creatorId, -1, "Can't leave TITLE or innerMsg empty!");
             return false;
         }
 
         if(strlen(title) > MAX_COLL_TIT_LEN || strlen(innerMsg) > MAX_COLL_MSG_LEN)
         {
-            SCMF(creatorId, -1, "Invalid length");
             return false;
         }
 
@@ -276,7 +273,13 @@
             interiorId = GetPlayerInterior(creatorId);
         }
 
-        DB_CommitNewCollectible(itemId, eCollectiblesData[itemId][e_iCollectibleType], x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId, title, innerMsg, creatorId);
+        new Float:rX, Float:rY, Float:rZ;
+        if(eCollectiblesData[itemId][e_iCollectibleType] == ITEM_TYPE_FIREFLY_PEND)
+        {
+            rX = 120.0;
+        }
+
+        DB_CommitNewCollectible(itemId, eCollectiblesData[itemId][e_iCollectibleType], x, y, z, rX, rY, rZ, virtualWorld, interiorId, title, innerMsg, creatorId);
         return true;
     }
 
