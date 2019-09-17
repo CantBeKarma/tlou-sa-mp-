@@ -340,7 +340,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnItemDestroy(uid_item)
     {
-        //DB_DestroyItem(uid_item);
+        DB_DestroyItem(uid_item);
         return 0;
     }
 

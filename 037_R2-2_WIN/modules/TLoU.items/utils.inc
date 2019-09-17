@@ -247,19 +247,12 @@
         return true;
     }
 
+    // Creates collectible item with title and inner message.
     CreateCollectible(itemId, title[], innerMsg[], Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, creatorId = -1)
     {
-        if(itemId < 0 || itemId > MAX_COLLECTIBLES_DATA)
-        {
-            return false;
-        }
-
-        if(isnull(title) || isnull(innerMsg))
-        {
-            return false;
-        }
-
-        if(strlen(title) > MAX_COLL_TIT_LEN || strlen(innerMsg) > MAX_COLL_MSG_LEN)
+        if(itemId < 0 || itemId > MAX_COLLECTIBLES_DATA
+        || isnull(title) || strlen(title) > MAX_COLL_TIT_LEN
+        || isnull(innerMsg) || strlen(innerMsg) > MAX_COLL_MSG_LEN)
         {
             return false;
         }
