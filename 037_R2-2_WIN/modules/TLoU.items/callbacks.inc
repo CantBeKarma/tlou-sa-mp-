@@ -366,8 +366,8 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_iObj_Int] = interiorId;
         eObjData[e_iObj_ItemAmount] = newItemAmount;
         eObjData[e_iObj_MeleeUpgradedCnd] = newMeleeExtCnd;
-        strcpy(eObjData[e_sObj_Title], "", sizeof(eObjData[e_sObj_Title]));
-        strcpy(eObjData[e_sObj_InnerMessage], "", sizeof(eObjData[e_sObj_InnerMessage]));
+        eObjData[e_sObj_Title][0] = EOS;
+        eObjData[e_sObj_InnerMessage][0] = EOS;
         eObjData[e_bObj_Created] = true;
 
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
