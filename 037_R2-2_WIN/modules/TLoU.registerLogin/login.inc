@@ -1,30 +1,33 @@
 // Load player and character data
 function LoginPlayerToAccount(playerid, password[])
 {
-    inline OnPlayerSaltReceived()
-    {
-        new rowsCount;
-        cache_get_row_count(rowsCount);
-
-        if(!rowsCount)
-        {
-            return false;
-        }
-
-        new 
-            salt[11],
-            hashStr[65];
-
-        cache_get_value_name(0, "salt", salt);
-        cache_get_value_name(0, "password", hashStr);
-
-        SHA256_PassHash(password, salt, hashStr, sizeof(hashStr));
-        DB_RequestPlayerData(playerid, salt, hashStr);
-    }
-    mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `salt`, `password` FROM `player_data` WHERE `guid` = %d LIMIT 1", GetPlayerGuid(playerid));
-    mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnPlayerSaltReceived);
+    new query[70];
+    mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `salt` FROM `player_data` WHERE `guid` = %d LIMIT 1", GetPlayerGuid(playerid));
+    mysql_tquery(eServerInfo[e_SqlHandler], query, "OnPlayerSaltReceived", "ds", playerid, password);
 
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s is trying to sign in to account of Guid: %d", PlayerName(playerid), GetPlayerCharUid(playerid));
+
+    return true;
+}
+
+// Player's SALT from database received. Signing in going on from here..
+function OnPlayerSaltReceived(playerid, password[])
+{
+    new rowsCount;
+    cache_get_row_count(rowsCount);
+
+    if(!rowsCount)
+    {
+        return false;
+    }
+
+    new row_salt[11];
+    cache_get_value_name(0, "salt", row_salt);
+    
+    new hashStr[65];
+    SHA256_PassHash(password, row_salt, hashStr, sizeof(hashStr));
+    
+    DB_RequestPlayerData(playerid, hashStr);
 
     return true;
 }
