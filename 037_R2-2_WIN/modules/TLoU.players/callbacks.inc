@@ -53,6 +53,7 @@
 		}
 		
 		SavePlayerData(playerid);
+		DestroyPlayerLabel(playerid);
 		
 		ResetEnum_ePlayerInfo(playerid);
 		ResetBits_ePlayerFlag(playerid);

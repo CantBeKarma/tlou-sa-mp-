@@ -429,6 +429,21 @@ CreatePlayerPendant(playerid)
 	CreateCollectible(fireflyPendantItemId, "Firefly Pendant", string, .creatorId = playerid);
 }
 
+// Create player nickname label over player's head.
+CreatePlayerLabel(playerid)
+{
+    ePlayerInfo[playerid][e_iPlayerLabel] = CreateDynamic3DTextLabel(PlayerName(playerid), COLOR_WHITE_TRANS, 0.0, 0.0, 0.12, 10.0, playerid, INVALID_VEHICLE_ID, true);
+}
+
+// Destroys player's nickname label if created.
+DestroyPlayerLabel(playerid)
+{
+	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iPlayerLabel]))
+	{
+		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iPlayerLabel]);
+	}
+}
+
 // Hide death procedure textdraws.
 HideDeathProcedureTds(playerid)
 {
