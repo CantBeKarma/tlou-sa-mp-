@@ -279,7 +279,7 @@
     }
 
     // Requests all player's data (during sign-in)
-    DB_RequestPlayerData(playerid, salt[], passwordHash[])
+    DB_RequestPlayerData(playerid, passwordHash[])
     {
         new query[134 + MAX_PLAYER_NAME];
         inline OnPlayerDataReceived()
@@ -305,7 +305,7 @@
     // Registers new account and sets player his character Guid.
     DB_RegisterNewAccount(playerid, salt[], passwordHash[])
     {
-        new query[126 + MAX_PLAYER_NAME];
+        new query[256];
         inline OnPlayerDataReceived()
         {
             ePlayerInfo[playerid][e_iGuid] = cache_insert_id();
@@ -315,10 +315,12 @@
                 eCharsInfo[playerid][e_iUid] = cache_insert_id();
                 PrepareDataAfterRegister(playerid);
             }
-            mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `chars_data` (`guid`, `name`) VALUES ('%d', '%s')", GetPlayerGuid(playerid), PlayerName(playerid));
+            mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `chars_data` (`guid`, `name`) VALUES ('%d', '%e')", GetPlayerGuid(playerid), PlayerName(playerid));
             mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharsDataReceived);
         }
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `player_data` (`ip_address`, `register_date`, `last_login_date`, `password`, `salt`) VALUES ('%s', NOW(), NOW(), '%e', '%e')", GetPlayerIpAddress(playerid), passwordHash, salt);
+
+        SCMF(playerid, -1, "Register new account: %s (salt: %s)", passwordHash, salt);
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `player_data` (`ip_address`, `register_date`, `last_login_date`, `password`, `salt`) VALUES ('%e', NOW(), NOW(), '%e', '%e')", GetPlayerIpAddress(playerid), passwordHash, salt);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnPlayerDataReceived);
     }
 
