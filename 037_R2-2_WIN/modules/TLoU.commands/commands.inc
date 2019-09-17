@@ -263,25 +263,6 @@ CMD:setteam(playerid, params[])
 	return 1;
 }
 
-CMD:setingr(playerid, params[])
-{
-    new ingrId, ingrAmount;
-    if(sscanf(params, "dd", ingrId, ingrAmount))return SCM(playerid, -1, "/setingr [ingr_id] [ingr_amount]");
-    {
-        SetPlayerItemAmount(playerid, ingrId, ingrId);
-    }
-    return 1;
-}
-
-CMD:first(playerid, params[])
-{
-    for(new i = 0; i != 6; i++)
-    {
-        DB_GivePlayerItem(i, 0, .ownerUid = eCharsInfo[playerid][e_iUid]);
-    }
-    return 1;
-}
-
 CMD:setsupps(playerid, params[])
 {
     new suppsAmount;
@@ -328,17 +309,6 @@ CMD:ambientnoise(playerid, params[])
     }
     return 1;
 }
-
-// CMD:npcupdate(playerid, params[])
-// {
-//     new npcid, update, bool:force;
-//     if(sscanf(params, "ddd", npcid, update, force))return SCM(playerid, -1, "/npcupdate [npcid] [0/1] [force-(0/1)]");
-//     {
-//         if(update) FCNPC_StartUpdateTimer(npcid);
-//         else FCNPC_StopUpdateTimer(npcid, force);
-//     }
-//     return 1;
-// }
 
 CMD:npcskin(playerid, params[])
 {
@@ -547,22 +517,6 @@ CMD:setlvl(playerid, params[])
             SCMF(playerid, -1, "Something went wrong!");
         }
     }
-    return 1;
-}
-
-CMD:equipitem(playerid, params[])
-{
-    new itemId;
-    if(sscanf(params, "d", itemId))return SCM(playerid, -1, "/equipitem [item_index] (/myitems)");
-    {
-        EquipItem(playerid, itemId);
-    }
-    return 1;
-}
-
-CMD:equipped(playerid, params[])
-{
-    SCMF(playerid, -1, "Currently equipped: %d", GetPlayerEquippedItemId(playerid));
     return 1;
 }
 
