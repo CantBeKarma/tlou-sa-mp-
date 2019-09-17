@@ -1,9 +1,16 @@
 // This function performs account register and character
 function RegisterPlayerAccount(playerid, password[])
 {
+    new salt[11];
+    for(new i = 0; i < 10; i++)
+    {
+        salt[i] = random(79) + 47;
+    }
+    salt[10] = 0;
+
     new hashStr[65];
-    SHA256_PassHash(password, "tlou2014", hashStr, sizeof(hashStr));
-    DB_RegisterNewAccount(playerid, hashStr);
+    SHA256_PassHash(password, salt, hashStr, sizeof(hashStr));
+    DB_RegisterNewAccount(playerid, salt, hashStr);
 }
 
 // Preparing backend data for user.

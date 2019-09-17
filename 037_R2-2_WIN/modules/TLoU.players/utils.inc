@@ -284,6 +284,11 @@ ResetBits_ePlayerFlag(playerid)
 			&& !IsPlayerUnableToPerformAction(playerid);
 	}
 
+	GetPlayerGuid(playerid)
+	{
+		return ePlayerInfo[playerid][e_iGuid];
+	}
+
 //#endregion
 
 // Stops HideHud timer and starts it again.
