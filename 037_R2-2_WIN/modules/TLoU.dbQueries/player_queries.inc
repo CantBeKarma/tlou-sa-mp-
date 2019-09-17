@@ -1,13 +1,24 @@
 //#region Items manipulation give/update/save/load
 
-    // Gives player an ownership over a weapon.
+    // Gives player an ownership over an item.
     DB_GivePlayerItem(itemId, amount, meleeExtCnd = 0, ownerUid)
     {
         new query[128];
         switch(GetItemType(itemId))
         {
-            case ITEM_TYPE_WEAPON:
+            case
+                ITEM_TYPE_INGREDIENT,
+                ITEM_TYPE_WEAPON,
+                ITEM_TYPE_SHIV,
+                ITEM_TYPE_HEAL,
+                ITEM_TYPE_PROJECTILE,
+                ITEM_TYPE_THROWABLE:
             {
+                // Don't give player snacks etc. to DB.
+                if(GetItemType(itemId) == ITEM_TYPE_HEAL && !IsItemType(itemId, ITEM_TYPE_MEDKIT))
+                {
+                    return false;
+                }
                 mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, uid_owner, is_created) VALUES (%d, %d, %d, 0)", itemId, amount, ownerUid);
             }
 
