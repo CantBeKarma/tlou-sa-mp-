@@ -1,22 +1,3 @@
-// Reads all item data relation and returns its values to variables sent by reference.
-ReadItemRelations(item_objectId, &itemUid, &itemId, &itemTypeId, &Float:itemPosX, &Float:itemPosY, &Float:itemPosZ, &itemVw, &itemIntId, \
-    &itemAmount, &itemExtAmount, &itemCreated)
-{
-    Streamer_GetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
-
-    itemUid = eObjData[e_iObj_Uid];
-    itemId = eObjData[e_iObj_ItemId];
-    itemTypeId = eObjData[e_iObj_TypeId];
-    itemPosX = eObjData[e_fObj_X];
-    itemPosY = eObjData[e_fObj_Y];
-    itemPosZ =  eObjData[e_fObj_Z];
-    itemVw = eObjData[e_iObj_Vw];
-    itemIntId = eObjData[e_iObj_Int];
-    itemAmount = eObjData[e_iObj_ItemAmount];
-    itemExtAmount = eObjData[e_iObj_MeleeUpgradedCnd];
-    itemCreated = eObjData[e_bObj_Created];
-}
-
 // Reads single item data relation and returns its value to variable sent by reference.
 // May be used to return many relations/data.
 ReadItemRelation(item_objectId, &itemUid = -1, &itemId = -1, &itemTypeId = -1, &Float:itemPosX = 1.0, &Float:itemPosY = 1.0, &Float:itemPosZ = 1.0, &itemVw = -1, &itemIntId = -1, \
