@@ -241,7 +241,7 @@
         }
         else
         {
-            //DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle, innerMsg, creatorId);
+            //DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId);
             OnItemCreate(itemId, ITEM_TYPE_ITEM, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, "", "", creatorId);
         }
         return true;
@@ -784,64 +784,55 @@
 
         new itemAmount = GetPlayerItemAmount(playerid, itemId);
         
-        // Equipping weapons with no ammo/amount is allowed 
-        // only for BOW and items of type WEAPON.
+        // Equipping weapons with no ammo/amount is allowed for items of type WEAPON.
         if(itemAmount <= 0 && !IsItemType(itemId, ITEM_TYPE_WEAPON))
         {
             SCMF(playerid, -1, "Stopped at 4th validation");
             return false;
         }
-
+        
         // Hides player's currently equipped itemId if there are any.
         HideItem(playerid, true);
 
-        new nativeWeaponId = GetItemNativeWeaponId(itemId);
-        if(itemAmount <= 0)
-        {
-            if(IsItemType(itemId, ITEM_TYPE_BOW))
-            {
-                SPAO(playerid, GetItemModel(itemId), true);
-            }
-            else
-            {
-                GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
-            }
-        }
-        else
+        if(itemAmount > 0)
         {
             PlayerWeaponBodyDamage[playerid] = eItemsData[itemId][e_iItem_BodyDmg];
-			PlayerWeaponHeadDamage[playerid] = eItemsData[itemId][e_iItem_HeadDmg];
+            PlayerWeaponHeadDamage[playerid] = eItemsData[itemId][e_iItem_HeadDmg];
+        }
 
-            switch(GetItemType(itemId))
+        new nativeWeaponId = GetItemNativeWeaponId(itemId);
+
+        switch(GetItemType(itemId))
+        {
+            case ITEM_TYPE_MELEE:
             {
-                case ITEM_TYPE_MELEE:
-                {
-                    GivePlayerWeapon(playerid, nativeWeaponId, 1);
-                }
+                GivePlayerWeapon(playerid, nativeWeaponId, 1);
+            }
 
-                case ITEM_TYPE_WEAPON:
+            case ITEM_TYPE_WEAPON:
+            {
+                if(ITEM_IDX:itemId == ITEM_IDX_BOW)
                 {
-                    if(ITEM_IDX:itemId == ITEM_IDX_BOW)
-                    {
-                        SPAO(playerid, GetItemModel(itemId), true);
-                    }
-                    else
-                    {
-                        GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
-                        SetPlayerNoReload(playerid, (nativeWeaponId != WEAPON_SHOTGUN));
+                    SPAO(playerid, GetItemModel(itemId), true);
+                }
+                else
+                {
+                    GivePlayerWeapon(playerid, nativeWeaponId, _:FLOAT_INFINITY);
+                    SetPlayerNoReload(playerid, (nativeWeaponId != WEAPON_SHOTGUN));
 
-                        if(GetPlayerItemClipAmount(playerid, itemId) == -1)
-                        {
-                            new maxItemClipSizeAmount = GetPlayerItemMaxClipSize(playerid, itemId);
-                            ePlayerItemData[playerid][itemId][e_iItemClipAmount] = (itemAmount < maxItemClipSizeAmount) ? (itemAmount) : (maxItemClipSizeAmount);
-                        }
+                    // If player equipped item for the first time (fresh spawn?)
+                    // below procedure will load clip of the weapon.
+                    if(GetPlayerItemClipAmount(playerid, itemId) == -1)
+                    {
+                        new maxItemClipSizeAmount = GetPlayerItemMaxClipSize(playerid, itemId);
+                        ePlayerItemData[playerid][itemId][e_iItemClipAmount] = (itemAmount < maxItemClipSizeAmount) ? (itemAmount) : (maxItemClipSizeAmount);
                     }
                 }
-            
-                case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE, ITEM_TYPE_HEAL:
-                {
-                    SPAO(playerid, (IsItemType(itemId, ITEM_TYPE_MEDKIT)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
-                }
+            }
+        
+            case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE, ITEM_TYPE_HEAL:
+            {
+                SPAO(playerid, (IsItemType(itemId, ITEM_TYPE_MEDKIT)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
             }
         }
 
