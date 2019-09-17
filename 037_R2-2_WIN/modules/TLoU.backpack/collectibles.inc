@@ -52,6 +52,7 @@ public OnPlayerViewingCollectibles(playerid, updown)
     new Float:playerCollSelectBoxX, Float:playerCollSelectBoxY;
     PlayerTextDrawGetPos(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], playerCollSelectBoxX, playerCollSelectBoxY);
     
+    new selectedCategory = Coll_GetSelection(playerid);
     new oldSelection = Coll_ViewingGetSelection(playerid);
     if(updown == KEY_UP)
     {
@@ -73,7 +74,8 @@ public OnPlayerViewingCollectibles(playerid, updown)
     }
     else if(updown == KEY_DOWN)
     {
-        if(ePlayerBpInfo[playerid][e_iBackpack_CollTrackList] == (Iter_Count(ArtifactsOwned<playerid>)-1))
+        if(selectedCategory == COLL_ITEM_ARTIFACTS && ePlayerBpInfo[playerid][e_iBackpack_CollTrackList] == (Iter_Count(ArtifactsOwned<playerid>)-1)
+        || selectedCategory == COLL_ITEM_FIREFLY_PEND && ePlayerBpInfo[playerid][e_iBackpack_CollTrackList] == (Iter_Count(PendantsOwned<playerid>)-1))
         {
             return 1;
         }
