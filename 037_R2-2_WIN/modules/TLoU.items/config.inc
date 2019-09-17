@@ -194,6 +194,7 @@ stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
 // Player item's data.
 enum e_PLAYER_ITEM_DATA
 {
+    //e_iItemUid,
     e_iItemId,
     e_iItemAmount,
     e_iItemClipAmount,

@@ -401,6 +401,19 @@
     GetPlayerEquippedItemId(playerid)       return (ePlayerInfo[playerid][e_iCurrentEquippedItemId]);
     GetPlayerLastEquippedItemId(playerid)   return (ePlayerInfo[playerid][e_iLastEquippedItemId]);
 
+    // Returns player's item UID
+    // Returns:
+    // (-1) if player hasn't got an item.
+    // (x) item uid
+    // GetPlayerItemUid(playerid, itemId)
+    // {
+    //     if(!HasPlayerGotItem(playerid, itemId))
+    //     {
+    //         return -1;
+    //     }
+    //     return ePlayerItemData[playerid][][[e_iItemUid];
+    // }
+
     // Gets player's current clip amount of the item specified
     // Returns:
     // (-1) if player hasn't got an item OR item is not a bullet type weapon
