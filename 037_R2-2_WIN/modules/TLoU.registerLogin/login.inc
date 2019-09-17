@@ -1,13 +1,11 @@
 // Load player and character data
-function LoginPlayerToAccount(playerid, password[])
+function TryLoginPlayerToAccount(playerid, password[])
 {
     new query[70];
     mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `salt` FROM `player_data` WHERE `guid` = %d LIMIT 1", GetPlayerGuid(playerid));
     mysql_tquery(eServerInfo[e_SqlHandler], query, "OnPlayerSaltReceived", "ds", playerid, password);
 
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s is trying to sign in to account of Guid: %d", PlayerName(playerid), GetPlayerCharUid(playerid));
-
-    return true;
 }
 
 // Player's SALT from database received. Signing in going on from here..
@@ -18,15 +16,18 @@ function OnPlayerSaltReceived(playerid, password[])
 
     if(!rowsCount)
     {
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Didn't receive password salt for %s (char uid: %d)", PlayerName(playerid), GetPlayerCharUid(playerid));
         return false;
     }
 
     new row_salt[11];
     cache_get_value_name(0, "salt", row_salt);
+
+    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Received salt for %s player's password (char uid: %d)", PlayerName(playerid), GetPlayerCharUid(playerid));
     
     new hashStr[65];
     SHA256_PassHash(password, row_salt, hashStr, sizeof(hashStr));
-    
+
     DB_RequestPlayerData(playerid, hashStr);
 
     return true;

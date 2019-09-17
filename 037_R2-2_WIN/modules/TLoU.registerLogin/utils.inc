@@ -48,7 +48,7 @@ function ShowRegisterLoginDialog(playerid, registered)
 				return Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD,\
 					"Sign in", "Welcome back to the The Last of Us (SA-MP) Project!\nWe have found you in our database. Please enter your account password below to sign in:", "Sign in", "Quit");
 			}
-			LoginPlayerToAccount(playerid, inputtext);
+			TryLoginPlayerToAccount(playerid, inputtext);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD,\
 			"Sign in", "Welcome back to the The Last of Us (SA-MP) Project!\nWe have found you in our database. Please enter your account password below to sign in:", "Sign in", "Quit");
