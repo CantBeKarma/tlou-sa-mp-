@@ -33,7 +33,7 @@ function PrepareDataAfterLogin(playerid)
     cache_get_value_name_int(0, "skill_shivmaster", Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER));
 
     ResetVariables(playerid);
-    //DB_LoadPlayerItems(playerid, eCharsInfo[playerid][e_iUid]);
+    DB_LoadPlayerItems(playerid);
     DB_LoadPlayerCollectibles(playerid, COLL_ITEM_ARTIFACTS);
     DB_LoadPlayerCollectibles(playerid, COLL_ITEM_FIREFLY_PEND);
 
@@ -55,9 +55,4 @@ function PrepareDataAfterLogin(playerid)
 
     SpawnPlayer(playerid);
     return 0;
-}
-
-CreatePlayerLabel(playerid)
-{
-    ePlayerInfo[playerid][e_iPlayerLabel] = CreateDynamic3DTextLabel(PlayerName(playerid), COLOR_WHITE_TRANS, 0.0, 0.0, 0.12, 10.0, playerid, INVALID_VEHICLE_ID, true);
 }

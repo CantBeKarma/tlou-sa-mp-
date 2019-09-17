@@ -26,10 +26,10 @@
     }
 
     // Updates player weapon ammo/amount | melee condition
-    DB_UpdatePlayerItemAmount(itemId, amount, meleeExtCnd = 0, ownerUid)
+    DB_UpdatePlayerItemAmount(playerid, itemId, amount, meleeExtCnd = 0)
     {
         new query[128];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET amount = %d, meleeExtCnd = %d WHERE id_item = %d AND uid_owner = %d", amount, meleeExtCnd, itemId, ownerUid);
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET amount = %d, meleeExtCnd = %d WHERE id_item = %d AND uid_owner = %d", amount, meleeExtCnd, itemId, GetPlayerCharUid(playerid));
         mysql_tquery(eServerInfo[e_SqlHandler], query);
     }
 
@@ -47,9 +47,10 @@
     }
 
     // Loads weapons from database for specified character (happens during sign-in).
-    DB_LoadPlayerItems(playerid, charUid)
+    DB_LoadPlayerItems(playerid)
     {
-        inline OnCharsItemsDataReceived()
+        printf("DB_LoadPlayerItems");
+        inline OnCharItemsDataReceived()
         {
             new rows;
             cache_get_row_count(rows);
@@ -84,8 +85,8 @@
         }
 
         new query[110];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `id_item`, `amount`, `meleeExtCnd` FROM `items_data` WHERE `uid_owner` = %d ORDER BY `uid_owner`", charUid);
-        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharsItemsDataReceived);
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `id_item`, `amount`, `meleeExtCnd` FROM `items_data` WHERE `uid_owner` = %d ORDER BY `uid_owner`", GetPlayerCharUid(playerid));
+        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharItemsDataReceived);
         return true;
     }
 
@@ -111,7 +112,7 @@
                 meleeExtCnd = GetPlayerMeleeExtraCnd(playerid, i);
             }
 
-            //DB_UpdatePlayerItemAmount(i, itemAmount, meleeExtCnd, eCharsInfo[playerid][e_iUid]);
+            DB_UpdatePlayerItemAmount(playerid, i, itemAmount, meleeExtCnd);
             itemAmount = meleeExtCnd = 0;
         }
     }
