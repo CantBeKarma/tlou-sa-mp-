@@ -157,9 +157,10 @@ timer Craft_CraftItem[1000](playerid, craftItemId, craft_time)
                     CRAFT_ITEM_MELEE,
                     CRAFT_ITEM_SHIV:
                     {
-                        craft_time = (craftLvl == 0) 
-                        ? (CRAFT_SPEED_MELEE_SHIV_LVL0) : (craftLvl == 1) 
-                        ? (CRAFT_SPEED_MELEE_SHIV_LVL1) : (CRAFT_SPEED_MELEE_SHIV_LVL2);
+                        craft_time = 
+                          (craftLvl == 0) ? (CRAFT_SPEED_MELEE_SHIV_LVL0) 
+                        : (craftLvl == 1) ? (CRAFT_SPEED_MELEE_SHIV_LVL1) 
+                        : (CRAFT_SPEED_MELEE_SHIV_LVL2);
                     }
                 
                 case 
@@ -167,16 +168,18 @@ timer Craft_CraftItem[1000](playerid, craftItemId, craft_time)
                     CRAFT_ITEM_MOLOTOV, 
                     CRAFT_ITEM_SMOKE_BOMB:
                     {
-                        craft_time = (craftLvl == 0) 
-                        ? (CRAFT_SPEED_MED_MOL_SMKBMB_LVL0) : (craftLvl == 1) 
-                        ? (CRAFT_SPEED_MED_MOL_SMKBMB_LVL1) : (CRAFT_SPEED_MED_MOL_SMKBMB_LVL2);
+                        craft_time = 
+                          (craftLvl == 0) ? (CRAFT_SPEED_MED_MOL_SMKBMB_LVL0) 
+                        : (craftLvl == 1) ? (CRAFT_SPEED_MED_MOL_SMKBMB_LVL1) 
+                        : (CRAFT_SPEED_MED_MOL_SMKBMB_LVL2);
                     }
                      
                 case CRAFT_ITEM_BOMB:
                 {
-                    craft_time = (craftLvl == 0) 
-                    ? (CRAFT_SPEED_NAIL_BOMB_LVL0) : (craftLvl == 1) 
-                    ? (CRAFT_SPEED_NAIL_BOMB_LVL1) : (CRAFT_SPEED_NAIL_BOMB_LVL2);
+                    craft_time = 
+                      (craftLvl == 0) ? (CRAFT_SPEED_NAIL_BOMB_LVL0) 
+                    : (craftLvl == 1) ? (CRAFT_SPEED_NAIL_BOMB_LVL1) 
+                    : (CRAFT_SPEED_NAIL_BOMB_LVL2);
                 }
             }
 
