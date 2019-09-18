@@ -2,6 +2,7 @@
 #include	<config\natives>
 #include	<config\config>
 #include	<config\mysql>
+#include	<config\messages>
 
 #include 	<TLoU.animations\config>
 #include 	<TLoU.weapons\config>

@@ -17,7 +17,7 @@ function SavePlayerData(playerid)
 		playerSkinId = GetPlayerSkinEx(playerid),
         playerInterior = GetPlayerInterior(playerid), 
         playerVirtualWorld = GetPlayerVirtualWorld(playerid),
-		playerSupps = eCharsInfo[playerid][e_iSkills_SuppsAmount],
+		playerSupps = GetPlayerSupplementsAmount(playerid),
 		playerSkill_MaxHp = Skill_GetLevel(playerid, SKILL_ITEM_MAXHP),
 		playerSkill_MaxListenDist = Skill_GetLevel(playerid, SKILL_ITEM_LISTEN_DIST),
 		playerSkill_CraftSpeed = Skill_GetLevel(playerid, SKILL_ITEM_CRAFT_SPEED),
@@ -42,17 +42,17 @@ function ShowRegisterLoginDialog(playerid, registered)
 		{
 			#pragma unused pid, dialogid, response, listitem, inputtext
 			if(!response)
+			{
 				return Kick(playerid);
+			}
 
 			if(!inputtext[0])
 			{
-				return Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD,\
-					"Sign in", "Welcome back to the The Last of Us (SA-MP) Project!\nWe have found you in our database. Please enter your account password below to sign in:", "Sign in", "Quit");
+				return Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_IN, MSG_SIGN_IN, "Sign in", "Quit");
 			}
 			TryLoginPlayerToAccount(playerid, inputtext);
 		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD,\
-			"Sign in", "Welcome back to the The Last of Us (SA-MP) Project!\nWe have found you in our database. Please enter your account password below to sign in:", "Sign in", "Quit");
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_IN, MSG_SIGN_IN, "Sign in", "Quit");
 	}
 	else
 	{
@@ -60,21 +60,23 @@ function ShowRegisterLoginDialog(playerid, registered)
 		{
 			#pragma unused pid, dialogid, response, listitem, inputtext
 			if(!response)
+			{
 				return Kick(playerid);
+			}
 
 			if(!inputtext[0])
 			{
-				return Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD,\
-					"Sign up", "Welcome to the \"The Last of Us (SA-MP) Project!\"\nWe haven't found you in our database. Please enter your account password below to sign up:", "Sign up", "Quit");
+				return Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_UP, MSG_SIGN_UP, "Sign up", "Quit");
 			}
 			RegisterPlayerAccount(playerid, inputtext);
 		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD,\
-			"Sign up", "Welcome to the \"The Last of Us (SA-MP) Project!\"\nWe haven't found you in our database. Please enter your account password below to sign up:", "Sign up", "Quit");
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_UP, MSG_SIGN_UP, "Sign up", "Quit");
 	}
     return 0;
 }
 
+
+// Reseting all variables, iterators (overall player data).
 ResetVariables(playerid)
 {
 	Iter_Clear(ItemsToCraft<playerid>);

@@ -319,7 +319,6 @@
             mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharsDataReceived);
         }
 
-        SCMF(playerid, -1, "Register new account: %s (salt: %s)", passwordHash, salt);
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `player_data` (`ip_address`, `register_date`, `last_login_date`, `password`, `salt`) VALUES ('%e', NOW(), NOW(), '%e', '%e')", GetPlayerIpAddress(playerid), passwordHash, salt);
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnPlayerDataReceived);
     }
