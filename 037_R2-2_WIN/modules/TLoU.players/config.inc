@@ -9,6 +9,7 @@
 #define		TIMER_BUNNYHOP_DELAY	(1500)
 #define		TIMER_LOOKAT_RATE		(300)
 #define		TIMER_HOLDKEY_RATE		(100)
+#define		TIMER_HUD_FLASH_RATE	(100)
 
 // MAX/MIN definitions.
 #define		MAX_HUD_WEAPONS				(17)

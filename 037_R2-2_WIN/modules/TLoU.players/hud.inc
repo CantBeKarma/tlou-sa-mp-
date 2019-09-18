@@ -446,7 +446,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
         if(amount < 1.0)
         {
-            SetTimerEx("HudTd_Bg_RedToBlack", 100, false, "df", playerid, amount += 0.1);
+            SetTimerEx("HudTd_Bg_RedToBlack", TIMER_HUD_FLASH_RATE, false, "df", playerid, amount += 0.1);
         }
     }
 
@@ -471,11 +471,11 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
             if(amount < 1.0)
             {
-                SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, colorId, amount += 0.1);
+                SetTimerEx("HudTd_Bg_FlashRed", TIMER_HUD_FLASH_RATE, false, "ddf", playerid, colorId, amount += 0.1);
             }
             else
             {
-                SetTimerEx("HudTd_Bg_FlashRed", 100, false, "ddf", playerid, (colorId == 0) ? (1) : (0), 0.0);
+                SetTimerEx("HudTd_Bg_FlashRed", TIMER_HUD_FLASH_RATE, false, "ddf", playerid, (colorId == 0) ? (1) : (0), 0.0);
             }
             return;
         }
