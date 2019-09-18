@@ -3,13 +3,13 @@ function TryLoginPlayerToAccount(playerid, password[])
 {
     new query[70];
     mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `salt` FROM `player_data` WHERE `guid` = %d LIMIT 1", GetPlayerGuid(playerid));
-    mysql_tquery(eServerInfo[e_SqlHandler], query, "OnPlayerSaltReceived", "ds", playerid, password);
+    mysql_tquery(eServerInfo[e_SqlHandler], query, "CheckIfPlayerSaltReceived", "ds", playerid, password);
 
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s is trying to sign in to account of Guid: %d", PlayerName(playerid), GetPlayerCharUid(playerid));
 }
 
 // Player's SALT from database received. Signing in going on from here..
-function OnPlayerSaltReceived(playerid, password[])
+function CheckIfPlayerSaltReceived(playerid, password[])
 {
     new rowsCount;
     cache_get_row_count(rowsCount);

@@ -14,6 +14,7 @@ function SavePlayerData(playerid)
 
     new 
 		Float:playerHealth = GetPlayerHealthEx(playerid),
+		playerSkinId = GetPlayerSkinEx(playerid),
         playerInterior = GetPlayerInterior(playerid), 
         playerVirtualWorld = GetPlayerVirtualWorld(playerid),
 		playerSupps = eCharsInfo[playerid][e_iSkills_SuppsAmount],
@@ -24,7 +25,7 @@ function SavePlayerData(playerid)
 		playerSkill_WeapSway = Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY),
 		playerSkill_ShivMaster = Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER);
 
-	DB_SaveCharsData(playerid, playerHealth, x, y, z, ang, playerInterior, playerVirtualWorld, \
+	DB_SaveCharsData(playerid, playerHealth, playerSkinId, x, y, z, ang, playerInterior, playerVirtualWorld, \
 		playerSupps, playerSkill_MaxHp, playerSkill_MaxListenDist, playerSkill_CraftSpeed, playerSkill_HealSpeed, playerSkill_WeapSway, playerSkill_ShivMaster);
 
 	DB_SavePlayerItems(playerid);

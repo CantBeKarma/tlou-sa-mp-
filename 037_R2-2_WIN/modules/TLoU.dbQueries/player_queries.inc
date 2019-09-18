@@ -325,20 +325,22 @@
     }
 
     // Save character's data
-    DB_SaveCharsData(playerid, Float:playerHealth, Float:x, Float:y, Float:z, Float:ang, playerInterior, playerVirtualWorld, \
+    DB_SaveCharsData(playerid, Float:playerHealth, playerSkinId, Float:x, Float:y, Float:z, Float:ang, playerInterior, playerVirtualWorld, \
 					playerSupps, playerSkill_MaxHp, playerSkill_MaxListenDist, playerSkill_CraftSpeed, playerSkill_HealSpeed, playerSkill_WeapSway, playerSkill_ShivMaster)
     {
-        new query[350];
+        new query[450];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query),\
             "UPDATE `chars_data` SET \
-            `health` = %f, `last_x` = %f, `last_y` = %f, `last_z` = %f, `last_ang` = %f, `last_int` = %d, `last_vw` = %d, \
+            `health` = %f, skinid = %d, `last_x` = %f, `last_y` = %f, `last_z` = %f, `last_ang` = %f, `last_int` = %d, `last_vw` = %d, \
             `supplements` = %d, `skill_maxhealth` = %d, `skill_listenmode` = %d, `skill_crafting` = %d, `skill_healing` = %d, `skill_weaponsway` = %d, `skill_shivmaster` = %d \
             WHERE `uid` = %d",\
-            playerHealth, x, y, z, ang, playerInterior, playerVirtualWorld, \
+            playerHealth, playerSkinId, x, y, z, ang, playerInterior, playerVirtualWorld, \
             playerSupps, playerSkill_MaxHp, playerSkill_MaxListenDist, playerSkill_CraftSpeed, playerSkill_HealSpeed, playerSkill_WeapSway, playerSkill_ShivMaster, \
             eCharsInfo[playerid][e_iUid]);
 
         mysql_tquery(eServerInfo[e_SqlHandler], query);
     }
+
+    GetPlayerSkinEx(playerid)
 
 //#endregion
