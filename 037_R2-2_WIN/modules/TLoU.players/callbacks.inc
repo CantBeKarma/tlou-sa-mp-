@@ -336,9 +336,9 @@ hook OnPlayerUpdate@000(playerid)
 		AdjustPlayerHealthBar(playerid);
 		ShowHud(playerid);
 		
-		if(newHealth <= 30.0)
+		if(newHealth <= MIN_HEALTH_FLASH_HUD)
 		{
-			// Flash HUD background if health is lower than 30.0.
+			// Flash HUD background if health is lower than defined.
 			if(!IsPlayerHudFlashing(playerid))
 			{
 				Bit_Let(ePlayerFlag[e_bIsHudBgFlashing], playerid);

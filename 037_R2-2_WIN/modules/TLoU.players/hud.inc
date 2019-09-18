@@ -458,7 +458,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
             return;
         }
 
-        if(GetPlayerHealthEx(playerid) <= 30.0)
+        if(GetPlayerHealthEx(playerid) <= MIN_HEALTH_FLASH_HUD)
         {
             new color;
             switch(colorId)

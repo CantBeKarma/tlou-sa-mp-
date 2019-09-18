@@ -88,7 +88,7 @@ function Perform_BackpackClosing(playerid)
     }
     
     // If HUD was flashing before using backpack - enable HUD flash again.
-    if(eCharsInfo[playerid][e_fHealth] <= 30.0)
+    if(eCharsInfo[playerid][e_fHealth] <= MIN_HEALTH_FLASH_HUD)
     {
         Bit_Let(ePlayerFlag[e_bIsHudBgFlashing], playerid);
         HudTd_Bg_FlashRed(playerid, 0, 0.0);
