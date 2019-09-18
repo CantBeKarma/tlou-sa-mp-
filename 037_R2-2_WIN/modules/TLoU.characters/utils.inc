@@ -13,6 +13,12 @@ GetPlayerCharUid(playerid)
     return eCharsInfo[playerid][e_iUid];
 }
 
+// Returns player's character supplements amount.
+GetPlayerSupplementsAmount(playerid)
+{
+    return eCharsInfo[playerid][e_iSkills_SuppsAmount];
+}
+
 // Set player's supplements amount.
 SetPlayerSupplements(playerid, amount)
 {
