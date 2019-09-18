@@ -48,20 +48,20 @@
 //#endregion
 
 //#region COLORS
-	#define     COLOR_BLACK             	0x000000FF
-	#define		COLOR_BLACK_TRANS			0x000000DD
-	#define		COLOR_BG_BLACK_TRANS		0xFFFFFFDD
-	#define     COLOR_WHITE             	0xFFFFFFFF
-	#define		COLOR_WHITE_TRANS			0xFFFFFF88
-	#define     COLOR_GRAY             		0xBDB2A4FF
-	#define     COLOR_GRAY_TRANS       		0xBDB2A477
-	#define		COLOR_RED					0xFF0000FF
-	#define		COLOR_RED_TRANS				0xFF000077
-	//#define		COLOR_DARK_RED			0xCC0000FF
-	#define		COLOR_DARK_RED				0xA80000FF
-	#define     COLOR_GOLD              	0xFFD700FF
-	#define		COLOR_CHAT_FADE_FROM		0xE6E6E6E6
-	#define		COLOR_CHAT_FADE_TO			0x6E6E6E6E
+	#define     COLOR_BLACK             	(0x000000FF)
+	#define		COLOR_BLACK_TRANS			(0x000000DD)
+	#define		COLOR_BG_BLACK_TRANS		(0xFFFFFFDD)
+	#define     COLOR_WHITE             	(0xFFFFFFFF)
+	#define		COLOR_WHITE_TRANS			(0xFFFFFF88)
+	#define     COLOR_GRAY             		(0xBDB2A4FF)
+	#define     COLOR_GRAY_TRANS       		(0xBDB2A477)
+	#define		COLOR_RED					(0xFF0000FF)
+	#define		COLOR_RED_TRANS				(0xFF000077)
+	//#define		COLOR_DARK_RED			(0xCC0000FF)
+	#define		COLOR_DARK_RED				(0xA80000FF)
+	#define     COLOR_GOLD              	(0xFFD700FF)
+	#define		COLOR_CHAT_FADE_FROM		(0xE6E6E6E6)
+	#define		COLOR_CHAT_FADE_TO			(0x6E6E6E6E)
 
 //#endregion
 
