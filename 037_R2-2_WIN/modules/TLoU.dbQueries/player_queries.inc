@@ -341,6 +341,4 @@
         mysql_tquery(eServerInfo[e_SqlHandler], query);
     }
 
-    GetPlayerSkinEx(playerid)
-
 //#endregion
