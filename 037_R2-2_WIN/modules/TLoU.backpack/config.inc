@@ -52,10 +52,26 @@
 #define     MAX_SKILLS_ITEMS        (6)
 #define     MAX_COLL_ITEMS          (2) // 3 for comics, but there are no comics yet and there may never be.
 
-// Skills boosts.
+// Skills boosts (speed values in ms, weapon sway is amount of drunk effect value)
 #define		SKILL_HEAL_SPEED_LVL0		(500)
 #define		SKILL_HEAL_SPEED_LVL1		(300)
 #define		SKILL_HEAL_SPEED_LVL2		(100)
+
+#define     CRAFT_SPEED_MELEE_SHIV_LVL0         (1650)
+#define     CRAFT_SPEED_MELEE_SHIV_LVL1         (1250)
+#define     CRAFT_SPEED_MELEE_SHIV_LVL2         (850)
+
+#define     CRAFT_SPEED_MED_MOL_SMKBMB_LVL0     (1400)
+#define     CRAFT_SPEED_MED_MOL_SMKBMB_LVL1     (1000)
+#define     CRAFT_SPEED_MED_MOL_SMKBMB_LVL2     (600)
+
+#define     CRAFT_SPEED_NAIL_BOMB_LVL0          (1500)
+#define     CRAFT_SPEED_NAIL_BOMB_LVL1          (1100)
+#define     CRAFT_SPEED_NAIL_BOMB_LVL2          (700)
+
+#define		SKILL_WEAP_SWAY_LVL0	        (5000)
+#define		SKILL_WEAP_SWAY_LVL1	        (2500)
+#define		SKILL_WEAP_SWAY_LVL2	        (0)
 
 // Helpers.
 #define     PlayerBackpackCategory(%0)      ePlayerBpInfo[%0][e_iBackpackSelected_Category]

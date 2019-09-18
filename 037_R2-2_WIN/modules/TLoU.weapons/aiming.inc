@@ -78,12 +78,12 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 public OnPlayerAimsWeapon(playerid, itemId)
 {
 	// Weapon Sway.
-	if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+	if(IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
 	{
 		new drunkLevel = 
-			  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
-			: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? 2500
-			: (0);
+			  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? SKILL_WEAP_SWAY_LVL0
+			: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? SKILL_WEAP_SWAY_LVL1
+			: (SKILL_WEAP_SWAY_LVL2);
 
 		if(drunkLevel > 0)
 		{

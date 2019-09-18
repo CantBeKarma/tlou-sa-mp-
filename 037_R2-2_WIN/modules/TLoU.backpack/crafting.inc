@@ -153,14 +153,31 @@ timer Craft_CraftItem[1000](playerid, craftItemId, craft_time)
             new craftLvl = Skill_GetLevel(playerid, SKILL_ITEM_CRAFT_SPEED);
             switch(craftItemId)
             {
-                case CRAFT_ITEM_MELEE,
-                     CRAFT_ITEM_SHIV:       craft_time = (craftLvl == 0) ? (1650) : (craftLvl == 1) ? (1250) : (850);
+                case 
+                    CRAFT_ITEM_MELEE,
+                    CRAFT_ITEM_SHIV:
+                    {
+                        craft_time = (craftLvl == 0) 
+                        ? (CRAFT_SPEED_MELEE_SHIV_LVL0) : (craftLvl == 1) 
+                        ? (CRAFT_SPEED_MELEE_SHIV_LVL1) : (CRAFT_SPEED_MELEE_SHIV_LVL2);
+                    }
                 
-                case CRAFT_ITEM_MEDKIT, 
-                     CRAFT_ITEM_MOLOTOV, 
-                     CRAFT_ITEM_SMOKE_BOMB: craft_time = (craftLvl == 0) ? (1400) : (craftLvl == 1) ? (1000) : (600);
+                case 
+                    CRAFT_ITEM_MEDKIT, 
+                    CRAFT_ITEM_MOLOTOV, 
+                    CRAFT_ITEM_SMOKE_BOMB:
+                    {
+                        craft_time = (craftLvl == 0) 
+                        ? (CRAFT_SPEED_MED_MOL_SMKBMB_LVL0) : (craftLvl == 1) 
+                        ? (CRAFT_SPEED_MED_MOL_SMKBMB_LVL1) : (CRAFT_SPEED_MED_MOL_SMKBMB_LVL2);
+                    }
                      
-                case CRAFT_ITEM_BOMB:       craft_time = (craftLvl == 0) ? (1500) : (craftLvl == 1) ? (1100) : (700);                     
+                case CRAFT_ITEM_BOMB:
+                {
+                    craft_time = (craftLvl == 0) 
+                    ? (CRAFT_SPEED_NAIL_BOMB_LVL0) : (craftLvl == 1) 
+                    ? (CRAFT_SPEED_NAIL_BOMB_LVL1) : (CRAFT_SPEED_NAIL_BOMB_LVL2);
+                }
             }
 
             ePlayerBpInfo[playerid][e_iTimer_craftingOrUpgrading] = defer Craft_CraftItem[craft_time](playerid, craftItemId, craft_time);
