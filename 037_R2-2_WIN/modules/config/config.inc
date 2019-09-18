@@ -33,6 +33,9 @@
 #define		LOG_INDEX_CHAT			(5)
 #define		LOG_INDEX_CMD			(6)
 
+// VIRTUAL WORLDS
+#define     DEFAULT_VIRTUAL_WORLD       (0)
+
 //#region FILES LOCATIONS
 	#define		PATH_LOG_MAIN				"server"
 	#define     PATH_LOG_SERVER     		""PATH_LOG_MAIN"/server/"

@@ -18,22 +18,21 @@ PrepareDataAfterRegister(playerid)
 {
     LoadCache(playerid);
 
-    Bit_Let(ePlayerFlag[e_bLogged], playerid);
-
     ResetVariables(playerid);
 
+    SetPlayerHealth(playerid, FLOAT_INFINITY);
+    SetPlayerHealthEx(playerid, 100.0);
     TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
     TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);
     SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN, 50);
 
-    SetPlayerHealth(playerid, FLOAT_INFINITY);
-    SetPlayerHealthEx(playerid, 100.0);
-
     CreatePlayerLabel(playerid);
-    SetPlayerVirtualWorld(playerid, 0);
+    SetPlayerVirtualWorld(playerid, DEFAULT_VIRTUAL_WORLD);
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
-    SpawnPlayer(playerid);
 
+    Bit_Let(ePlayerFlag[e_bLogged], playerid);
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] has signed up for the first time!", ePlayerInfo[playerid][e_sName], playerid);
+    
+    SpawnPlayer(playerid);
     return 0;
 }
