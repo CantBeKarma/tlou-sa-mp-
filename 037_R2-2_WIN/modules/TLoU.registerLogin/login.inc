@@ -38,10 +38,8 @@ function PrepareDataAfterLogin(playerid)
 {
     LoadCache(playerid);
 
-    new Float:charHealth;
-
     cache_get_value_name_int(0, "uid", eCharsInfo[playerid][e_iUid]);
-    cache_get_value_float(0, "health", charHealth);
+    cache_get_value_float(0, "health", eCharsInfo[playerid][e_fHealth]);
     cache_get_value_name_int(0, "skinid", eCharsInfo[playerid][e_iSkinId]);
     cache_get_value_float(0, "last_x", eCharsInfo[playerid][e_fPosX]); 
     cache_get_value_float(0, "last_y", eCharsInfo[playerid][e_fPosY]); 
@@ -58,26 +56,25 @@ function PrepareDataAfterLogin(playerid)
     cache_get_value_name_int(0, "skill_shivmaster", Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER));
 
     ResetVariables(playerid);
-    DB_LoadPlayerItems(playerid);
-    DB_LoadPlayerCollectibles(playerid, COLL_ITEM_ARTIFACTS);
-    DB_LoadPlayerCollectibles(playerid, COLL_ITEM_FIREFLY_PEND);
-
+    SetPlayerHealth(playerid, FLOAT_INFINITY);
     TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
     TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);
     SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN, 50);
-
-    SkillTd_FillPlayerSkillBars(playerid);
-
-    SetPlayerHealth(playerid, FLOAT_INFINITY);
-    SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
 
     CreatePlayerLabel(playerid);
     SetPlayerVirtualWorld(playerid, eCharsInfo[playerid][e_iPosVw]);
     SetSpawnInfoEx(playerid, GetPlayerSkinEx(playerid), eCharsInfo[playerid][e_fPosX], eCharsInfo[playerid][e_fPosY], eCharsInfo[playerid][e_fPosZ], eCharsInfo[playerid][e_fPosAng]);
 
+    SkillTd_FillPlayerSkillBars(playerid);
+
+    DB_LoadPlayerItems(playerid);
+    DB_LoadPlayerCollectibles(playerid, COLL_ITEM_ARTIFACTS);
+    DB_LoadPlayerCollectibles(playerid, COLL_ITEM_FIREFLY_PEND);
+
     Bit_Let(ePlayerFlag[e_bLogged], playerid);
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s (charUid: %d) has logged in successfully!", PlayerName(playerid), GetPlayerCharUid(playerid));
 
+    wait_ms(1000);
     SpawnPlayer(playerid);
     return 0;
 }
