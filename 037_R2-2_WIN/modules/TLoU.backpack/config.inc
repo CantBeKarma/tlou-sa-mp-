@@ -50,7 +50,12 @@
 // Items list in backpack.
 #define     MAX_CRAFT_ITEMS         (6)
 #define     MAX_SKILLS_ITEMS        (6)
-#define     MAX_COLL_ITEMS          (2)
+#define     MAX_COLL_ITEMS          (2) // 3 for comics, but there are no comics yet and there may never be.
+
+// Skills boosts.
+#define		SKILL_HEAL_SPEED_LVL0		(500)
+#define		SKILL_HEAL_SPEED_LVL1		(300)
+#define		SKILL_HEAL_SPEED_LVL2		(100)
 
 // Helpers.
 #define     PlayerBackpackCategory(%0)      ePlayerBpInfo[%0][e_iBackpackSelected_Category]

@@ -12,7 +12,10 @@
 
 // MAX/MIN definitions.
 #define		MAX_HUD_WEAPONS				(17)
-#define		MIN_HEALTH_AFTER_DEATH		(25.0)
+
+// HEALTH values definitions.
+#define		MIN_HEALTH_AFTER_DEATH			(25.0)
+#define		RESTORE_HP_WITH_MEDKIT_AMOUNT	(2.0)
 
 // Other.
 #define		PlayerName(%0)			 		ePlayerInfo[%0][e_sName]
