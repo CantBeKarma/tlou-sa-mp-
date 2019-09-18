@@ -113,7 +113,7 @@ public OnPlayerRespawn(playerid)
 	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 
 	new Float:charHealth = GetPlayerHealthEx(playerid);
-	SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (25.0) : (charHealth));
+	SetPlayerHealthEx(playerid, (charHealth <= 0.0) ? (MIN_HEALTH_AFTER_DEATH) : (charHealth));
 
 	AttachBackpackToPlayer(playerid);
 	AttachItemsToPlayer(playerid);

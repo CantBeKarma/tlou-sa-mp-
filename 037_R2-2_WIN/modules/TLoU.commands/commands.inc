@@ -227,11 +227,6 @@ CMD:velocity(playerid, params[])
         {
             FCNPC_GetVelocity(targetid, oldNpcVelX, oldNpcVelY, oldNpcVelZ);
             FCNPC_GiveVelocity(targetid, oldNpcVelX + x, oldNpcVelY + y, z, false);
-            //FCNPC_GetVelocity(targetid, oldNpcVelX, oldNpcVelY, oldNpcVelZ);
-            //FCNPC_SetVelocity(targetid, oldNpcVelX + x, oldNpcVelY + y, oldNpcVelZ + z);
-
-            //wait_ms(500);
-            //FCNPC_SetVelocity(targetid, oldNpcVelX, oldNpcVelY, oldNpcVelZ);
         }
 
         else
