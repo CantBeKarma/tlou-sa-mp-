@@ -280,7 +280,7 @@ hook OnPlayerUpdate@000(playerid)
 		else
 		{
 			new healSpeed = 
-				(Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (SKILL_HEAL_SPEED_LVL0) 
+				  (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (SKILL_HEAL_SPEED_LVL0) 
 				: (Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (SKILL_HEAL_SPEED_LVL1) 
 				: (SKILL_HEAL_SPEED_LVL2);
 
