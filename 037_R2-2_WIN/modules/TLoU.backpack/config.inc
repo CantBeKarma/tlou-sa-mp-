@@ -1,7 +1,6 @@
 // Other defs.
 #define     TICK_RATE_BP_OPENING            (1250)
 #define		TIMER_USE_BACKPACK		        (50)
-#define     TICK_RATE_CHANGE_COLL_TYPES     (800)
 
 // CRAFT ITEMS IDs.
 #define     CRAFT_ITEM_MELEE        (0)
@@ -231,7 +230,6 @@ enum e_PLAYER_BACKPACK_DATA
 
     e_iBackpackSelected_Category,
     e_iTickCounter_backpackOpening,
-    e_iTickCounter_changeCollTypes,
 
     e_iBackpackKeysUpDown,
 	e_iBackpackKeysLeftRight,
