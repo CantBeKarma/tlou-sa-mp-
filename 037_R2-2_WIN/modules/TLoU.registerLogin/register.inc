@@ -39,9 +39,14 @@ ShowPlayerRegisterDialog(playerid)
             return false;
         }
 
-        if(!ValidatePlayerPassword(playerid, inputtext))
+        if(!ValidatePassword(inputtext))
         {
-            Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signUp, msg_signUp, "Sign up", "Quit");
+            new msg_signUpFailed[142 + 170];
+            strcat(msg_signUpFailed, msg_signUp, sizeof(msg_signUpFailed));
+            strcat(msg_signUpFailed, "\n\n{FF0000}You've either entered too short/long password (min. 5, max. 20) OR you've used restricted characters!", sizeof(msg_signUpFailed));
+            strcat(msg_signUpFailed, "\n{FF0000}Allowed text characters: a-z, A-Z, 0-9, !?@#$", sizeof(msg_signUpFailed));
+
+            Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signUp, msg_signUpFailed, "Sign up", "Quit");
             return false;
         }
         HashPlayerPassword(playerid, inputtext);

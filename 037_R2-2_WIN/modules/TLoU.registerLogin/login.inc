@@ -21,7 +21,7 @@ PrepareDataAfterLogin(playerid)
     Bit_Let(ePlayerFlag[e_bLogged], playerid);
 }
 
-ShowPlayerLoginDialog(playerid)
+ShowPlayerLoginDialog(playerid, bool:wrongPassword = false)
 {
     static tit_signIn[8] = "Sign in";
     static msg_signIn[144] = "Welcome back to the \"The Last of Us (SA-MP) Project\"\nWe have found you in our database. Please enter your account password below to sign in:";
@@ -38,6 +38,16 @@ ShowPlayerLoginDialog(playerid)
         if(isnull(inputtext))
         {
             Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signIn, msg_signIn, "Sign in", "Quit");
+            return false;
+        }
+
+        if(wrongPassword)
+        {
+            new msg_signInFailed[144 + 28];
+            strcat(msg_signInFailed, msg_signIn, sizeof(msg_signInFailed));
+            strcat(msg_signInFailed, "\n\n{FF0000}Wrong password!", sizeof(msg_signInFailed));
+
+            Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signIn, msg_signInFailed, "Sign in", "Quit");
             return false;
         }
         DB_TryLoginPlayerToAccount(playerid, inputtext);

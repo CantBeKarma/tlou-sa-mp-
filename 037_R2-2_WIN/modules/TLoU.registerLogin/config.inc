@@ -7,8 +7,6 @@
 #define		BCRYPT_COST			        (12)
 #define     MAX_BCRYPT_THREAD_LIMIT     (3)
 
-new const AllowedPasswordCharacters[21] = "a-z, A-Z, 0-9, !?@#$";
-
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //--------------------- OnGameModeInit --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
