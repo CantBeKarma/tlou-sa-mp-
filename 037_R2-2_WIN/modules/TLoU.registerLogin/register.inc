@@ -1,23 +1,23 @@
-// This function performs account register and character
-function RegisterPlayerAccount(playerid, password[])
+// Hashes player's input from dialog box during register.
+HashPlayerPassword(playerid, password[])
 {
-    new salt[11];
-    for(new i = 0; i < 10; i++)
-    {
-        salt[i] = random(79) + 47;
-    }
-    salt[10] = 0;
-
-    new hashStr[65];
-    SHA256_PassHash(password, salt, hashStr, sizeof(hashStr));
-    DB_RegisterNewAccount(playerid, salt, hashStr);
+    bcrypt_hash(password, BCRYPT_COST, "BCrypt_OnPasswordHashed", "d", playerid);
+    return 1;
 }
 
-// Preparing backend data for user.
+// Registers player new account and creates a character.
+RegisterPlayerNewAccount(playerid, passwordHash[])
+{
+    DB_RegisterNewAccount(playerid, passwordHash);
+    DB_CreateNewCharacter(playerid);
+}
+
+// Preparing player to play the game.
+// Clearing all the player's data like iterators and variables.
+// Additionally we're loading cache (preloading anims, per-player textdraws) and spawning player.
 PrepareDataAfterRegister(playerid)
 {
     LoadCache(playerid);
-
     ResetVariables(playerid);
 
     SetPlayerHealth(playerid, FLOAT_INFINITY);
@@ -31,8 +31,30 @@ PrepareDataAfterRegister(playerid)
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
 
     Bit_Let(ePlayerFlag[e_bLogged], playerid);
-    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] has signed up for the first time!", ePlayerInfo[playerid][e_sName], playerid);
-    
-    SpawnPlayer(playerid);
-    return 0;
+    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s has signed up!", PlayerName(playerid));
+}
+
+ShowPlayerRegisterDialog(playerid)
+{
+    static tit_signUp[8] = "Sign up";
+    static msg_signUp[142] = "Welcome to the \"The Last of Us (SA-MP) Project\"\nWe haven't found you in our database. Please enter your account password below to sign up:";
+
+    inline Response(pid, dialogid, response, listitem, string:inputtext[])
+    {
+        #pragma unused pid, dialogid, response, listitem, inputtext
+        if(!response)
+        {
+            Kick(playerid);
+            return false;
+        }
+
+        if(!ValidatePlayerPassword(playerid, inputtext))
+        {
+            Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signUp, msg_signUp, "Sign up", "Quit");
+            return false;
+        }
+        HashPlayerPassword(playerid, inputtext);
+    }
+    Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signUp, msg_signUp, "Sign up", "Quit");
+    return true;
 }
