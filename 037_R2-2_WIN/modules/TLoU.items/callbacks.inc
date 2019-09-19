@@ -352,19 +352,17 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         new objectId = -1;
         if(itemType == ITEM_TYPE_ARTIFACT || itemType == ITEM_TYPE_FIREFLY_PEND)
         {
-            objectId = CreateDynamicObject(eCollectiblesData[itemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+            objectId = CreateDynamicObject(eCollectiblesData[newItemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
         }
         else
         {
-            objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+            objectId = CreateDynamicObject(eItemsData[newItemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
         }
 
         if(objectId == -1)
         {
             return 1;
         }
-
-        new objectId = CreateDynamicObject(eItemsData[newItemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
 
         if(updaterId != INVALID_PLAYER_ID)
         {
