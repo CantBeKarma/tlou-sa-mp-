@@ -29,7 +29,6 @@ ShowPlayerLoginDialog(playerid, bool:wrongPassword = false)
     
     if(wrongPassword)
     {
-        SCMF(playerid, -1, "Wrong pass!");
         strcat(msg_signInFailed, msg_signIn, sizeof(msg_signInFailed));
         strcat(msg_signInFailed, "\n\n\t\t\t\t       {FF0000}Wrong password!", sizeof(msg_signInFailed));
     }
