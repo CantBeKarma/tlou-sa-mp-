@@ -245,6 +245,8 @@
             DB_LoadCharItems(playerid);
             DB_LoadCharCollectibles(playerid, COLL_ITEM_ARTIFACTS);
             DB_LoadCharCollectibles(playerid, COLL_ITEM_FIREFLY_PEND);
+
+            PrepareDataAfterLogin(playerid);
         }
 
         new query[73 + MAX_PLAYER_NAME];

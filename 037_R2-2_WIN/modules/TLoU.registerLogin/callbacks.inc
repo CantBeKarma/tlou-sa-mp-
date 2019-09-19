@@ -37,8 +37,8 @@ public OnPlayerRegister(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerLogin(playerid)
 {
-    LoadPlayerCharacterData(playerid);
-    PrepareDataAfterLogin(playerid);
+    DB_LoadPlayerCharacter(playerid);
+    //PrepareDataAfterLogin() inside DB_LoadPlayerCharacter() ^
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s (UID: %d | GUID: %d) has logged in successfully!", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
 
     wait_ms(1000);
@@ -87,7 +87,8 @@ public BCrypt_OnLoginPasswordChecked(playerid)
     if(!bcrypt_is_equal())
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player: %s (GUID: %d) entered wrong password", PlayerName(playerid), GetPlayerGuid(playerid));
-        return ShowPlayerLoginDialog(playerid);
+        ShowPlayerLoginDialog(playerid, .wrongPassword = true);
+        return 1;
     }
 
     OnPlayerLogin(playerid);
