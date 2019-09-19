@@ -34,13 +34,32 @@
     // Remove player item (remove ownership) from DB and recreate in the world (optionally).
     DB_RemovePlayerItem(playerid, itemId, bool:recreateInWorld = false, amount = 0, meleeExtCnd = 0)
     {
-        new query[90];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = -1 WHERE id_item = %d AND uid_owner = %d", itemId, GetPlayerCharUid(playerid));
-        mysql_tquery(eServerInfo[e_SqlHandler], query);
-
         if(recreateInWorld)
         {
-            CreateOrUpdateItem(itemId, amount, meleeExtCnd, playerid);
+            inline Response()
+            {
+                new updateItemUid = -1;
+                cache_get_value_name_int(0, "uid", updateItemUid);
+
+                if(updateItemUid != -1)
+                {
+                    CreateOrUpdateItem(itemId, amount, meleeExtCnd, playerid, .updateItemUid = updateItemUid);
+                }
+
+                new query[90];
+                mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = -1 WHERE id_item = %d AND uid_owner = %d", itemId, GetPlayerCharUid(playerid));
+                mysql_tquery(eServerInfo[e_SqlHandler], query);
+            }
+
+            new query[90];
+            mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT uid FROM `items_data` WHERE id_item = %d AND uid_owner = %d LIMIT 1", itemId, GetPlayerCharUid(playerid));
+            mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline Response);
+        }
+        else
+        {
+            new query[90];
+            mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = -1 WHERE id_item = %d AND uid_owner = %d", itemId, GetPlayerCharUid(playerid));
+            mysql_tquery(eServerInfo[e_SqlHandler], query);
         }
     }
 
