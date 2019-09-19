@@ -1,3 +1,4 @@
+#include <TLoU.weapons\forwards>
 #include <TLoU.weapons\aiming>
 #include <TLoU.weapons\bow>
 #include <TLoU.weapons\shiv>
