@@ -236,13 +236,11 @@
 
         if(update && updateItemUid != -1)
         {
-            //DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
-            OnItemUpdate(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
+            DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
         }
         else
         {
-            //DB_CommitNewItem(itemId, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId);
-            OnItemCreate(itemId, ITEM_TYPE_ITEM, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, "", "", creatorId);
+            DB_CommitNewItem(itemId, ITEM_TYPE_ITEM, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId);
         }
         return true;
     }
@@ -313,7 +311,7 @@
     // Returns:
     // false - if player has specified item already.
     // true - if item has been given correctly
-    bool:GivePlayerItem(playerid, itemId)
+    bool:GivePlayerItem(playerid, itemId, bool:logOrLoadFromDB = false)
     {
         if(HasPlayerGotItem(playerid, itemId) 
         || IsItemType(itemId, ITEM_TYPE_MELEE) && GetPlayerMeleeItemId(playerid) != -1
@@ -323,7 +321,10 @@
         }
 
         // Update database info & give player item.
-        // DB_GivePlayerItem(itemId, calcAmount, (IsMeleeWeapon(weaponId) ? GetPlayerMeleeExtCnd[playerid] : 0), eCharsInfo[playerid][e_iUid]);
+        if(!logOrLoadFromDB)
+        {
+            DB_GivePlayerItem(playerid, itemId);
+        }
 
         if(IsItemType(itemId, ITEM_TYPE_WEAPON))
         {
@@ -339,7 +340,11 @@
         UpdateTextDrawsIfNecessary(playerid, itemId);
 
         AttachItemsToPlayer(playerid, itemId);
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s (UID: %d | GUID: %d) was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
+
+        if(!logOrLoadFromDB)
+        {
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s (UID: %d | GUID: %d) was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
+        }
         return true;
     }
 
@@ -347,7 +352,7 @@
     // Returns:
     // false - if player didn't have that item.
     // true - if item has been removed correctly.
-    bool:RemovePlayerItem(playerid, itemId)
+    bool:RemovePlayerItem(playerid, itemId, bool:recreateInWorld = false)
     {
         if(!HasPlayerGotItem(playerid, itemId))
         {
@@ -366,6 +371,24 @@
         // If it was an item (weapon) from horizontal weapon menu bar
         // below function is going to sort its order if necessary
         WeapMenu_RemoveAndSortItems(playerid, itemId);
+		DetachWeaponFromPlayersBody(playerid, itemId);
+
+        new playerItemAmount = GetPlayerItemAmount(playerid, itemId);
+        if(recreateInWorld && playerItemAmount > 0)
+        {
+            if(!IsItemType(itemId, ITEM_TYPE_MELEE))
+            {
+                DB_RemovePlayerItem(playerid, itemId, recreateInWorld, playerItemAmount);
+            }
+            else
+            {
+                DB_RemovePlayerItem(playerid, itemId, recreateInWorld, playerItemAmount, (IsPlayerMeleeUpgraded(playerid) ? GetPlayerMeleeExtraCnd(playerid, itemId) : 0));
+            }
+        }
+        else
+        {
+            DB_RemovePlayerItem(playerid, itemId);
+        }
 
         ePlayerItemData[playerid][itemId][e_iItemId] = -1;
         ePlayerItemData[playerid][itemId][e_iItemAmount] = 0;
@@ -380,8 +403,7 @@
 		{
 			HudTd_UpdateShivs(playerid);
 		}
-
-		DetachWeaponFromPlayersBody(playerid, itemId);
+        
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s (UID: %d | GUID: %d) itemId %d was removed", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
         return true;
     }
@@ -439,7 +461,7 @@
     // Returns:
     // false - if player hasn't got a melee item
     // true if player has a melee and its extra CND is higher that 0
-    bool:IsPlayerMeleeUpgraded(playerid)
+    IsPlayerMeleeUpgraded(playerid)
     {
         new playerMeleeItemId = GetPlayerMeleeItemId(playerid);
         if(playerMeleeItemId == -1)
@@ -633,7 +655,7 @@
     // Returns:
     // false - if player hasn't got an item OR player is full on that item already OR amount for ingredient is not specified correctly (every 25) OR can't find MaxAmount for the item!
     // true - if player item's amount has been set correctly
-    SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCnd = 0, bool:log = true)
+    SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCnd = 0, bool:logAndNotLoadingFromDB = true)
     {
         if(!HasPlayerGotItem(playerid, itemId))
         {
@@ -677,7 +699,9 @@
             ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
         }
 
-        if(log)
+        // If player sign in, and data is loaded from DB, don't log to avoid mess in logs
+        // and it also avoids calling pointless DB_UpdateCharItemAmount()
+        if(logAndNotLoadingFromDB)
         {
             if(!IsItemType(itemId, ITEM_TYPE_MELEE))
             {
@@ -687,11 +711,10 @@
             {
                 Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: CND: %d / ExtCND: %d | ItemId: %d for %s (UID: %d | GUID: %d)", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
             }
-            
-        }
-        // DB_UpdateCharItemAmount(itemId, calcAmount);
 
-        UpdateTextDrawsIfNecessary(playerid, itemId);
+            DB_UpdateCharItemAmount(playerid, itemId, amount, meleeExtraCnd);
+            UpdateTextDrawsIfNecessary(playerid, itemId);
+        }
         return true;
     }
 
