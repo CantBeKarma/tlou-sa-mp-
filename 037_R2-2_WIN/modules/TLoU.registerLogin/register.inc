@@ -2,14 +2,6 @@
 HashPlayerPassword(playerid, password[])
 {
     bcrypt_hash(password, BCRYPT_COST, "BCrypt_OnPasswordHashed", "d", playerid);
-    return 1;
-}
-
-// Registers player new account and creates a character.
-RegisterPlayerNewAccount(playerid, passwordHash[])
-{
-    DB_RegisterNewAccount(playerid, passwordHash);
-    DB_CreateNewCharacter(playerid);
 }
 
 // Preparing player to play the game.
@@ -31,7 +23,6 @@ PrepareDataAfterRegister(playerid)
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
 
     Bit_Let(ePlayerFlag[e_bLogged], playerid);
-    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s has signed up!", PlayerName(playerid));
 }
 
 ShowPlayerRegisterDialog(playerid)
