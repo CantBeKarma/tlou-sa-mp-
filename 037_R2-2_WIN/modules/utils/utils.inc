@@ -55,6 +55,19 @@ GetPlayerSkinEx(playerid)
 	return eCharsInfo[playerid][e_iSkinId];
 }
 
+// Determine if illegal character has been used in a text string.
+TextHasRestrictedCharacters(const text[])
+{
+	for(new i = 0; i != sizeof(RestrictedTextCharactersList); i++)
+	{
+		if(strfind(text, RestrictedTextCharactersList[i], true) != -1)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 // Extends SetPlayerSkin default function.
 SetPlayerSkinEx(playerid, skinId)
 {
