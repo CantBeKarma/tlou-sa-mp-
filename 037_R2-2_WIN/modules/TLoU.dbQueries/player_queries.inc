@@ -45,11 +45,11 @@
 
         if(IsItemType(itemId, ITEM_TYPE_MELEE) && IsPlayerMeleeUpgraded(playerid))
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Updated itemId: %d with CND/ExtCND: %d/%d for character: %s (UID: %d | GUID: %d)", itemId, amount, meleeExtCnd, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Updated itemId: %d with CND/ExtCND: %d/%d for character: %s (UID: %d | GUID: %d)", itemId, amount, meleeExtCnd, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         }
         else
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Updated itemId: %d with amount: %d for character: %s (UID: %d | GUID: %d)", itemId, amount, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Updated itemId: %d with amount: %d for character: %s (UID: %d | GUID: %d)", itemId, amount, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         }
     }
 
@@ -201,7 +201,7 @@
         inline OnNewCharsDataReceived()
         {
             eCharsInfo[playerid][e_iUid] = cache_insert_id();
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Created new character. Name: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Created new character. Name: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         }
 
         new query[62 + MAX_PLAYER_NAME];
@@ -219,7 +219,7 @@
 
             if(!rowsCount)
             {
-                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Character: %s (for GUID: %d) wasn't found.", PlayerName(playerid), GetPlayerGuid(playerid));
+                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Character: %s (for GUID: %d) wasn't found.", PlayerName(playerid), GetPlayerGuid(playerid));
                 return false;
             }
 
@@ -240,7 +240,7 @@
             cache_get_value_name_int(0, "skill_weaponsway", eCharsInfo[playerid][e_iSkillLevel][SKILL_ITEM_WEAP_SWAY]);
             cache_get_value_name_int(0, "skill_shivmaster", eCharsInfo[playerid][e_iSkillLevel][SKILL_ITEM_SHIV_MASTER]);
 
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loaded data for character: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Loaded data for character: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
 
             DB_LoadCharItems(playerid);
             DB_LoadCharCollectibles(playerid, COLL_ITEM_ARTIFACTS);
@@ -269,7 +269,7 @@
 
             if(!rowsCount)
             {
-                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loaded: 0 items for character: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Loaded: 0 items for character: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
                 return true;
             }
 
@@ -288,15 +288,15 @@
                 if(IsItemType(row_idItem, ITEM_TYPE_MELEE))
                 {
                     cache_get_value_name_int(i, "meleeExtCnd", row_meleeExtCnd);
-                    SetPlayerItemAmount(playerid, row_idItem, row_amount, row_meleeExtCnd);
+                    SetPlayerItemAmount(playerid, row_idItem, row_amount, row_meleeExtCnd, .log = false);
                 }
                 else
                 {
-                    SetPlayerItemAmount(playerid, row_idItem, row_amount);
+                    SetPlayerItemAmount(playerid, row_idItem, row_amount, .log = false);
                 }
             }
 
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loaded: %d items for character: %s (UID: %d | GUID: %d)", rowsCount, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Loaded: %d items for character: %s (UID: %d | GUID: %d)", rowsCount, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         }
 
         new query[110];
@@ -333,7 +333,7 @@
 
             if(!rowsCount)
             {
-                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loaded 0 %s for character: %s (UID: %d | GUID: %d)", collectibleName, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Loaded 0 %s for character: %s (UID: %d | GUID: %d)", collectibleName, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
                 return false;
             }
             
@@ -353,7 +353,7 @@
                 }
             }
 
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loaded %d %s for character: %s (UID: %d | GUID: %d)", rowsCount, collectibleName, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Loaded %d %s for character: %s (UID: %d | GUID: %d)", rowsCount, collectibleName, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         }
 
         new query[100];
@@ -398,7 +398,7 @@
 
         mysql_tquery(eServerInfo[e_SqlHandler], query);
 
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Saved data for character %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Saved data for character %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
 
         DB_SaveCharItems(playerid);
     }

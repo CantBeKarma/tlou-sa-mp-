@@ -274,6 +274,6 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         DetachWeaponFromPlayersBody(playerid, newItemId);
     }
 
-    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerWeaponChange: Changed from itemId: %d to itemId %d (charUid: %d)", oldItemId, newItemId, GetPlayerCharUid(playerid));
+    //Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerWeaponChange: Changed from itemId: %d to itemId %d (UID: 1 | GUID: 1)", oldItemId, newItemId, GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
     return 0;
 }

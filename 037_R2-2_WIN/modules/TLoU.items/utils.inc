@@ -633,7 +633,7 @@
     // Returns:
     // false - if player hasn't got an item OR player is full on that item already OR amount for ingredient is not specified correctly (every 25) OR can't find MaxAmount for the item!
     // true - if player item's amount has been set correctly
-    SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCnd = 0)
+    SetPlayerItemAmount(playerid, itemId, amount, meleeExtraCnd = 0, bool:log = true)
     {
         if(!HasPlayerGotItem(playerid, itemId))
         {
@@ -677,7 +677,18 @@
             ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
         }
 
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: Amount: %d (extraCnd = %d) | ItemId: %d for %s (UID: %d | GUID: %d)", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+        if(log)
+        {
+            if(!IsItemType(itemId, ITEM_TYPE_MELEE))
+            {
+                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: Amount: %d | ItemId: %d for %s (UID: %d | GUID: %d)", ePlayerItemData[playerid][itemId][e_iItemAmount], itemId, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            }
+            else
+            {
+                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: CND: %d / ExtCND: %d | ItemId: %d for %s (UID: %d | GUID: %d)", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            }
+            
+        }
         // DB_UpdateCharItemAmount(itemId, calcAmount);
 
         UpdateTextDrawsIfNecessary(playerid, itemId);

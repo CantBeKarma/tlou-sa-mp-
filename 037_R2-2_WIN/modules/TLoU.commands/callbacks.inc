@@ -20,10 +20,10 @@ public e_COMMAND_ERRORS:OnPlayerCommandReceived(playerid, cmdtext[], e_COMMAND_E
     switch (success) 
     { 
         case COMMAND_UNDEFINED:
-            Log(eLogs[e_Log_Index][LOG_INDEX_CMD], INFO, "%s [%d] tried to call unknown command: \"%s\"", PlayerName(playerid), playerid, cmdtext);
+            Log(eLogs[e_Log_Index][LOG_INDEX_CMD], INFO, "%s (UID: %d | GUID: %d) tried to call unknown command: \"%s\"", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), cmdtext);
         
         case COMMAND_OK:
-            Log(eLogs[e_Log_Index][LOG_INDEX_CMD], INFO, "%s [%d] successfully called command: \"%s\"", PlayerName(playerid), playerid, cmdtext);
+            Log(eLogs[e_Log_Index][LOG_INDEX_CMD], INFO, "%s (UID: %d | GUID: %d) successfully called command: \"%s\"", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), cmdtext);
     }
     return COMMAND_OK; 
 }  

@@ -33,7 +33,7 @@ CreatePlayerIntroTds(playerid)
 
 LoadPlayerTextDraws(playerid)
 {
-	Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loading player textdraws for: %s [%d]...", ePlayerInfo[playerid][e_sName], playerid);
+	Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loading player textdraws for: %s (UID: 1 | GUID: 1)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
 
 	PlayerTextDraw_Chat(playerid);
 	PlayerTextDraw_HUD(playerid);
