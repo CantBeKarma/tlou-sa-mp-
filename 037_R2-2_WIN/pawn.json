@@ -16,7 +16,8 @@
 		"maddinat0r/samp-log:v0.4",
 		"maddinat0r/samp-mysql-yinline-include:v1.0.1",
 		"kristoisberg/pawn-colour-manipulation",
-		"pawn-lang/YSI-Includes@4.x"
+		"pawn-lang/YSI-Includes@4.x",
+		"lassir/bcrypt-samp:v2.2.3"
 	],
 	"local": true,
 	"builds": [

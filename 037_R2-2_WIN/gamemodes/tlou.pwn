@@ -23,6 +23,7 @@
 #include    <streamer>
 #include    <FCNPC>
 #include    <a_mysql_yinline>
+#include    <bcrypt>
 
 // Modules.
 #include    <config\main>

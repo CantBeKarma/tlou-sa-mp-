@@ -2,7 +2,6 @@
 #include	<config\natives>
 #include	<config\config>
 #include	<config\mysql>
-#include	<config\messages>
 
 #include 	<TLoU.animations\config>
 #include 	<TLoU.weapons\config>
@@ -16,6 +15,7 @@
 #include    <TLoU.npcs\config>
 #include    <TLoU.objects\config>
 #include 	<TLoU.players\config>
+#include	<TLoU.registerLogin\config>
 #include  	<TLoU.textdraws\config>
 #include	<TLoU.weaponMenu\config>
 #include 	<TLoU.weaponsUpgrades\config>
