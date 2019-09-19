@@ -712,7 +712,7 @@
                 Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: CND: %d / ExtCND: %d | ItemId: %d for %s (UID: %d | GUID: %d)", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
             }
 
-            DB_UpdateCharItemAmount(playerid, itemId, amount, meleeExtraCnd);
+            DB_UpdateCharItemAmount(playerid, itemId, ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd);
             UpdateTextDrawsIfNecessary(playerid, itemId);
         }
         return true;
