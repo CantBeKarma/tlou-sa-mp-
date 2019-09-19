@@ -68,7 +68,7 @@
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	//--------------------- OnPlayerSpawn ---------------------
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	hook OnPlayerSpawn(playerid) 
+	public OnPlayerSpawn(playerid) 
 	{
 		if(!IsPlayerLogged(playerid))
 		{
