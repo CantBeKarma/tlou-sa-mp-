@@ -4,6 +4,7 @@
 #include	<config\mysql>
 
 #include 	<TLoU.animations\config>
+#include	<TLoU.attachments\config>
 #include 	<TLoU.weapons\config>
 #include	<TLoU.audio\config>
 #include	<TLoU.items\config>

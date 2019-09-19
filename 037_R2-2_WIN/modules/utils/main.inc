@@ -1,5 +1,6 @@
 #include <utils\utils>
 #include <TLoU.animations\utils>
+#include <TLoU.attachments\utils>
 #include <TLoU.audio\utils>
 #include <TLoU.backpack\utils>
 #include <TLoU.characters\utils>
