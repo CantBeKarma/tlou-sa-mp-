@@ -236,7 +236,7 @@
 
         if(update && updateItemUid != -1)
         {
-            DB_UpdateExistingItem(updateItemUid, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
+            DB_UpdateExistingItem(updateItemUid, ITEM_TYPE_ITEM, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
         }
         else
         {

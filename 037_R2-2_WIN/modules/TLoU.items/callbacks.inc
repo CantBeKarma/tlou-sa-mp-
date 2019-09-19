@@ -347,8 +347,23 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //--------------------- OnItemUpdate ----------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnItemUpdate(updateItemUid, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId)
+    public OnItemUpdate(updateItemUid, itemType, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId)
     {
+        new objectId = -1;
+        if(itemType == ITEM_TYPE_ARTIFACT || itemType == ITEM_TYPE_FIREFLY_PEND)
+        {
+            objectId = CreateDynamicObject(eCollectiblesData[itemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+        }
+        else
+        {
+            objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+        }
+
+        if(objectId == -1)
+        {
+            return 1;
+        }
+
         new objectId = CreateDynamicObject(eItemsData[newItemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
 
         if(updaterId != INVALID_PLAYER_ID)
@@ -359,6 +374,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
 
         eObjData[e_iObj_Uid] = updateItemUid;
         eObjData[e_iObj_ItemId] = newItemId;
+        eObjData[e_iObj_TypeId] = itemType;
         eObjData[e_fObj_X] = x;
         eObjData[e_fObj_Y] = y;
         eObjData[e_fObj_Z] = z;
