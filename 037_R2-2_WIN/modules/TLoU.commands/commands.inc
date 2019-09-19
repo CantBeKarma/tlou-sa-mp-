@@ -525,6 +525,16 @@ CMD:removeitem(playerid, params[])
     return 1;
 }
 
+CMD:removeitem2(playerid, params[])
+{
+    new itemId;
+    if(sscanf(params, "d", itemId))return SCM(playerid, -1, "/removeitem [item_index] (/myitems)");
+    {
+        RemovePlayerItem(playerid, itemId, true);
+    }
+    return 1;
+}
+
 CMD:allin(playerid, params[])
 {
     for(new i = 0; i < MAX_ITEMS_DATA; i++)
