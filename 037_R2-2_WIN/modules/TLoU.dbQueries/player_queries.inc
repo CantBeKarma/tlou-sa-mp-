@@ -1,37 +1,15 @@
 //#region Items manipulation give/update/save/load
 
     // Gives player an ownership over an item.
-    DB_GivePlayerItem(itemId, amount, meleeExtCnd = 0, ownerUid)
+    DB_GivePlayerItem(playerid, itemId)
     {
-        new query[128];
-        switch(GetItemType(itemId))
+        if(GetItemType(itemId) == ITEM_TYPE_AMMO)
         {
-            case
-                ITEM_TYPE_INGREDIENT,
-                ITEM_TYPE_WEAPON,
-                ITEM_TYPE_SHIV,
-                ITEM_TYPE_HEAL,
-                ITEM_TYPE_PROJECTILE,
-                ITEM_TYPE_THROWABLE:
-            {
-                // Don't give player snacks etc. to DB.
-                if(GetItemType(itemId) == ITEM_TYPE_HEAL && !IsItemType(itemId, ITEM_TYPE_MEDKIT))
-                {
-                    return false;
-                }
-                mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, uid_owner, is_created) VALUES (%d, %d, %d, 0)", itemId, amount, ownerUid);
-            }
-
-            case ITEM_TYPE_MELEE:
-            {
-                mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, amount, meleeExtCnd, uid_owner, is_created) VALUES (%d, %d, %d, %d, 0)", itemId, amount, meleeExtCnd, ownerUid);
-            }
-            default:
-            {
-                return false;
-            }
+            return false;
         }
-        
+
+        new query[90];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO items_data (id_item, uid_owner, is_created) VALUES (%d, %d, 0)", itemId, GetPlayerCharUid(playerid));
         mysql_tquery(eServerInfo[e_SqlHandler], query);
         return true;
     }
@@ -39,7 +17,7 @@
     // Updates player weapon ammo/amount | melee condition
     DB_UpdateCharItemAmount(playerid, itemId, amount, meleeExtCnd = 0)
     {
-        new query[100];
+        new query[110];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET amount = %d, meleeExtCnd = %d WHERE id_item = %d AND uid_owner = %d", amount, meleeExtCnd, itemId, GetPlayerCharUid(playerid));
         mysql_tquery(eServerInfo[e_SqlHandler], query);
 
@@ -56,8 +34,8 @@
     // Remove player item (remove ownership) from DB and recreate in the world (optionally).
     DB_RemovePlayerItem(playerid, itemId, bool:recreateInWorld = false, amount = 0, meleeExtCnd = 0)
     {
-        new query[128];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = -1 WHERE id_item = %d AND uid_owner = %d", itemId, GetPlayerCharUid(playerid)));
+        new query[90];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET uid_owner = -1 WHERE id_item = %d AND uid_owner = %d", itemId, GetPlayerCharUid(playerid));
         mysql_tquery(eServerInfo[e_SqlHandler], query);
 
         if(recreateInWorld)
@@ -283,16 +261,16 @@
                 cache_get_value_name_int(i, "id_item", row_idItem);
                 cache_get_value_name_int(i, "amount", row_amount);
 
-                GivePlayerItem(playerid, row_idItem);
+                GivePlayerItem(playerid, row_idItem, .logOrLoadFromDB = true);
 
                 if(IsItemType(row_idItem, ITEM_TYPE_MELEE))
                 {
                     cache_get_value_name_int(i, "meleeExtCnd", row_meleeExtCnd);
-                    SetPlayerItemAmount(playerid, row_idItem, row_amount, row_meleeExtCnd, .log = false);
+                    SetPlayerItemAmount(playerid, row_idItem, row_amount, row_meleeExtCnd, .logAndNotLoadingFromDB = false);
                 }
                 else
                 {
-                    SetPlayerItemAmount(playerid, row_idItem, row_amount, .log = false);
+                    SetPlayerItemAmount(playerid, row_idItem, row_amount, .logAndNotLoadingFromDB = false);
                 }
             }
 
