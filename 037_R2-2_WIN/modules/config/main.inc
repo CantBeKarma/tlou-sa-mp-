@@ -1,4 +1,3 @@
-#include    <config\forwards>
 #include	<config\natives>
 #include	<config\config>
 #include	<config\mysql>
