@@ -176,15 +176,19 @@
     // Registers new account and sets player his character Guid.
     DB_RegisterNewAccount(playerid, passwordHash[])
     {
-        inline OnPlayerDataReceived()
-        {
-            ePlayerInfo[playerid][e_iGuid] = cache_insert_id();
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Registered new account for player: %s (GUID: %d)", PlayerName(playerid), GetPlayerGuid(playerid));
-        }
+        new query[300];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `player_data` (`name`, `ip_address`, `register_date`, `last_login_date`, `password`) VALUES ('%e', '%e', NOW(), NOW(), '%e')", PlayerName(playerid), GetPlayerIpAddress(playerid), passwordHash);
+        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnPlayerRegister", "d", playerid);
+    }
 
-        new query[256];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "INSERT INTO `player_data` (`ip_address`, `register_date`, `last_login_date`, `password`) VALUES ('%e', NOW(), NOW(), '%e')", GetPlayerIpAddress(playerid), passwordHash);
-        mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnPlayerDataReceived);
+    // Try signing in to the player's account with password specified.
+    DB_TryLoginPlayerToAccount(playerid, const password[])
+    {
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s is trying to sign in to account of GUID: %d", PlayerName(playerid), GetPlayerGuid(playerid));
+
+        new query[63];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `password` FROM `player_data` WHERE `guid` = %d LIMIT 1", GetPlayerGuid(playerid));
+        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnPlayerPasswordReceived", "ds", playerid, password);
     }
 
 //#endregion
