@@ -1,0 +1,1 @@
+forward OnPlayerAnimFinish(playerid, animIdx);
