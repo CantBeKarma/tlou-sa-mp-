@@ -1,82 +1,49 @@
-// Save player's data
-function SavePlayerData(playerid)
+// Load player's data from database.
+LoadPlayerCharacterData(playerid)
+{
+	DB_LoadPlayerCharacter(playerid);
+}
+
+// Save player's character's data.
+SavePlayerCharacterData(playerid)
 {
     if(!IsPlayerLogged(playerid))
     {
-        return 1;
+        return false;
     }
 
-	printf("%s left the server. Saving player's data..", PlayerName(playerid));
-
-    new Float:x, Float:y, Float:z, Float:ang;
-    GetPlayerPos(playerid, x, y, z);
-    GetPlayerFacingAngle(playerid, ang);
-
-    new 
-		Float:playerHealth = GetPlayerHealthEx(playerid),
-		playerSkinId = GetPlayerSkinEx(playerid),
-        playerInterior = GetPlayerInterior(playerid), 
-        playerVirtualWorld = GetPlayerVirtualWorld(playerid),
-		playerSupps = GetPlayerSupplementsAmount(playerid),
-		playerSkill_MaxHp = Skill_GetLevel(playerid, SKILL_ITEM_MAXHP),
-		playerSkill_MaxListenDist = Skill_GetLevel(playerid, SKILL_ITEM_LISTEN_DIST),
-		playerSkill_CraftSpeed = Skill_GetLevel(playerid, SKILL_ITEM_CRAFT_SPEED),
-		playerSkill_HealSpeed = Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED),
-		playerSkill_WeapSway = Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY),
-		playerSkill_ShivMaster = Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER);
-
-	DB_SaveCharsData(playerid, playerHealth, playerSkinId, x, y, z, ang, playerInterior, playerVirtualWorld, \
-		playerSupps, playerSkill_MaxHp, playerSkill_MaxListenDist, playerSkill_CraftSpeed, playerSkill_HealSpeed, playerSkill_WeapSway, playerSkill_ShivMaster);
-
-	DB_SavePlayerItems(playerid);
-
-    return 0;
+	DB_SavePlayerCharacter(playerid);
+    return true;
 }
 
-// Show appropriate dialog (sign in or sign up) 
-function ShowRegisterLoginDialog(playerid, registered)
+// Function is called during first spawn. Prepares player to sign in/up.
+// It freezes player in specified position, clearing chat and performing connection intro procedure.
+// Also it gets player name and saves it to variable, hides all HUD components and removes all buildings defined internally.
+PreparePlayerToSign(playerid)
 {
-	if(registered)
-	{
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, response, listitem, inputtext
-			if(!response)
-			{
-				return Kick(playerid);
-			}
+    FreezePlayer(playerid, false, -1);
 
-			if(!inputtext[0])
-			{
-				return Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_IN, MSG_SIGN_IN, "Sign in", "Quit");
-			}
-			TryLoginPlayerToAccount(playerid, inputtext);
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_IN, MSG_SIGN_IN, "Sign in", "Quit");
-	}
-	else
-	{
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, response, listitem, inputtext
-			if(!response)
-			{
-				return Kick(playerid);
-			}
+    SetPlayerVirtualWorld(playerid, playerid);
+    SetPlayerPos(playerid, -260.3906, 674.5479, 280.5438);
+    SetPlayerCameraPos(playerid, -258.3556, 670.9673, 277.2066);
+    SetPlayerCameraLookAt(playerid, -257.3723, 671.1423, 277.3569);
 
-			if(!inputtext[0])
-			{
-				return Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_UP, MSG_SIGN_UP, "Sign up", "Quit");
-			}
-			RegisterPlayerAccount(playerid, inputtext);
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, TIT_SIGN_UP, MSG_SIGN_UP, "Sign up", "Quit");
+    ClearChat(playerid);
+    CreatePlayerIntroTds(playerid);
+    ShowPlayerBlackScreen(playerid);
+    DisableDefaultAmbientNoise(playerid);
+
+    GetPlayerName(playerid, ePlayerInfo[playerid][e_sName], MAX_PLAYER_NAME);
+    ToggleHUDComponentForPlayer(playerid, HUD_COMPONENT_ALL, false);
+
+    for(new i = 0; i != sizeof(RemoveObjectsData); i++)
+    {
+        RemoveBuildingForPlayer(playerid, RemoveObjectsData[i], 0.0, 0.0, 0.0, 6000.0);
 	}
-    return 0;
 }
-
 
 // Reseting all variables, iterators (overall player data).
+// Usually happens only in sign in/up.
 ResetVariables(playerid)
 {
 	Iter_Clear(ItemsToCraft<playerid>);
@@ -120,3 +87,55 @@ ResetVariables(playerid)
     eCharsInfo[playerid][e_iAttachSlot_GasMask] = -1;
     eCharsInfo[playerid][e_iAttachSlot_Dynamic] = -1;
 }
+
+//#region Validation
+
+	// Check if password cointains restricted characters.
+	PassContainsRestrictedChars(const password[])
+	{
+		for(new i = 0; password[i] != EOS; i++)
+		{
+			switch(password[i])
+			{
+				case 
+					'0'..'9', 
+					'A'..'Z', 
+					'a'..'z',
+					'!',
+					'?',
+					'@',
+					'#',
+					'$':
+					{
+						continue;
+					}
+
+				default:
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	// Validating player's password input.
+	ValidatePlayerPassword(playerid, const password[])
+	{
+		if(isnull(password)
+		|| strlen(password) < MIN_PASSWORD_LEN
+		|| strlen(password) > MAX_PASSWORD_LEN)
+		{
+			return false;
+		}
+
+		if(PassContainsRestrictedChars(password))
+		{
+			SCMF(playerid, -1, "Restricted characters detected! Allowed ones: %s", AllowedPasswordCharacters);
+			return false;
+		}
+
+		return true;
+	}
+
+//#endregion
