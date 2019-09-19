@@ -678,7 +678,7 @@
         }
 
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: set item amount to: %d (extraCnd = %d) of item id: %d for charUid: %d", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, GetPlayerCharUid(playerid));
-        // DB_UpdatePlayerItemAmount(itemId, calcAmount);
+        // DB_UpdateCharItemAmount(itemId, calcAmount);
 
         UpdateTextDrawsIfNecessary(playerid, itemId);
         return true;

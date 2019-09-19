@@ -34,7 +34,7 @@
 				new String:pName = str_new_buf(MAX_PLAYER_NAME);
 				str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
 
-				Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] connected (possibly?) without a tlou_client.asi file. Kicked.", _:pName, playerid);
+				Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s connected (possibly) without a tlou_client.asi file. Kicked.", _:pName);
 				Kick(playerid);
 				return 0;
 			}
@@ -52,7 +52,7 @@
 			return 1;
 		}
 		
-		SavePlayerData(playerid);
+		SavePlayerCharacterData(playerid);
 		DestroyPlayerLabel(playerid);
 		
 		ResetEnum_ePlayerInfo(playerid);
@@ -90,12 +90,12 @@
 			new String:pName = str_new_buf(MAX_PLAYER_NAME);
 			str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
 
-			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] connected (possibly?) without a tlou_client.asi file. Kicked.", _:pName, playerid);
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s connected (possibly) without a tlou_client.asi file. Kicked.", _:pName);
 			Kick(playerid);
 			return 0;
 		}
 
-		OnPlayerPrepareToSign(playerid);
+		PreparePlayerToSign(playerid);
 		return 0;
 	}
 

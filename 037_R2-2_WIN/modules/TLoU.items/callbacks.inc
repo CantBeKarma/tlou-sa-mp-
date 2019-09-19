@@ -267,7 +267,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             return NEXT_ACTION_NONE;
         }
 
-        DB_GiveCollectibleOwnership(playerid, itemUid);
+        DB_GiveCharacterCollectible(playerid, itemUid);
         DestroyItem(item_objectId);
 
         if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
