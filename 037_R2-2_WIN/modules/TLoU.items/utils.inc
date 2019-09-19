@@ -330,7 +330,7 @@
             new freeSlotId = WeapMenu_AssignItemToFreeSlot(playerid, itemId);
             if(freeSlotId == -1)
             {
-                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d couldn't find a free slot for the weapon in the weapon menu.", GetPlayerCharUid(playerid), itemId);
+                Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "GivePlayerItem: Player %s (UID: %d | GUID: %d) couldn't find a free slot for the weapon in the weapon menu.", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
                 return false;
             }
         }
@@ -339,7 +339,7 @@
         UpdateTextDrawsIfNecessary(playerid, itemId);
 
         AttachItemsToPlayer(playerid, itemId);
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: charUid: %d was given itemId: %d", GetPlayerCharUid(playerid), itemId);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s (UID: %d | GUID: %d) was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
         return true;
     }
 
@@ -382,7 +382,7 @@
 		}
 
 		DetachWeaponFromPlayersBody(playerid, itemId);
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "RemovePlayerItem: charUid: %d got his itemId: %d removed", GetPlayerCharUid(playerid), itemId);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s (UID: %d | GUID: %d) itemId %d was removed", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
         return true;
     }
 
@@ -677,7 +677,7 @@
             ePlayerItemData[playerid][itemId][e_iItemAmount] = (amount > maxItemAmount) ? (maxItemAmount) : (amount);
         }
 
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: set item amount to: %d (extraCnd = %d) of item id: %d for charUid: %d", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, GetPlayerCharUid(playerid));
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemAmount: Amount: %d (extraCnd = %d) | ItemId: %d for %s (UID: %d | GUID: %d)", ePlayerItemData[playerid][itemId][e_iItemAmount], meleeExtraCnd, itemId, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         // DB_UpdateCharItemAmount(itemId, calcAmount);
 
         UpdateTextDrawsIfNecessary(playerid, itemId);
