@@ -1,9 +1,12 @@
+forward OnPlayerTryToPlay(playerid);
+forward BCrypt_OnPasswordHashed(playerid);
+forward BCrypt_OnLoginPasswordChecked(playerid);
+
 forward OnPlayerCrouchBug(playerid);
 forward OnPlayerBunnyHop(playerid);
 forward OnPlayerAnimFinish(playerid, animIdx);
 forward OnPlayerFirstSpawn(playerid);
 forward OnPlayerRespawn(playerid);
-forward OnPlayerPrepareToSign(playerid);
 forward OnPlayerDie(playerid, issuerid, itemId, bodypart);
 forward OnPlayerWeaponChange(playerid, newItemId, oldItemId);
 forward OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId);

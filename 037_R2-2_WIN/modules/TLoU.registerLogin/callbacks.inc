@@ -1,29 +1,53 @@
 #include	<YSI\y_hooks>
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- OnPlayerPrepareToSign ------------------ 
+//------------------- OnPlayerTryToPlay -------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerPrepareToSign(playerid)
+public OnPlayerTryToPlay(playerid)
 {
-    FreezePlayer(playerid, false, -1);
-
-    SetPlayerVirtualWorld(playerid, playerid);
-    SetPlayerPos(playerid, -260.3906, 674.5479, 280.5438);
-    SetPlayerCameraPos(playerid, -258.3556, 670.9673, 277.2066);
-    SetPlayerCameraLookAt(playerid, -257.3723, 671.1423, 277.3569);
-
-    ClearChat(playerid);
-    CreatePlayerIntroTds(playerid);
-    ShowPlayerBlackScreen(playerid);
-    DisableDefaultAmbientNoise(playerid);
-
-    GetPlayerName(playerid, ePlayerInfo[playerid][e_sName], MAX_PLAYER_NAME);
-    ToggleHUDComponentForPlayer(playerid, HUD_COMPONENT_ALL, false);
-
-    for(new i = 0; i != sizeof(RemoveObjectsData); i++)
+    if(!DB_DoesPlayerAccountExist(playerid))
     {
-        RemoveBuildingForPlayer(playerid, RemoveObjectsData[i], 0.0, 0.0, 0.0, 6000.0);
-	}
+        ShowPlayerRegisterDialog(playerid);
+    }
+    else
+    {
+        ShowPlayerLoginDialog(playerid);
+    }
+    return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//--------------- BCrypt_OnPasswordHashed -----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public BCrypt_OnPasswordHashed(playerid)
+{
+    new passwordHash[BCRYPT_HASH_LENGTH];
+    bcrypt_get_hash(passwordHash);
+
+    RegisterPlayerNewAccount(playerid, passwordHash);
+    PrepareDataAfterRegister(playerid);
+
+    wait_ms(1000);
+    SpawnPlayer(playerid);
+    return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------ BCrypt_OnLoginPasswordChecked --------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public BCrypt_OnLoginPasswordChecked(playerid)
+{
+    if(!bcrypt_is_equal()) // incorrect password.
+    {
+        return ShowPlayerLoginDialog(playerid);
+    }
+
+    LoadPlayerCharacterData(playerid);
+    PrepareDataAfterLogin(playerid);
+
+    wait_ms(1000);
+    SpawnPlayer(playerid);
+    return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -36,7 +60,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         if(!IsPlayerLogged(playerid) && IsTextDrawVisibleForPlayer(playerid, eTextDrawInfo[e_MainMenu_Prompt]))
         {
             TextDrawHideForPlayer(playerid, eTextDrawInfo[e_MainMenu_Prompt]);
-            ShowRegisterLoginDialog(playerid, DB_CheckAccountExistence(playerid));
+            OnPlayerTryToPlay(playerid);
         }
     }
     return 1;
