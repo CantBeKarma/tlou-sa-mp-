@@ -99,7 +99,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
                 new Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId;
                 ReadItemRelation(item_objectId, .itemPosX = itemPosX, .itemPosY = itemPosY, .itemPosZ = itemPosZ, .itemVw = itemVw, .itemIntId = itemIntId);
 
-                DestroyItem(item_objectId, true);
+                DestroyItem(item_objectId, .update = true);
 
                 new recreateItemId = (IsItemType(itemId, ITEM_TYPE_MELEE) || IsItemType(itemId, ITEM_TYPE_THROWABLE) ? (dropItemId) : (itemId));
 
