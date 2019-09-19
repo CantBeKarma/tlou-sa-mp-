@@ -1,9 +1,3 @@
-// Load player's data from database.
-LoadPlayerCharacterData(playerid)
-{
-	DB_LoadPlayerCharacter(playerid);
-}
-
 // Save player's character's data.
 SavePlayerCharacterData(playerid)
 {
@@ -88,54 +82,19 @@ ResetVariables(playerid)
     eCharsInfo[playerid][e_iAttachSlot_Dynamic] = -1;
 }
 
-//#region Validation
-
-	// Check if password cointains restricted characters.
-	PassContainsRestrictedChars(const password[])
+// Validating player's password input.
+ValidatePassword(const password[])
+{
+	if(isnull(password)
+	|| strlen(password) < MIN_PASSWORD_LEN
+	|| strlen(password) > MAX_PASSWORD_LEN)
 	{
-		for(new i = 0; password[i] != EOS; i++)
-		{
-			switch(password[i])
-			{
-				case 
-					'0'..'9', 
-					'A'..'Z', 
-					'a'..'z',
-					'!',
-					'?',
-					'@',
-					'#',
-					'$':
-					{
-						continue;
-					}
-
-				default:
-				{
-					return false;
-				}
-			}
-		}
-		return true;
+		return false;
 	}
 
-	// Validating player's password input.
-	ValidatePlayerPassword(playerid, const password[])
+	if(TextHasRestrictedCharacters(password))
 	{
-		if(isnull(password)
-		|| strlen(password) < MIN_PASSWORD_LEN
-		|| strlen(password) > MAX_PASSWORD_LEN)
-		{
-			return false;
-		}
-
-		if(PassContainsRestrictedChars(password))
-		{
-			SCMF(playerid, -1, "Restricted characters detected! Allowed ones: %s", AllowedPasswordCharacters);
-			return false;
-		}
-
-		return true;
+		return false;
 	}
-
-//#endregion
+	return true;
+}
