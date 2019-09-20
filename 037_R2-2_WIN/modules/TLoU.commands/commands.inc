@@ -322,11 +322,11 @@ YCMD:icmd(playerid, params[], help)
 
             if(IsItemType(i, ITEM_TYPE_MELEE))
             {
-                format(string, sizeof(string), "%s%s (ID: %d) (CND: %d) (Upgraded CND: %d)\n", string, eItemsData[i][e_sItem_Name], GetPlayerItemAmount(playerid, i), GetPlayerMeleeExtraCnd(playerid, i));
+                format(string, sizeof(string), "%s%s (ID: %d) (CND: %d) (Upgraded CND: %d)\n", string, eItemsData[i][e_sItem_Name], i, GetPlayerItemAmount(playerid, i), GetPlayerMeleeExtraCnd(playerid, i));
             }
             else
             {
-                format(string, sizeof(string), "%s%s (ID: %d) (Amount: %d) (Upgrade LVL: %d)\n", string, eItemsData[i][e_sItem_Name], GetPlayerItemAmount(playerid, i), GetPlayerItemUpgradeLvl(playerid, i, UPGRADE_TYPE_CLIPSIZE));
+                format(string, sizeof(string), "%s%s (ID: %d) (Amount: %d) (Upgrade LVL: %d)\n", string, eItemsData[i][e_sItem_Name], i, GetPlayerItemAmount(playerid, i), GetPlayerItemUpgradeLvl(playerid, i, UPGRADE_TYPE_CLIPSIZE));
             }
         }
 
