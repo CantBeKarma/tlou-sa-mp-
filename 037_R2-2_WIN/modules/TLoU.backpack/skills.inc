@@ -110,7 +110,9 @@ Skill_SetPlayerLevel(playerid, skillId, level)
 function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, barIdx, Float:bar_start_value)
 {
     if(!IsPlayerUpgradingSkill(playerid))
-        return;
+    {
+        return false;
+    }
 
     if(IsPlayerHoldingKey(playerid, KEY_FIRE))
     {
@@ -137,6 +139,7 @@ function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, bar
         OnPlayerCanceledUpgradingSkill(playerid);
     }
     PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx]);
+    return true;
 }
 
 // Display player total-supps.
@@ -189,7 +192,7 @@ SkillsTd_CheckWhatsToUpgrade(playerid)
 {
     for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
     {
-        if(GetPlayerSupplementsAmount(playerid) >= eBackpack_SkillItemsData[i][e_iSupps_Required] && Skill_GetPlayerLevel(playerid, i) < eBackpack_SkillItemsData[i][e_iSkill_MaxLvl])
+        if(GetPlayerSupplementsAmount(playerid) >= eBackpack_SkillItemsData[i][e_iSupps_Required] && Skill_GetPlayerLevel(playerid, i) < Skill_GetMaxLevel(i))
         {
             if(!Iter_Contains(SkillsToUpgrade<playerid>, i))
             {
@@ -211,11 +214,8 @@ SkillsTd_CheckWhatsToUpgrade(playerid)
             PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i], COLOR_RED_TRANS);
             PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsRequire][i], COLOR_RED_TRANS);
         }
-    }
 
-    if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
-    {
-        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
+        if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
         {
             PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Names][i]);
             PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i]);
