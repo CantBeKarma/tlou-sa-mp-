@@ -87,12 +87,8 @@ ValidatePassword(const password[])
 {
 	if(isnull(password)
 	|| strlen(password) < MIN_PASSWORD_LEN
-	|| strlen(password) > MAX_PASSWORD_LEN)
-	{
-		return false;
-	}
-
-	if(TextHasRestrictedCharacters(password))
+	|| strlen(password) > MAX_PASSWORD_LEN
+    || TextHasRestrictedCharacters(password))
 	{
 		return false;
 	}
