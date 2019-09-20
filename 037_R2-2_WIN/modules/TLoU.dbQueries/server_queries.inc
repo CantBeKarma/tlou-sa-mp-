@@ -5,14 +5,11 @@
     {
         new query[512];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), 
-            "INSERT INTO items_data (id_item, x, y, z, rX, rY, rZ, virtualWorld, interiorId, amount, meleeExtCnd) \ 
+            "INSERT INTO items_data \
+            (id_item, x, y, z, virtualWorld, interiorId, amount, meleeExtCnd) \ 
             VALUES \
-            (%d, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d)", \
-            itemId, \
-            x, y, z, \
-            rX, rY, rZ, \
-            virtualWorld, interiorId, \
-            itemAmount, meleeExtCnd);
+            (%d, %f, %f, %f, %d, %d, %d, %d)", \
+            itemId, x, y, z, virtualWorld, interiorId, itemAmount, meleeExtCnd);
 
         mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "ddffffffddddssd", itemId, itemType, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, "", "", creatorId);
     }
@@ -37,7 +34,7 @@
     DB_LoadItems()
     {
         new Cache:result;
-        result = mysql_query(eServerInfo[e_SqlHandler], "SELECT * FROM items_data WHERE uid_owner = -1 AND is_created = 1");
+        result = mysql_query(eServerInfo[e_SqlHandler], "SELECT * FROM `items_data` WHERE `uid_owner` = -1 AND `x` IS NOT NULL AND `y` IS NOT NULL AND `z` IS NOT NULL");
         
         new rowsCount;
         cache_get_row_count(rowsCount);
@@ -45,10 +42,14 @@
         new 
             row_itemUid,
             row_idItem,
-            Float:row_itemX, Float:row_itemY, Float:row_itemZ,
-            row_virtualWorld, row_interiorId,
+            Float:row_itemX, 
+            Float:row_itemY, 
+            Float:row_itemZ,
+            row_virtualWorld, 
+            row_interiorId,
             row_itemAmount,
-            row_meleeExtCnd;
+            row_meleeExtCnd,
+            row_isCreated;
 
         for(new i = 0; i != rowsCount; i++)
         {
@@ -61,6 +62,14 @@
             cache_get_value_name_int    (i, "interiorId",   row_interiorId);
             cache_get_value_name_int    (i, "amount",       row_itemAmount);
             cache_get_value_name_int    (i, "meleeExtCnd",  row_meleeExtCnd);
+            cache_get_value_name_int    (i, "is_created",   row_isCreated);
+
+            if(!row_isCreated)
+            {
+                new query[60];
+                mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE `items_data` SET `is_created` = 1 WHERE uid = %d", row_itemUid);
+                mysql_tquery(eServerInfo[e_SqlHandler], query);
+            }
             
             CreateOrUpdateItem(row_idItem, row_itemAmount, row_meleeExtCnd, INVALID_PLAYER_ID, row_itemX, row_itemY, row_itemZ, row_virtualWorld, row_interiorId, true, row_itemUid);
         }
