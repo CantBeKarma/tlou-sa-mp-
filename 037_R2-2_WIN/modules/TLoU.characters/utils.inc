@@ -26,7 +26,7 @@ SetPlayerSupplements(playerid, amount)
 
     if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
     {
-        SkillsTd_CheckSuppsAmount(playerid);
+        SkillsTd_UpdateSuppsAmount(playerid);
         SkillsTd_CheckWhatsToUpgrade(playerid);
         SkillTd_UpdateViewingItem(playerid, Skill_GetSelection(playerid));
     }

@@ -260,7 +260,7 @@ ShowBackpackCategory(playerid, category, bool:firstTime = true)
         case BACKPACK_CATEGORY_SKILLS:
         {
             new selectedSkill = Skill_GetSelection(playerid);
-            SkillsTd_CheckSuppsAmount(playerid);
+            SkillsTd_UpdateSuppsAmount(playerid);
             SkillsTd_CheckWhatsToUpgrade(playerid);
             SkillTd_UpdateViewingItem(playerid, selectedSkill);
 

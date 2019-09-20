@@ -94,7 +94,7 @@ Skill_SetLevel(playerid, skillId, level)
         SkillTd_UpdateViewingItem(playerid, SKILL_ITEM_SHIV_MASTER);
     }
 
-    SkillsTd_CheckSuppsAmount(playerid);
+    SkillsTd_UpdateSuppsAmount(playerid);
     SkillsTd_CheckWhatsToUpgrade(playerid);
     UpdateNavItemsColors(playerid);
 }
@@ -133,12 +133,14 @@ function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, bar
 }
 
 // Display player total-supps.
-SkillsTd_CheckSuppsAmount(playerid)
+SkillsTd_UpdateSuppsAmount(playerid)
 {
-    new tmp[5];
-    valstr(tmp, Skill_SuppsAmount(playerid));
-    PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount], tmp);
-    PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount]);
+    if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
+    {
+        new String:suppsAmountStr = str_val(Skill_SuppsAmount(playerid));
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount], suppsAmountStr);
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount]);
+    }
 }
 
 // Change description of the currently viewing skill item.
