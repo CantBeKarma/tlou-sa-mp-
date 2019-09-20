@@ -15,7 +15,7 @@ PrepareDataAfterLogin(playerid)
     SetPlayerVirtualWorld(playerid, eCharsInfo[playerid][e_iPosVw]);
     SetSpawnInfoEx(playerid, GetPlayerSkinEx(playerid), eCharsInfo[playerid][e_fPosX], eCharsInfo[playerid][e_fPosY], eCharsInfo[playerid][e_fPosZ], eCharsInfo[playerid][e_fPosAng]);
 
-    SkillTd_FillPlayerSkillBars(playerid);
+    SkillsTd_FillPlayerSkillBars(playerid);
     DB_UpdatePlayerLastLoginDate(playerid);
 
     Bit_Let(ePlayerFlag[e_bLogged], playerid);

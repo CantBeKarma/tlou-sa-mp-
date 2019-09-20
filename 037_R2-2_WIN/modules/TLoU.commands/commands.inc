@@ -244,6 +244,7 @@ YCMD:icmd(playerid, params[], help)
         if(sscanf(params, "dd", skillId, level))return ShowDialogMessage(playerid, "Usage..", "/setskill (skill_id) (level)");
         {
             Skill_SetPlayerLevel(playerid, skillId, level);
+            SkillsTd_FillPlayerSkillBars(playerid);
         }
         return 1;
     }

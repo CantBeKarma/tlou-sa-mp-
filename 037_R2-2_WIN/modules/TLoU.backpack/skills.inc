@@ -170,7 +170,6 @@ SkillTd_UpdateViewingItem(playerid, selection)
         TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
         TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
     }
-
     else
     {
         TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
@@ -219,7 +218,7 @@ SkillsTd_CheckWhatsToUpgrade(playerid)
 }
 
 // Most likely one-time-use (during sign in ONLY) | fills progress bars of the skills that player has.
-SkillTd_FillPlayerSkillBars(playerid)
+SkillsTd_FillPlayerSkillBars(playerid)
 {
     new 
         barIdx = -1, 
