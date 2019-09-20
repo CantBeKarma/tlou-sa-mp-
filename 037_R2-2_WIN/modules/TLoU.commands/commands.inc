@@ -2,7 +2,7 @@ CMD:cmd(playerid, params[])
 {
     static icmdTip[70] = "Type: /icmd (command_name) to find more information about a command.";
     static cmdListRow1[80] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise";
-    static cmdListRow2[72] = "/itemlist, /createitem, /createmelee, /createnote, /setskill, /setsupps";
+    static cmdListRow2[72] = "/itemlist, /createitem, /createmelee, /createnote, /skills, /setskill, /setsupps";
     static cmdListRow3[78] = "/giveitem, /givemelee, /myitems, /removeitem";
     static cmdListRow4[64] = "/ugradeitems, /setitemlvl, /ingrs, /allin, /setteam, /removeatt";
 
@@ -179,14 +179,22 @@ YCMD:icmd(playerid, params[], help)
         new itemId, title[MAX_COLL_TIT_LEN], innerMsg[MAX_COLL_MSG_LEN];
         if(sscanf(params, "ds[32]s[512]", itemId, title, innerMsg))return SCM(playerid, -1, "/createnote [itemId] [title] [innerMsg]");
         {
-            if(isnull(title) || strlen(title) > MAX_COLL_TIT_LEN
-            || isnull(innerMsg) || strlen(innerMsg) > MAX_COLL_MSG_LEN)
+            if(!CreateCollectible(itemId, title, innerMsg, .creatorId = playerid))
             {
                 return ShowDialogMessage(playerid, "WARNING", "Collectibles title cannot be longer than 32 and inner message longer than 512");
             }
-
-            CreateCollectible(itemId, title, innerMsg, .creatorId = playerid);
         }
+        return 1;
+    }
+
+    CMD:skills(playerid, params[])
+    {
+        new string[1024];
+        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
+        {
+            format(string, sizeof(string), "%s%s - ID: %d\tMAX LVL: %d\n", string, eBackpack_SkillItemsData[i][e_iSkill_Description], i, Skill_GetMaxLevel(i));
+        }
+        ShowDialogMessage(playerid, "Skills list", string);
         return 1;
     }
 
@@ -194,7 +202,7 @@ YCMD:icmd(playerid, params[], help)
     {
         if(help)
         {
-            return ShowDialogMessage(playerid, "icmd > setskill", "Changes character skill (from skill tree)");
+            return ShowDialogMessage(playerid, "icmd > setskill", "Changes character skill (from skill tree). /skills");
         }
 
         new skillId, level;
@@ -205,8 +213,13 @@ YCMD:icmd(playerid, params[], help)
         return 1;
     }
 
-    CMD:setsupps(playerid, params[])
+    YCMD:setsupps(playerid, params[], help)
     {
+        if(help)
+        {
+            return ShowDialogMessage(playerid, "icmd > setsupps", "Changes your amount of supplements to increase your skill level in backpack.");
+        }
+
         new suppsAmount;
         if(sscanf(params, "d", suppsAmount))return ShowDialogMessage(playerid, "Usage..", "Type: /setsupps (amount)");
         {

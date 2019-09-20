@@ -83,9 +83,17 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     return 1;
 }
 
+// Gets skill maximal possible level.
+Skill_GetMaxLevel(skillId)
+{
+    return eBackpack_SkillItemsData[skillId][e_iSkill_MaxLvl];
+}
+
 // Sets player certain level for the specified skillId.
 Skill_SetLevel(playerid, skillId, level)
 {
+    level = (level > Skill_GetMaxLevel(skillId) ? Skill_GetMaxLevel(skillId) : level);
+    
     Skill_GetLevel(playerid, skillId) = level;
     Skill_SuppsAmount(playerid) -= eBackpack_SkillItemsData[skillId][e_iSupps_Required];
     
