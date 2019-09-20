@@ -18,3 +18,4 @@ forward FCNPC_OnGetStunned(npcid);
 forward FCNPC_OnShakeOffStun(npcid);
 forward FCNPC_OnEnterDynArea(npcid, areaid);
 forward FCNPC_OnLeaveDynArea(npcid, areaid);
+forward FCNPC_OnGetHitByThrowable(npcId, issuerId, itemId);

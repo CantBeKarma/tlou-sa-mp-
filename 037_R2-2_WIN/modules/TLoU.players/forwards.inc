@@ -18,3 +18,5 @@ forward OnPlayerLookAtNPC(playerid, lookingAt_NpcId);
 
 forward OnPlayerGetStunned(playerid);
 forward OnPlayerShakeOffStun(playerid);
+
+forward OnPlayerGetHitByThrowable(playerid, issuerId, itemId);

@@ -510,6 +510,14 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 		return 0;
 	}
 
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//--------------- OnPlayerGetHitByThrowable ---------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerGetHitByThrowable(playerid, issuerId, itemId)
+	{
+		return 0;
+	}
+
 //#endregion
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

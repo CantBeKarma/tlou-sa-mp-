@@ -84,9 +84,16 @@ public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Fl
 {
     CreateProjectileDestroyEffect(itemId, projid, x, y, z);
 
-    if(hitid != INVALID_PLAYER_ID && IsPlayerNPC(hitid))
+    if(hitid != INVALID_PLAYER_ID)
     {
-        SCMF(throwerid, -1, "You hitted NPCID: %d with throwable!", hitid);
+        if(IsPlayerNPC(hitid))
+        {
+            FCNPC_OnGetHitByThrowable(hitid, throwerid, itemId);
+        }
+        else
+        {
+            OnPlayerGetHitByThrowable(hitid, throwerid, itemId);
+        }
     }
 
     foreach(new npcid : FCNPC)
