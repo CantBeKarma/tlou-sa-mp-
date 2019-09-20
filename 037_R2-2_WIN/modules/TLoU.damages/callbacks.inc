@@ -18,7 +18,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
     if(IsPlayerDead(playerid))
-    {       
+    {
         PlayPlayerDeadAnimIfDead(playerid);
         return 1;
     }
