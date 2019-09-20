@@ -157,11 +157,6 @@ SkillsTd_UpdateSuppsAmount(playerid)
 // Change description of the currently viewing skill item.
 SkillTd_UpdateViewingItem(playerid)
 {
-    if(!IsPlayerUsingBackpack(playerid) || PlayerBackpackCategory(playerid) != BACKPACK_CATEGORY_SKILLS)
-    {
-        return false;
-    }
-
     new selection = Skill_GetSelection(playerid);
     if(selection == SKILL_ITEM_SHIV_MASTER && Skill_GetPlayerLevel(playerid, SKILL_ITEM_SHIV_MASTER) > 0)
     {
@@ -172,17 +167,20 @@ SkillTd_UpdateViewingItem(playerid)
         PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], eBackpack_SkillItemsData[selection][e_iSkill_Description]);
     }
     
-    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description]);
+    if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
+    {
+        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description]);
 
-    if(Iter_Contains(SkillsToUpgrade<playerid>, selection))
-    {
-        TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
-        TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
-    }
-    else
-    {
-        TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
-        TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
+        if(Iter_Contains(SkillsToUpgrade<playerid>, selection))
+        {
+            TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
+            TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
+        }
+        else
+        {
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
+        }
     }
     return true;
 }
