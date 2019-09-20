@@ -356,9 +356,14 @@ YCMD:icmd(playerid, params[], help)
     CMD:upgradeitems(playerid, params[])
     {
         new string[350];
-        for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+        for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
-            format(string, sizeof(string), "%s%d\tMAX = %d\n", string, _:eItemsUpgrades[i][e_iItemId], GetItemMaxUpgradeLvl(_:eItemsUpgrades[i][e_iItemId], UPGRADE_TYPE_CLIPSIZE));
+            if(!IsItemUpgradeable(i, UPGRADE_TYPE_CLIPSIZE))
+            {
+                continue;
+            }
+
+            format(string, sizeof(string), "%s%s\tID: %d\t|\tMAX LVL: %d\n", string, eItemsData[i][e_sItem_Name], i, GetItemMaxUpgradeLvl(i, UPGRADE_TYPE_CLIPSIZE));
         }
 
         ShowDialogMessage(playerid, "Available items list", string);
