@@ -6,7 +6,7 @@ timer Key_BackpackMenu[TIMER_USE_BACKPACK](playerid)
         defer Key_BackpackMenu(playerid);
     }
 
-    if(((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackKeys]) < 450) || IsPlayerHoldingKey(playerid, KEY_FIRE))
+    if(((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackKeys]) < TICK_RATE_BP_KEYS_COOLDOWN) || IsPlayerHoldingKey(playerid, KEY_FIRE))
     {
         return 1;
 	}
