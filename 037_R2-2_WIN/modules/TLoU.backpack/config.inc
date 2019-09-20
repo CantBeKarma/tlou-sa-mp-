@@ -77,11 +77,7 @@
 #define     PlayerBackpackCategory(%0)      ePlayerBpInfo[%0][e_iBackpackSelected_Category]
 
 #define     Craft_GetSelection(%0)          ePlayerBpInfo[%0][e_iBackpackSelected_Craft]
-
 #define     Skill_GetSelection(%0)          ePlayerBpInfo[%0][e_iBackpackSelected_Skill]
-#define     Skill_GetLevel(%0,%1)           eCharsInfo[%0][e_iSkillLevel][%1]
-#define     Skill_SuppsAmount(%0)           eCharsInfo[%0][e_iSkills_SuppsAmount]
-
 #define     Coll_GetSelection(%0)           ePlayerBpInfo[%0][e_iBackpackSelected_Coll]
 #define     Coll_ViewingGetSelection(%0)    ePlayerBpInfo[%0][e_iBackpackSelected_ViewColl]
 
