@@ -25,27 +25,6 @@
         return (eItemsData[itemId][e_iItem_ModelId]);
     }
 
-    GetItemMaxUpgradeLvl(itemId, upgradeType)
-    {
-        if(!IsValidItemId(itemId))
-        {
-            return -1;
-        }
-
-        new maxUpgradeLevel = -1;
-        for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
-        {
-            if(eItemsUpgrades[i][e_iItemId] != ITEM_IDX:itemId
-            || eItemsUpgrades[i][e_iItem_UpgradeType] != upgradeType)
-            {
-                continue;
-            }
-
-            maxUpgradeLevel = eItemsUpgrades[i][e_iItem_UpgradeLvl];
-        }
-        return maxUpgradeLevel;
-    }
-
     GetItemNativeWeaponId(itemId)
     {
         if(!IsValidItemId(itemId))
@@ -54,29 +33,6 @@
         }
 
         return (eItemsData[itemId][e_iItem_SA_WeaponId]);
-    }
-
-    bool:IsItemUpgradeable(itemId, upgradeType = -1)
-    {
-        for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
-        {
-            if(upgradeType == -1)
-            {
-                if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId])
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId]
-                && upgradeType == eItemsUpgrades[i][e_iItem_UpgradeType])
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     bool:IsPlayerFullOnItem(playerid, itemId)
