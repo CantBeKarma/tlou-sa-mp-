@@ -150,7 +150,7 @@ timer Craft_CraftItem[1000](playerid, craftItemId, craft_time)
         if(craft_time > 0) OnPlayerCraftedItem(playerid, craftItemId);
         else
         {
-            new craftLvl = Skill_GetLevel(playerid, SKILL_ITEM_CRAFT_SPEED);
+            new craftLvl = Skill_GetPlayerLevel(playerid, SKILL_ITEM_CRAFT_SPEED);
             switch(craftItemId)
             {
                 case 

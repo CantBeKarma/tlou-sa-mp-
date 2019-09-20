@@ -376,12 +376,12 @@
             interiorId = GetPlayerInterior(playerid), 
             virtualWorld = GetPlayerVirtualWorld(playerid),
             supplementsAmount = GetPlayerSupplementsAmount(playerid),
-            skill_maxHp = Skill_GetLevel(playerid, SKILL_ITEM_MAXHP),
-            skill_maxListenDist = Skill_GetLevel(playerid, SKILL_ITEM_LISTEN_DIST),
-            skill_craftSpeed = Skill_GetLevel(playerid, SKILL_ITEM_CRAFT_SPEED),
-            skill_healSpeed = Skill_GetLevel(playerid, SKILL_ITEM_HEAL_SPEED),
-            skill_weaponSway = Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY),
-            skill_shivMaster = Skill_GetLevel(playerid, SKILL_ITEM_SHIV_MASTER);
+            skill_maxHp = Skill_GetPlayerLevel(playerid, SKILL_ITEM_MAXHP),
+            skill_maxListenDist = Skill_GetPlayerLevel(playerid, SKILL_ITEM_LISTEN_DIST),
+            skill_craftSpeed = Skill_GetPlayerLevel(playerid, SKILL_ITEM_CRAFT_SPEED),
+            skill_healSpeed = Skill_GetPlayerLevel(playerid, SKILL_ITEM_HEAL_SPEED),
+            skill_weaponSway = Skill_GetPlayerLevel(playerid, SKILL_ITEM_WEAP_SWAY),
+            skill_shivMaster = Skill_GetPlayerLevel(playerid, SKILL_ITEM_SHIV_MASTER);
 
         new query[450];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query),\

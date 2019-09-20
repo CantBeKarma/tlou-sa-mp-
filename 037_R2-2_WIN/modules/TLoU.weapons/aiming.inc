@@ -81,8 +81,8 @@ public OnPlayerAimsWeapon(playerid, itemId)
 	if(IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
 	{
 		new drunkLevel = 
-			  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? SKILL_WEAP_SWAY_LVL0
-			: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? SKILL_WEAP_SWAY_LVL1
+			  (Skill_GetPlayerLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? SKILL_WEAP_SWAY_LVL0
+			: (Skill_GetPlayerLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? SKILL_WEAP_SWAY_LVL1
 			: (SKILL_WEAP_SWAY_LVL2);
 
 		if(drunkLevel > 0)
