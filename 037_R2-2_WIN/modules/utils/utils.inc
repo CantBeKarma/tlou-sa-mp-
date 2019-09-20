@@ -372,3 +372,8 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
         }
     }
 }
+
+ShowDialogMessage(playerid, title[], message[])
+{
+	return Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, title, message, "Close");
+}
