@@ -189,10 +189,21 @@ YCMD:icmd(playerid, params[], help)
 
     CMD:skills(playerid, params[])
     {
-        new string[1024];
+        new skillName[32];
+        new string[350];
+
         for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
         {
-            format(string, sizeof(string), "%s%s - ID: %d\tMAX LVL: %d\n", string, eBackpack_SkillItemsData[i][e_iSkill_Description], i, Skill_GetMaxLevel(i));
+            switch(i)
+            {
+                case 0: skillName = "MAX HP";
+                case 1: skillName = "LISTEN MODE DISTANCE";
+                case 2: skillName = "CRAFTING SPEED";
+                case 3: skillName = "HEALING SPEED";
+                case 4: skillName = "WEAPON SWAY";
+                case 5: skillName = "SHIV MASTER";
+            }
+            format(string, sizeof(string), "%s%s - ID: %d\tMAX LVL: %d\n", string, skillName, i, Skill_GetMaxLevel(i));
         }
         ShowDialogMessage(playerid, "Skills list", string);
         return 1;
