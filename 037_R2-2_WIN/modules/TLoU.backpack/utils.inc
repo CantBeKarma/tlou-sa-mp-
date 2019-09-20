@@ -262,7 +262,7 @@ ShowBackpackCategory(playerid, category, bool:firstTime = true)
             new selectedSkill = Skill_GetSelection(playerid);
             SkillsTd_UpdateSuppsAmount(playerid);
             SkillsTd_CheckWhatsToUpgrade(playerid);
-            SkillTd_UpdateViewingItem(playerid, selectedSkill);
+            SkillTd_UpdateViewingItem(playerid);
 
             PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcon]);
             PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CatName], "SKILLS");

@@ -151,7 +151,7 @@ public OnPlayerUseBackpack(playerid, category, keys)
             Audio_PlayEx(playerid, AUDIO_SKILL_UPDWN);
 
             new selection = Skill_GetSelection(playerid);
-            SkillTd_UpdateViewingItem(playerid, selection);
+            SkillTd_UpdateViewingItem(playerid);
             Backpack_MoveSelectBox(playerid, eBackpack_SkillItemsData[selection][e_fSelBoxX], eBackpack_SkillItemsData[selection][e_fSelBoxY]);
         }
 
