@@ -83,16 +83,16 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     return 1;
 }
 
-// Get current player's skill level.
-Skill_GetPlayerLevel(playerid, skillId)
-{
-    return eCharsInfo[playerid][e_iSkillLevel][skillId];
-}
-
 // Gets skill maximal possible level.
 Skill_GetMaxLevel(skillId)
 {
     return eBackpack_SkillItemsData[skillId][e_iSkill_MaxLvl];
+}
+
+// Get current player's skill level.
+Skill_GetPlayerLevel(playerid, skillId)
+{
+    return eCharsInfo[playerid][e_iSkillLevel][skillId];
 }
 
 // Sets player certain level for the specified skillId.
@@ -101,13 +101,8 @@ Skill_SetPlayerLevel(playerid, skillId, level)
     eCharsInfo[playerid][e_iSkillLevel][skillId] = (level > Skill_GetMaxLevel(skillId) ? Skill_GetMaxLevel(skillId) : level);
     SetPlayerSupplements(playerid, GetPlayerSupplementsAmount(playerid) - eBackpack_SkillItemsData[skillId][e_iSupps_Required]);
 
-    if(skillId == SKILL_ITEM_SHIV_MASTER)
-    {
-        SkillTd_UpdateViewingItem(playerid, SKILL_ITEM_SHIV_MASTER);
-    }
-
-    SkillsTd_UpdateSuppsAmount(playerid);
     SkillsTd_CheckWhatsToUpgrade(playerid);
+    SkillTd_UpdateViewingItem(playerid);
     UpdateNavItemsColors(playerid);
 }
 
@@ -149,7 +144,7 @@ SkillsTd_UpdateSuppsAmount(playerid)
 {
     new String:suppsAmountStr = str_val(GetPlayerSupplementsAmount(playerid));
     PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount], suppsAmountStr);
-    
+
     if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
     {
         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount]);
@@ -157,12 +152,22 @@ SkillsTd_UpdateSuppsAmount(playerid)
 }
 
 // Change description of the currently viewing skill item.
-SkillTd_UpdateViewingItem(playerid, selection)
+SkillTd_UpdateViewingItem(playerid)
 {
+    if(!IsPlayerUsingBackpack(playerid) || PlayerBackpackCategory(playerid) != BACKPACK_CATEGORY_SKILLS)
+    {
+        return false;
+    }
+
+    new selection = Skill_GetSelection(playerid);
     if(selection == SKILL_ITEM_SHIV_MASTER && Skill_GetPlayerLevel(playerid, SKILL_ITEM_SHIV_MASTER) > 0)
+    {
         PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], "Full-durability shivs don't break~n~when used to escape a Clicker grapple");
+    }
     else
+    {
         PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], eBackpack_SkillItemsData[selection][e_iSkill_Description]);
+    }
     
     PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description]);
 
@@ -176,6 +181,7 @@ SkillTd_UpdateViewingItem(playerid, selection)
         TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
         TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
     }
+    return true;
 }
 
 // Check which skills are allowed to upgrade.
