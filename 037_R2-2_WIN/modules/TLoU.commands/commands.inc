@@ -205,7 +205,7 @@ YCMD:icmd(playerid, params[], help)
                 case 4: skillName = "WEAPON SWAY";
                 case 5: skillName = "SHIV MASTER";
             }
-            format(string, sizeof(string), "%s%s - ID: %d\tMAX LVL: %d\n", string, skillName, i, Skill_GetMaxLevel(i));
+            format(string, sizeof(string), "%s%s | ID: %d | MAX LVL: %d\n", string, skillName, i, Skill_GetMaxLevel(i));
         }
         ShowDialogMessage(playerid, "Skills list", string);
         return 1;

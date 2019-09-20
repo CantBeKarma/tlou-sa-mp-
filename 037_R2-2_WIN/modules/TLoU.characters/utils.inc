@@ -23,5 +23,9 @@ GetPlayerSupplementsAmount(playerid)
 SetPlayerSupplements(playerid, amount)
 {
     eCharsInfo[playerid][e_iSkills_SuppsAmount] = ((amount < 0) ? (0) : (amount > MAX_PLAYER_SUPPS_AMOUNT) ? (MAX_PLAYER_SUPPS_AMOUNT) : (amount));
+    
     SkillsTd_UpdateSuppsAmount(playerid);
+    SkillsTd_CheckWhatsToUpgrade(playerid);
+    SkillTd_UpdateViewingItem(playerid);
+    UpdateNavItemsColors(playerid);
 }

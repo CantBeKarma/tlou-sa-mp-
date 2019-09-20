@@ -100,10 +100,6 @@ Skill_SetPlayerLevel(playerid, skillId, level)
 {
     eCharsInfo[playerid][e_iSkillLevel][skillId] = (level > Skill_GetMaxLevel(skillId) ? Skill_GetMaxLevel(skillId) : level);
     SetPlayerSupplements(playerid, GetPlayerSupplementsAmount(playerid) - eBackpack_SkillItemsData[skillId][e_iSupps_Required]);
-
-    SkillsTd_CheckWhatsToUpgrade(playerid);
-    SkillTd_UpdateViewingItem(playerid);
-    UpdateNavItemsColors(playerid);
 }
 
 // Change skill's progress bar value.
