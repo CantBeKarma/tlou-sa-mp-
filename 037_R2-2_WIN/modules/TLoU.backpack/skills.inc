@@ -51,6 +51,9 @@ public OnPlayerUpgradedSkill(playerid, skillid)
 {
     new newLevel = Skill_GetLevel(playerid, skillid) + 1;
     Skill_SetLevel(playerid, skillid, newLevel);
+
+    Audio_StopEx(playerid);
+    Audio_PlayEx(playerid, AUDIO_CRAFT_FINISH);
     return 1;
 }
 
