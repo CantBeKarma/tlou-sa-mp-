@@ -1,17 +1,19 @@
 CMD:cmd(playerid, params[])
 {
-    static icmdTip[69] = "Type: /icmd (command_name) to find more information about a command.";
-    static cmdListRow1[65] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise";
-    static cmdListRow2[81] = "/itemlist, /createitem, /createmelee, /createnote, /skills, /setskill, /setsupps";
-    static cmdListRow3[45] = "/giveitem, /givemelee, /myitems, /removeitem";
-    static cmdListRow4[64] = "/ugradeitems, /setitemlvl, /ingrs, /allin, /setteam, /removeatt";
+    static icmdTip[73] = "Type: /icmd (command_name) to find more information about a command.\n\n";
+    static cmdListRow1[67] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise\n";
+    static cmdListRow2[52] = "/itemlist, /createitem, /createmelee, /createnote\n";
+    static cmdListRow3[47] = "/giveitem, /givemelee, /myitems, /removeitem\n";
+    static cmdListRow4[43] = "/skills, /myskills, /setskill, /setsupps\n";
+    static cmdListRow5[66] = "/ugradeitems, /setitemlvl, /ingrs, /allin, /setteam, /removeatt";
 
-    new string[ sizeof(icmdTip) + sizeof(cmdListRow1) + sizeof(cmdListRow2) + sizeof(cmdListRow3) + sizeof(cmdListRow4) + 1];
+    new string[ sizeof(icmdTip) + sizeof(cmdListRow1) + sizeof(cmdListRow2) + sizeof(cmdListRow3) + sizeof(cmdListRow4) + sizeof(cmdListRow5) + 1];
     strcat(string, icmdTip, sizeof(string));
     strcat(string, cmdListRow1, sizeof(string));
     strcat(string, cmdListRow2, sizeof(string));
     strcat(string, cmdListRow3, sizeof(string));
     strcat(string, cmdListRow4, sizeof(string));
+    strcat(string, cmdListRow5, sizeof(string));
 
     ShowDialogMessage(playerid, "Available commands list", string);
     return 1;
