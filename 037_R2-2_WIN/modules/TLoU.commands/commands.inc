@@ -209,6 +209,28 @@ YCMD:icmd(playerid, params[], help)
         return 1;
     }
 
+    CMD:myskills(playerid, params[])
+    {
+        new skillName[32];
+        new string[350];
+        
+        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
+        {
+            switch(i)
+            {
+                case 0: skillName = "MAX HP";
+                case 1: skillName = "LISTEN MODE DISTANCE";
+                case 2: skillName = "CRAFTING SPEED";
+                case 3: skillName = "HEALING SPEED";
+                case 4: skillName = "WEAPON SWAY";
+                case 5: skillName = "SHIV MASTER";
+            }
+            format(string, sizeof(string), "%s%s - Level: %d\n", string, skillName, Skill_GetPlayerLevel(playerid, i));
+        }
+        ShowDialogMessage(playerid, "Your skill levels", string);
+        return 1;
+    }
+
     YCMD:setskill(playerid, params[], help)
     {
         if(help)
@@ -219,7 +241,7 @@ YCMD:icmd(playerid, params[], help)
         new skillId, level;
         if(sscanf(params, "dd", skillId, level))return ShowDialogMessage(playerid, "Usage..", "/setskill (skill_id) (level)");
         {
-            Skill_SetLevel(playerid, skillId, level);
+            Skill_SetPlayerLevel(playerid, skillId, level);
         }
         return 1;
     }
