@@ -1,12 +1,12 @@
 CMD:cmd(playerid, params[])
 {
-    static icmdTip[70] = "Type: /icmd (command_name) to find more information about a command.";
-    static cmdListRow1[80] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise";
-    static cmdListRow2[72] = "/itemlist, /createitem, /createmelee, /createnote, /skills, /setskill, /setsupps";
-    static cmdListRow3[78] = "/giveitem, /givemelee, /myitems, /removeitem";
+    static icmdTip[69] = "Type: /icmd (command_name) to find more information about a command.";
+    static cmdListRow1[65] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise";
+    static cmdListRow2[81] = "/itemlist, /createitem, /createmelee, /createnote, /skills, /setskill, /setsupps";
+    static cmdListRow3[45] = "/giveitem, /givemelee, /myitems, /removeitem";
     static cmdListRow4[64] = "/ugradeitems, /setitemlvl, /ingrs, /allin, /setteam, /removeatt";
 
-    new string[ sizeof(icmdTip) + sizeof(cmdListRow1) + sizeof(cmdListRow2) + sizeof(cmdListRow3) + sizeof(cmdListRow4) ];
+    new string[ sizeof(icmdTip) + sizeof(cmdListRow1) + sizeof(cmdListRow2) + sizeof(cmdListRow3) + sizeof(cmdListRow4) + 1];
     strcat(string, icmdTip, sizeof(string));
     strcat(string, cmdListRow1, sizeof(string));
     strcat(string, cmdListRow2, sizeof(string));
@@ -276,7 +276,7 @@ YCMD:icmd(playerid, params[], help)
 
     CMD:myitems(playerid, params[])
     {
-        new string[350];
+        new string[1024];
         for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
             if(!HasPlayerGotItem(playerid, i))
@@ -293,6 +293,8 @@ YCMD:icmd(playerid, params[], help)
                 format(string, sizeof(string), "%s%s (ID: %d) (Amount: %d) (Upgrade LVL: %d)\n", string, eItemsData[i][e_sItem_Name], GetPlayerItemAmount(playerid, i), GetPlayerItemUpgradeLvl(playerid, i, UPGRADE_TYPE_CLIPSIZE));
             }
         }
+
+        ShowDialogMessage(playerid, "My items", string);
         return 1;
     }
 
