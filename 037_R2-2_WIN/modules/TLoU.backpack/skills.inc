@@ -147,10 +147,11 @@ function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, bar
 // Display player total-supps.
 SkillsTd_UpdateSuppsAmount(playerid)
 {
+    new String:suppsAmountStr = str_val(GetPlayerSupplementsAmount(playerid));
+    PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount], suppsAmountStr);
+    
     if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
     {
-        new String:suppsAmountStr = str_val(GetPlayerSupplementsAmount(playerid));
-        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount], suppsAmountStr);
         PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount]);
     }
 }
