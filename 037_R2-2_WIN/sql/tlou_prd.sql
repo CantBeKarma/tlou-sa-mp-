@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 19, 2019 at 09:04 PM
+-- Generation Time: Sep 20, 2019 at 03:27 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `chars_data` (
 --
 
 INSERT INTO `chars_data` (`guid`, `uid`, `name`, `health`, `skinid`, `last_x`, `last_y`, `last_z`, `last_ang`, `last_int`, `last_vw`, `supplements`, `skill_maxhealth`, `skill_listenmode`, `skill_crafting`, `skill_healing`, `skill_weaponsway`, `skill_shivmaster`) VALUES
-(1, 1, 'Riddick', 15, 312, 2495.63, -1679.45, 13.339, 346.438, 0, 0, 0, 0, 0, 0, 0, 2, 0);
+(1, 1, 'Riddick', 15, 312, 2500, -1668.89, 13.3517, 98.989, 0, 0, 5, 2, 0, 1, 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -119,9 +119,6 @@ CREATE TABLE IF NOT EXISTS `items_data` (
   `x` float DEFAULT NULL,
   `y` float DEFAULT NULL,
   `z` float DEFAULT NULL,
-  `rX` float DEFAULT NULL,
-  `rY` float DEFAULT NULL,
-  `rZ` float DEFAULT NULL,
   `virtualWorld` smallint(5) UNSIGNED DEFAULT NULL,
   `interiorId` tinyint(3) UNSIGNED DEFAULT NULL,
   `amount` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
@@ -158,7 +155,7 @@ CREATE TABLE IF NOT EXISTS `player_data` (
 --
 
 INSERT INTO `player_data` (`guid`, `name`, `ip_address`, `register_date`, `last_login_date`, `password`, `admin_level`, `volume_level`, `ambient_toggle`, `status`) VALUES
-(1, 'Riddick', '127.0.0.1', '2019-09-19 20:14:58', '2019-09-19 22:54:20', '$2y$12$RVTYSBeuUFLJXR/qcTTqLek2BNq.ykaYQrKBjoYGxrEkCFHl5gaze', 0, 100, NULL, NULL);
+(1, 'Riddick', '127.0.0.1', '2019-09-19 20:14:58', '2019-09-20 17:20:47', '$2y$12$RVTYSBeuUFLJXR/qcTTqLek2BNq.ykaYQrKBjoYGxrEkCFHl5gaze', 0, 100, NULL, NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
