@@ -386,7 +386,7 @@ public OnPlayerCollectibleLoad(playerid, title[])
             }
         }
         
-        TextDrawSetString(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], formattedMessage);//message);
+        TextDrawSetString(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], formattedMessage);
         TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
     }
 
