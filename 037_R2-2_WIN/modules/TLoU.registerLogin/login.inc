@@ -35,7 +35,7 @@ ShowPlayerLoginDialog(playerid, bool:wrongPassword = false)
 
     inline Response(pid, dialogid, response, listitem, string:inputtext[])
     {
-        #pragma unused pid, dialogid, response, listitem, inputtext
+        #pragma unused pid, dialogid, listitem
         if(!response)
         {
             Kick(playerid);
