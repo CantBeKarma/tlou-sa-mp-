@@ -175,17 +175,10 @@ YCMD:icmd(playerid, params[], help)
     {
         if(help)
         {
-            return ShowDialogMessage(playerid, "icmd > createnote", "Creates collectible item. ItemId: 0 & 1 = artifact, 2 = pendant");
+            return ShowDialogMessage(playerid, "icmd > createnote", "Creates collectible item.");
         }
 
-        new itemId, title[MAX_COLL_TIT_LEN], innerMsg[MAX_COLL_MSG_LEN];
-        if(sscanf(params, "ds[32]s[512]", itemId, title, innerMsg))return SCM(playerid, -1, "/createnote [itemId] [title] [innerMsg]");
-        {
-            if(!CreateCollectible(itemId, title, innerMsg, .creatorId = playerid))
-            {
-                return ShowDialogMessage(playerid, "WARNING", "Collectibles title cannot be longer than 32 and inner message longer than 512");
-            }
-        }
+        Dialog_EnterArtifactTitle(playerid);
         return 1;
     }
 
