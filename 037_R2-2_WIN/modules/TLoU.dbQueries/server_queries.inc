@@ -85,8 +85,8 @@
     // Create new collectible in database.
     DB_CommitNewCollectible(itemId, itemType, Float:x, Float:y, Float:z,  Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, title[], message[], creatorId)
     {
-        strreplace(title, "'", "\\'", .maxlength = MAX_COLL_TIT_LEN);
-        strreplace(message, "'", "\\'", .maxlength = MAX_COLL_MSG_LEN);
+        strreplace(title, "'", "\'", .maxlength = MAX_COLL_TIT_LEN);
+        strreplace(message, "'", "\'", .maxlength = MAX_COLL_MSG_LEN);
 
         new query[800];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), 
