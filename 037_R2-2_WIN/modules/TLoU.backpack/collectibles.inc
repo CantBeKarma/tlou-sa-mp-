@@ -363,6 +363,7 @@ public OnPlayerCollectibleLoad(playerid, title[])
     // And does a new line every 35 characters (usually applies to artifacts).
     DisplayCollectibleContents(playerid, collectibleType, title[], message[])
     {
+        #pragma unused title
         if(collectibleType == COLL_ITEM_ARTIFACTS)
         {
             TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_PaperNote]);
