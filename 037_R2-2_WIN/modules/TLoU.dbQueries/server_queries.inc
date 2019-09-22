@@ -83,19 +83,18 @@
 //#region Collectibles manipulation (create)
 
     // Create new collectible in database.
-    DB_CommitNewCollectible(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, title[], message[], creatorId)
+    DB_CommitNewCollectible(itemId, itemType, Float:x, Float:y, Float:z, virtualWorld, interiorId, title[], message[], creatorId)
     {
         strreplace(title, "'", "\\'", .maxlength = MAX_COLL_TIT_LEN);
         strreplace(message, "'", "\\'", .maxlength = MAX_COLL_MSG_LEN);
 
-        new query[512];
+        new query[800];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), 
-            "INSERT INTO collectibles_data (id_item, id_type, x, y, z, rX, rY, rZ, virtualWorld, interiorId, title, message) \ 
+            "INSERT INTO collectibles_data (id_item, id_type, x, y, z, virtualWorld, interiorId, title, message) \ 
             VALUES \
-            (%d, %d, %f, %f, %f, %f, %f, %f, %d, %d, '%s', '%s')", \
+            (%d, %d, %f, %f, %f, %d, %d, '%e', '%e')", \
             itemId, itemType, \
             x, y, z, \
-            rX, rY, rZ, \
             virtualWorld, interiorId, \
             title, message);
 
