@@ -24,33 +24,3 @@ PrepareDataAfterRegister(playerid)
 
     Bit_Let(ePlayerFlag[e_bLogged], playerid);
 }
-
-ShowPlayerRegisterDialog(playerid)
-{
-    static tit_signUp[8] = "Sign up";
-    static msg_signUp[142] = "Welcome to the \"The Last of Us (SA-MP) Project\"\nWe haven't found you in our database. Please enter your account password below to sign up:";
-
-    inline Response(pid, dialogid, response, listitem, string:inputtext[])
-    {
-        #pragma unused pid, dialogid, response, listitem, inputtext
-        if(!response)
-        {
-            Kick(playerid);
-            return false;
-        }
-
-        if(!ValidatePassword(inputtext))
-        {
-            new msg_signUpFailed[142 + 170];
-            strcat(msg_signUpFailed, msg_signUp, sizeof(msg_signUpFailed));
-            strcat(msg_signUpFailed, "\n\n{FF0000}You've either entered too short/long password (min. 5, max. 20) OR you've used restricted characters!", sizeof(msg_signUpFailed));
-            strcat(msg_signUpFailed, "\n{FF0000}Allowed text characters: a-z, A-Z, 0-9, !?@#$", sizeof(msg_signUpFailed));
-
-            Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signUp, msg_signUpFailed, "Sign up", "Quit");
-            return false;
-        }
-        HashPlayerPassword(playerid, inputtext);
-    }
-    Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signUp, msg_signUp, "Sign up", "Quit");
-    return true;
-}
