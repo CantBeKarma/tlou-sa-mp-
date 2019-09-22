@@ -7,6 +7,14 @@ Dialog_EnterArtifactTitle(playerid)
     inline Response(pid, dialogid, response, listitem, string:inputtext[])
     {
         #pragma unused pid, dialogid, listitem
+        if(!response)
+        {
+            ePlayerCmdData[playerid][e_sCreateNoteTitle] = EOS;
+            ePlayerCmdData[playerid][e_sCreateNoteInnerMsg] = EOS;
+            ePlayerCmdData[playerid][e_iCreateNotePageCount] = 0;
+            return true;
+        }
+
         if(response)
         {
             if(isnull(inputtext) || strlen(inputtext) > MAX_COLL_TIT_LEN)
