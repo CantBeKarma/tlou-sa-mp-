@@ -20,3 +20,4 @@ forward OnPlayerGetStunned(playerid);
 forward OnPlayerShakeOffStun(playerid);
 
 forward OnPlayerGetHitByThrowable(playerid, issuerId, itemId);
+forward [16]GetPlayerIpAddress(playerid);
