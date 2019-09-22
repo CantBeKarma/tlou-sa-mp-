@@ -425,13 +425,14 @@ function PlayDeathProcedureForPlayer(playerid)
 CreatePlayerPendant(playerid)
 {
 	static fireflyPendantItemId = 2;
+	static fireflyPendantName[16] = "Firefly Pendant";
 	new string[MAX_PLAYER_NAME + 24];
 	
 	new year, month, day;
 	getdate(year, month, day);
 
 	format(string, sizeof(string), "%s~n~%02d-%02d-%02d", PlayerName(playerid), year, month, day);
-	CreateCollectible(fireflyPendantItemId, "Firefly Pendant", string, .creatorId = playerid);
+	CreateCollectible(fireflyPendantItemId, fireflyPendantName, string, .creatorId = playerid);
 }
 
 // Create player nickname label over player's head.
@@ -454,6 +455,97 @@ HideDeathProcedureTds(playerid)
 {
 	PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][0]);
 	PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][1]);
+}
+
+// Define player spawn info with SetPlayerTeam fix.
+function SetSpawnInfoEx(playerid, skin, Float:x, Float:y, Float:z, Float:rotation)
+{
+	// SetPlayerTeam(playerid, FACTION_NONE);
+	SetPlayerSkinEx(playerid, skin);
+	SetSpawnInfo(playerid, NO_TEAM, skin, Float:x, Float:y, Float:z, Float:rotation, 0, 0, 0, 0, 0, 0);
+}
+
+// Extends GetPlayerSkin default function.
+GetPlayerSkinEx(playerid)
+{
+	return eCharsInfo[playerid][e_iSkinId];
+}
+
+// Extends SetPlayerSkin default function.
+SetPlayerSkinEx(playerid, skinId)
+{
+    eCharsInfo[playerid][e_iSkinId] = skinId;
+    SetPlayerSkin(playerid, skinId);
+    return 1;
+}
+
+// Stops syncing a key for specific player when function is called.
+DesynchronizePlayerKey(playerid, keyDef)
+{
+	new keys, updown, leftright;
+	GetPlayerKeys(playerid, keys, updown, leftright);
+	SetPlayerSyncKeys(playerid, keys & ~keyDef, updown, leftright);
+}
+
+// Check what's player's current speed.
+GetPlayerSpeed(playerid)
+{
+	new Float:x, Float:y, Float:z, Float:result;
+   	GetPlayerVelocity(playerid, x, y, z);
+    result = floatsqroot(floatpower(floatabs(x), 2.0) + floatpower(floatabs(y), 2.0) + floatpower(floatabs(z), 2.0)) * 179.28625;
+    return floatround(result);
+}
+
+// Set player screen to black and show it.
+ShowPlayerBlackScreen(playerid)
+{
+	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+	if(color != COLOR_BLACK)
+	{
+    	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], COLOR_BLACK);
+	}
+	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+}
+
+// Get player's IP.
+stock GetPlayerIpAddress(playerid)
+{
+	//#pragma unused playerid
+    #emit PUSH.C 16
+    #emit PUSH.S 16
+    //#emit PUSH.S 12
+	#emit PUSH.S playerid
+    #emit PUSH.C 12
+    #emit SYSREQ.C GetPlayerIp
+    #emit STACK 16
+    #emit RETN
+}
+
+// Fade player screen
+function FadePlayerScreen(playerid, type)
+{
+	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+
+	if(type == FADE_IN)
+	{
+		color = (((color + 10) >= 255) ? 255 : color + 10);
+		if(color == 255)
+			type = FADE_NONE;
+	}
+	else if(type == FADE_OUT)
+	{
+		color = (((color - 10) <= 0) ? 0 : color - 10);
+		if(!color)
+			type = FADE_NONE;
+	}
+
+	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], color);
+	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+
+	if(type != FADE_NONE)
+	{
+	    SetTimerEx("FadePlayerScreen", 50, false, "dd", playerid, type);
+	}
 }
 
 // Force change the old holding key to the specified key definition.

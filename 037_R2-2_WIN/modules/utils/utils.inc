@@ -1,11 +1,3 @@
-// Define player spawn info with SetPlayerTeam fix.
-function SetSpawnInfoEx(playerid, skin, Float:x, Float:y, Float:z, Float:rotation)
-{
-	// SetPlayerTeam(playerid, FACTION_NONE);
-	SetPlayerSkinEx(playerid, skin);
-	SetSpawnInfo(playerid, NO_TEAM, skin, Float:x, Float:y, Float:z, Float:rotation, 0, 0, 0, 0, 0, 0);
-}
-
 // Clear player chat.
 ClearChat(playerid)
 {
@@ -35,24 +27,9 @@ RandomEx(min, max)
 	return random(max - min) + min;
 }
 
-// Stops syncing a key for specific player when function is called.
-DesynchronizePlayerKey(playerid, keyDef)
+ShowDialogMessage(playerid, title[], message[])
 {
-	new keys, updown, leftright;
-	GetPlayerKeys(playerid, keys, updown, leftright);
-	SetPlayerSyncKeys(playerid, keys & ~keyDef, updown, leftright);
-}
-
-// Check if player Id is valid or invalid.
-// IsValidPlayerId(playerid)
-// {
-// 	return playerid != INVALID_PLAYER_ID;
-// }
-
-// Extends GetPlayerSkin default function.
-GetPlayerSkinEx(playerid)
-{
-	return eCharsInfo[playerid][e_iSkinId];
+	return Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, title, message, "Close");
 }
 
 // Determine if illegal character has been used in a text string.
@@ -68,129 +45,10 @@ TextHasRestrictedCharacters(const text[])
 	return false;
 }
 
-// Extends SetPlayerSkin default function.
-SetPlayerSkinEx(playerid, skinId)
-{
-    eCharsInfo[playerid][e_iSkinId] = skinId;
-    SetPlayerSkin(playerid, skinId);
-    return 1;
-}
-
-// Check what's player's current speed.
-GetPlayerSpeed(playerid)
-{
-	new Float:x, Float:y, Float:z, Float:result;
-   	GetPlayerVelocity(playerid, x, y, z);
-    result = floatsqroot(floatpower(floatabs(x), 2.0) + floatpower(floatabs(y), 2.0) + floatpower(floatabs(z), 2.0)) * 179.28625;
-    return floatround(result);
-}
-
-// Splits string into two strings based on the split point number position (can use dot Continuation symbols too).
-SplitStringIntoTwoStrings(const string[], 
-	stringPartOne[], 
-	stringPartTwo[], 
-	splitPointNumber = 64, 
-	bool:useDotContinuation = false,
-	stringPartOneSize = sizeof(stringPartOne),
-	stringPartTwoSize = sizeof(stringPartTwo))
-{
-	static dotContinuation[3 + 1] = "...";
-
-	strcpy(stringPartOne, substr(string, 0, splitPointNumber), stringPartOneSize);
-	strcpy(stringPartTwo, substr(string, splitPointNumber, 128), stringPartTwoSize);
-
-	if(useDotContinuation)
-	{
-		strins(stringPartOne, dotContinuation, splitPointNumber-1, stringPartOneSize);
-		strins(stringPartTwo, dotContinuation, 0, stringPartTwoSize);
-	}
-}
-
-// SubString - Custom string extend function.
-substr(const sSource[], iStart, iLength = sizeof sSource)
-{
-	new
-		sReturn[128];
-
-	if(iLength < 0)
-	{
-		strmid(sReturn, sSource, iStart, strlen(sSource) + iLength);
-		return sReturn;
-	}
-	else
-	{
-		strmid(sReturn, sSource, iStart, (iStart + iLength));
-		return sReturn;
-	}
-}
-
-#if !defined strcpy
-
-	stock strcpy(dest[], src[], sz=sizeof(dest))
-	{
-		dest[0] = 0;	
-		return strcat(dest, src, sz);
-	}
-
-#endif
-
-// Set player screen to black and show it.
-ShowPlayerBlackScreen(playerid)
-{
-	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
-	if(color != COLOR_BLACK)
-	{
-    	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], COLOR_BLACK);
-	}
-	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
-}
-
 // Disable ambients noise (wind noise)
 DisableDefaultAmbientNoise(playerid)
 {
 	return PlayerPlaySound(playerid, 1, 0.0, 0.0, 0.0);
-}
-
-// Get player's IP.
-forward [16]GetPlayerIpAddress(playerid);
-stock GetPlayerIpAddress(playerid)
-{
-	//#pragma unused playerid
-    #emit PUSH.C 16
-    #emit PUSH.S 16
-    //#emit PUSH.S 12
-	#emit PUSH.S playerid
-    #emit PUSH.C 12
-    #emit SYSREQ.C GetPlayerIp
-    #emit STACK 16
-    #emit RETN
-}
-
-// Fade player screen
-function FadePlayerScreen(playerid, type)
-{
-	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
-
-	if(type == FADE_IN)
-	{
-		color = (((color + 10) >= 255) ? 255 : color + 10);
-		if(color == 255)
-			type = FADE_NONE;
-	}
-	else if(type == FADE_OUT)
-	{
-		color = (((color - 10) <= 0) ? 0 : color - 10);
-		if(!color)
-			type = FADE_NONE;
-	}
-
-	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], color);
-	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
-
-	if(type != FADE_NONE)
-	{
-	    SetTimerEx("FadePlayerScreen", 50, false, "dd", playerid, type);
-	}
 }
 
 // Face player against player.
@@ -373,7 +231,99 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
     }
 }
 
-ShowDialogMessage(playerid, title[], message[])
+// Splits string into two strings based on the split point number position (can use dot Continuation symbols too).
+SplitStringIntoTwoStrings(const string[], 
+	stringPartOne[], 
+	stringPartTwo[], 
+	splitPointNumber = 64, 
+	bool:useDotContinuation = false,
+	stringPartOneSize = sizeof(stringPartOne),
+	stringPartTwoSize = sizeof(stringPartTwo))
 {
-	return Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, title, message, "Close");
+	static dotContinuation[3 + 1] = "...";
+
+	strcpy(stringPartOne, substr(string, 0, splitPointNumber), stringPartOneSize);
+	strcpy(stringPartTwo, substr(string, splitPointNumber, 128), stringPartTwoSize);
+
+	if(useDotContinuation)
+	{
+		strins(stringPartOne, dotContinuation, splitPointNumber-1, stringPartOneSize);
+		strins(stringPartTwo, dotContinuation, 0, stringPartTwoSize);
+	}
 }
+
+// Replaces certain characters in a string provided with a replacement string.
+strreplace(string[], const search[], const replacement[], bool:ignorecase = false, pos = 0, limit = -1, maxlength = sizeof(string)) 
+{
+    // No need to do anything if the limit is 0.
+    if (limit == 0)
+        return 0;
+    
+    new
+             sublen = strlen(search),
+             replen = strlen(replacement),
+        bool:packed = ispacked(string),
+             maxlen = maxlength,
+             len = strlen(string),
+             count = 0
+    ;
+    
+    // "maxlen" holds the max string length (not to be confused with "maxlength", which holds the max. array size).
+    // Since packed strings hold 4 characters per array slot, we multiply "maxlen" by 4.
+    if (packed)
+        maxlen *= 4;
+    
+    // If the length of the substring is 0, we have nothing to look for..
+    if (!sublen)
+        return 0;
+    
+    // In this line we both assign the return value from "strfind" to "pos" then check if it's -1.
+    while (-1 != (pos = strfind(string, search, ignorecase, pos)))
+	{
+        // Delete the string we found
+        strdel(string, pos, pos + sublen);
+        
+        len -= sublen;
+        
+        // If there's anything to put as replacement, insert it. Make sure there's enough room first.
+        if (replen && len + replen < maxlen) {
+            strins(string, replacement, pos, maxlength);
+            
+            pos += replen;
+            len += replen;
+        }
+        
+        // Is there a limit of number of replacements, if so, did we break it?
+        if (limit != -1 && ++count >= limit)
+            break;
+    }
+	return 1;
+}
+
+// SubString - Custom string extend function.
+substr(const sSource[], iStart, iLength = sizeof sSource)
+{
+	new
+		sReturn[128];
+
+	if(iLength < 0)
+	{
+		strmid(sReturn, sSource, iStart, strlen(sSource) + iLength);
+		return sReturn;
+	}
+	else
+	{
+		strmid(sReturn, sSource, iStart, (iStart + iLength));
+		return sReturn;
+	}
+}
+
+#if !defined strcpy
+
+	stock strcpy(dest[], src[], sz=sizeof(dest))
+	{
+		dest[0] = 0;	
+		return strcat(dest, src, sz);
+	}
+
+#endif
