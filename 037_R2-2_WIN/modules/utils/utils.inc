@@ -27,11 +27,6 @@ RandomEx(min, max)
 	return random(max - min) + min;
 }
 
-ShowDialogMessage(playerid, title[], message[])
-{
-	return Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, title, message, "Close");
-}
-
 // Determine if illegal character has been used in a text string.
 TextHasRestrictedCharacters(const text[])
 {
