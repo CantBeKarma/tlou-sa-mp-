@@ -41,10 +41,10 @@ Dialog_EnterArtifactInnerMsg(playerid)
             : "{FF0000}", playerMsgLen);
 
     new buttonName1[12];
-    format(buttonName1, sizeof(buttonName1), "%s", (ePlayerCmdData[playerid][e_iCreateNotePageCount] < 5) ? "Next" : "Finish");
+    format(buttonName1, sizeof(buttonName1), "%s", (ePlayerCmdData[playerid][e_iCreateNotePageCount] < 4) ? "Next" : "Finish");
     if(!strcmp(buttonName1, "Next", false))
     {
-        format(buttonName1, sizeof(buttonName1), "Next (%d/5)", ePlayerCmdData[playerid][e_iCreateNotePageCount]);
+        format(buttonName1, sizeof(buttonName1), "Next (%d/4)", ePlayerCmdData[playerid][e_iCreateNotePageCount]);
     }
 
     inline Response(pid, dialogid, response, listitem, string:inputtext[])
@@ -58,7 +58,7 @@ Dialog_EnterArtifactInnerMsg(playerid)
         }
 
         #pragma unused pid, dialogid, listitem
-        if(ePlayerCmdData[playerid][e_iCreateNotePageCount] >= 5)
+        if(ePlayerCmdData[playerid][e_iCreateNotePageCount] >= 4)
         {
             new playerInnerMsgLen = strlen(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]);
             new createItemId = (playerInnerMsgLen < 128) ? (0) : (1); // 0 - little piece of paper, 1 - two books next to each other.
