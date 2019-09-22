@@ -9,6 +9,7 @@
 #include <TLoU.objects\utils>
 #include <TLoU.npcs\utils>
 #include <TLoU.damages\utils>
+#include <TLoU.dialogs\utils>
 #include <TLoU.weaponMenu\utils>
 #include <TLoU.players\utils>
 #include <TLoU.registerLogin\utils>

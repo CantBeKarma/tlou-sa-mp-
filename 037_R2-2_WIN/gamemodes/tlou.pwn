@@ -36,6 +36,7 @@
 #include    <TLoU.damages\main>
 #include    <TLoU.fire\main>
 #include    <TLoU.dbQueries\main>
+#include    <TLoU.dialogs\main>
 #include    <TLoU.items\main>
 #include    <TLoU.npcs\main>
 #include    <TLoU.objects\main>
