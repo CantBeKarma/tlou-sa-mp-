@@ -90,14 +90,13 @@
                 {
                     new msg_createTitleFailed[sizeof(msg_createTitle) + 68];
                     strcat(msg_createTitleFailed, msg_createTitle, sizeof(msg_createTitleFailed));
-                    strcat(msg_createTitleFailed, "\n{FF0000}Invalid input! Title cannot be longer than 32 characters", sizeof(msg_createTitleFailed));
+                    strcat(msg_createTitleFailed, "\n{FF0000}Invalid input! Title cannot be longer than 20 characters", sizeof(msg_createTitleFailed));
 
                     Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createTitle, msg_createTitleFailed, "Done", "Cancel");
                     return false;
                 }
 
                 strcpy(ePlayerCmdData[playerid][e_sCreateNoteTitle], inputtext, MAX_COLL_TIT_LEN);
-
                 Dialog_EnterArtifactInnerMsg(playerid);
             }
         }
