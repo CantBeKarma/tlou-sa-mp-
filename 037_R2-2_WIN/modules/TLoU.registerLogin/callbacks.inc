@@ -7,11 +7,11 @@ public OnPlayerTryToPlay(playerid)
 {
     if(!DB_DoesPlayerAccountExist(playerid))
     {
-        ShowPlayerRegisterDialog(playerid);
+        Dialog_ShowRegister(playerid);
     }
     else
     {
-        ShowPlayerLoginDialog(playerid);
+        Dialog_ShowLogin(playerid);
     }
     return 1;
 }
@@ -87,7 +87,7 @@ public BCrypt_OnLoginPasswordChecked(playerid)
     if(!bcrypt_is_equal())
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player: %s (GUID: %d) entered wrong password", PlayerName(playerid), GetPlayerGuid(playerid));
-        ShowPlayerLoginDialog(playerid, .wrongPassword = true);
+        Dialog_ShowLogin(playerid, .wrongPassword = true);
         return 1;
     }
 
