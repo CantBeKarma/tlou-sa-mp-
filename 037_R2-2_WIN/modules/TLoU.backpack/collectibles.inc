@@ -108,30 +108,7 @@ public OnPlayerViewingCollectibles(playerid, updown)
 public OnPlayerReadCollectible(playerid, row_title[], row_message[])
 {
     HideBackpackCategory(playerid, BACKPACK_CATEGORY_COLLECTIBLES);
-    
-    new selectedCategory = Coll_GetSelection(playerid);
-    if(selectedCategory == COLL_ITEM_ARTIFACTS)
-    {
-        TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_PaperNote]);
-    }
-    else if(selectedCategory == COLL_ITEM_FIREFLY_PEND)
-    {
-        TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend]);
-    }
-
-    new count = 0;
-    for(new i = 0; i < strlen(row_message); i++)
-    {
-        count += 1;
-        if(count == 35)
-        {
-            strins(row_message, "-~n~", i, MAX_COLL_MSG_LEN);
-            count = 0;
-        }
-    }
-    TextDrawSetString(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], row_message);
-
-    TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
+    DisplayCollectibleContents(playerid, Coll_GetSelection(playerid), row_title, row_message);
     return 0;
 }
 
@@ -380,6 +357,37 @@ public OnPlayerCollectibleLoad(playerid, title[])
             PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], title);
             PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
         }
+    }
+
+    // Displays collectible textdraw (based on its type: artifact/pendant)
+    // And does a new line every 35 characters (usually applies to artifacts).
+    DisplayCollectibleContents(playerid, collectibleType, title[], message[])
+    {
+        if(collectibleType == COLL_ITEM_ARTIFACTS)
+        {
+            TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_PaperNote]);
+        }
+        else if(collectibleType == COLL_ITEM_FIREFLY_PEND)
+        {
+            TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend]);
+        }
+
+        new formattedMessage[512];
+        strcat(formattedMessage, message, sizeof(formattedMessage));
+
+        new count = 0;
+        for(new i = 0; i < strlen(message); i++)
+        {
+            count += 1;
+            if(count == 35)
+            {
+                strins(formattedMessage, "-~n~", i, MAX_COLL_MSG_LEN);
+                count = 0;
+            }
+        }
+        
+        TextDrawSetString(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], formattedMessage);//message);
+        TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
     }
 
 //#endregion
