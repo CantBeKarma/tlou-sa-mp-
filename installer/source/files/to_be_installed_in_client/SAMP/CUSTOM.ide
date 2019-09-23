@@ -1,0 +1,92 @@
+objs
+
+# Backpacks ------------------------------------------
+15065, tljoels_backpack, tljoels_backpack, 299, 0
+15066, tlellies_backpack, tlellies_backpack, 299, 0
+15067, tltess_backpack, tltess_backpack, 299, 0
+15068, tlbills_backpack, tlbills_backpack, 299, 0
+
+# Attach objs ----------------------------------------
+15069, tlgasmask, tlgasmask, 299, 0
+15070, tlflashlight, tlflashlight, 299, 0
+
+# Ingredients ----------------------------------------
+15071, tlshiv, tlingredients, 299, 0
+15072, tlhealthkit, tlingredients, 299, 0
+15073, tlblade, tlingredients, 299, 0
+15074, tlbinding, tlingredients, 299, 0
+15075, tlrag, tlingredients, 299, 0
+15076, tlalcohol, tlingredients, 299, 0
+15077, tlexplosive, tlingredients, 299, 0
+15078, tlsugar, tlingredients, 299, 0
+
+# Environment objs -> Grass --------------------------
+15079, tlgrass1, tlgrass, 299, 0
+15080, tlgrass5, tlgrass, 299, 0
+15081, tlgrass10, tlgrass, 299, 0
+15082, tlgrass20, tlgrass, 299, 0
+
+15083, tlplant1, tlplant, 299, 0
+15084, tlplant5, tlplant, 299, 0
+15085, tlplant10, tlplant, 299, 0
+15086, tlplant20, tlplant, 299, 0
+
+15087, tlplantex1, tlplantex, 299, 0
+15088, tlplantex5, tlplantex, 299, 0
+15089, tlplantex10, tlplantex, 299, 0
+15090, tlplantex20, tlplantex, 299, 0
+
+# Environment objects --------------------------------
+15091, tlabandonedcarb, tlabandonedcarb, 299, 0
+15092, tlabandonedvan, tlabandonedvan, 299, 0
+15093, tlbus, tlbus, 299, 0
+#15094, tlaveocar, tlaveocar, 299, 0
+#15095, tljunkcar, tljunkcar, 299, 0
+#15096, tltaxi1, tltaxi1, 299, 0
+#15097, tltaxi2, tltaxi2, 299, 0
+15098, tlcone, tlcone, 299, 0
+15099, tltrashcan, tltrashcan, 299, 0
+#15100, tlcorpse, tlcorpse, 299, 0
+15101, tlbrick, tlbrick, 299, 0
+15102, tlvain, tlvain, 299, 0
+15103, tlnewspaper_stand, tlnewspaper_stand, 299, 0
+15104, tlbarricade, tlbarricade, 299, 0
+15105, tllamppost, tllights, 299, 0
+15106, tltraffic_lights, tllights, 299, 0
+15107, tltraffic_lights2, tllights, 299, 0
+15108, tlcanister, tlcanister, 299, 0
+15109, tlbow, archery, 299, 0
+15110, tlarrow, archery, 299, 0
+15111, tlnailbomb, tlnailbomb, 299, 0
+15112, tlmolotov, tlmolotov, 299, 0
+15113, tlsmokebomb, tlsmokebomb, 299, 0
+
+end
+
+# Characters -----------------------------------------
+peds
+
+312, joel, joel, CIVMALE, STAT_SENSIBLE_GUY, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+313, ellie, ellie_default, CIVFEMALE, STAT_SUIT_GIRL, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+314, ellie2, ellie2, CIVFEMALE, STAT_SUIT_GIRL, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+315, tess, tess, CIVFEMALE, STAT_SUIT_GIRL, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+316, tommy, tommy, CIVFEMALE, STAT_SUIT_GIRL, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+317, hazmat, hazmat, CIVMALE, STAT_SENSIBLE_GUY, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+319, runner1, runner1, CIVMALE, STAT_SENSIBLE_GUY, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+#320, sarah, sarah, CIVFEMALE, STAT_SUIT_GIRL, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+318, clicker, clicker, CIVMALE, STAT_SENSIBLE_GUY, oldman, 1983, 0, man, 6,2, null, null, null
+#321, ellie, ellieShirt, CIVFEMALE, STAT_SUIT_GIRL, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+#322, ellie, ellie_shirt2, CIVFEMALE, STAT_SUIT_GIRL, man, 0, 0, man, 1,4, PED_TYPE_GEN, null, null
+
+end
+
+tobj
+end
+path
+end
+2dfx
+end
+anim
+end 
+txdp
+end
