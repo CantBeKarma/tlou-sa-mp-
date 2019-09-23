@@ -67,7 +67,8 @@ bool:ValidateStatusChange(playerid, PLAYER_STATUS:newStatusId, statusIssuerId)
     {
         case PLAYER_STATUS_USING_BACKPACK:
         {
-            if(IsPlayerUsingWeaponMenu(playerid))
+            if(IsPlayerUnableToPerformAction(playerid) || IsPlayerAimingWeapon(playerid)
+            || IsPlayerUsingWeaponMenu(playerid) || GetPlayerSpeed(playerid) > 0.0)
             {
                 success = false;
             }
@@ -75,7 +76,9 @@ bool:ValidateStatusChange(playerid, PLAYER_STATUS:newStatusId, statusIssuerId)
 
         case PLAYER_STATUS_USING_WEAPMENU:
         {
-            if(IsPlayerUsingBackpack(playerid))
+            if(IsPlayerUnableToPerformAction(playerid) 
+            || IsPlayerAimingWeapon(playerid)
+            || IsPlayerUsingBackpack(playerid))
             {
                 success = false;
             }
