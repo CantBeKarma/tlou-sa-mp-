@@ -127,7 +127,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Display melee's weapon bars.
     HudTd_DisplayMeleeWeaponBars(playerid, itemId)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return false;
         }
@@ -250,7 +250,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Hide melee conditions bars.
     HudTd_HideMeleeWeaponBars(playerid, itemId)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return false;
         }
@@ -330,7 +330,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Updates overall ammo display.
     HudTd_UpdateWeaponAmmo(playerid, itemId)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE) && !IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MEDKIT))
+        if(!IsItemType(itemId, ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE_PROJECTILE) && !IsItemType(itemId, ITEM_TYPE_MEDKIT))
         {
             PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
             return true;
@@ -351,7 +351,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Update current ammo display.
     HudTd_DisplayWeaponCurrentAmmo(playerid, itemId)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+        if(!IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
         {
             return false;
         }
@@ -383,7 +383,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Update certain bullet color.
     HudTd_ReduceWeaponCurrentAmmo(playerid, itemId, tdIdx)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+        if(!IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
         {
             return false;
         }
@@ -403,7 +403,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Hide weapon's bullets.
     HudTd_HideWeaponCurrentAmmo(playerid, itemId)
     {
-        if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON))
+        if(!IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
         {
             return false;
         }
