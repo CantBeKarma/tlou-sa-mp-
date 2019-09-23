@@ -367,7 +367,9 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
     // Show player weapon menu.
     bool:ShowWeaponMenu(playerid)
     {
-        if(IsPlayerUnableToPerformAction(playerid) || IsPlayerAimingWeapon(playerid))
+        if(IsPlayerUnableToPerformAction(playerid) 
+        || IsPlayerAimingWeapon(playerid)
+        || IsPlayerUsingBackpack(playerid))
         {
             return false;
         }
