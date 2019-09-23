@@ -24,6 +24,8 @@ SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_
     return true;
 }
 
+// Checks if player can change from his current status to a new one 
+// based on the current actions that player is performing.
 bool:ValidateStatusChange(playerid, PLAYER_STATUS:newStatusId, statusIssuerId)
 {
     if(GetPlayerStatus(playerid) == newStatusId || IsPlayerDead(playerid) && newStatusId != PLAYER_STATUS_NONE)

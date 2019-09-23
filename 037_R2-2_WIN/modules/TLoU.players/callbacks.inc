@@ -273,6 +273,38 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 	return 1;
 }
 
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------ OnPlayerGetStunned -------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerGetStunned(playerid)
+{
+	ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
+	wait_ms(3000);
+
+	ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
+	wait_ms(2000);
+
+	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+	return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//----------------- OnPlayerShakeOffStun ------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerShakeOffStun(playerid)
+{
+	ClearAnims(playerid);
+	return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//--------------- OnPlayerGetHitByThrowable ---------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerGetHitByThrowable(playerid, issuerId, itemId)
+{
+	return 0;
+}
+
 //#region OnPlayerLook(...) callbacks
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -370,42 +402,6 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 															COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
 
 		Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
-		return 0;
-	}
-
-//#endregion
-
-//#region Stunned management callbacks
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//------------------ OnPlayerGetStunned -------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public OnPlayerGetStunned(playerid)
-	{
-		ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
-		wait_ms(3000);
-
-		ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
-		wait_ms(2000);
-
-		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
-		return 0;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//----------------- OnPlayerShakeOffStun ------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public OnPlayerShakeOffStun(playerid)
-	{
-		ClearAnims(playerid);
-		return 0;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//--------------- OnPlayerGetHitByThrowable ---------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public OnPlayerGetHitByThrowable(playerid, issuerId, itemId)
-	{
 		return 0;
 	}
 

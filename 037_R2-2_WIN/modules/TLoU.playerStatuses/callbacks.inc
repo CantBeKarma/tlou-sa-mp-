@@ -4,11 +4,12 @@
 public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:newStatusId, statusIssuerId)
 {
     new bool:success = true;
+
     switch(newStatusId)
     {
-        case PLAYER_STATUS_NONE, PLAYER_STATUS_DEAD:
+        case PLAYER_STATUS_NONE:
         {
-            if(IsPlayerBurning(playerid) && newStatusId == PLAYER_STATUS_NONE)
+            if(IsPlayerBurning(playerid))
             {
                 OnPlayerStopBurning(playerid);
             }
@@ -16,11 +17,6 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
             if(IsPlayerStunned(playerid))
             {
                 OnPlayerShakeOffStun(playerid);
-            }
-
-            if(HasPlayerShotNailbomb(playerid))
-            {
-                Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
             }
         }
 
@@ -70,6 +66,10 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
         }
 
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerStatusChanged: Player: %s (GUID: %d) changed status: OLD_STATUS_ID = %d | NEW_STATUS_ID = %d", PlayerName(playerid), GetPlayerGuid(playerid), _:oldStatusId, _:newStatusId);
+    }
+    else
+    {
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerStatusChanged: Status couldn't be changed for: %s (GUID: %d) : OLD_STATUS_ID = %d | NEW_STATUS_ID = %d", PlayerName(playerid), GetPlayerGuid(playerid), _:oldStatusId, _:status);
     }
     return 0;
 }
