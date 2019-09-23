@@ -6,7 +6,7 @@ timer DelayedTimer_AnimGetUp[TIMER_GETUP_DELAY](playerid)
         Bit_Vet(ePlayerFlag[e_bDoingCrouchBug], playerid);
     }
 
-	if(Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid))
+	if(HasPlayerShotNailbomb(playerid))
 	{
 		Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
 	}

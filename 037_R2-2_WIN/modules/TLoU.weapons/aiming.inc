@@ -24,7 +24,7 @@ hook OnPlayerUpdate(playerid)
 	}
 	else
 	{
-		if(IsPlayerAimingWeapon(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
+		if(IsPlayerAimingWeapon(playerid) || IsPlayerAimOrShootCustomItem(playerid))
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
@@ -37,7 +37,7 @@ hook OnPlayerUpdate(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerTryAimingWeapon(playerid, itemId)
 {
-	if(IsPlayerUnableToPerformAction(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
+	if(IsPlayerUnableToPerformAction(playerid) || IsPlayerAimOrShootCustomItem(playerid))
 	{
 		return 1;
 	}

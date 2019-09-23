@@ -16,7 +16,7 @@ timer DestroySmkBmbSmokeObject[TICK_RATE_SMOKEBMB_EFFECT](objectId)
 // (Firing/throwing custom weapons)
 timer Key_AimingCustomWeapon[100](playerid)
 {
-    if(!IsPlayerAimingWeapon(playerid) || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
+    if(!IsPlayerAimingWeapon(playerid) || IsPlayerAimOrShootCustomItem(playerid))
     {
         return 1;
     }
@@ -72,7 +72,7 @@ timer Key_AimingCustomWeapon[100](playerid)
         }
     }
 
-    if(IsPlayerAimingWeapon(playerid) && !Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
+    if(IsPlayerAimingWeapon(playerid) && !IsPlayerAimOrShootCustomItem(playerid))
     {
         SetAngleBasedOnCam(playerid);
         defer Key_AimingCustomWeapon(playerid);

@@ -15,7 +15,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerStopAimingProjectile(playerid)
     {
-        if(!Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid))
+        if(!IsPlayerAimOrShootCustomItem(playerid))
         {
             ClearAnims(playerid);
         }
@@ -208,7 +208,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
                 }
                 else
                 {
-                    if(!Bit_Get(ePlayerFlag[e_bShotNailbomb], triggererid))
+                    if(!HasPlayerShotNailbomb(triggererid))
                     {
                         HideItem(triggererid);
                     }
@@ -314,7 +314,7 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     Projectile_Throw(playerid, itemId)
     {
         // Validation.
-        if(GetPlayerItemAmount(playerid, itemId) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid)
+        if(GetPlayerItemAmount(playerid, itemId) <= 0 || GetProjectilePoolSize() >= MAX_THROWABLES || IsPlayerAimOrShootCustomItem(playerid)
         || GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
         {
             return 1;
