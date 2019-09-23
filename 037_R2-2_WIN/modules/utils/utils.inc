@@ -27,19 +27,6 @@ RandomEx(min, max)
 	return random(max - min) + min;
 }
 
-// Determine if illegal character has been used in a text string.
-TextHasRestrictedCharacters(const text[])
-{
-	for(new i = 0; i != sizeof(RestrictedTextCharactersList); i++)
-	{
-		if(strfind(text, RestrictedTextCharactersList[i], true) != -1)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 // Disable ambients noise (wind noise)
 DisableDefaultAmbientNoise(playerid)
 {

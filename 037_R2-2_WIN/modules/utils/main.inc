@@ -4,6 +4,7 @@
 #include <TLoU.audio\utils>
 #include <TLoU.backpack\utils>
 #include <TLoU.characters\utils>
+#include <TLoU.chat\utils>
 #include <TLoU.fire\utils>
 #include <TLoU.health\utils>
 #include <TLoU.hud\utils>
