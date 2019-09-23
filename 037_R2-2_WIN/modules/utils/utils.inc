@@ -190,29 +190,6 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
 Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)return GetXYInFrontOfPlayer(playerid, x, y, distance);
 // Get XY coords behind player with certain distance (for distance substract sign '-' needs to be supplied).
 
-// Stuns all nearby players and FCNPCs that are in range of x, y, z coordinates.
-// Optional: throwerid - so he won't get stunned if he's the initiator of the projectile.
-StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_ID)
-{
-    for(new i = 0; i != MAX_PLAYERS; i++)
-    {
-        if(!IsPlayerConnected(i) || i == throwerid
-        || !IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
-        {
-            continue;
-        }
-
-        if(IsPlayerNPC(i))
-        {
-			FCNPC_SetStatus(i, NPC_STATUS:STATUS_STUNNED);
-        }
-        else
-        {
-			SetPlayerStatus(i, PLAYER_STATUS:PLAYER_STATUS_STUNNED);
-        }
-    }
-}
-
 // Splits string into two strings based on the split point number position (can use dot Continuation symbols too).
 SplitStringIntoTwoStrings(const string[], 
 	stringPartOne[], 
