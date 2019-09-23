@@ -3,34 +3,17 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------- OnPlayerStartedUpgradingSkill -------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStartedUpgradingSkill(playerid, skillid)
+public OnPlayerStartedUpgradingSkill(playerid, skillId)
 {
     new 
-        barIdx = 0,
-        Float:barColumn = 0.0,
-        newSkillLvl = Skill_GetPlayerLevel(playerid, skillid)+1;
+        textdrawBarIdx = SkillsTd_GetStartBarIdx(playerid, skillId, .basedOnPlayerSkill = true),
+        Float:textdrawBarColumnStartPosX = SkillsTd_GetStartBarColumnPosX(textdrawBarIdx),
+        newSkillLvl = Skill_GetPlayerLevel(playerid, skillId)+1;
 
-    // Check which progress bar should be updated.
-    switch(skillid)
-    {
-        case 0: barIdx = Skill_GetPlayerLevel(playerid, skillid);
-        case 1: barIdx = Skill_GetPlayerLevel(playerid, skillid) + 2;
-        case 2: barIdx = Skill_GetPlayerLevel(playerid, skillid) + 5;
-        case 3: barIdx = Skill_GetPlayerLevel(playerid, skillid) + 8;
-        case 4: barIdx = Skill_GetPlayerLevel(playerid, skillid) + 11;
-        case 5: barIdx = Skill_GetPlayerLevel(playerid, skillid) + 13;
-    }
-
-    // Check bar column of the bar index (important to know where the progress bar should start from!).
-    switch(barIdx)
-    {
-        case 0, 2, 5, 8, 11, 13: barColumn = 407.4; // First column
-        case 1, 3, 6, 9, 12, 14: barColumn = 419.4; // Second column
-        case 4, 7, 10:           barColumn = 431.4; // Third column
-    }
+    static Float:barStartValue = 0.0;
 
     Audio_PlayEx(playerid, AUDIO_SKILL_UPGRADE);
-    Skill_UpgradeSkill(playerid, skillid, newSkillLvl, barColumn, barIdx, 0.0);
+    Skill_UpgradeSkill(playerid, skillId, newSkillLvl, textdrawBarColumnStartPosX, textdrawBarIdx, barStartValue);
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_LOOP", 4.0, 0, 1, 1, 1, 0, 1);   
     return 1;
 }
@@ -47,10 +30,10 @@ public OnPlayerCanceledUpgradingSkill(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------- OnPlayerUpgradedSkill -----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerUpgradedSkill(playerid, skillid)
+public OnPlayerUpgradedSkill(playerid, skillId)
 {
-    new newLevel = Skill_GetPlayerLevel(playerid, skillid) + 1;
-    Skill_SetPlayerLevel(playerid, skillid, newLevel);
+    new newLevel = Skill_GetPlayerLevel(playerid, skillId) + 1;
+    Skill_SetPlayerLevel(playerid, skillId, newLevel);
 
     Audio_StopEx(playerid);
     Audio_PlayEx(playerid, AUDIO_CRAFT_FINISH);
@@ -103,7 +86,7 @@ Skill_SetPlayerLevel(playerid, skillId, level)
 }
 
 // Change skill's progress bar value.
-function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, barIdx, Float:bar_start_value)
+function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, barIdx, Float:barStartValue)
 {
     if(!IsPlayerUpgradingSkill(playerid))
     {
@@ -114,23 +97,23 @@ function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, bar
     {
         if(Skill_GetPlayerLevel(playerid, skillid) < newSkillLvl)
         {
-            // If first value is higher than 100.0
-            if(floatcmp(bar_start_value, 100.0) == 1)
+            if(floatcmp(barStartValue, 100.0) == 1)
             {
                 Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
                 OnPlayerUpgradedSkill(playerid, skillid);
             }
             else
             {
-                bar_start_value += 7.4;
-                PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, bar_start_value), 0.0);
-                SetTimerEx("Skill_UpgradeSkill", 120, false, "dddfdf", playerid, skillid, newSkillLvl, barColumn, barIdx, bar_start_value);
+                barStartValue += 7.4;
+                PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, barStartValue), 0.0);
+                SetTimerEx("Skill_UpgradeSkill", 120, false, "dddfdf", playerid, skillid, newSkillLvl, barColumn, barIdx, barStartValue);
             }
         }
     }
     else
     {
-        PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, 0.0), 0.0);
+        barStartValue = 0.0;
+        PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, barStartValue), 0.0);
         Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
         OnPlayerCanceledUpgradingSkill(playerid);
     }
@@ -138,123 +121,160 @@ function Skill_UpgradeSkill(playerid, skillid, newSkillLvl, Float:barColumn, bar
     return true;
 }
 
-// Display player total-supps.
-SkillsTd_UpdateSuppsAmount(playerid)
-{
-    new String:suppsAmountStr = str_val(GetPlayerSupplementsAmount(playerid));
-    PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount], suppsAmountStr);
+//#region Skills textdraws
 
-    if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
+    // Display player total amount of supplements.
+    SkillsTd_UpdateSuppsAmount(playerid)
     {
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount]);
-    }
-}
-
-// Change description of the currently viewing skill item.
-SkillTd_UpdateViewingItem(playerid)
-{
-    new selection = Skill_GetSelection(playerid);
-    if(selection == SKILL_ITEM_SHIV_MASTER && Skill_GetPlayerLevel(playerid, SKILL_ITEM_SHIV_MASTER) > 0)
-    {
-        PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], "Full-durability shivs don't break~n~when used to escape a Clicker grapple");
-    }
-    else
-    {
-        PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], eBackpack_SkillItemsData[selection][e_iSkill_Description]);
-    }
-    
-    if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
-    {
-        PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description]);
-
-        if(Iter_Contains(SkillsToUpgrade<playerid>, selection))
-        {
-            TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
-            TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
-        }
-        else
-        {
-            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
-            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
-        }
-    }
-    return true;
-}
-
-// Check which skills are allowed to upgrade.
-SkillsTd_CheckWhatsToUpgrade(playerid)
-{
-    for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
-    {
-        if(GetPlayerSupplementsAmount(playerid) >= eBackpack_SkillItemsData[i][e_iSupps_Required] && Skill_GetPlayerLevel(playerid, i) < Skill_GetMaxLevel(i))
-        {
-            if(!Iter_Contains(SkillsToUpgrade<playerid>, i))
-            {
-                Iter_Add(SkillsToUpgrade<playerid>, i);
-            }
-
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Names][i], COLOR_GRAY);
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i], COLOR_GRAY);
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsRequire][i], COLOR_GRAY);
-        }
-        else
-        {
-            if(Iter_Contains(SkillsToUpgrade<playerid>, i))
-            {
-                Iter_Remove(SkillsToUpgrade<playerid>, i);
-            }
-
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Names][i], COLOR_RED_TRANS);
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i], COLOR_RED_TRANS);
-            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsRequire][i], COLOR_RED_TRANS);
-        }
+        new String:suppsAmountStr = str_val(GetPlayerSupplementsAmount(playerid));
+        PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount], suppsAmountStr);
 
         if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
         {
-            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Names][i]);
-            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i]);
-            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsRequire][i]);
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsAmount]);
         }
     }
-}
 
-// Most likely one-time-use (during sign in ONLY) | fills progress bars of the skills that player has.
-SkillsTd_FillPlayerSkillBars(playerid)
-{
-    new 
-        barIdx = -1, 
-        Float:barColumn = -1;
-        
-    for(new skillId = 0; skillId != MAX_SKILLS_ITEMS; skillId++)
+    // Change description of player's currently viewing skill item and show how to upgrade if possible.
+    SkillsTd_UpdateViewingItem(playerid)
     {
-        if(Skill_GetPlayerLevel(playerid, skillId) <= 0)
-            continue;
-
-        switch(skillId)
+        new selection = Skill_GetSelection(playerid);
+        if(selection == SKILL_ITEM_SHIV_MASTER && Skill_GetPlayerLevel(playerid, SKILL_ITEM_SHIV_MASTER) > 0)
         {
-            case 0: barIdx = 0;
-            case 1: barIdx = 2;
-            case 2: barIdx = 5;
-            case 3: barIdx = 8;
-            case 4: barIdx = 11;
-            case 5: barIdx = 13;
+            PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], "Full-durability shivs don't break~n~when used to escape a Clicker grapple");
         }
-
-        for(new i = 1; i <= Skill_GetPlayerLevel(playerid, skillId); i++)
+        else
         {
-            if(i > eBackpack_SkillItemsData[skillId][e_iSkill_MaxLvl])
-                break;
+            PlayerTextDrawSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], eBackpack_SkillItemsData[selection][e_iSkill_Description]);
+        }
+        
+        if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
+        {
+            PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description]);
 
-            switch(barIdx)
+            if(Iter_Contains(SkillsToUpgrade<playerid>, selection))
             {
-                case 0, 2, 5, 8, 11, 13: barColumn = 407.4; // First column
-                case 1, 3, 6, 9, 12, 14: barColumn = 419.4; // Second column
-                case 4, 7, 10:           barColumn = 431.4; // Third column
+                TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
+                TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
+            }
+            else
+            {
+                TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][0]);
+                TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_HowToUpgrade][1]);
+            }
+        }
+        return true;
+    }
+
+    // Check which skills are allowed to upgrade.
+    SkillsTd_CheckWhatsToUpgrade(playerid)
+    {
+        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
+        {
+            if(GetPlayerSupplementsAmount(playerid) >= eBackpack_SkillItemsData[i][e_iSupps_Required] && Skill_GetPlayerLevel(playerid, i) < Skill_GetMaxLevel(i))
+            {
+                if(!Iter_Contains(SkillsToUpgrade<playerid>, i))
+                {
+                    Iter_Add(SkillsToUpgrade<playerid>, i);
+                }
+
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Names][i], COLOR_GRAY);
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i], COLOR_GRAY);
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsRequire][i], COLOR_GRAY);
+            }
+            else
+            {
+                if(Iter_Contains(SkillsToUpgrade<playerid>, i))
+                {
+                    Iter_Remove(SkillsToUpgrade<playerid>, i);
+                }
+
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Names][i], COLOR_RED_TRANS);
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i], COLOR_RED_TRANS);
+                PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsRequire][i], COLOR_RED_TRANS);
             }
 
-            PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][barIdx], pb_percent(barColumn, 6, 100.0, 100.0), 0.0);
-
-            barIdx += 1;
+            if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_SKILLS)
+            {
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Names][i]);
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcons][i]);
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsRequire][i]);
+            }
         }
     }
-}
+
+    // Most likely one-time-use (during sign in ONLY) | fills progress bars of the skills that player has.
+    SkillsTd_FillPlayerSkillBars(playerid)
+    {
+        new 
+            textdrawBarIdx = -1, 
+            Float:textdrawBarColumnStartPosX = -1;
+            
+        for(new skillId = 0; skillId != MAX_SKILLS_ITEMS; skillId++)
+        {
+            if(Skill_GetPlayerLevel(playerid, skillId) <= 0)
+                continue;
+
+            textdrawBarIdx = SkillsTd_GetStartBarIdx(playerid, skillId, .basedOnPlayerSkill = false);
+
+            for(new i = 1; i <= Skill_GetPlayerLevel(playerid, skillId); i++)
+            {
+                if(i > eBackpack_SkillItemsData[skillId][e_iSkill_MaxLvl])
+                    break;
+
+                textdrawBarColumnStartPosX = SkillsTd_GetStartBarColumnPosX(textdrawBarIdx);
+                PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_SkillProg_Status][textdrawBarIdx], pb_percent(textdrawBarColumnStartPosX, 6, 100.0, 100.0), 0.0);
+
+                textdrawBarIdx += 1;
+            }
+        }
+    }
+
+    // This function returns internal TEXTDRAW index of which progress bar should start drawing from. 
+    // It MUST be used before SkillsTd_GetStartBarColumnPosX()
+    SkillsTd_GetStartBarIdx(playerid, skillId, bool:basedOnPlayerSkill)
+    {
+        new textdrawBarIdx = -1;
+        if(basedOnPlayerSkill == false)
+        {
+            switch(skillId)
+            {
+                case SKILL_ITEM_MAXHP:          textdrawBarIdx = 0;
+                case SKILL_ITEM_LISTEN_DIST:    textdrawBarIdx = 2;
+                case SKILL_ITEM_CRAFT_SPEED:    textdrawBarIdx = 5;
+                case SKILL_ITEM_HEAL_SPEED:     textdrawBarIdx = 8;
+                case SKILL_ITEM_WEAP_SWAY:      textdrawBarIdx = 11;
+                case SKILL_ITEM_SHIV_MASTER:    textdrawBarIdx = 13;
+            }
+        }
+        else
+        {
+            switch(skillId)
+            {
+                case SKILL_ITEM_MAXHP:          textdrawBarIdx = Skill_GetPlayerLevel(playerid, skillId);
+                case SKILL_ITEM_LISTEN_DIST:    textdrawBarIdx = Skill_GetPlayerLevel(playerid, skillId) + 2;
+                case SKILL_ITEM_CRAFT_SPEED:    textdrawBarIdx = Skill_GetPlayerLevel(playerid, skillId) + 5;
+                case SKILL_ITEM_HEAL_SPEED:     textdrawBarIdx = Skill_GetPlayerLevel(playerid, skillId) + 8;
+                case SKILL_ITEM_WEAP_SWAY:      textdrawBarIdx = Skill_GetPlayerLevel(playerid, skillId) + 11;
+                case SKILL_ITEM_SHIV_MASTER:    textdrawBarIdx = Skill_GetPlayerLevel(playerid, skillId) + 13;
+            }
+        }
+        return textdrawBarIdx;
+    }
+
+    // This function returns TEXTDRAW progress bar internal position X of which bar should start drawing from.
+    // It MUST be used AFTER retrieving information of function: SkillsTd_GetStartBarIdx()
+    Float:SkillsTd_GetStartBarColumnPosX(targetTextdrawBarIdx)
+    {
+        new Float:textdrawBarColumnStartPosX = 0.0;
+
+        switch(targetTextdrawBarIdx)
+        {
+            case 0, 2, 5, 8, 11, 13: textdrawBarColumnStartPosX = 407.4; // First column
+            case 1, 3, 6, 9, 12, 14: textdrawBarColumnStartPosX = 419.4; // Second column
+            case 4, 7, 10:           textdrawBarColumnStartPosX = 431.4; // Third column
+        }
+        return textdrawBarColumnStartPosX;
+    }
+
+//#endregion
