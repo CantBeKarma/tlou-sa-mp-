@@ -5,6 +5,16 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
 {
     new bool:success = true;
 
+    if(newStatusId == PLAYER_STATUS_NONE
+    || newStatusId == PLAYER_STATUS_DEAD
+    || newStatusId == PLAYER_STATUS_FALL)
+    {
+        if(IsPlayerAimingWeapon(playerid) || IsPlayerAimOrShootCustomItem(playerid))
+        {
+            OnPlayerStopAimingWeapon(playerid);
+        }
+    }
+
     switch(newStatusId)
     {
         case PLAYER_STATUS_NONE:
@@ -69,7 +79,7 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
     }
     else
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerStatusChanged: Status couldn't be changed for: %s (GUID: %d) : OLD_STATUS_ID = %d | NEW_STATUS_ID = %d", PlayerName(playerid), GetPlayerGuid(playerid), _:oldStatusId, _:status);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerStatusChanged: Status couldn't be changed for: %s (GUID: %d) : OLD_STATUS_ID = %d | NEW_STATUS_ID = %d", PlayerName(playerid), GetPlayerGuid(playerid), _:oldStatusId, _:newStatusId);
     }
     return 0;
 }

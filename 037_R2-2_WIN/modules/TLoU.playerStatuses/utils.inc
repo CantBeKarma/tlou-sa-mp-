@@ -39,11 +39,6 @@ bool:ValidateStatusChange(playerid, PLAYER_STATUS:newStatusId, statusIssuerId)
     || newStatusId == PLAYER_STATUS_DEAD
     || newStatusId == PLAYER_STATUS_FALL)
     {
-        if(IsPlayerAimingWeapon(playerid) || IsPlayerAimOrShootCustomItem(playerid))
-        {
-            OnPlayerStopAimingWeapon(playerid);
-        }
-
         if(IsPlayerUsingBackpack(playerid))
         {
             success = HideBackpack(playerid, .forceClose = (statusIssuerId != INVALID_PLAYER_ID));
