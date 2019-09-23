@@ -26,6 +26,6 @@ SetPlayerSupplements(playerid, amount)
     
     SkillsTd_UpdateSuppsAmount(playerid);
     SkillsTd_CheckWhatsToUpgrade(playerid);
-    SkillTd_UpdateViewingItem(playerid);
+    SkillsTd_UpdateViewingItem(playerid);
     UpdateNavItemsColors(playerid);
 }

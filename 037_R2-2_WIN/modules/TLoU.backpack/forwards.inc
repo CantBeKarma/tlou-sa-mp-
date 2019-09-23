@@ -14,6 +14,7 @@ forward OnPlayerStartedCrafting(playerid, craftItemId);
 forward OnPlayerCanceledCrafting(playerid);
 forward OnPlayerCraftedItem(playerid, craftItemId);
 
-forward OnPlayerStartedUpgradingSkill(playerid, skillid);
+forward Float:SkillsTd_GetStartBarColumnPosX(targetTextdrawBarIdx);
+forward OnPlayerStartedUpgradingSkill(playerid, skillId);
 forward OnPlayerCanceledUpgradingSkill(playerid);
-forward OnPlayerUpgradedSkill(playerid, skillid);
+forward OnPlayerUpgradedSkill(playerid, skillId);
