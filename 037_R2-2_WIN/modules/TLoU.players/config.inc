@@ -71,25 +71,6 @@
 
 //#endregion
 
-//#region Player statuses
-
-	enum PLAYER_STATUS
-	{
-		PLAYER_STATUS_UNKNOWN,
-		PLAYER_STATUS_NONE,
-		PLAYER_STATUS_USING_BACKPACK,
-		PLAYER_STATUS_USING_WEAPMENU,
-		PLAYER_STATUS_AIMING,
-		PLAYER_STATUS_BURNING,
-		PLAYER_STATUS_STUNNED,
-		PLAYER_STATUS_HEALING,
-		PLAYER_STATUS_PLAYING_ANIM,
-		PLAYER_STATUS_DEAD,
-		PLAYER_STATUS_FALL
-	};
-
-//#endregion
-
 stock const CombatTips[13][128] =
 {
 	{"Sprinting around runs the risk of being heard"},
