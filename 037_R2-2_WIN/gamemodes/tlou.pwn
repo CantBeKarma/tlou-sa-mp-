@@ -50,5 +50,4 @@
 #include    <TLoU.textdraws\main>
 #include    <TLoU.weaponMenu\main>
 #include    <TLoU.weapons\main>
-#include    <TLoU.weaponsUpgrades\main>
 #include    <TLoU.commands\main>

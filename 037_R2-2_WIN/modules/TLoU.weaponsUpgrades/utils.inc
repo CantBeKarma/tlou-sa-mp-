@@ -1,7 +1,7 @@
 // Checks if specified item is upgradeable
 // Returns:
 // true if item is, false otherwise.
-/*bool:*/IsItemUpgradeable(itemId, upgradeType = -1)
+bool:IsItemUpgradeable(itemId, upgradeType = -1)
 {
     for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
     {

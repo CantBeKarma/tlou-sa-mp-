@@ -21,3 +21,4 @@
 #include <TLoU.registerLogin\utils>
 #include <TLoU.textdraws\utils>
 #include <TLoU.weapons\utils>
+#include <TLoU.weaponsUpgrades\utils>
