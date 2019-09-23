@@ -40,6 +40,7 @@ public OnPlayerCheckCollectibles(playerid, bool:readCollectible)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerStopCheckingCollectible(playerid)
 {
+    Audio_PlayEx(playerid, AUDIO_COLL_BACK);
     PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
     return 0;
 }
@@ -109,6 +110,9 @@ public OnPlayerReadCollectible(playerid, row_title[], row_message[])
 {
     HideBackpackCategory(playerid, BACKPACK_CATEGORY_COLLECTIBLES);
     DisplayCollectibleContents(playerid, Coll_GetSelection(playerid), row_title, row_message);
+
+    Audio_StopEx(playerid);
+    Audio_PlayEx(playerid, AUDIO_COLL_VIEW);
     return 0;
 }
 
@@ -132,6 +136,7 @@ public OnPlayerStopReadingCollectible(playerid)
 
     TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
     ShowBackpackCategory(playerid, BACKPACK_CATEGORY_COLLECTIBLES, false);
+    Audio_PlayEx(playerid, AUDIO_COLL_BACK);
     return 0;
 }
 
