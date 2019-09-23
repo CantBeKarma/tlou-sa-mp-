@@ -118,6 +118,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 		return 1;
 	}
 			
-	Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerDeath callback has been called for: %s (GUID: %d). VERIFY WHY!!!", PlayerName(playerid), GetPlayerUid(playerid));
+	Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerDeath callback has been called for: %s (GUID: %d). VERIFY WHY!!!", PlayerName(playerid), GetPlayerGuid(playerid));
 	return 1;
 }
