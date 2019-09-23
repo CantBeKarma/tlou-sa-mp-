@@ -1,6 +1,7 @@
 // Maximal values.
 #define     MAX_ITEMS_DATA          (25)
 #define     MAX_COLL_TIT_LEN        (20)
+#define     MIN_COLL_TIT_LEN        (6)
 #define     MAX_COLL_MSG_LEN        (512)
 #define     MIN_COLL_MSG_LEN        (64)
 

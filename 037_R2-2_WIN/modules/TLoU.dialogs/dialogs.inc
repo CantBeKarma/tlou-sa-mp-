@@ -85,11 +85,11 @@
                 return true;
             }
 
-            if(isnull(inputtext) || strlen(inputtext) > MAX_COLL_TIT_LEN)
+            if(isnull(inputtext) || strlen(inputtext) < MIN_COLL_TIT_LEN || strlen(inputtext) > MAX_COLL_TIT_LEN)
             {
-                new msg_createTitleFailed[sizeof(msg_createTitle) + 68];
+                new msg_createTitleFailed[sizeof(msg_createTitle) + 95];
                 strcat(msg_createTitleFailed, msg_createTitle, sizeof(msg_createTitleFailed));
-                strcat(msg_createTitleFailed, "\n{FF0000}Invalid input! Title cannot be longer than 20 characters", sizeof(msg_createTitleFailed));
+                strcat(msg_createTitleFailed, "\n{FF0000}Invalid input!\n{FF0000}Title cannot be shorter than 6 AND longer than 20 characters", sizeof(msg_createTitleFailed));
 
                 Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createTitle, msg_createTitleFailed, "Done", "Cancel");
                 return false;
