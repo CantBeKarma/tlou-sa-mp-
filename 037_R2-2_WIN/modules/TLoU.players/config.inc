@@ -9,10 +9,6 @@
 #define		TIMER_LOOKAT_RATE		(300)
 #define		TIMER_HOLDKEY_RATE		(100)
 
-// HEALTH values definitions.
-#define		MIN_HEALTH_AFTER_DEATH			(25.0)
-#define		RESTORE_HP_WITH_MEDKIT_AMOUNT	(2.0)
-
 // Other.
 #define		PlayerName(%0)			 		ePlayerInfo[%0][e_sName]
 #define		GetConnectedTime(%0) 	 		NetStats_GetConnectedTime(%0)

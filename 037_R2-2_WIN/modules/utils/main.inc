@@ -5,6 +5,7 @@
 #include <TLoU.backpack\utils>
 #include <TLoU.characters\utils>
 #include <TLoU.fire\utils>
+#include <TLoU.health\utils>
 #include <TLoU.hud\utils>
 #include <TLoU.items\utils>
 #include <TLoU.objects\utils>
