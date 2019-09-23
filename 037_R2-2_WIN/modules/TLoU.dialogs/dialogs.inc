@@ -81,25 +81,23 @@
                 ePlayerCmdData[playerid][e_sCreateNoteTitle] = EOS;
                 ePlayerCmdData[playerid][e_sCreateNoteInnerMsg] = EOS;
                 ePlayerCmdData[playerid][e_iCreateNotePageCount] = 0;
+                ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 0);
                 return true;
             }
 
-            if(response)
+            if(isnull(inputtext) || strlen(inputtext) > MAX_COLL_TIT_LEN)
             {
-                if(isnull(inputtext) || strlen(inputtext) > MAX_COLL_TIT_LEN)
-                {
-                    new msg_createTitleFailed[sizeof(msg_createTitle) + 68];
-                    strcat(msg_createTitleFailed, msg_createTitle, sizeof(msg_createTitleFailed));
-                    strcat(msg_createTitleFailed, "\n{FF0000}Invalid input! Title cannot be longer than 20 characters", sizeof(msg_createTitleFailed));
+                new msg_createTitleFailed[sizeof(msg_createTitle) + 68];
+                strcat(msg_createTitleFailed, msg_createTitle, sizeof(msg_createTitleFailed));
+                strcat(msg_createTitleFailed, "\n{FF0000}Invalid input! Title cannot be longer than 20 characters", sizeof(msg_createTitleFailed));
 
-                    Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createTitle, msg_createTitleFailed, "Done", "Cancel");
-                    return false;
-                }
-
-                ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_LOOP", 4.0, 0, 1, 1, 1, 0, 1);
-                strcpy(ePlayerCmdData[playerid][e_sCreateNoteTitle], inputtext, MAX_COLL_TIT_LEN);
-                Dialog_EnterArtifactInnerMsg(playerid);
+                Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createTitle, msg_createTitleFailed, "Done", "Cancel");
+                return false;
             }
+
+            ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_LOOP", 4.0, 0, 1, 1, 1, 0, 1);
+            strcpy(ePlayerCmdData[playerid][e_sCreateNoteTitle], inputtext, MAX_COLL_TIT_LEN);
+            Dialog_EnterArtifactInnerMsg(playerid);
         }
         Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createTitle, msg_createTitle, "Done", "Cancel");
         return true;
