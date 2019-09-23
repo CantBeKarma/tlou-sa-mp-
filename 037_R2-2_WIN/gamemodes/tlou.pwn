@@ -34,6 +34,7 @@
 #include    <TLoU.characters\main>
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
+#include    <TLoU.playerStatuses\main>
 #include    <TLoU.damages\main>
 #include    <TLoU.fire\main>
 #include    <TLoU.health\main>
