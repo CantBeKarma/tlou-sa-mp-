@@ -1,0 +1,1 @@
+#define	    MAX_ARROWS  (MAX_PLAYERS * 9)

@@ -31,6 +31,7 @@
 #include    <TLoU.animations\main>
 #include    <TLoU.audio\main>
 #include    <TLoU.backpack\main>
+#include    <TLoU.bow\main>
 #include    <TLoU.characters\main>
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
