@@ -19,41 +19,29 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         new currentItemId = GetPlayerEquippedItemId(playerid);
         
-        if(IsPlayerIdle(playerid))
+        // Equipping melee weapon
+        if(IsPlayerIdle(playerid) && ITEM_IDX:currentItemId != ITEM_IDX:ITEM_IDX_NAIL_BOMB)
         {
-            // Healing
-            if(IsItemType(currentItemId, ITEM_TYPE_MEDKIT))
+            new meleeItemId = GetPlayerMeleeItemId(playerid);
+            if(meleeItemId == -1)
             {
-                if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < 100.0)
-                {
-                    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_HEALING);
-                    OnPlayerStartedHealing(playerid);
-                }
+                meleeItemId = GetPlayerThrowableItemId(playerid);
             }
-            // Equipping melee weapon
-            else if(ITEM_IDX:currentItemId != ITEM_IDX:ITEM_IDX_NAIL_BOMB)
-            {
-                new meleeItemId = GetPlayerMeleeItemId(playerid);
-                if(meleeItemId == -1)
-                {
-                    meleeItemId = GetPlayerThrowableItemId(playerid);
-                }
 
-                if(meleeItemId != -1)
-                {
-                    EquipItem(playerid, meleeItemId);
-                }
-                else
-                {
-                    HideItem(playerid);
-                }
+            if(meleeItemId != -1)
+            {
+                EquipItem(playerid, meleeItemId);
+            }
+            else
+            {
+                HideItem(playerid);
             }
         }
 
         // If player uses bullet weapon and has no ammo in a weapon magazine...
         if(IsPlayerAimingWeapon(playerid) && IsItemType(currentItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON) && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
         {
-            // perform a sound effect when trying to shoot (no ammo click noise) a few times...
+            // Perform SFX when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
             {   
                 Audio_PlayEx(playerid, AUDIO_WEAP_NOAMMO);
@@ -61,7 +49,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
             }
             else
             {
-                // reload a weapon if still has some ammo left or seek for the new weapon in the inventory.
+                // Reload a weapon if still has some ammo left or seek for the new weapon in the inventory.
                 if(GetPlayerItemAmount(playerid, currentItemId) > 0) ReloadWeapon(playerid);
                 else
                 {
