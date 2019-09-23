@@ -20,6 +20,7 @@
 #include    <TLoU.objects\config>
 #include 	<TLoU.players\config>
 #include 	<TLoU.playerStatuses\config>
+#include 	<TLoU.projectiles\config>
 #include	<TLoU.registerLogin\config>
 #include  	<TLoU.textdraws\config>
 #include	<TLoU.weaponMenu\config>

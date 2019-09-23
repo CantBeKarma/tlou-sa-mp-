@@ -140,3 +140,28 @@ public OnPlayerStopAimingWeapon(playerid)
 	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 	return 0;
 }
+
+//#region Aiming projectiles
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------- OnPlayerStartAimingProjectile -------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStartAimingProjectile(playerid, itemId)
+	{
+		Key_AimingCustomWeapon(playerid);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//-------------- OnPlayerStopAimingProjectile -------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStopAimingProjectile(playerid)
+	{
+		if(!IsPlayerAimOrShootCustomItem(playerid))
+		{
+			ClearAnims(playerid);
+		}
+		return 0;
+	}
+
+//#endregion

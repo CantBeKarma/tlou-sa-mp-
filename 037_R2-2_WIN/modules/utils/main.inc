@@ -15,6 +15,7 @@
 #include <TLoU.dialogs\utils>
 #include <TLoU.weaponMenu\utils>
 #include <TLoU.playerStatuses\utils>
+#include <TLoU.projectiles\utils>
 #include <TLoU.players\utils>
 #include <TLoU.registerLogin\utils>
 #include <TLoU.textdraws\utils>
