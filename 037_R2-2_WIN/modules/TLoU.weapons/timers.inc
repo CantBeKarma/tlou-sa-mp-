@@ -61,7 +61,7 @@ timer Key_AimingCustomWeapon[100](playerid)
     {
         if(keys & KEY_FIRE)
         {
-            if(IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE:ITEM_TYPE_PROJECTILE))
+            if(IsItemType(equippedItemId, ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE_PROJECTILE))
             {
                 Projectile_Throw(playerid, equippedItemId);
             }
