@@ -274,7 +274,6 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerCacheLoaded(playerid)			return Bit_Get(ePlayerFlag[e_bCacheLoaded], playerid);
 	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
 	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
-	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
 
 	IsPlayerIdle(playerid)
 	{
@@ -290,17 +289,6 @@ ResetBits_ePlayerFlag(playerid)
 	}
 
 //#endregion
-
-// Stops HideHud timer and starts it again.
-RestartHideHudTimer(playerid)
-{
-	if(IsPlayerAimingWeapon(playerid))
-	{
-		return;
-	}
-    stop ePlayerInfo[playerid][e_iTimer_HideHud];
-    ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
-}
 
 // Frezee player with timer to unfreeze (optional).
 function FreezePlayer(playerid, bool:camMove, time)

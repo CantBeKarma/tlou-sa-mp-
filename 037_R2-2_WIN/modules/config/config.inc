@@ -70,6 +70,10 @@
 		#define	 	isnull(%1) 				((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
 	#endif
 
+	#if !defined pb_percent
+		#define 	pb_percent(%1,%2,%3,%4)		((%1 - 3.0) + ((((%1 + 3.0 + %2 - 0.8) - %1) / %3) * %4))
+	#endif
+
 	#define 	function%0(%1) 			forward%0(%1); public%0(%1)
 
 	#define 	FLOAT_INFINITY   		(Float:0x7F800000)

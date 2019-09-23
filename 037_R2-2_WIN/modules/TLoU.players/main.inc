@@ -3,6 +3,5 @@
 #include <TLoU.players\callbacks>
 #include <TLoU.players\cache>
 #include <TLoU.players\chat>
-#include <TLoU.players\hud>
 #include <TLoU.players\anti-bunnyhop>
 #include <TLoU.players\anti-crouchbug>

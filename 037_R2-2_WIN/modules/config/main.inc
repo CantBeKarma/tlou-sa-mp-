@@ -13,6 +13,7 @@
 #include    <TLoU.damages\config>
 #include	<TLoU.factions\config>
 #include	<TLoU.fire\config>
+#include	<TLoU.hud\config>
 #include    <TLoU.npcs\config>
 #include    <TLoU.objects\config>
 #include 	<TLoU.players\config>
