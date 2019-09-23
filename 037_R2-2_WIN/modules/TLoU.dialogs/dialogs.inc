@@ -96,6 +96,7 @@
                     return false;
                 }
 
+                ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_LOOP", 4.0, 0, 1, 1, 1, 0, 1);
                 strcpy(ePlayerCmdData[playerid][e_sCreateNoteTitle], inputtext, MAX_COLL_TIT_LEN);
                 Dialog_EnterArtifactInnerMsg(playerid);
             }
@@ -126,9 +127,13 @@
         {
             if(!response)
             {
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_PaperNote]);
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
+
                 ePlayerCmdData[playerid][e_sCreateNoteTitle] = EOS;
                 ePlayerCmdData[playerid][e_sCreateNoteInnerMsg] = EOS;
                 ePlayerCmdData[playerid][e_iCreateNotePageCount] = 0;
+                ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 0);
                 return true;
             }
 
@@ -149,42 +154,41 @@
                 ePlayerCmdData[playerid][e_sCreateNoteTitle] = EOS;
                 ePlayerCmdData[playerid][e_sCreateNoteInnerMsg] = EOS;
                 ePlayerCmdData[playerid][e_iCreateNotePageCount] = 0;
+                ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 0);
                 return true;
             }
 
-            if(response)
+            new msg_createInnerMsgFailed[sizeof(msg_createInnerMsg) + 95];
+            if(isnull(inputtext) || (isnull(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]) && strlen(inputtext) < MIN_COLL_MSG_LEN))
             {
-                new msg_createInnerMsgFailed[sizeof(msg_createInnerMsg) + 95];
-                if(isnull(inputtext) || (isnull(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]) && strlen(inputtext) < MIN_COLL_MSG_LEN))
-                {
-                    strcat(msg_createInnerMsgFailed, msg_createInnerMsg, sizeof(msg_createInnerMsgFailed));
-                    strcat(msg_createInnerMsgFailed, "\n\n{FF0000}Invalid input!\nMessage cannot be shorter than 64 AND longer than 512 characters!", sizeof(msg_createInnerMsgFailed));
-                }
+                strcat(msg_createInnerMsgFailed, msg_createInnerMsg, sizeof(msg_createInnerMsgFailed));
+                strcat(msg_createInnerMsgFailed, "\n\n{FF0000}Invalid input!\nMessage cannot be shorter than 64 AND longer than 512 characters!", sizeof(msg_createInnerMsgFailed));
+            }
 
-                if(isnull(inputtext) && isnull(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]))
+            if(isnull(inputtext) && isnull(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]))
+            {
+                Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createInnerMsg, msg_createInnerMsgFailed, buttonName1, "Cancel");
+                return false;
+            }
+
+            if(isnull(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]))
+            {
+                if(strlen(inputtext) < MIN_COLL_MSG_LEN)
                 {
                     Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createInnerMsg, msg_createInnerMsgFailed, buttonName1, "Cancel");
                     return false;
                 }
-
-                if(isnull(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]))
-                {
-                    if(strlen(inputtext) < MIN_COLL_MSG_LEN)
-                    {
-                        Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createInnerMsg, msg_createInnerMsgFailed, buttonName1, "Cancel");
-                        return false;
-                    }
-                }
-
-                if(!isnull(inputtext))
-                {
-                    strcat(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg], inputtext, MAX_COLL_MSG_LEN);
-                    DisplayCollectibleContents(playerid, COLL_ITEM_ARTIFACTS, ePlayerCmdData[playerid][e_sCreateNoteTitle], ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]);
-                }
-
-                ePlayerCmdData[playerid][e_iCreateNotePageCount] += 1;
-                Dialog_EnterArtifactInnerMsg(playerid);
             }
+
+            if(!isnull(inputtext))
+            {
+                strcat(ePlayerCmdData[playerid][e_sCreateNoteInnerMsg], inputtext, MAX_COLL_MSG_LEN);
+                DisplayCollectibleContents(playerid, COLL_ITEM_ARTIFACTS, ePlayerCmdData[playerid][e_sCreateNoteTitle], ePlayerCmdData[playerid][e_sCreateNoteInnerMsg]);
+            }
+
+            ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_LOOP", 4.0, 0, 1, 1, 1, 0, 1);
+            ePlayerCmdData[playerid][e_iCreateNotePageCount] += 1;
+            Dialog_EnterArtifactInnerMsg(playerid);
         }
         Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, caption_createInnerMsg, msg_createInnerMsg, buttonName1, "Cancel");
         return true;

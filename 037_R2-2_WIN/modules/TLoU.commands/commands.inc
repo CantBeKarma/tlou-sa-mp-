@@ -179,6 +179,7 @@ YCMD:icmd(playerid, params[], help)
         }
 
         Dialog_EnterArtifactTitle(playerid);
+        ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 1, 1, 1, 0, 1);
         return 1;
     }
 
