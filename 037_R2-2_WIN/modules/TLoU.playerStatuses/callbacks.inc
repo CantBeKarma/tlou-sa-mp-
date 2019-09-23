@@ -7,9 +7,10 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
 
     if(newStatusId == PLAYER_STATUS_NONE
     || newStatusId == PLAYER_STATUS_DEAD
-    || newStatusId == PLAYER_STATUS_FALL)
+    || newStatusId == PLAYER_STATUS_FALL
+    || newStatusId == PLAYER_STATUS_BURNING)
     {
-        if(IsPlayerAimingWeapon(playerid) || IsPlayerAimOrShootCustomItem(playerid))
+        if(oldStatusId == PLAYER_STATUS_AIMING || IsPlayerAimOrShootCustomItem(playerid))
         {
             OnPlayerStopAimingWeapon(playerid);
         }
@@ -19,12 +20,12 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
     {
         case PLAYER_STATUS_NONE:
         {
-            if(IsPlayerBurning(playerid))
+            if(oldStatusId == PLAYER_STATUS_BURNING)
             {
                 OnPlayerStopBurning(playerid);
             }
 
-            if(IsPlayerStunned(playerid))
+            if(oldStatusId == PLAYER_STATUS_STUNNED)
             {
                 OnPlayerShakeOffStun(playerid);
             }
@@ -74,11 +75,11 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
         {
             Enable_OnPlayerLookAt(playerid);
         }
-
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerStatusChanged: Player: %s (GUID: %d) changed status: OLD_STATUS_ID = %d | NEW_STATUS_ID = %d", PlayerName(playerid), GetPlayerGuid(playerid), _:oldStatusId, _:newStatusId);
+        //Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerStatusChanged: Player: %s (GUID: %d) changed status: OLD_STATUS_ID = %d | NEW_STATUS_ID = %d", PlayerName(playerid), GetPlayerGuid(playerid), _:oldStatusId, _:newStatusId);
     }
     else
     {
+        ePlayerInfo[playerid][e_iCurrentStatus] = oldStatusId;
         Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerStatusChanged: Status couldn't be changed for: %s (GUID: %d) : OLD_STATUS_ID = %d | NEW_STATUS_ID = %d", PlayerName(playerid), GetPlayerGuid(playerid), _:oldStatusId, _:newStatusId);
     }
     return 0;
