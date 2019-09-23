@@ -93,27 +93,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     return 1;
 }
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------- OnPlayerStartAimingBulletWeapon -----------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStartAimingBulletWeapon(playerid)
-{
-    if(GetPlayerItemClipAmount(playerid, GetPlayerEquippedItemId(playerid)) > 0)
-	{
-		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
-	}
-	return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//-------------- OnPlayerStopAimingBulletWeapon -----------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStopAimingBulletWeapon(playerid)
-{
-	TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
-	return 1;
-}
-
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnPlayerShootDynamicObject -----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -143,7 +122,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
     
     if(currentItemId == -1)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s [charUid: %d] has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), GetPlayerCharUid(playerid), weaponid);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Player %s (UID: %d) has shot a weapon (%d) which he was not given by the server!", PlayerName(playerid), GetPlayerCharUid(playerid), weaponid);
         return 1;
     }
 

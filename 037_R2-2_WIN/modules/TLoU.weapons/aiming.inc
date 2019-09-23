@@ -43,9 +43,9 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 	}
 
 	// Bullet weapons.
-	if(IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
+	if(IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	{
-		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
+		SetPlayerStatus(playerid, PLAYER_STATUS_AIMING);
 		OnPlayerStartAimingBulletWeapon(playerid);
 	}
 
@@ -54,12 +54,12 @@ public OnPlayerTryAimingWeapon(playerid, itemId)
 	{
 		if(IsItemType(itemId, ITEM_TYPE_BOW))
 		{
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
+			SetPlayerStatus(playerid, PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingBow(playerid);
 		}
 		else if(IsItemType(itemId, ITEM_TYPE_PROJECTILE) || IsItemType(itemId, ITEM_TYPE_THROWABLE))
 		{
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
+			SetPlayerStatus(playerid, PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingProjectile(playerid, itemId);
 		}
 	}
@@ -141,6 +141,31 @@ public OnPlayerStopAimingWeapon(playerid)
 	return 0;
 }
 
+//#region Aiming regular weapons
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------- OnPlayerStartAimingBulletWeapon -----------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStartAimingBulletWeapon(playerid)
+	{
+		if(GetPlayerItemClipAmount(playerid, GetPlayerEquippedItemId(playerid)) > 0)
+		{
+			TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+		}
+		return 1;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//-------------- OnPlayerStopAimingBulletWeapon -----------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStopAimingBulletWeapon(playerid)
+	{
+		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
+		return 1;
+	}
+
+//#endregion
+
 //#region Aiming projectiles
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -162,6 +187,30 @@ public OnPlayerStopAimingWeapon(playerid)
 			ClearAnims(playerid);
 		}
 		return 0;
+	}
+
+//#endregion
+
+//#region Aiming bow
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------- OnPlayerStartAimingBow ----------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStartAimingBow(playerid)
+	{
+		FreezePlayer(playerid, true, -1);
+		Key_AimingCustomWeapon(playerid);
+		return 1;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------- OnPlayerStopAimingBow -----------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStopAimingBow(playerid)
+	{
+		UnfreezePlayer(playerid);
+		Bow_ReleaseString(playerid);
+		return 1;
 	}
 
 //#endregion
