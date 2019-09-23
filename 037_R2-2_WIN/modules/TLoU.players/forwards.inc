@@ -12,6 +12,8 @@ forward OnPlayerLookAtNPC(playerid, lookingAt_NpcId);
 
 forward OnPlayerGetStunned(playerid);
 forward OnPlayerShakeOffStun(playerid);
-
 forward OnPlayerGetHitByThrowable(playerid, issuerId, itemId);
+forward OnPlayerGetArrowShot(playerid, damagerid);
+forward OnPlayerGetExplodedByNailbomb(playerid, nailbombCreatorId);
+
 forward [16]GetPlayerIpAddress(playerid);

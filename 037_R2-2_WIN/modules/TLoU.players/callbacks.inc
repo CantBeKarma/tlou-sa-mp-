@@ -205,6 +205,47 @@ public OnPlayerGetHitByThrowable(playerid, issuerId, itemId)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------ OnPlayerGetArrowShot -----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerGetArrowShot(playerid, damagerid)
+{
+	ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
+	ApplyAnimation(playerid, "PED", "HIT_GUN_BUTT", 4.1, 0, 1, 1, 0, 350);
+	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], damagerid);
+	return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//-------------- OnPlayerGetExplodedByNailbomb ------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public OnPlayerGetExplodedByNailbomb(playerid, nailbombCreatorId)
+{
+    if(GetPlayerEquippedItemId(playerid) != -1)
+    {
+        if(!IsItemType(GetPlayerEquippedItemId(playerid), ITEM_TYPE_BULLET_WEAPON))
+        {
+            HideItem(playerid);
+        }
+        else
+        {
+            if(!HasPlayerShotNailbomb(playerid))
+            {
+                HideItem(playerid);
+            }
+        }
+    }
+
+    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_FALL);
+    SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - DAMAGE_AMOUNT_NAIL_BOMB, nailbombCreatorId, _:ITEM_IDX_NAIL_BOMB);
+
+    if(!IsPlayerDead(playerid))
+    {
+        defer DelayedTimer_AnimGetUp[1000](playerid);
+    }
+    return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------- OnPlayerLookAtPlayer ------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerLookAtPlayer(playerid, lookingAt_playerId)

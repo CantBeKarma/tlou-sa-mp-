@@ -122,27 +122,9 @@ timer OnNailbombExplode[NAILBMB_TRIGGERED_EXPLODE](triggererid, throwerid, nailB
 {
     if(IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, x, y, z))
     {
-        if(GetPlayerEquippedItemId(triggererid) != -1)
+        if(!IsPlayerNPC(triggererid))
         {
-            if(!IsItemType(GetPlayerEquippedItemId(triggererid), ITEM_TYPE_BULLET_WEAPON))
-            {
-                HideItem(triggererid);
-            }
-            else
-            {
-                if(!HasPlayerShotNailbomb(triggererid))
-                {
-                    HideItem(triggererid);
-                }
-            }
-        }
-
-        SetPlayerStatus(triggererid, PLAYER_STATUS:PLAYER_STATUS_FALL);
-        SetPlayerHealthEx(triggererid, GetPlayerHealthEx(triggererid) - DAMAGE_AMOUNT_NAIL_BOMB, throwerid, _:ITEM_IDX_NAIL_BOMB);
-
-        if(!IsPlayerDead(triggererid))
-        {
-            defer DelayedTimer_AnimGetUp[1000](triggererid);
+            OnPlayerGetExplodedByNailbomb(triggererid, throwerid);
         }
     }
 
