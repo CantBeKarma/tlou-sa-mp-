@@ -1,12 +1,12 @@
 // Player pressing keys in backpack / using backpack.
-timer Key_BackpackMenu[50](playerid)
+timer Key_BackpackMenu[TIMER_USE_BACKPACK](playerid)
 {
     if(IsPlayerUsingBackpack(playerid))
     {
         defer Key_BackpackMenu(playerid);
     }
 
-    if(((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackKeys]) < 450) || IsPlayerHoldingKey(playerid, KEY_FIRE))
+    if(((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackKeys]) < TICK_RATE_BP_KEYS_COOLDOWN) || IsPlayerHoldingKey(playerid, KEY_FIRE))
     {
         return 1;
 	}
@@ -16,6 +16,11 @@ timer Key_BackpackMenu[50](playerid)
 
     if(updown != ePlayerBpInfo[playerid][e_iBackpackKeysUpDown])
     {
+        if(IsPlayerViewingCollectible(playerid))
+        {
+            return 1;
+        }
+        
         if(!updown)
 		{
 		    ePlayerBpInfo[playerid][e_iBackpackKeysUpDown] = 0;
@@ -23,11 +28,24 @@ timer Key_BackpackMenu[50](playerid)
 		}
 
         ePlayerBpInfo[playerid][e_iBackpackKeysUpDown] = updown;
-        OnPlayerUseBackpack(playerid, PlayerBackpackCategory(playerid), updown);
+
+        if(IsPlayerCheckingCollectibles(playerid))
+        {
+            OnPlayerViewingCollectibles(playerid, updown);
+        }
+        else
+        {
+            OnPlayerUseBackpack(playerid, PlayerBackpackCategory(playerid), updown);
+        }
     }
 
     if(leftright != ePlayerBpInfo[playerid][e_iBackpackKeysLeftRight])
     {
+        if(IsPlayerCheckingCollectibles(playerid))
+        {
+            return 1;
+        }
+
         if(!leftright)
 		{
 		    ePlayerBpInfo[playerid][e_iBackpackKeysLeftRight] = 0;

@@ -33,6 +33,9 @@
 #define		LOG_INDEX_CHAT			(5)
 #define		LOG_INDEX_CMD			(6)
 
+// VIRTUAL WORLDS
+#define     DEFAULT_VIRTUAL_WORLD       (0)
+
 //#region FILES LOCATIONS
 	#define		PATH_LOG_MAIN				"server"
 	#define     PATH_LOG_SERVER     		""PATH_LOG_MAIN"/server/"
@@ -45,20 +48,20 @@
 //#endregion
 
 //#region COLORS
-	#define     COLOR_BLACK             	0x000000FF
-	#define		COLOR_BLACK_TRANS			0x000000DD
-	#define		COLOR_BG_BLACK_TRANS		0xFFFFFFDD
-	#define     COLOR_WHITE             	0xFFFFFFFF
-	#define		COLOR_WHITE_TRANS			0xFFFFFF88
-	#define     COLOR_GRAY             		0xBDB2A4FF
-	#define     COLOR_GRAY_TRANS       		0xBDB2A477
-	#define		COLOR_RED					0xFF0000FF
-	#define		COLOR_RED_TRANS				0xFF000077
-	//#define		COLOR_DARK_RED			0xCC0000FF
-	#define		COLOR_DARK_RED				0xA80000FF
-	#define     COLOR_GOLD              	0xFFD700FF
-	#define		COLOR_CHAT_FADE_FROM		0xE6E6E6E6
-	#define		COLOR_CHAT_FADE_TO			0x6E6E6E6E
+	#define     COLOR_BLACK             	(0x000000FF)
+	#define		COLOR_BLACK_TRANS			(0x000000DD)
+	#define		COLOR_BG_BLACK_TRANS		(0xFFFFFFDD)
+	#define     COLOR_WHITE             	(0xFFFFFFFF)
+	#define		COLOR_WHITE_TRANS			(0xFFFFFF88)
+	#define     COLOR_GRAY             		(0xBDB2A4FF)
+	#define     COLOR_GRAY_TRANS       		(0xBDB2A477)
+	#define		COLOR_RED					(0xFF0000FF)
+	#define		COLOR_RED_TRANS				(0xFF000077)
+	//#define		COLOR_DARK_RED			(0xCC0000FF)
+	#define		COLOR_DARK_RED				(0xA80000FF)
+	#define     COLOR_GOLD              	(0xFFD700FF)
+	#define		COLOR_CHAT_FADE_FROM		(0xE6E6E6E6)
+	#define		COLOR_CHAT_FADE_TO			(0x6E6E6E6E)
 
 //#endregion
 
@@ -67,15 +70,14 @@
 		#define	 	isnull(%1) 				((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
 	#endif
 
+	#if !defined pb_percent
+		#define 	pb_percent(%1,%2,%3,%4)		((%1 - 3.0) + ((((%1 + 3.0 + %2 - 0.8) - %1) / %3) * %4))
+	#endif
+
 	#define 	function%0(%1) 			forward%0(%1); public%0(%1)
 
-	#if !defined FLOAT_INFINITY
-		#define 	FLOAT_INFINITY   		(Float:0x7F800000)
-	#endif
-
-	#if !defined FLOAT_NEG_INFINITY
-		#define 	FLOAT_NEG_INFINITY 		(Float:0xFF800000)
-	#endif
+	#define 	FLOAT_INFINITY   		(Float:0x7F800000)
+	#define 	FLOAT_NEG_INFINITY 		(Float:0xFF800000)
 	
 	#define     SCM             		SendClientMessage
 	#define     SCMF             		SendClientMessagef

@@ -13,20 +13,18 @@ hook OnPlayerUpdate(playerid)
 	// Aiming.
 	if(IsPlayerHoldingKey(playerid, KEY_AIM))
 	{
-		new currentWeaponId = CurrentPlayerWeaponId[playerid];
-
 		if(!IsPlayerAimingWeapon(playerid))
 		{
-			OnPlayerTryAimingWeapon(playerid, currentWeaponId);
+			OnPlayerTryAimingWeapon(playerid, GetPlayerEquippedItemId(playerid));
 		}
 		else
 		{
-			OnPlayerAimsWeapon(playerid, currentWeaponId);
+			OnPlayerAimsWeapon(playerid, GetPlayerEquippedItemId(playerid));
 		}
 	}
 	else
 	{
-		if(IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+		if(IsPlayerAimingWeapon(playerid) || IsPlayerAimOrShootCustomItem(playerid))
 		{
 			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
@@ -37,32 +35,32 @@ hook OnPlayerUpdate(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------- OnPlayerTryAimingWeapon ---------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerTryAimingWeapon(playerid, weaponId)
+public OnPlayerTryAimingWeapon(playerid, itemId)
 {
-	if(IsPlayerUnableToPerformAction(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+	if(IsPlayerUnableToPerformAction(playerid) || IsPlayerAimOrShootCustomItem(playerid))
 	{
 		return 1;
 	}
 
 	// Bullet weapons.
-	if(IsBulletWeapon(weaponId) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
+	if(IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON) && IsPlayerUsingAnim(playerid, ANIM_COLLECTION_AIM))
 	{
-		SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
+		SetPlayerStatus(playerid, PLAYER_STATUS_AIMING);
 		OnPlayerStartAimingBulletWeapon(playerid);
 	}
 
 	// Projectiles / Bow.
-	if(GetPlayerWeaponAmmo(playerid, weaponId) > 0)
+	if(GetPlayerItemAmount(playerid, itemId) > 0)
 	{
-		if(weaponId == WEAPON_BOW)
+		if(IsItemType(itemId, ITEM_TYPE_BOW))
 		{
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
+			SetPlayerStatus(playerid, PLAYER_STATUS_AIMING);
 			OnPlayerStartAimingBow(playerid);
 		}
-		else if(IsProjectileWeapon(weaponId) || IsThrowableWeapon(weaponId))
+		else if(IsItemType(itemId, ITEM_TYPE_PROJECTILE) || IsItemType(itemId, ITEM_TYPE_THROWABLE))
 		{
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_AIMING);
-			OnPlayerStartAimingProjectile(playerid, weaponId);
+			SetPlayerStatus(playerid, PLAYER_STATUS_AIMING);
+			OnPlayerStartAimingProjectile(playerid, itemId);
 		}
 	}
 
@@ -77,15 +75,15 @@ public OnPlayerTryAimingWeapon(playerid, weaponId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------- OnPlayerAimsWeapon ------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerAimsWeapon(playerid, weaponId)
+public OnPlayerAimsWeapon(playerid, itemId)
 {
 	// Weapon Sway.
-	if(IsBulletWeapon(weaponId) || weaponId != WEAPON_BOW)
+	if(IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
 	{
 		new drunkLevel = 
-			  (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? 5000
-			: (Skill_GetLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? 2500
-			: (0);
+			  (Skill_GetPlayerLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 0) ? SKILL_WEAP_SWAY_LVL0
+			: (Skill_GetPlayerLevel(playerid, SKILL_ITEM_WEAP_SWAY) == 1) ? SKILL_WEAP_SWAY_LVL1
+			: (SKILL_WEAP_SWAY_LVL2);
 
 		if(drunkLevel > 0)
 		{
@@ -125,20 +123,94 @@ public OnPlayerStopAimingWeapon(playerid)
 	HidePlayerHitMarker(playerid);
 	SetPlayerDrunkLevel(playerid, 0);
 
-	new currentWeaponId = CurrentPlayerWeaponId[playerid];
-	if(IsBulletWeapon(currentWeaponId))
+	new equippedItemId = GetPlayerEquippedItemId(playerid);
+	if(IsItemType(equippedItemId, ITEM_TYPE_BULLET_WEAPON))
 	{
 		OnPlayerStopAimingBulletWeapon(playerid);
 	}
-	else if(currentWeaponId == WEAPON_BOW)
+	else if(equippedItemId == _:ITEM_IDX_BOW)
 	{
 		OnPlayerStopAimingBow(playerid);
 	}
-	else if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
+	else if(IsItemType(equippedItemId, ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE_PROJECTILE))
 	{
 		OnPlayerStopAimingProjectile(playerid);
 	}
 
-	ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
+	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 	return 0;
 }
+
+//#region Aiming regular weapons
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------- OnPlayerStartAimingBulletWeapon -----------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStartAimingBulletWeapon(playerid)
+	{
+		if(GetPlayerItemClipAmount(playerid, GetPlayerEquippedItemId(playerid)) > 0)
+		{
+			TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+		}
+		return 1;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//-------------- OnPlayerStopAimingBulletWeapon -----------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStopAimingBulletWeapon(playerid)
+	{
+		TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
+		return 1;
+	}
+
+//#endregion
+
+//#region Aiming projectiles
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------- OnPlayerStartAimingProjectile -------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStartAimingProjectile(playerid, itemId)
+	{
+		Key_AimingCustomWeapon(playerid);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//-------------- OnPlayerStopAimingProjectile -------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStopAimingProjectile(playerid)
+	{
+		if(!IsPlayerAimOrShootCustomItem(playerid))
+		{
+			ClearAnims(playerid);
+		}
+		return 0;
+	}
+
+//#endregion
+
+//#region Aiming bow
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------- OnPlayerStartAimingBow ----------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStartAimingBow(playerid)
+	{
+		FreezePlayer(playerid, true, -1);
+		Key_AimingCustomWeapon(playerid);
+		return 1;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//----------------- OnPlayerStopAimingBow -----------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public OnPlayerStopAimingBow(playerid)
+	{
+		UnfreezePlayer(playerid);
+		Bow_ReleaseString(playerid);
+		return 1;
+	}
+
+//#endregion

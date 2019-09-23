@@ -16,7 +16,7 @@ timer DestroySmkBmbSmokeObject[TICK_RATE_SMOKEBMB_EFFECT](objectId)
 // (Firing/throwing custom weapons)
 timer Key_AimingCustomWeapon[100](playerid)
 {
-    if(!IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+    if(!IsPlayerAimingWeapon(playerid) || IsPlayerAimOrShootCustomItem(playerid))
     {
         return 1;
     }
@@ -24,7 +24,7 @@ timer Key_AimingCustomWeapon[100](playerid)
     new keys, updown, leftright;
     GetPlayerKeys(playerid, keys, updown, leftright);
 
-    new currentWeaponId = CurrentPlayerWeaponId[playerid];
+    new equippedItemId = GetPlayerEquippedItemId(playerid);
     
     // If player was aiming arrow and moved.
     if(ePlayerWeapon[playerid][e_bAimingArrow])
@@ -42,13 +42,17 @@ timer Key_AimingCustomWeapon[100](playerid)
     else if(leftright == KEY_RIGHT) ApplyAnimation(playerid, "PED", "GUNMOVE_R", 4.1, 1, 1, 1, 0, 0);
     else
     {
-        if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
+        if(GetPlayerAnimationIndex(playerid) != PED_GETUP
+        && GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
         {
-            ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
-        }
-        else if(currentWeaponId == WEAPON_BOW)
-        {
-            Bow_PullString(playerid);
+            if(IsItemType(equippedItemId, ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE_PROJECTILE))
+            {
+                ApplyAnimation(playerid, "DILDO", "DILDO_IDLE", 4.1, 1, 1, 1, 0, 0);
+            }
+            else if(equippedItemId == _:ITEM_IDX_BOW)
+            {
+                Bow_PullString(playerid);
+            }
         }
     }
 
@@ -57,18 +61,18 @@ timer Key_AimingCustomWeapon[100](playerid)
     {
         if(keys & KEY_FIRE)
         {
-            if(IsProjectileWeapon(currentWeaponId) || IsThrowableWeapon(currentWeaponId))
+            if(IsItemType(equippedItemId, ITEM_TYPE_THROWABLE) || IsItemType(equippedItemId, ITEM_TYPE_PROJECTILE))
             {
-                Projectile_Throw(playerid, currentWeaponId);
+                Projectile_Throw(playerid, equippedItemId);
             }
-            else if(currentWeaponId == WEAPON_BOW)
+            else if(equippedItemId == _:ITEM_IDX_BOW)
             {
                 Arrow_FireArrow(playerid);
             }
         }
     }
 
-    if(IsPlayerAimingWeapon(playerid) && !ePlayerWeapon[playerid][e_bShootingCustomWeapon])
+    if(IsPlayerAimingWeapon(playerid) && !IsPlayerAimOrShootCustomItem(playerid))
     {
         SetAngleBasedOnCam(playerid);
         defer Key_AimingCustomWeapon(playerid);

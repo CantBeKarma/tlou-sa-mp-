@@ -97,7 +97,7 @@ native TogglePlayerDriveOnWater(playerid, bool:toggle);
 native TogglePlayerFrozen(playerid, bool:toggle);
 native SetPlayerPedAnims(playerid, bool:toggle);
 native TogglePlayerSwitchReload(playerid, bool:toggle);
-native bool:IsUsingSAMPP(playerid);
+native bool:TLoU_IsClientConnected(playerid);
 native GetPlayerResolution(playerid, &X, &Y);
 native SetPlayerNoReload(playerid, bool:toggle);
 native TogglePlayerInfiniteRun(playerid, bool:toggle);
@@ -121,14 +121,19 @@ forward OnPlayerEnterPauseSubmenu(playerid, from, to);
 forward OnDriverDriveByShot(playerid);
 forward OnPlayerStunt(playerid, stuntid, money, details[]);
 forward OnPlayerResolutionChange(playerid, X, Y);
-forward OnPlayerSAMPPConnect(address[], port);
-forward OnPlayerSAMPPJoin(playerid, bool:has_plugin);
+forward OnPlayerTLoUConnect(address[], port);
+forward OnPlayerTLoUClientJoin(playerid, bool:has_plugin);
 forward OnPlayerClick(playerid, type, X, Y);
 forward OnPlayerChangeRadioStation(playerid, stationid, vehicleid);
 forward OnPlayerDrinkSprunk(playerid);
 
 public OnPlayerConnect(playerid)
 {
+	if(IsPlayerNPC(playerid))
+	{
+		return 0;
+	}
+
 	SAMPP_ExecuteCallback(0, playerid);
 
 #if defined SAMPP_OnPlayerConnect
@@ -150,6 +155,11 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	if(IsPlayerNPC(playerid))
+	{
+		return 0;
+	}
+
 	SAMPP_ExecuteCallback(1, playerid, reason);
 
 #if defined SAMPP_OnPlayerDisconnect

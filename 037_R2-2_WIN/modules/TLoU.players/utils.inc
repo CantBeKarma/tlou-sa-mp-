@@ -1,6 +1,4 @@
-#include	<YSI\y_hooks>
-
-// Reset all player data in enumerator (called in OnPlayerDisconnect)
+// Reset all player data in enumerator.
 ResetEnum_ePlayerInfo(playerid)
 {
     static sBlank[e_PLAYER_DATA];
@@ -13,7 +11,7 @@ ResetEnum_ePlayerInfo(playerid)
 	print("ResetEnum_ePlayerInfo");
 }
 
-// Reset all player flags (called in OnPlayerDisconnect)
+// Reset all player flags.
 ResetBits_ePlayerFlag(playerid)
 {
 	Bit_Vet(ePlayerFlag[e_bLogged], playerid);
@@ -23,192 +21,23 @@ ResetBits_ePlayerFlag(playerid)
 	Bit_Vet(ePlayerFlag[e_bHoldingKey], playerid);
 	Bit_Vet(ePlayerFlag[e_bKeyPress], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsCrafting], playerid);
+	Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
+	Bit_Vet(ePlayerFlag[e_bIsViewingColl], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsSwitchingWeapons], playerid);
 	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsUpgradingSkill], playerid);
 	Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
+	Bit_Vet(ePlayerFlag[e_bShotNailbomb], playerid);
 
 	print("ResetBits_ePlayerFlag");
 }
-
-//#region Status management
-
-	PLAYER_STATUS:GetPlayerStatus(playerid)	return ePlayerInfo[playerid][e_iCurrentStatus];
-
-	SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
-	{
-		if(GetPlayerStatus(playerid) == status)
-		{
-			return;
-		}
-
-		if(IsPlayerDead(playerid) && status != PLAYER_STATUS_NONE)
-		{
-			return;
-		}
-
-		switch(status)
-		{
-			case PLAYER_STATUS_NONE:
-			{
-				if(IsPlayerAimingWeapon(playerid) || ePlayerWeapon[playerid][e_bShootingCustomWeapon])
-				{
-					OnPlayerStopAimingWeapon(playerid);
-				}
-
-				if(IsPlayerUsingBackpack(playerid))
-				{
-					new bool:successfullyClosed = HideBackpack(playerid, (statusIssuerId != INVALID_PLAYER_ID) ? (true) : (false));
-					if(!successfullyClosed)
-					{
-						return;
-					}
-
-					OnPlayerCloseBackpack(playerid);
-				}
-
-				if(IsPlayerUsingWeaponMenu(playerid))
-				{
-					new bool:successfullyClosed = HideWeaponMenu(playerid);
-					if(!successfullyClosed)
-					{
-						return;
-					}
-
-					OnPlayerCloseWeaponMenu(playerid);
-				}
-
-				if(IsPlayerBurning(playerid))
-				{
-					RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
-				}
-			}
-
-			case PLAYER_STATUS_USING_BACKPACK:
-			{
-				new bool:successfullyOpened = ShowBackpack(playerid);
-				if(!successfullyOpened)
-				{
-					return;
-				}
-
-				ePlayerInfo[playerid][e_iCurrentStatus] = status;
-				OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
-				return;
-			}
-
-			case PLAYER_STATUS_USING_WEAPMENU:
-			{
-				if(IsPlayerUsingBackpack(playerid))
-				{
-					return;
-				}
-
-				new bool:successfullyOpened = ShowWeaponMenu(playerid);
-				if(!successfullyOpened)
-				{
-					return;
-				}
-
-				ePlayerInfo[playerid][e_iCurrentStatus] = status;
-				OnPlayerOpenWeaponMenu(playerid);
-				return;
-			}
-
-			case PLAYER_STATUS_AIMING: {}
-			case PLAYER_STATUS_PLAYING_ANIM: {}
-
-			case PLAYER_STATUS_STUNNED:
-			{
-				if(IsPlayerBurning(playerid))
-				{
-					return;
-				}
-
-				CLF(#OnPlayerGetStunned, "d", playerid);
-			}
-
-			case PLAYER_STATUS_BURNING:
-			{
-				OnPlayerStartBurning(playerid, statusIssuerId);
-			}
-		}
-
-		if(status != PLAYER_STATUS_NONE)
-		{
-			Disable_OnPlayerLookAt(playerid);
-		}
-		else
-		{
-			Enable_OnPlayerLookAt(playerid);
-		}
-
-		ePlayerInfo[playerid][e_iCurrentStatus] = status;
-	}
-
-//#endregion
-
-//#region Health management utils
-
-	// Get player health value.
-	Float:GetPlayerHealthEx(playerid) return eCharsInfo[playerid][e_fHealth];
-
-	// Set player health (avoid going over 100 health points or lower than 0.0).
-	SetPlayerHealthEx(playerid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
-	{
-		if(playerid == INVALID_PLAYER_ID || IsPlayerDead(playerid))
-		{
-			return;
-		}
-
-		new Float:oldHealth = eCharsInfo[playerid][e_fHealth];
-		new Float:newHealth = eCharsInfo[playerid][e_fHealth] = (health <= 0.0 ? 0.0 : health >= 100.0 ? 100.0 : health);
-
-		OnPlayerHealthChange(playerid, oldHealth, newHealth);
-
-		if(GetPlayerHealthEx(playerid) <= 0.0)
-		{
-			if(weaponid == WEAPON_MOLOTOV)
-			{
-				stop ePlayerInfo[playerid][e_iTimer_Burning];
-			}
-
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_DEAD);
-			OnPlayerDeathEx(playerid, killerid, weaponid, bodypart);
-		}	
-	}
-
-	// Changes player health bar length
-	// (calculates its length so it doesn't go over its limit).
-	AdjustPlayerHealthBar(playerid)
-	{
-		PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status], pb_percent(528.9, 35.3, 100.0, GetPlayerHealthEx(playerid)), 0.0);
-	}
-
-	// (recursive) Function which makes player heal himself with a medkit.
-	function HealMyself(playerid, Float:oldHealth, Float:destHealth)
-	{
-		if(!IsPlayerHealing(playerid))
-		{
-			return;
-		}
-
-		if(IsPlayerHoldingKey(playerid, KEY_FIRE))
-		{
-			OnPlayerIsHealing(playerid, oldHealth, destHealth);
-		}
-		else
-		{
-			OnPlayerCanceledHealing(playerid, oldHealth);
-		}
-	}
-
-//#endregion
 
 //#region Utils
 
 	IsPlayerBurning(playerid) 				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_BURNING);
 	IsPlayerStunned(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_STUNNED);
+	IsPlayerFall(playerid)					return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_FALL);
 	IsPlayerDead(playerid)					return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_DEAD);
 	IsPlayerHealing(playerid)				return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_HEALING);
 	IsPlayerUsingBackpack(playerid)			return (GetPlayerStatus(playerid) == PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
@@ -218,6 +47,10 @@ ResetBits_ePlayerFlag(playerid)
 	
 	IsPlayerCrafting(playerid)				return Bit_Get(ePlayerFlag[e_bIsCrafting], playerid);
 	IsPlayerUpgradingSkill(playerid)		return Bit_Get(ePlayerFlag[e_bIsUpgradingSkill], playerid);
+	IsPlayerCheckingCollectibles(playerid)	return Bit_Get(ePlayerFlag[e_bIsCheckingColls], playerid);
+	IsPlayerViewingCollectible(playerid)	return Bit_Get(ePlayerFlag[e_bIsViewingColl], playerid);
+	IsPlayerAimOrShootCustomItem(playerid)	return Bit_Get(ePlayerFlag[e_bShootingCustomWeapon], playerid);
+	HasPlayerShotNailbomb(playerid)			return Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid);
 	IsPlayerCrouched(playerid)				return (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK);
 	IsPlayerLookingAtPlayer(playerid)		return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID);
 	IsPlayerLookingAtItem(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID);
@@ -228,20 +61,21 @@ ResetBits_ePlayerFlag(playerid)
 	IsPlayerCacheLoaded(playerid)			return Bit_Get(ePlayerFlag[e_bCacheLoaded], playerid);
 	IsPlayerBunnyHopping(playerid)			return Bit_Get(ePlayerFlag[e_bDoingBunnyHop], playerid);
 	IsPlayerCrouchBugging(playerid)			return Bit_Get(ePlayerFlag[e_bDoingCrouchBug], playerid);
-	IsPlayerHudFlashing(playerid)			return Bit_Get(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+
+	IsPlayerIdle(playerid)
+	{
+		return !IsPlayerAimingWeapon(playerid)
+			&& !IsPlayerUsingBackpack(playerid) 
+			&& !IsPlayerUsingWeaponMenu(playerid)
+			&& !IsPlayerUnableToPerformAction(playerid);
+	}
+
+	GetPlayerGuid(playerid)
+	{
+		return ePlayerInfo[playerid][e_iGuid];
+	}
 
 //#endregion
-
-// Stops HideHud timer and starts it again.
-RestartHideHudTimer(playerid)
-{
-	if(IsPlayerAimingWeapon(playerid))
-	{
-		return;
-	}
-    stop ePlayerInfo[playerid][e_iTimer_HideHud];
-    ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
-}
 
 // Frezee player with timer to unfreeze (optional).
 function FreezePlayer(playerid, bool:camMove, time)
@@ -335,7 +169,7 @@ ConnectionIntroProcedure(playerid)
 }
 
 // Play that procedure when player dies.
-PlayDeathProcedureForPlayer(playerid)
+function PlayDeathProcedureForPlayer(playerid)
 {
 	if(!IsPlayerDead(playerid))
 	{
@@ -345,7 +179,15 @@ PlayDeathProcedureForPlayer(playerid)
 	Audio_PlayEx(playerid, AUDIO_DEATH_SFX);
 	wait_ms(1200);
 
+	if(IsPlayerHudFlashing(playerid))
+    {
+        Bit_Vet(ePlayerFlag[e_bIsHudBgFlashing], playerid);
+    }
+
+    HideHud(playerid);
+	HideItem(playerid);
 	ShowPlayerBlackScreen(playerid);
+	
 	wait_ms(1600);
 
 	PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][0], CombatTips[random(sizeof(CombatTips))]);
@@ -354,11 +196,131 @@ PlayDeathProcedureForPlayer(playerid)
 	PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][1]);
 }
 
+// Creates firefly pendant on player's death.
+CreatePlayerPendant(playerid)
+{
+	static fireflyPendantItemId = 2;
+	static fireflyPendantName[16] = "Firefly Pendant";
+	new string[MAX_PLAYER_NAME + 24];
+	
+	new year, month, day;
+	getdate(year, month, day);
+
+	format(string, sizeof(string), "%s~n~%02d-%02d-%02d", PlayerName(playerid), year, month, day);
+	CreateCollectible(fireflyPendantItemId, fireflyPendantName, string, .creatorId = playerid);
+}
+
+// Create player nickname label over player's head.
+CreatePlayerLabel(playerid)
+{
+    ePlayerInfo[playerid][e_iPlayerLabel] = CreateDynamic3DTextLabel(PlayerName(playerid), COLOR_WHITE_TRANS, 0.0, 0.0, 0.12, 10.0, playerid, INVALID_VEHICLE_ID, true);
+}
+
+// Destroys player's nickname label if created.
+DestroyPlayerLabel(playerid)
+{
+	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iPlayerLabel]))
+	{
+		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iPlayerLabel]);
+	}
+}
+
 // Hide death procedure textdraws.
 HideDeathProcedureTds(playerid)
 {
 	PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][0]);
 	PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][1]);
+}
+
+// Define player spawn info with SetPlayerTeam fix.
+function SetSpawnInfoEx(playerid, skin, Float:x, Float:y, Float:z, Float:rotation)
+{
+	// SetPlayerTeam(playerid, FACTION_NONE);
+	SetPlayerSkinEx(playerid, skin);
+	SetSpawnInfo(playerid, NO_TEAM, skin, Float:x, Float:y, Float:z, Float:rotation, 0, 0, 0, 0, 0, 0);
+}
+
+// Extends GetPlayerSkin default function.
+GetPlayerSkinEx(playerid)
+{
+	return eCharsInfo[playerid][e_iSkinId];
+}
+
+// Extends SetPlayerSkin default function.
+SetPlayerSkinEx(playerid, skinId)
+{
+    eCharsInfo[playerid][e_iSkinId] = skinId;
+    SetPlayerSkin(playerid, skinId);
+    return 1;
+}
+
+// Stops syncing a key for specific player when function is called.
+DesynchronizePlayerKey(playerid, keyDef)
+{
+	new keys, updown, leftright;
+	GetPlayerKeys(playerid, keys, updown, leftright);
+	SetPlayerSyncKeys(playerid, keys & ~keyDef, updown, leftright);
+}
+
+// Check what's player's current speed.
+GetPlayerSpeed(playerid)
+{
+	new Float:x, Float:y, Float:z, Float:result;
+   	GetPlayerVelocity(playerid, x, y, z);
+    result = floatsqroot(floatpower(floatabs(x), 2.0) + floatpower(floatabs(y), 2.0) + floatpower(floatabs(z), 2.0)) * 179.28625;
+    return floatround(result);
+}
+
+// Set player screen to black and show it.
+ShowPlayerBlackScreen(playerid)
+{
+	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+	if(color != COLOR_BLACK)
+	{
+    	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], COLOR_BLACK);
+	}
+	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+}
+
+// Get player's IP.
+stock GetPlayerIpAddress(playerid)
+{
+	//#pragma unused playerid
+    #emit PUSH.C 16
+    #emit PUSH.S 16
+    //#emit PUSH.S 12
+	#emit PUSH.S playerid
+    #emit PUSH.C 12
+    #emit SYSREQ.C GetPlayerIp
+    #emit STACK 16
+    #emit RETN
+}
+
+// Fade player screen
+function FadePlayerScreen(playerid, type)
+{
+	new color = PlayerTextDrawGetBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+
+	if(type == FADE_IN)
+	{
+		color = (((color + 10) >= 255) ? 255 : color + 10);
+		if(color == 255)
+			type = FADE_NONE;
+	}
+	else if(type == FADE_OUT)
+	{
+		color = (((color - 10) <= 0) ? 0 : color - 10);
+		if(!color)
+			type = FADE_NONE;
+	}
+
+	PlayerTextDrawBoxColor(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen], color);
+	PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+
+	if(type != FADE_NONE)
+	{
+	    SetTimerEx("FadePlayerScreen", 50, false, "dd", playerid, type);
+	}
 }
 
 // Force change the old holding key to the specified key definition.

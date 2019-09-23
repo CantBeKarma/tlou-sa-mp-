@@ -27,9 +27,41 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
     if(PRESSED(KEY_AIM))
     {
-        if(IsPlayerUsingBackpack(playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
+        if(IsPlayerUsingBackpack(playerid) && !IsPlayerViewingCollectible(playerid) && !IsPlayerCheckingCollectibles(playerid)
+        && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
         {
             SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+        }
+
+        if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES)
+        {
+            if(IsPlayerCheckingCollectibles(playerid) && !IsPlayerViewingCollectible(playerid))
+            {
+                Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
+                OnPlayerStopCheckingCollectible(playerid);
+            }
+            else if(IsPlayerViewingCollectible(playerid))
+            {
+                Bit_Vet(ePlayerFlag[e_bIsViewingColl], playerid);
+                OnPlayerStopReadingCollectible(playerid);
+            }
+        }
+    }
+
+    if(PRESSED(KEY_FIRE))
+    {
+        if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_COLLECTIBLES && HasPlayerGotAnyCollectible(playerid))
+        {
+            if(!IsPlayerCheckingCollectibles(playerid))
+            {
+                Bit_Let(ePlayerFlag[e_bIsCheckingColls], playerid);
+                OnPlayerCheckCollectibles(playerid, false);
+            }
+            else
+            {
+                Bit_Let(ePlayerFlag[e_bIsViewingColl], playerid);
+                OnPlayerCheckCollectibles(playerid, true);
+            }
         }
     }
     return 1;
@@ -100,14 +132,18 @@ public OnPlayerUseBackpack(playerid, category, keys)
             if(keys == KEY_UP)
             {
                 if(Skill_GetSelection(playerid) == SKILL_ITEM_MAXHP)
+                {
                     return;
+                }
                 
                 Skill_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
                 if(Skill_GetSelection(playerid) == SKILL_ITEM_SHIV_MASTER)
+                {
                     return;
+                }
 
                 Skill_GetSelection(playerid) += 1;
             }
@@ -115,7 +151,7 @@ public OnPlayerUseBackpack(playerid, category, keys)
             Audio_PlayEx(playerid, AUDIO_SKILL_UPDWN);
 
             new selection = Skill_GetSelection(playerid);
-            SkillTd_UpdateViewingItem(playerid, selection);
+            SkillsTd_UpdateViewingItem(playerid);
             Backpack_MoveSelectBox(playerid, eBackpack_SkillItemsData[selection][e_fSelBoxX], eBackpack_SkillItemsData[selection][e_fSelBoxY]);
         }
 
@@ -124,22 +160,29 @@ public OnPlayerUseBackpack(playerid, category, keys)
             if(keys == KEY_UP)
             {
                 if(Coll_GetSelection(playerid) == COLL_ITEM_ARTIFACTS)
+                {
                     return;
+                }
                 
                 Coll_GetSelection(playerid) -= 1;
             }
             else if(keys == KEY_DOWN)
             {
-                if(Coll_GetSelection(playerid) == COLL_ITEM_FIREFLY_PEND) 
+                if(Coll_GetSelection(playerid) == COLL_ITEM_FIREFLY_PEND)
+                {
                     return;
+                }
                 
                 Coll_GetSelection(playerid) += 1;
             }
-
+            
             Audio_PlayEx(playerid, AUDIO_SKILL_UPDWN);
-
+            
             new selection = Coll_GetSelection(playerid);
             Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selection][e_fSelBoxX], eBackpack_CollItemsData[selection][e_fSelBoxY]);
+
+            CollTd_ShowTitles(playerid);
+            Coll_ManageMessageTextPosition(playerid);
         }
     }
 }

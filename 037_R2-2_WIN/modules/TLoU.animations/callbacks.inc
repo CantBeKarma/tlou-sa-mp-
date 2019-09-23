@@ -30,13 +30,13 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		// Projectile has been thrown.
 		case GRENADE_WEAPON_THROW:
 		{
-			if(GetPlayerWeaponAmmo(playerid, CurrentPlayerWeaponId[playerid]) <= 0)
+			if(GetPlayerItemAmount(playerid, GetPlayerEquippedItemId(playerid)) <= 0)
 			{
 				SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 			}
 			else
 			{
-				ePlayerWeapon[playerid][e_bShootingCustomWeapon] = false;
+				Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], playerid);
 			}
 		}
 
@@ -49,7 +49,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		// When player shived NPC/Player (Remove Shiv model from hand).
 		case KNIFE_KILL_KNIFE_PLAYER:
 		{
-			HidePlayerWeapon(playerid);
+			HideItem(playerid);
 		}
 
 		default:

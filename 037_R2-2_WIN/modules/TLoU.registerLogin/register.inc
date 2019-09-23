@@ -1,50 +1,26 @@
-// This function performs account register and character
-function RegisterPlayerAccount(playerid, password[])
+// Hashes player's input from dialog box during register.
+HashPlayerPassword(playerid, password[])
 {
-    new hashStr[65];
-    SHA256_PassHash(password, "tlou2014", hashStr, sizeof(hashStr));
-    DB_RegisterNewAccount(playerid, hashStr);
+    bcrypt_hash(password, BCRYPT_COST, "BCrypt_OnPasswordHashed", "d", playerid);
 }
 
-// Preparing backend data for user.
+// Preparing player to play the game.
+// Clearing all the player's data like iterators and variables.
+// Additionally we're loading cache (preloading anims, per-player textdraws) and spawning player.
 PrepareDataAfterRegister(playerid)
 {
     LoadCache(playerid);
-
-    Bit_Let(ePlayerFlag[e_bLogged], playerid);
-
-    // Give player empty ingredient values to DB.
-    for(new i = 0; i != 5; i++)
-    {
-        DB_GivePlayerItem(i, 0, .ownerUid = eCharsInfo[playerid][e_iUid]);
-    }
-
-    Iter_Clear(iAudioHandle3D<playerid>);
-
-    TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
-    TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);
+    ResetVariables(playerid);
 
     SetPlayerHealth(playerid, FLOAT_INFINITY);
     SetPlayerHealthEx(playerid, 100.0);
+    TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, false);
+    TogglePlayerAction(playerid, PLAYER_ACTION_SWITCH_WEAPON, false);
+    SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN, 50);
 
     CreatePlayerLabel(playerid);
-    SetPlayerVirtualWorld(playerid, 0);
+    SetPlayerVirtualWorld(playerid, DEFAULT_VIRTUAL_WORLD);
     SetSpawnInfoEx(playerid, 312, 2491.2930, -1672.1010, 13.3359, 66.4064);
-    
-    SpawnPlayer(playerid);
 
-    for(new i = 0; i != MAX_WEAPON_SLOTS; i++)
-    {
-        ePlayerWeapon[playerid][e_iWeaponClipAmmo][i] = -1;
-
-        if(i <= 3) 
-            WeapMenu_Ls_WeaponId(playerid, i) = -1;
-
-        if(i <= 2) 
-            WeapMenu_Rs_WeaponId(playerid, i) = -1;
-    }
-
-    FadePlayerScreen(playerid, FADE_OUT);
-    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s [%d] has signed up for the first time!", ePlayerInfo[playerid][e_sName], playerid);
-    return 0;
+    Bit_Let(ePlayerFlag[e_bLogged], playerid);
 }

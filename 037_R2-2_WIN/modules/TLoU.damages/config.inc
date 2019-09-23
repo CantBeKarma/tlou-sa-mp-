@@ -11,6 +11,8 @@
 #define     REDUCE_DAMAGE_AMOUNT_DISTANCE       (20.0)
 #define     SHOTGUN_TORSO_SHOT_DISTANCE         (10.0)
 
+#define		DAMAGE_AMOUNT_NAIL_BOMB		(85.0)
+
 // Array of damage animations.
 stock const DamageAnimations[MAX_DAMAGE_ANIMS][32] =
 {

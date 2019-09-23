@@ -14,10 +14,17 @@
 #define     NO_AUDIO                (-1)
 
 #define     MAX_3D_AUDIOS           (10)
-#define     MAX_RELOAD_SFX_AUDIOS   (5)
+#define     MAX_RELOAD_SFX_AUDIOS   (6)
 #define     MAX_PROJECTILES_SFX     (5)
 
 //#region LOCAL AUDIO FILES (INDEXES)
+    #define     AUDIO_PICKUP_PENDANT        (47)
+    #define     AUDIO_PICKUP_NOTE           (48)
+
+    #define     AUDIO_COLL_UPDWN            (49)
+    #define     AUDIO_COLL_VIEW             (50)
+    
+    #define     AUDIO_RELOAD_SHORTY         (51)
     #define     AUDIO_RELOAD_SHOTGUN        (52)
     #define     AUDIO_RELOAD_RIFLE          (53)
     #define     AUDIO_RELOAD_9MM            (54)
@@ -121,6 +128,7 @@ stock const SFX_WeaponReloads[MAX_RELOAD_SFX_AUDIOS][e_RELOAD_AUDIO_SFX] =
 {
     {WEAPON_9MM,            AUDIO_RELOAD_9MM},
     {WEAPON_REVOLVER,       AUDIO_RELOAD_REVOLVER},
+    {WEAPON_SHORTY,         AUDIO_RELOAD_SHORTY},
     {WEAPON_SHOTGUN,        AUDIO_RELOAD_SHOTGUN},
     {WEAPON_RIFLE,          AUDIO_RELOAD_RIFLE},
     {WEAPON_ASSAULT,        AUDIO_RELOAD_ASSAULT}

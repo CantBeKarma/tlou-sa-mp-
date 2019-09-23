@@ -1,20 +1,11 @@
-#define     OBJECT_MODEL_JOELBP     (15065)
-#define     OBJECT_MODEL_ELLIEBP    (15066)
-#define     OBJECT_MODEL_TESSBP     (15067)
-#define     OBJECT_MODEL_BILLBP     (15068)
-
-#define     OBJECT_MODEL_GASMASK    (15069)
-#define     OBJECT_MODEL_FLASHLIGHT (15070)
-
-#define     OBJECT_MODEL_BURNING    (18692)
-
+// Maximal values.
 #define     MAX_REMOVE_OBJECTS      (37)
-#define		MAX_ATTACHMENTS_DATA	(30)
 
 enum e_OBJECT_DATA
 {
     e_iObj_Uid,
     e_iObj_ItemId,
+    e_iObj_TypeId,
     Float:e_fObj_X,
     Float:e_fObj_Y,
     Float:e_fObj_Z,
@@ -22,8 +13,8 @@ enum e_OBJECT_DATA
     e_iObj_Int,
     e_iObj_ItemAmount,
 	e_iObj_MeleeUpgradedCnd,
-    e_sObj_Title[32],
-    e_sObj_InnerMessage[128],
+    e_sObj_Title[MAX_COLL_TIT_LEN],
+    e_sObj_InnerMessage[MAX_COLL_MSG_LEN],
     bool:e_bObj_Created
 };
 new eObjData[e_OBJECT_DATA];
@@ -48,79 +39,4 @@ stock const RemoveObjectsData[MAX_REMOVE_OBJECTS] =
 	
 	// Hydrants.
 	1211
-};
-
-// #define     SKIN_JOEL               (312)
-// #define     SKIN_ELLIE              (313)
-// #define     SKIN_ELLIE2             (314)
-// #define     SKIN_TESS               (315)
-// #define     SKIN_SARAH              (316)
-// #define     SKIN_HAZMAT             (317)
-// #define     SKIN_CLICKER            (318)
-
-// Data related to the attachments.
-enum e_ATTACHMENTS_DATA
-{
-    e_iSkinId,
-    bool:e_bExtraInfo,
-    e_iModelId,
-    e_iBoneId,
-
-    Float:e_fOffsetX,
-    Float:e_fOffsetY,
-    Float:e_fOffsetZ,
-
-    Float:e_fRotX,
-    Float:e_fRotY,
-    Float:e_fRotZ,
-
-    Float:e_fScaleX,
-    Float:e_fScaleY,
-    Float:e_fScaleZ
-};
-
-stock const eAttachmentsData[MAX_ATTACHMENTS_DATA][e_ATTACHMENTS_DATA] =
-{
-    // All skins.
-    {-1,            false,  OBJECT_MODEL_BURNING,  1, -0.717612, -0.063293, -2.000079, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0},
-    {-1,            false,  ITEM_MODEL_ARROW,      5, 0.342999, -0.166999, 0.118999, -73.600021, -150.200195, 51.199855, 1.0, 1.0, 1.0},
-    {-1,            false,  OBJECT_MODEL_BILLBP,   1, -0.323999, -0.124999, -0.009000, 94.099960, 93.899909, -2.699999, 0.763999, 0.867000, 1.070999},
-    {-1,            true,   OBJECT_MODEL_BILLBP,   1, -0.048999, 1.019999, 0.130000, -91.000007, 151.599884, -177.000061, 0.763999, 0.867000, 1.070999},
-
-    // Joel
-    {SKIN_JOEL,     false, OBJECT_MODEL_JOELBP,   1, -0.256000, -0.131999, -0.012000, 0.000000, 89.099983, 0.000000, 0.930999, 0.797999, 1.000000},
-    {SKIN_JOEL,     true,  OBJECT_MODEL_JOELBP,   1, 0.043999, 0.898996, 0.100999, -88.999877, 154.299819, 80.799949, 0.930999, 0.797999, 1.000000},
-
-    {SKIN_JOEL,     false, ITEM_MODEL_SHIV,       6, 0.115999, 0.021999, 0.036999, -84.799995, -0.200003, 97.099983, 0.616999, 0.633001, 0.587000},
-    {SKIN_JOEL,     false, ITEM_MODEL_BINDING,    6, 0.083999, 0.030999, 0.000999, 167.200164, -84.000144, -11.599982, 0.933000, 0.397000, 0.953000},
-    {SKIN_JOEL,     false, ITEM_MODEL_BOMB,       6, 0.012999, 0.007000, -0.053999, 0.000000, 0.000000, 0.000000, 0.892000, 0.828000, 0.989000},
-    {SKIN_JOEL,     false, ITEM_MODEL_MOLOTOV,    6, 0.071999, 0.074999, 0.080999, -0.499999, -0.599999, -86.800071, 0.664002, 0.692000, 0.709000},
-    {SKIN_JOEL,     false, ITEM_MODEL_SMKBMB,     6, 0.026999, 0.000000, -0.013000, 0.000000, 0.000000, 0.000000, 0.796001, 0.744000, 1.000000},
-    {SKIN_JOEL,     false, ITEM_MODEL_BRICK, 	  6, 0.088999, 0.006000, 0.014000, 103.500022, 168.200012, -98.299980, 0.746000, 0.881000, 0.775000},
-    {SKIN_JOEL,     false, ITEM_MODEL_BOTTLE,     6, 0.076999, 0.045999, 0.035999, 0.000000, 8.799996, 0.000000, 0.769000, 0.675000, 0.662000},
-    {SKIN_JOEL,     false, ITEM_MODEL_9MM,        8, -0.046999, -0.041999, 0.079998, 164.499908, -4.799945, -8.399999, 1.0, 1.0, 1.0},
-    {SKIN_JOEL,     false, ITEM_MODEL_REVOLVER,   8, 0.107998, 0.004999, 0.092998, -93.699974, 0.0, 0.0, 1.0, 1.0, 1.0},
-    {SKIN_JOEL,     false, ITEM_MODEL_SHOTGUN,    1, 0.320998, -0.059999, 0.186999, -69.800109, 176.400146, -5.199987, 1.0, 1.0, 1.0},
-    {SKIN_JOEL,     false, ITEM_MODEL_RIFLE,      1, 0.320998, -0.059999, 0.186998, -69.800109, 170.899963, -5.199986, 1.0, 1.0, 1.0},
-    {SKIN_JOEL,     false, ITEM_MODEL_ASSAULT,    1, 0.336997, -0.152999, 0.112998, 84.899963, -169.199722, 13.400018, 0.836000, 1.000000, 0.884000},
-
-    {SKIN_JOEL,     false, ITEM_MODEL_BOW,        1, 0.200001, -0.221001, 0.167999, -160.199813, 174.700119, 105.600067, 0.510001, 0.573999, 1.000000},
-    {SKIN_JOEL,     true,  ITEM_MODEL_BOW,        6, -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000},
-
-    {SKIN_JOEL,     false, ITEM_MODEL_PIPE,       1, 0.261999, -0.120999, -0.210999, 3.900000, -101.399932, 4.399999, 1.0, 1.0, 1.0},
-    {SKIN_JOEL,     false, ITEM_MODEL_SCSR_PIPE,  1, 0.261999, -0.120999, -0.210999, 3.900000, -101.399932, 4.399999, 1.0, 1.0, 1.0},
-    {SKIN_JOEL,     false, ITEM_MODEL_HATCHET,    1, 0.191999, 0.004999, -0.179000, 108.599884, -73.699996, 4.500008, 1.0, 1.0, 1.0},
-    {SKIN_JOEL,     false, ITEM_MODEL_MACHETE,    1, 0.257999, 0.020999, -0.179000, 127.299949, -73.699996, 26.000011, 1.0, 1.0, 1.0},
-
-    // Ellie.
-	{SKIN_ELLIE,    false,  OBJECT_MODEL_ELLIEBP,  1, -0.163998, -0.080999, 0.000000, 0.000000, 90.000007, 0.000000, 1.000000, 1.000000, 1.000000},
-    {SKIN_ELLIE,    true,   OBJECT_MODEL_ELLIEBP,  1, 0.223998, 0.776996, 0.162999, -88.999877, 154.299819, 80.799949, 1.007998, 0.797999, 1.127999},
-
-    // Ellie (Winter Jacket)
-    {SKIN_ELLIE2,   false,  OBJECT_MODEL_ELLIEBP,  1, -0.163998, -0.096000, 0.000000, 0.000000, 90.000007, 0.000000, 1.000000, 1.000000, 1.000000},
-    {SKIN_ELLIE2,   true,   OBJECT_MODEL_ELLIEBP,  1, 0.223998, 0.776996, 0.162999, -88.999877, 154.299819, 80.799949, 1.007998, 0.797999, 1.127999},
-
-    // Tess.
-	{SKIN_TESS,     false,  OBJECT_MODEL_TESSBP,   1, -0.189000, -0.059999, -0.011000, 0.000000, 0.000000, 13.800003, 1.000000, 1.000000, 1.000000},
-    {SKIN_TESS,     true,   OBJECT_MODEL_TESSBP,   1, -0.019999, 0.781999, 0.123999, 3.999999, 0.000000, -42.200000, 1.233000, 1.022000, 0.990000}
 };

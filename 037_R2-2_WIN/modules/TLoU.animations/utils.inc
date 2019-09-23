@@ -39,14 +39,14 @@ ClearAnims(playerid)
 }
 
 // Does a reload animation for player on the specified weapon type.
-PlayPlayerReloadAnim(playerid, weaponId)
+PlayPlayerReloadAnim(playerid, itemId)
 {
-    switch(weaponId)
+    switch(ITEM_IDX:itemId)
     {
         case 
-            WEAPON_9MM,
-            WEAPON_REVOLVER,
-            WEAPON_SHORTY:
+            ITEM_IDX_9MM,
+            ITEM_IDX_REVOLVER,
+            ITEM_IDX_SHORTY:
             {
                 ApplyAnimation(playerid, "PYTHON", \
                     IsPlayerCrouched(playerid) ? "PYTHON_CROUCHRELOAD" : "PYTHON_RELOAD", \
@@ -54,7 +54,7 @@ PlayPlayerReloadAnim(playerid, weaponId)
             }
 
         case
-            WEAPON_SHOTGUN:
+            ITEM_IDX_SHOTGUN:
             {
                 ApplyAnimation(playerid, "BUDDY", \
                     IsPlayerCrouched(playerid) ? "BUDDY_CROUCHRELOAD" : "BUDDY_RELOAD", \
@@ -62,8 +62,8 @@ PlayPlayerReloadAnim(playerid, weaponId)
             }
 
         case
-            WEAPON_RIFLE,
-            WEAPON_ASSAULT:
+            ITEM_IDX_RIFLE,
+            ITEM_IDX_ASSAULT_RIFLE:
             {
                 ApplyAnimation(playerid, "RIFLE", \
                     IsPlayerCrouched(playerid) ? "RIFLE_CROUCHLOAD" : "RIFLE_LOAD", \
@@ -73,7 +73,7 @@ PlayPlayerReloadAnim(playerid, weaponId)
 }
 
 // Plays damage animations on player.
-bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLAYER_ID, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
+bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLAYER_ID, issuerItemId = -1, Float:distanceBetweenPlayers = 0.0)
 {
     if(IsPlayerUnableToPerformAction(damagedId)
     || (GetConnectedTime(damagedId) - ePlayerInfo[damagedId][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
@@ -100,7 +100,7 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
         case BODY_PART_RIGHT_LEG: ApplyAnimation(damagedId, "PED", DamageAnimations[random(3) + 9], 4.1, 0, 1, 1, 0, 0);
         case BODY_PART_TORSO:
         {
-            if(issuerWeaponId == WEAPON_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
+            if(issuerItemId == _:ITEM_IDX_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
             {
                 FlyBackwardsWhenShot(damagedId);
             }
@@ -114,7 +114,7 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
 }
 
 // Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
-PlayDeathAnimation(playerid, bodypart, weaponid)
+PlayDeathAnimation(playerid, bodypart, itemId)
 {
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -137,29 +137,43 @@ PlayDeathAnimation(playerid, bodypart, weaponid)
 		return;
 	}
 
-	if(weaponid == WEAPON_SHIV)
+	switch(ITEM_IDX:itemId)
 	{
-		ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
-		return;
-	}
+		case ITEM_IDX_NAIL_BOMB:
+		{
+			if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
+			{
+				ApplyAnimation(playerid, "BASEBALL", "BAT_HIT_3", 4.1, 0, 1, 1, 1, 0);	
+			}
+		}
+		
+		case ITEM_IDX_SHIV:
+		{
+			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
+		}
 
-	if(weaponid == WEAPON_MOLOTOV || weaponid == WEAPON_COLLISION)
-	{
-		ApplyAnimation(playerid, "PED", "KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
-		return;
-	}
+		case
+			ITEM_IDX_MOLOTOV,
+			WEAPON_COLLISION:
+			{
+				ApplyAnimation(playerid, "PED", "KO_SHOT_FRONT", 4.1, 0, 1, 1, 1, 0, 1);
+			}
 
-	switch(bodypart)
-	{
-		case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
 		default:
 		{
-			// If player wasn't killed stealthly or 
-			// shot in stomach by shotgun (Flew backwards)
-			if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
-			&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
+			switch(bodypart)
 			{
-				ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
+				case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
+				default:
+				{
+					// If player hasn't flew backwards (nailbomb explosion/shotgun shot)
+					// AND not died by shiv
+					if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
+					&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
+					{
+						ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
+					}
+				}
 			}
 		}
 	}
@@ -201,7 +215,16 @@ IsPlayerUnableToPerformAction(playerid)
 		|| IsPlayerDead(playerid)
 		|| IsPlayerBurning(playerid)
 		|| IsPlayerStunned(playerid)
+		|| IsPlayerFall(playerid)
     ;
+}
+
+// Checks if player is using backpack animations.
+IsPlayerUsingBackpackAnims(playerid)
+{
+	return (GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_2IDLE 
+	|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
+	|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP);
 }
 
 // Determines if player is playing a specific callback animation

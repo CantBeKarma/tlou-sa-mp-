@@ -1,73 +1,120 @@
-// Return weapon's level of the specific upgrade type (e.g. clipSize, max ammo, fire rate..)
-GetPlayerWeaponUpgradeLvl(playerid, weaponId, upgradeType)
+// Checks if specified item is upgradeable
+// Returns:
+// true if item is, false otherwise.
+bool:IsItemUpgradeable(itemId, upgradeType = -1)
 {
-    if(weaponId == WEAPON_UNARMED) return -1;
+    for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+    {
+        if(upgradeType == -1)
+        {
+            if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId])
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if(ITEM_IDX:itemId == eItemsUpgrades[i][e_iItemId]
+            && upgradeType == eItemsUpgrades[i][e_iItem_UpgradeType])
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Gets item's maximal upgrade level.
+// Returns:
+// (-1) if item is invalid or item is not upgradeable.
+// (x) value of maximal level.
+GetItemMaxUpgradeLvl(itemId, upgradeType)
+{
+    if(!IsValidItemId(itemId))
+    {
+        return -1;
+    }
+
+    new maxUpgradeLevel = -1;
+    for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+    {
+        if(eItemsUpgrades[i][e_iItemId] != ITEM_IDX:itemId
+        || eItemsUpgrades[i][e_iItem_UpgradeType] != upgradeType)
+        {
+            continue;
+        }
+
+        maxUpgradeLevel = eItemsUpgrades[i][e_iItem_UpgradeLvl];
+    }
+    return maxUpgradeLevel;
+}
+
+// Gets player item's specific upgrade level.
+// Returns:
+// (-1) if player hasn't got an item or item doesn't appear to be upgradeable for specific upgradeType
+// (x) value of the upgrade level (integer)
+GetPlayerItemUpgradeLvl(playerid, itemId, upgradeType)
+{
+    if(!HasPlayerGotItem(playerid, itemId))
+    {
+        return -1;
+    }
 
     switch(upgradeType)
     {
-        case UPGRADE_TYPE_CLIPSIZE: return ePlayerWeapon[playerid][e_iWeaponsUpgradeLvl_ClipSize][GetCustomWeaponSlot(weaponId)];
+        case UPGRADE_TYPE_CLIPSIZE: return ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize];
     }
-    return 0;
-}
-
-// Set player weapon upgrade type level
-SetPlayerWeaponUpgradeLvl(playerid, weaponId, level, upgradeType)
-{
-    if(weaponId != WEAPON_UNARMED)
-    {
-        switch(upgradeType)
-        {
-            case UPGRADE_TYPE_CLIPSIZE: ePlayerWeapon[playerid][e_iWeaponsUpgradeLvl_ClipSize][GetCustomWeaponSlot(weaponId)] = level;
-        }
-    }
+    return -1;
 }
 
 // Returns maximal possible weapon clipsize that player can have for a specific weapon.
-GetPlayerWeaponLvl_MaxClipSize(playerid, weaponId)
+// Returns:
+// (-1) if player hasn't got an item or didn't find specified item in the list of upgradeable items.
+// (x) value of max clip size for that item
+// (results are possible to be returned from 2 tables - eItemsData | eItemsUpgrades)
+GetPlayerItemMaxClipSize(playerid, itemId)
 {
-	new playerWeaponLvl_ClipSize = GetPlayerWeaponUpgradeLvl(playerid, weaponId, UPGRADE_TYPE_CLIPSIZE);
+    if(!HasPlayerGotItem(playerid, itemId) || !IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
+    {
+        return -1;
+    }
 
-	for(new i = 0; i != MAX_WEAPONS_UPGRADES_DATA; i++)
-    {       
-        if(eWeaponsUpgrades[i][e_iWeaponId] == weaponId
-        && eWeaponsUpgrades[i][e_iWeapon_UpgradeLvl] == playerWeaponLvl_ClipSize
-        && eWeaponsUpgrades[i][e_iWeapon_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
+    if(eItemsData[itemId][e_iItem_MaxClipSize] != -1)
+    {
+        return eItemsData[itemId][e_iItem_MaxClipSize];
+    }
+
+    new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
+
+    for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+    {
+        if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
+        && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
+        && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
         {
-			return eWeaponsUpgrades[i][e_iWeapon_ClipSize];
+            return eItemsUpgrades[i][e_iItem_ClipSize];
         }
     }
-	return 0;
+    return -1;
 }
 
-// Returns maximal possible weapon ammo that player can have for a specific weapon.
-GetPlayerWeaponLvl_MaxAmmo(playerid, weaponId)
+// Set player item's upgrade level.
+// Returns:
+// false - player hasn't got an item OR if item is not upgradeable OR system is trying to set level over the maximal possible
+// true - if item's level set correctly
+bool:SetPlayerItemUpgradeLvl(playerid, itemId, level, upgradeType)
 {
-    new playerWeaponLvl_MaxAmmo = GetPlayerWeaponUpgradeLvl(playerid, weaponId, UPGRADE_TYPE_CLIPSIZE);
-
-	for(new i = 0; i != MAX_WEAPONS_UPGRADES_DATA; i++)
-    {       
-        if(eWeaponsUpgrades[i][e_iWeaponId] == weaponId
-        && eWeaponsUpgrades[i][e_iWeapon_UpgradeLvl] == playerWeaponLvl_MaxAmmo
-        && eWeaponsUpgrades[i][e_iWeapon_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
-        {
-			return eWeaponsUpgrades[i][e_iWeapon_MaxAmmo];
-        }
+    if(!HasPlayerGotItem(playerid, itemId) || !IsItemUpgradeable(itemId, upgradeType)
+    || level > GetItemMaxUpgradeLvl(itemId, upgradeType))
+    {
+        return false;
     }
-    return 0;
-}
 
-// Returnes MeleeWeapon durability.
-GetMeleeWeapon_Durability(weaponId, upgradedDurability)
-{
-   	for(new i = 0; i != MAX_WEAPONS_MELEE_DATA; i++)
-    {       
-        if(eMeleeWeaponsData[i][e_iWeaponId] == weaponId)
-        {
-            if(!upgradedDurability)
-			    return eMeleeWeaponsData[i][e_iWeaponDurability];
-            else
-                return eMeleeWeaponsData[i][e_iWeaponExtDurability];
-        }
+    switch(upgradeType)
+    {
+        case UPGRADE_TYPE_CLIPSIZE: ePlayerItemData[playerid][itemId][e_iItemUpgradeLvl_ClipSize] = level;
     }
-    return 0;
+
+    Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemUpgradeLvl: set upgrade level to: %d of upgrade type: %d for item id: %d (charUid: %d)", level, upgradeType, itemId, GetPlayerCharUid(playerid));
+    return true;
 }

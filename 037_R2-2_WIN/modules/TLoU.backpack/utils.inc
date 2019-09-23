@@ -35,12 +35,33 @@ Backpack_ResizeSelectBox(playerid)
     }
 }
 
+// Change position of collectibles select box.
+Backpack_MoveCollSelectBox(playerid, Float:x, Float:y)
+{
+    PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], x, y);
+    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+}
+
+// Crafting : Returns index of textdraw which displays amount of the item
+GetBackpackItemAmountTdIdx(itemId)
+{
+    new result = -1;
+    switch(ITEM_IDX:itemId)
+    {
+        case ITEM_IDX_SHIV:       result = 0;
+        case ITEM_IDX_MEDKIT:     result = 1;
+        case ITEM_IDX_MOLOTOV:    result = 2;
+        case ITEM_IDX_NAIL_BOMB:  result = 3;
+        case ITEM_IDX_SMOKE_BOMB: result = 4;
+    }
+    return result;
+}
+
 // Perform anim. with camera backpack opening.
 Perform_BackpackOpening(playerid)
 {
     if(!IsPlayerLogged(playerid))
     {
-        SCMF(playerid, -1, "Isn't logged in!");
         return 1;
     }
 
@@ -51,7 +72,7 @@ Perform_BackpackOpening(playerid)
     }
 
     HideHud(playerid);
-    AttachBackpackToPlayer(playerid, true);
+    AttachBackpackToPlayer(playerid, .isInFrontOfPlayer = true);
     MoveCameraNextToPlayer(playerid, -0.9, 0.25, 500);
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 1, 1, 1, 0, 1);
     Audio_PlayEx(playerid, AUDIO_BP_OPEN);
@@ -67,7 +88,7 @@ function Perform_BackpackClosing(playerid)
     }
     
     // If HUD was flashing before using backpack - enable HUD flash again.
-    if(eCharsInfo[playerid][e_fHealth] <= 30.0)
+    if(eCharsInfo[playerid][e_fHealth] <= MIN_HEALTH_FLASH_HUD)
     {
         Bit_Let(ePlayerFlag[e_bIsHudBgFlashing], playerid);
         HudTd_Bg_FlashRed(playerid, 0, 0.0);
@@ -79,11 +100,8 @@ function Perform_BackpackClosing(playerid)
     Audio_PlayEx(playerid, AUDIO_BP_CLOSE);
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 0);
 
-    // if(!IsPlayerUsingBackpack(playerid) && !IsPlayerUsingWeaponMenu(playerid))
-    // {
     wait_ms(1200);
-    CLF(#SetPlayerLastWeapon, "d", playerid);
-    //}
+    CLF(#EquipItem, "dd", playerid, GetPlayerLastEquippedItemId(playerid));
 }
 
 // Change the colors of WRENCH and SUPPLEMENT icons in the navigation menu.
@@ -120,12 +138,6 @@ UpdateNavItemsColors(playerid)
 // (each category is split in 'ShowBackpackCategory' function).
 bool:ShowBackpack(playerid)
 {
-    if(IsPlayerUnableToPerformAction(playerid) || IsPlayerAimingWeapon(playerid)
-    || IsPlayerUsingWeaponMenu(playerid) || GetPlayerSpeed(playerid) > 0.0)
-    {
-        return false;
-    }
-
     TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Bg]);
     TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_NavLeft]);
     for(new i = 0; i != 3; i++)
@@ -172,6 +184,16 @@ bool:HideBackpack(playerid, forceClose = false)
         }
     }
 
+    if(IsPlayerViewingCollectible(playerid))
+    {
+        Bit_Vet(ePlayerFlag[e_bIsViewingColl], playerid);
+    }
+
+    if(IsPlayerCheckingCollectibles(playerid))
+    {
+        Bit_Vet(ePlayerFlag[e_bIsCheckingColls], playerid);
+    }
+
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Bg]);
 
     TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);
@@ -193,7 +215,7 @@ bool:HideBackpack(playerid, forceClose = false)
 }
 
 // Display backpack's category.
-ShowBackpackCategory(playerid, category)
+ShowBackpackCategory(playerid, category, bool:firstTime = true)
 {
     UpdateNavItemsColors(playerid);
     switch(category)
@@ -204,7 +226,7 @@ ShowBackpackCategory(playerid, category)
             CraftTd_CheckWhatsToCraft(playerid);
             CraftTd_UpdateViewingItem(playerid, selectedCraft);
             CraftTd_HighlightSelection(playerid, selectedCraft);
-            CraftTd_UpdateIngr(playerid);
+            CraftTd_DisplayIngredients(playerid);
             CraftTd_UpdateItemAmount(playerid);
 
             TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Ls_Bg]);
@@ -232,9 +254,9 @@ ShowBackpackCategory(playerid, category)
         case BACKPACK_CATEGORY_SKILLS:
         {
             new selectedSkill = Skill_GetSelection(playerid);
-            SkillsTd_CheckSuppsAmount(playerid);
+            SkillsTd_UpdateSuppsAmount(playerid);
             SkillsTd_CheckWhatsToUpgrade(playerid);
-            SkillTd_UpdateViewingItem(playerid, selectedSkill);
+            SkillsTd_UpdateViewingItem(playerid);
 
             PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_SuppsIcon]);
             PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CatName], "SKILLS");
@@ -255,8 +277,19 @@ ShowBackpackCategory(playerid, category)
 
         case BACKPACK_CATEGORY_COLLECTIBLES:
         {
-            new selectedColl = Coll_GetSelection(playerid);
-            //Display_ArtifactsList(playerid);
+            new selectedCategory = Coll_GetSelection(playerid);
+
+            if(firstTime == true)
+            {
+                CollTd_ShowTitles(playerid);
+            }
+            else
+            {
+                for(new i = 0; i < MAX_DISPLAY_COLLECTIBLES; i++)
+                {
+                    PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+                }
+            }
             
             PlayerTdSetString(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_CatName], "COLLECTIBLES");
             PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_NavSelectBox], 490.333557, 30.696300);
@@ -266,11 +299,16 @@ ShowBackpackCategory(playerid, category)
 
             for(new i = 0; i != 2; i++)
             {
-                TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
                 TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemIcon][i]);
                 TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemName][i]);
             }
-            Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selectedColl][e_fSelBoxX], eBackpack_CollItemsData[selectedColl][e_fSelBoxY]);
+
+            if(IsPlayerCheckingCollectibles(playerid))
+            {
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+            }
+
+            Backpack_MoveSelectBox(playerid, eBackpack_CollItemsData[selectedCategory][e_fSelBoxX], eBackpack_CollItemsData[selectedCategory][e_fSelBoxY]);
         }
     }
 }
@@ -345,13 +383,32 @@ HideBackpackCategory(playerid, category)
 
         case BACKPACK_CATEGORY_COLLECTIBLES:
         {
-            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MiddleLine]);
+            for(new i = 0; i < 9; i++)
+            {
+                if(!IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]))
+                {
+                    break;
+                }
+                PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i]);
+            }
+
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MiddleLine]);            
 
             for(new i = 0; i != 2; i++)
             {
                 TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_HowToView][i]);
                 TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemIcon][i]);
                 TdHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_ItemName][i]);
+            }
+
+            PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox]);
+            TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_SelectBox][playerid]);
+            
+            if(!IsPlayerViewingCollectible(playerid))
+            {
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_PaperNote]);
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend]);
+                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
             }
         }
     }

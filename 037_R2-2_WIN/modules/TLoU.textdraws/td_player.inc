@@ -33,7 +33,7 @@ CreatePlayerIntroTds(playerid)
 
 LoadPlayerTextDraws(playerid)
 {
-	Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loading player textdraws for: %s [%d]...", ePlayerInfo[playerid][e_sName], playerid);
+	Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Loading player textdraws for: %s (UID: 1 | GUID: 1)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
 
 	PlayerTextDraw_Chat(playerid);
 	PlayerTextDraw_HUD(playerid);
@@ -167,6 +167,20 @@ PlayerTextDraw_HUD(playerid)
 		PlayerTextDrawSetShadow		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][i], 0);
 		PlayerTextDrawSetOutline	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][i], 0);
 		PlayerTextDrawFont			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][i], 4);
+	}
+//#endregion
+
+//#region HUD : bullets -> shorty
+	for(new i = 5, Float:defX_bull_shotgun = 530.666320; i >= 0; i--, defX_bull_shotgun += 4)
+	{
+		ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i] = CreatePlayerTextDraw(playerid, defX_bull_shotgun, 355.436950, "TLoU:bull_shotgun");
+		PlayerTextDrawLetterSize	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 0.000000, 0.000000);
+		PlayerTextDrawTextSize		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 2.666692, 15.348139);
+		PlayerTextDrawAlignment		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 1);
+		PlayerTextDrawColor			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], COLOR_GRAY_TRANS);
+		PlayerTextDrawSetShadow		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 0);
+		PlayerTextDrawSetOutline	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 0);
+		PlayerTextDrawFont			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][i], 4);
 	}
 //#endregion
 
@@ -353,6 +367,7 @@ PlayerTextDraw_BackpackMenu(playerid)
 {
 	PlayerTextDraw_Backpack_Craft(playerid);
 	PlayerTextDraw_Backpack_Skills(playerid);
+	PlayerTextDraw_Backpack_Colls(playerid);
 
 //#region Right side-bar : Navigation top menu (select box + wrench/supplement/collectible)
 	ePlayerTextDrawInfo[playerid][e_Bp_Rs_NavSelectBox] = CreatePlayerTextDraw(playerid, 428.000000, 31.111112, "TLoU:selectbox");
@@ -749,6 +764,38 @@ PlayerTextDraw_Backpack_Skills(playerid)
 	PlayerTextDrawBackgroundColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], 51);
 	PlayerTextDrawFont			 (playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], 1);
 	PlayerTextDrawSetProportional(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Skills_Description], 1);
+}
+
+PlayerTextDraw_Backpack_Colls(playerid)
+{
+//#region Right side-bar : Collectibles titles
+
+	ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox] = CreatePlayerTextDraw(playerid, 483.333068, 124.348159, "TLoU:selectbox");
+	PlayerTextDrawLetterSize	(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], 0.000000, 0.000000);
+	PlayerTextDrawTextSize		(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], 93.000022, 20.325904);
+	PlayerTextDrawAlignment		(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], 1);
+	PlayerTextDrawColor			(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], -1);
+	PlayerTextDrawSetShadow		(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], 0);
+	PlayerTextDrawSetOutline	(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], 0);
+	PlayerTextDrawFont			(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_SelectBox], 4);
+
+	new Float:posY_collTitle = 127.348159;
+	for(new i = 0; i < 9; i++)
+	{
+		ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i] = CreatePlayerTextDraw(playerid, 491.666778, posY_collTitle, "");
+		PlayerTextDrawLetterSize		(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 0.223995, 1.239109);
+		PlayerTextDrawAlignment			(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 1);
+		PlayerTextDrawColor				(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], -1);
+		PlayerTextDrawSetShadow			(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 0);
+		PlayerTextDrawSetOutline		(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 1);
+		PlayerTextDrawBackgroundColor	(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 51);
+		PlayerTextDrawFont				(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 1);
+		PlayerTextDrawSetProportional	(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_Coll_Titles][i], 1);
+
+		posY_collTitle += 24.0;
+	}
+
+//#endregion
 }
 
 PlayerTextDraw_WeaponMenu(playerid)

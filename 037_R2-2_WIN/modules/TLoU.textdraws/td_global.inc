@@ -109,6 +109,40 @@ GlobalTextDraw_Backpack_Coll()
 		TextDrawSetProportional	(eTextDrawInfo[e_Bp_Rs_Coll_ItemName][i], 1);
 	}
 //#endregion
+
+	// Right side-bar : Paper note texture (to display collectibles text over it).
+	eTextDrawInfo[e_Bp_Rs_Coll_PaperNote] = TextDrawCreate(401.666778, 112.829666, "TLoU:paper_note");
+	TextDrawLetterSize	(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 0.000000, 0.000000);
+	TextDrawTextSize	(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 147.666641, 247.644317);
+	TextDrawAlignment	(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 1);
+	TextDrawColor		(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], -1);
+	TextDrawSetShadow	(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 0);
+	TextDrawSetOutline	(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 0);
+	TextDrawFont		(eTextDrawInfo[e_Bp_Rs_Coll_PaperNote], 4);
+
+	// Right side-bar : Pendant texture (to display collectibles text over it).
+	eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend] = TextDrawCreate(425.333679, 177.540771, "TLoU:pendant");
+	TextDrawLetterSize	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 0.000000, 0.000000);
+	TextDrawTextSize	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 95.333343, 120.710922);
+	TextDrawAlignment	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 1);
+	TextDrawColor		(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], -1);
+	TextDrawSetShadow	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 0);
+	TextDrawSetOutline	(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 0);
+	TextDrawFont		(eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend], 4);
+
+	for(new i = 0; i != MAX_PLAYERS; i++)
+	{
+		// Overlay textdraw for paper note/firefly pendant to display its message
+		eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i] = TextDrawCreate(402.666778, 152.237045, "");
+		TextDrawLetterSize		(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 0.248998, 1.143702);
+		TextDrawAlignment		(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 1);
+		TextDrawColor			(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], -1);
+		TextDrawSetShadow		(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 0);
+		TextDrawSetOutline		(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 1);
+		TextDrawBackgroundColor	(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 51);
+		TextDrawFont			(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 1);
+		TextDrawSetProportional	(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][i], 1);
+	}
 }
 
 GlobalTextDraw_BackpackMenu()

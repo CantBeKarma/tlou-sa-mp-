@@ -5,19 +5,18 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerShivPlayer(playerid, shivedId)
 {
-	new newShivAmount = GetPlayerShivs[playerid] - 1;
-	SetPlayerWeaponAmmo(playerid, WEAPON_SHIV, newShivAmount);
+	new newShivAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) - 1;
 	
 	if(newShivAmount <= 0)
 	{
-		RemovePlayerWeapon(playerid, WEAPON_SHIV);
+		//RemovePlayerWeapon(playerid, WEAPON_SHIV);
 	}
-
-	HidePlayerWeapon(playerid);
+	
+	HideItem(playerid);
 	ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PLAYER");
 
 	SPAO(playerid, ITEM_MODEL_SHIV);
-	SetPlayerHealthEx(shivedId, 0.0, playerid, WEAPON_SHIV);
+	SetPlayerHealthEx(shivedId, 0.0, playerid, _:ITEM_IDX_SHIV);
 	return 0;
 }
 

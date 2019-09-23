@@ -234,15 +234,16 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 			return 0;
 		}
 
-		new issuerWeaponId = CurrentPlayerWeaponId[issuerid];
+		new playerItemId = GetPlayerEquippedItemId(issuerid);
+		new issuerWeaponId = GetItemNativeWeaponId(playerItemId);
 		new Float:distanceBetweenPlayers = 0.0;
-		new Float:damageAmount = CalculateDamageAmount(issuerid, npcid, issuerWeaponId, distanceBetweenPlayers, bodypart);
+		new Float:damageAmount = CalculateDamageAmount(issuerid, npcid, playerItemId, distanceBetweenPlayers, bodypart);
 
-		if(IsMeleeWeapon(issuerWeaponId))
+		if(IsItemType(playerItemId, ITEM_TYPE_MELEE))
 		{
 			FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, damageAmount);
 		}
-		else if(IsBulletWeapon(issuerWeaponId))
+		else if(IsItemType(playerItemId, ITEM_TYPE_BULLET_WEAPON))
 		{
 			FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, damageAmount, distanceBetweenPlayers, bodypart);
 		}
@@ -300,7 +301,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 	public FCNPC_OnGetShived(npcid, shiverId)
 	{
-		SetPlayerWeapon(shiverId, WEAPON_SHIV);
+		EquipItem(shiverId, _:ITEM_IDX_SHIV);
 		ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
 
 		FCNPC_SetHealthEx(npcid, 0.0, shiverId, WEAPON_SHIV);
@@ -409,6 +410,14 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 	public FCNPC_OnShakeOffStun(npcid)
 	{
 		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+		return 0;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	//------------------ FCNPC_OnGetHitByThrowable ------------------
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	public FCNPC_OnGetHitByThrowable(npcId, issuerId, itemId)
+	{
 		return 0;
 	}
 

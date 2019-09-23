@@ -23,6 +23,7 @@
 #include    <streamer>
 #include    <FCNPC>
 #include    <a_mysql_yinline>
+#include    <bcrypt>
 
 // Modules.
 #include    <config\main>
@@ -30,12 +31,17 @@
 #include    <TLoU.animations\main>
 #include    <TLoU.audio\main>
 #include    <TLoU.backpack\main>
-#include    <TLoU.characters\main>
-#include    <TLoU.commands\main>
+#include    <TLoU.bow\main>
+#include    <TLoU.chat\main>
 #include    <TLoU.players\main>
+#include    <TLoU.playerStatuses\main>
+#include    <TLoU.projectiles\main>
 #include    <TLoU.damages\main>
 #include    <TLoU.fire\main>
+#include    <TLoU.health\main>
+#include    <TLoU.hud\main>
 #include    <TLoU.dbQueries\main>
+#include    <TLoU.dialogs\main>
 #include    <TLoU.items\main>
 #include    <TLoU.npcs\main>
 #include    <TLoU.objects\main>
@@ -43,4 +49,4 @@
 #include    <TLoU.textdraws\main>
 #include    <TLoU.weaponMenu\main>
 #include    <TLoU.weapons\main>
-#include    <TLoU.weaponsUpgrades\main>
+#include    <TLoU.commands\main>

@@ -1,4 +1,4 @@
-// GlobalTds (current count: 110 | limit: 2048)
+// GlobalTds (current count: 112 | limit: 2048)
 enum e_GLOBAL_TD_DATA
 {
 	Text:e_Punish,
@@ -35,11 +35,15 @@ enum e_GLOBAL_TD_DATA
 	Text:e_Bp_Rs_Coll_MiddleLine,
 	Text:e_Bp_Rs_Coll_HowToView[2],
 	Text:e_Bp_Rs_Coll_ItemIcon[2],
-	Text:e_Bp_Rs_Coll_ItemName[2]
+	Text:e_Bp_Rs_Coll_ItemName[2],
+	
+	Text:e_Bp_Rs_Coll_PaperNote,
+	Text:e_Bp_Rs_Coll_FireflyPend,
+	Text:e_Bp_Rs_Coll_MessageText[MAX_PLAYERS]
 };
 new eTextDrawInfo[e_GLOBAL_TD_DATA];
 
-// PlayerTds (current count: 235 | limit: 256)
+// PlayerTds (current count: 251 | limit: 256)
 enum e_PLAYER_TD_DATA
 {
 	PlayerText:e_BlackScreen,
@@ -74,6 +78,9 @@ enum e_PLAYER_TD_DATA
 	PlayerText:e_Bp_Rs_Skills_Description,
 	PlayerText:e_Bp_Rs_SkillProg_Status[15],
 
+	PlayerText:e_Bp_Rs_Coll_SelectBox,
+	PlayerText:e_Bp_Rs_Coll_Titles[9],
+
 	PlayerText:e_Hud_Bg,
 	PlayerText:e_Hud_Melee,
 	PlayerText:e_Hud_Shiv_Amount,
@@ -81,6 +88,7 @@ enum e_PLAYER_TD_DATA
 	PlayerText:e_Hud_Ammo,
 	PlayerText:e_Hud_Bullet_9mm[14],
 	PlayerText:e_Hud_Bullet_Revolver[6],
+	PlayerText:e_Hud_Bullet_Shorty[6],
 	PlayerText:e_Hud_Bullet_Shotgun[8],
 	PlayerText:e_Hud_Bullet_Rifle[3],
 	PlayerText:e_Hud_Bullet_Assault[30],

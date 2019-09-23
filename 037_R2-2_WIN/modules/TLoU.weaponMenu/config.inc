@@ -10,13 +10,19 @@
 #define     WEAPON_MENU_H_RIGHT0      (2)
 #define     WEAPON_MENU_H_RIGHT1      (3)
 
+// Hiding weapon menu partially.
+#define     HIDE_WEAPMENU_PART_ALL      (-1)
+#define     HIDE_WEAPMENU_PART_VERT     (0)
+#define     HIDE_WEAPMENU_PART_HORI     (1)
+
+// Maximal amounts.
 #define     MAX_WEAPMENU_ITEMS        (9)
 
 // Other.
 #define     WeapMenu_GetSelectionV(%0)      ePlayerWeapMenu[%0][e_iWeapMenu_SelectedItemV]
 #define     WeapMenu_GetSelectionH(%0)      ePlayerWeapMenu[%0][e_iWeapMenu_SelectedItemH]
-#define     WeapMenu_Ls_WeaponId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Ls_Weapons][%1]
-#define     WeapMenu_Rs_WeaponId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Rs_Weapons][%1]
+#define     WeapMenu_Ls_ItemId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Ls_ItemId][%1]
+#define     WeapMenu_Rs_ItemId(%0,%1)     ePlayerWeapMenu[%0][e_iWeapMenu_H_Rs_ItemId][%1]
 
 enum e_WEAPMENU_DATA
 {
@@ -45,7 +51,8 @@ enum e_PLAYER_WEAPMENU_DATA
 	e_iWeapMenu_KeysLeftRight,
     e_iWeapMenu_SelectedItemV,
     e_iWeapMenu_SelectedItemH,
-    e_iWeapMenu_H_Ls_Weapons[4],
-    e_iWeapMenu_H_Rs_Weapons[3],
+
+    e_iWeapMenu_H_Ls_ItemId[4],
+    e_iWeapMenu_H_Rs_ItemId[3]
 };
 new ePlayerWeapMenu[MAX_PLAYERS][e_PLAYER_WEAPMENU_DATA];

@@ -1,0 +1,1 @@
+forward OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:newStatusId, statusIssuerId);

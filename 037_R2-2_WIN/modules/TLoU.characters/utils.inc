@@ -1,8 +1,31 @@
-// Reset all characters data in enumerator (called in OnPlayerDisconnect)
+// Reset all characters data in enumerator.
 ResetEnum_eCharsInfo(playerid)
 {
     static sBlank[e_CHARS_DATA];
     eCharsInfo[playerid] = sBlank;
 
     print("ResetEnum_eCharsInfo");
+}
+
+// Returns character Uid that player is playing as.
+GetPlayerCharUid(playerid)
+{
+    return eCharsInfo[playerid][e_iUid];
+}
+
+// Returns player's character supplements amount.
+GetPlayerSupplementsAmount(playerid)
+{
+    return eCharsInfo[playerid][e_iSkills_SuppsAmount];
+}
+
+// Set player's supplements amount.
+SetPlayerSupplements(playerid, amount)
+{
+    eCharsInfo[playerid][e_iSkills_SuppsAmount] = ((amount < 0) ? (0) : (amount > MAX_PLAYER_SUPPS_AMOUNT) ? (MAX_PLAYER_SUPPS_AMOUNT) : (amount));
+    
+    SkillsTd_UpdateSuppsAmount(playerid);
+    SkillsTd_CheckWhatsToUpgrade(playerid);
+    SkillsTd_UpdateViewingItem(playerid);
+    UpdateNavItemsColors(playerid);
 }
