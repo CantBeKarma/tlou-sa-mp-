@@ -1,6 +1,4 @@
-#include	<YSI\y_hooks>
-
-// Reset all player data in enumerator (called in OnPlayerDisconnect)
+// Reset all player data in enumerator.
 ResetEnum_ePlayerInfo(playerid)
 {
     static sBlank[e_PLAYER_DATA];
@@ -13,7 +11,7 @@ ResetEnum_ePlayerInfo(playerid)
 	print("ResetEnum_ePlayerInfo");
 }
 
-// Reset all player flags (called in OnPlayerDisconnect)
+// Reset all player flags.
 ResetBits_ePlayerFlag(playerid)
 {
 	Bit_Vet(ePlayerFlag[e_bLogged], playerid);

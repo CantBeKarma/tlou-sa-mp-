@@ -1,106 +1,5 @@
 #include	<YSI\y_hooks>
 
-//#region Main initiation callbacks
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//-------------------- OnPlayerConnect --------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	hook OnPlayerConnect(playerid) 
-	{
-		if(IsPlayerNPC(playerid))
-		{
-			return 1;
-		}
-		return 1;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//---------------- OnPlayerTLoUClientJoin ------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public OnPlayerTLoUClientJoin(playerid, bool:has_plugin)
-	{
-		if(has_plugin)
-		{
-			wait_ms(500);
-
-			Bit_Vet(ePlayerFlag[e_bLogged], playerid);
-			SetCameraBehindPlayer(playerid);
-			SpawnPlayer(playerid);
-		}
-		else
-		{
-			if(!TLoU_IsClientConnected(playerid))
-			{
-				new String:pName = str_new_buf(MAX_PLAYER_NAME);
-				str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
-
-				Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s connected (possibly) without a tlou_client.asi file. Kicked.", _:pName);
-				Kick(playerid);
-				return 0;
-			}
-		}
-		return 1;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//------------------ OnPlayerDisconnect ------------------- 
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	hook OnPlayerDisconnect(playerid, reason)
-	{
-		if(IsPlayerNPC(playerid))
-		{
-			return 1;
-		}
-		
-		SavePlayerCharacterData(playerid);
-		DestroyPlayerLabel(playerid);
-		
-		ResetEnum_ePlayerInfo(playerid);
-		ResetBits_ePlayerFlag(playerid);
-		ResetEnum_eCharsInfo(playerid);
-		ResetEnum_ePlayerBpInfo(playerid);
-		ResetEnum_ePlayerAudio(playerid);
-		ResetEnum_ePlayerWeapon(playerid);
-		ResetEnum_ePlayerWeapMenu(playerid);
-		return 1;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//--------------------- OnPlayerSpawn ---------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public OnPlayerSpawn(playerid) 
-	{
-		if(!IsPlayerLogged(playerid))
-		{
-			OnPlayerFirstSpawn(playerid);
-			return 0;
-		}
-
-		OnPlayerRespawn(playerid);
-		return 1;
-	}
-
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	//------------------- OnPlayerFirstSpawn ------------------
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	public OnPlayerFirstSpawn(playerid)
-	{
-		if(!TLoU_IsClientConnected(playerid))
-		{
-			new String:pName = str_new_buf(MAX_PLAYER_NAME);
-			str_resize(pName, GetPlayerName_s(playerid, pName, MAX_PLAYER_NAME));
-
-			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s connected (possibly) without a tlou_client.asi file. Kicked.", _:pName);
-			Kick(playerid);
-			return 0;
-		}
-
-		PreparePlayerToSign(playerid);
-		return 0;
-	}
-
-//#endregion
-
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- OnPlayerRespawn --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -131,8 +30,8 @@ public OnPlayerDie(playerid, issuerid, itemId, bodypart)
 {
 	if(issuerid == INVALID_PLAYER_ID)
 	{
-		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s [%d] has killed himself", \
-				PlayerName(playerid), playerid);
+		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s (UID: %d | GUID: %d) has killed himself", \
+				PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
 
 		if(itemId != _:ITEM_IDX_NAIL_BOMB)
 		{
@@ -141,8 +40,8 @@ public OnPlayerDie(playerid, issuerid, itemId, bodypart)
 	}
 	else
 	{
-		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s [%d] has been killed by %s [%d] using weapon id: %d to body part: %d", \
-				PlayerName(playerid), playerid, PlayerName(issuerid), issuerid, itemId, bodypart);
+		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "%s (UID: %d | GUID: %d) has been killed by %s (UID: %d | GUID: %d) using weapon id: %d to body part: %d", \
+				PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), GetPlayerCharUid(issuerid), GetPlayerGuid(issuerid), itemId, bodypart);
 	}
 
 	FreezePlayer(playerid, true, -1);
@@ -437,25 +336,5 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		ePlayerInfo[playerid][e_iTickCounter_holdingKey] = GetConnectedTime(playerid);
 		ePlayerInfo[playerid][e_iTimer_holdingKey] = repeat Callback_HoldKeyTimer(playerid, newkeys);
 	}
-	return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//----------------------- OnPlayerDeath -------------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerDeath(playerid, killerid, reason)
-{
-	if(IsPlayerNPC(playerid))
-	{
-		return 1;
-	}
-
-	if(killerid != INVALID_PLAYER_ID)
-	{
-		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerDeath callback has been called for: [%d]. Has been killed by: [%d] - VERIFY WHY!!!", playerid, killerid);
-		return 1;
-	}
-			
-	Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "OnPlayerDeath callback has been called for [%d]. VERIFY WHY!!!", playerid);
 	return 1;
 }

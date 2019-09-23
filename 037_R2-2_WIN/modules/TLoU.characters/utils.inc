@@ -1,4 +1,4 @@
-// Reset all characters data in enumerator (called in OnPlayerDisconnect)
+// Reset all characters data in enumerator.
 ResetEnum_eCharsInfo(playerid)
 {
     static sBlank[e_CHARS_DATA];
