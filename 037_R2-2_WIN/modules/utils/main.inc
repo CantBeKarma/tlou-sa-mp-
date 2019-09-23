@@ -9,6 +9,7 @@
 #include <TLoU.fire\utils>
 #include <TLoU.health\utils>
 #include <TLoU.hud\utils>
+#include <TLoU.weaponsUpgrades\utils>
 #include <TLoU.items\utils>
 #include <TLoU.objects\utils>
 #include <TLoU.npcs\utils>
@@ -21,4 +22,3 @@
 #include <TLoU.registerLogin\utils>
 #include <TLoU.textdraws\utils>
 #include <TLoU.weapons\utils>
-#include <TLoU.weaponsUpgrades\utils>
