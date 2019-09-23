@@ -20,7 +20,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         new currentItemId = GetPlayerEquippedItemId(playerid);
         
         // Equipping melee weapon
-        if(IsPlayerIdle(playerid) && ITEM_IDX:currentItemId != ITEM_IDX:ITEM_IDX_NAIL_BOMB)
+        if(IsPlayerIdle(playerid) 
+        && !IsItemType(currentItemId, ITEM_TYPE_MEDKIT)
+        && ITEM_IDX:currentItemId != ITEM_IDX:ITEM_IDX_NAIL_BOMB)
         {
             new meleeItemId = GetPlayerMeleeItemId(playerid);
             if(meleeItemId == -1)
