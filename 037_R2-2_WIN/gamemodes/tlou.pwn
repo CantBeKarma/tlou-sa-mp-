@@ -52,4 +52,5 @@
 #include    <TLoU.weapons\main>
 #include    <TLoU.weapons\bow\main>
 #include    <TLoU.weapons\projectiles\main>
+#include    <TLoU.weapons\shiv\main>
 #include    <TLoU.commands\main>

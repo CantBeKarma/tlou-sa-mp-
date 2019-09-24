@@ -1,7 +1,7 @@
 #include	<YSI\y_hooks>
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//-------------------- OnPlayerShivPlayer -----------------
+//------------------- OnPlayerShivPlayer ------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerShivPlayer(playerid, shivedId)
 {
@@ -21,7 +21,7 @@ public OnPlayerShivPlayer(playerid, shivedId)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------ OnPlayerKeyStateChange ---------------
+//---------------- OnPlayerKeyStateChange -----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

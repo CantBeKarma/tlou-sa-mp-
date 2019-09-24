@@ -1,7 +1,5 @@
 forward OnPlayerWeaponChange(playerid, newItemId, oldItemId);
 
-forward OnPlayerShivPlayer(playerid, shivedId);
-
 forward OnPlayerReloadWeapon(playerid, itemId, oldClipAmmo, newClipAmmo);
 forward OnPlayerWeaponShoot(playerid, weaponId, oldAmmo, oldClipAmmo, newAmmo, newClipAmmo, Float:fX, Float:fY, Float:fZ);
 
