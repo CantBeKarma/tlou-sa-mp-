@@ -397,15 +397,23 @@ YCMD:icmd(playerid, params[], help)
     {
         for(new i = 0; i < MAX_ITEMS_DATA; i++)
         {
-            GivePlayerItem(playerid, i);
+            if(!GivePlayerItem(playerid, i))
+            {
+                continue;
+            }
 
             new 
-                maxItemAmount = GetPlayerItemMaxAmount(playerid, i),
-                maxMeleeCnd = GetMeleeItemMaxCND(i, .extraCnd = true);
+                maxItemAmount = 0,
+                maxMeleeCnd = 0;                
 
             if(IsItemType(i, ITEM_TYPE_MELEE))
             {
                 maxItemAmount = GetMeleeItemMaxCND(i, .extraCnd = false);
+                maxMeleeCnd = GetMeleeItemMaxCND(i, .extraCnd = true);
+            }
+            else
+            {
+                maxItemAmount = GetPlayerItemMaxAmount(playerid, i);
             }
                 
             SetPlayerItemAmount(playerid, i, maxItemAmount, maxMeleeCnd);

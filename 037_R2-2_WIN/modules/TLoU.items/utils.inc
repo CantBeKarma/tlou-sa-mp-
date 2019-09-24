@@ -301,7 +301,7 @@
 
         if(!logOrLoadFromDB)
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "Player %s (UID: %d | GUID: %d) was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: Player %s (UID: %d | GUID: %d) was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
         }
         return true;
     }
@@ -580,10 +580,15 @@
             return false;
         }
 
-        new maxItemAmount = GetPlayerItemMaxAmount(playerid, itemId);
-        if(maxItemAmount == -1)
+        new maxItemAmount = -1;
+        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
         {
-            return false;
+            maxItemAmount = GetPlayerItemMaxAmount(playerid, itemId);
+            
+            if(maxItemAmount == -1)
+            {
+                return false;
+            }
         }
 
         if(IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)

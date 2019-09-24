@@ -22,7 +22,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         // Equipping melee weapon
         if(IsPlayerIdle(playerid) 
         && !IsItemType(currentItemId, ITEM_TYPE_MEDKIT)
-        && ITEM_IDX:currentItemId != ITEM_IDX:ITEM_IDX_NAIL_BOMB)
+        && ITEM_IDX:currentItemId != ITEM_IDX_NAIL_BOMB)
         {
             new meleeItemId = GetPlayerMeleeItemId(playerid);
             if(meleeItemId == -1)
@@ -41,7 +41,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         }
 
         // If player uses bullet weapon and has no ammo in a weapon magazine...
-        if(IsPlayerAimingWeapon(playerid) && IsItemType(currentItemId, ITEM_TYPE:ITEM_TYPE_BULLET_WEAPON) && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
+        if(IsPlayerAimingWeapon(playerid) && IsItemType(currentItemId, ITEM_TYPE_BULLET_WEAPON) && GetPlayerItemClipAmount(playerid, currentItemId) <= 0)
         {
             // Perform SFX when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
