@@ -157,7 +157,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         }
         else
         {
-            SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) + HEAL_ITEM_RECOVER_HP);
+            SetPlayerHealthEx(playerid, (GetPlayerHealthEx(playerid) + HEAL_ITEM_RECOVER_HP) + random(5));
         }
         return NEXT_ACTION_DESTROY;
     }

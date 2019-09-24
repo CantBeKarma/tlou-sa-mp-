@@ -269,7 +269,8 @@
     // true - if item has been given correctly
     bool:GivePlayerItem(playerid, itemId, bool:logOrLoadFromDB = false)
     {
-        if(HasPlayerGotItem(playerid, itemId) 
+        if(HasPlayerGotItem(playerid, itemId)
+        || IsItemType(itemId, ITEM_TYPE_HEAL) && ITEM_IDX:itemId != ITEM_IDX_MEDKIT
         || IsItemType(itemId, ITEM_TYPE_MELEE) && GetPlayerMeleeItemId(playerid) != -1
         || IsItemType(itemId, ITEM_TYPE_THROWABLE) && GetPlayerThrowableItemId(playerid) != -1)
         {

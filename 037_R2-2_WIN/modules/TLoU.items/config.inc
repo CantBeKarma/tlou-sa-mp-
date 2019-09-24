@@ -1,5 +1,5 @@
 // Maximal values.
-#define     MAX_ITEMS_DATA          (25)
+#define     MAX_ITEMS_DATA          (30)
 #define     MAX_COLL_TIT_LEN        (20)
 #define     MIN_COLL_TIT_LEN        (6)
 #define     MAX_COLL_MSG_LEN        (512)
@@ -22,6 +22,7 @@
 #define     ITEM_TYPE_ITEM          (2)
 
 //#region Item models.
+
     // -> Craftable
     #define     ITEM_MODEL_SHIV         (15071)
     #define     ITEM_MODEL_MEDKIT       (15072)
@@ -61,6 +62,14 @@
     #define     ITEM_MODEL_PAPER        (2953)
     #define     ITEM_MODEL_NOTES        (2059)
     #define     ITEM_MODEL_PENDANT      (2680)
+
+    // -> Healing snacks.
+    #define     ITEM_MODEL_ORANGE       (19574)
+    #define     ITEM_MODEL_RAW_MEAT     (2804)
+    #define     ITEM_MODEL_COOKED_MEAT  (19847)
+    #define     ITEM_MODEL_BURGER       (2880)
+    #define     ITEM_MODEL_TORTILLA     (2769)
+
 //#endregion
 
 enum ITEM_IDX
@@ -143,7 +152,13 @@ stock const eItemsSprites[MAX_ITEMS_DATA][25] =
     "TLoU:weap_smkbmb",
 
     "TLoU:weap_brick",
-    "TLoU:weap_bottle"
+    "TLoU:weap_bottle",
+
+    "",
+    "",
+    "",
+    "",
+    ""
 };
 
 enum e_ITEM_DATA
@@ -183,14 +198,20 @@ stock const eItemsData[MAX_ITEMS_DATA][e_ITEM_DATA] =
     {"Bow",                 ITEM_TYPE_WEAPON,       ITEM_MODEL_BOW,         -1,      9,         -1,                         WEAPON_BOW,             45.0,   35.0},
     {"Arrow",               ITEM_TYPE_AMMO,         ITEM_MODEL_ARROW,       -1,      0,         -1,                         -1,                     0.0,    0.0},
 
-    {"Shiv",                ITEM_TYPE_SHIV,         ITEM_MODEL_SHIV,        -1,      3,          -1,                        WEAPON_SHIV,            0.0,    0.0},
-    {"Medkit",              ITEM_TYPE_HEAL,         ITEM_MODEL_MEDKIT,      -1,      3,          AUDIO_PICKUP_MEDKIT,       WEAPON_MEDKIT,          0.0,    0.0},
-    {"Molotov Cocktail",    ITEM_TYPE_PROJECTILE,   ITEM_MODEL_MOLOTOV,     -1,      3,          -1,                        WEAPON_MOLOTOV,         5.0,    5.0},
-    {"Nail bomb",           ITEM_TYPE_PROJECTILE,   ITEM_MODEL_BOMB,        -1,      3,          -1,                        WEAPON_NAIL_BOMB,       85.0,   85.0},
-    {"Smoke Bomb",          ITEM_TYPE_PROJECTILE,   ITEM_MODEL_SMKBMB,      -1,      3,          -1,                        WEAPON_SMOKE_BOMB,      0.0,    0.0},
+    {"Shiv",                ITEM_TYPE_SHIV,         ITEM_MODEL_SHIV,        -1,      3,         -1,                         WEAPON_SHIV,            0.0,    0.0},
+    {"Medkit",              ITEM_TYPE_HEAL,         ITEM_MODEL_MEDKIT,      -1,      3,         AUDIO_PICKUP_MEDKIT,        WEAPON_MEDKIT,          0.0,    0.0},
+    {"Molotov Cocktail",    ITEM_TYPE_PROJECTILE,   ITEM_MODEL_MOLOTOV,     -1,      3,         -1,                         WEAPON_MOLOTOV,         5.0,    5.0},
+    {"Nail bomb",           ITEM_TYPE_PROJECTILE,   ITEM_MODEL_BOMB,        -1,      3,         -1,                         WEAPON_NAIL_BOMB,       85.0,   85.0},
+    {"Smoke Bomb",          ITEM_TYPE_PROJECTILE,   ITEM_MODEL_SMKBMB,      -1,      3,         -1,                         WEAPON_SMOKE_BOMB,      0.0,    0.0},
 
-    {"Brick",               ITEM_TYPE_THROWABLE,    ITEM_MODEL_BRICK,       -1,      1,          AUDIO_BRICK_PICKUP,        WEAPON_BRICK,           10.0,   10.0},
-    {"Bottle",              ITEM_TYPE_THROWABLE,    ITEM_MODEL_BOTTLE,      -1,      1,          AUDIO_BOTTLE_PICKUP,       WEAPON_BOTTLE,          10.0,   10.0}
+    {"Brick",               ITEM_TYPE_THROWABLE,    ITEM_MODEL_BRICK,       -1,      1,         AUDIO_BRICK_PICKUP,         WEAPON_BRICK,           10.0,   10.0},
+    {"Bottle",              ITEM_TYPE_THROWABLE,    ITEM_MODEL_BOTTLE,      -1,      1,         AUDIO_BOTTLE_PICKUP,        WEAPON_BOTTLE,          10.0,   10.0},
+
+    {"Orange",              ITEM_TYPE_HEAL,         ITEM_MODEL_ORANGE,      -1,      0,         -1,                         -1,                     0.0,    0.0},
+    {"Raw meat",            ITEM_TYPE_HEAL,         ITEM_MODEL_RAW_MEAT,    -1,      0,         -1,                         -1,                     0.0,    0.0},
+    {"Cooked meat",         ITEM_TYPE_HEAL,         ITEM_MODEL_COOKED_MEAT, -1,      0,         -1,                         -1,                     0.0,    0.0},
+    {"Burger",              ITEM_TYPE_HEAL,         ITEM_MODEL_BURGER,      -1,      0,         -1,                         -1,                     0.0,    0.0},
+    {"Tortilla",            ITEM_TYPE_HEAL,         ITEM_MODEL_TORTILLA,    -1,      0,         -1,                         -1,                     0.0,    0.0}
 };
 
 // Player item's data.
