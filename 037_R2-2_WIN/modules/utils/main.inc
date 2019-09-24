@@ -13,6 +13,7 @@
 #include <TLoU.hud\utils>
 #include <TLoU.weapons\upgrades\utils>
 #include <TLoU.items\utils>
+#include <TLoU.items\sprites\utils>
 #include <TLoU.objects\utils>
 #include <TLoU.npcs\utils>
 #include <TLoU.damages\utils>

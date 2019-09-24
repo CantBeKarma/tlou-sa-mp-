@@ -330,6 +330,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         }
 
         eObjData[e_bObj_Created] = true;
+        eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);
 
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
         return 0;
@@ -383,12 +384,33 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_sObj_Title][0] = EOS;
         eObjData[e_sObj_InnerMessage][0] = EOS;
         eObjData[e_bObj_Created] = true;
+        eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);
 
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
         return 0;
     }
 
 //#endregion
+
+hook OnPlayerEnterDynArea(playerid, areaid)
+{
+	if(areaid == eObjData[e_iObj_SpriteAreaId])
+	{
+        SCMF(playerid, -1, "You've entered area of itemId: %d (UID: %d)", eObjData[e_iObj_ItemId], eObjData[e_iObj_Uid]);
+        Sprite2D_Create(playerid, areaid, eObjData[e_iObj_ItemId], eObjData[e_fObj_X], eObjData[e_fObj_Y], eObjData[e_fObj_Z], eObjData[e_iObj_Vw], eObjData[e_iObj_Int]);
+	}
+    return 1;
+}
+
+hook OnPlayerLeaveDynArea(playerid, areaid)
+{
+	if (areaid == eObjData[e_iObj_SpriteAreaId])
+	{
+        SCMF(playerid, -1, "You've left area of itemId: %d (UID: %d)", eObjData[e_iObj_ItemId], eObjData[e_iObj_Uid]);
+		Sprite2D_Destroy(playerid, areaid);
+	}
+    return 1;
+}
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------- OnPlayerKeyStateChange ----------------

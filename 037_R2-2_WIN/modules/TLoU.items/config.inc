@@ -70,6 +70,9 @@
     #define     ITEM_MODEL_BURGER       (2880)
     #define     ITEM_MODEL_TORTILLA     (2769)
 
+    // > Other.
+    #define     ITEM_MODEL_TRANS_NO_COLL    (15999)
+
 //#endregion
 
 enum ITEM_IDX

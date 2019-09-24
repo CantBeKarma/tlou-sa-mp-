@@ -6,6 +6,7 @@
 #include	<TLoU.attachments\config>
 #include	<TLoU.audio\config>
 #include	<TLoU.items\config>
+#include	<TLoU.items\sprites\config>
 #include 	<TLoU.backpack\config>
 #include 	<TLoU.backpack\crafting\config>
 #include 	<TLoU.backpack\skills\config>

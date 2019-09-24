@@ -44,6 +44,7 @@
 #include    <TLoU.dbQueries\main>
 #include    <TLoU.dialogs\main>
 #include    <TLoU.items\main>
+#include    <TLoU.items\sprites\main>
 #include    <TLoU.npcs\main>
 #include    <TLoU.objects\main>
 #include    <TLoU.registerLogin\main>
