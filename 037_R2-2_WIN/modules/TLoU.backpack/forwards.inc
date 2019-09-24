@@ -10,9 +10,7 @@ forward OnPlayerReadCollectible(playerid, row_title[], row_message[]);
 forward OnPlayerStopReadingCollectible(playerid);
 forward OnPlayerCollectibleLoad(playerid, title[]);
 
-forward OnPlayerStartedCrafting(playerid, craftItemId);
-forward OnPlayerCanceledCrafting(playerid);
-forward OnPlayerCraftedItem(playerid, craftItemId);
+
 
 forward Float:SkillsTd_GetStartBarColumnPosX(targetTextdrawBarIdx);
 forward OnPlayerStartedUpgradingSkill(playerid, skillId);
