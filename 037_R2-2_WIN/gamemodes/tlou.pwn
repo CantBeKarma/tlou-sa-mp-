@@ -36,7 +36,7 @@
 #include    <TLoU.backpack\collectibles\main>
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
-#include    <TLoU.playerStatuses\main>
+#include    <TLoU.players\statuses\main>
 #include    <TLoU.damages\main>
 #include    <TLoU.fire\main>
 #include    <TLoU.health\main>

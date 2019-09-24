@@ -18,8 +18,8 @@
 #include <TLoU.damages\utils>
 #include <TLoU.dialogs\utils>
 #include <TLoU.weaponMenu\utils>
-#include <TLoU.playerStatuses\utils>
 #include <TLoU.players\utils>
+#include <TLoU.players\statuses\utils>
 #include <TLoU.registerLogin\utils>
 #include <TLoU.textdraws\utils>
 #include <TLoU.weapons\utils>

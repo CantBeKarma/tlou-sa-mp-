@@ -1,3 +1,5 @@
+forward PLAYER_STATUS:GetPlayerStatus(playerid);
+
 // Reset all player data in enumerator.
 ResetEnum_ePlayerInfo(playerid)
 {

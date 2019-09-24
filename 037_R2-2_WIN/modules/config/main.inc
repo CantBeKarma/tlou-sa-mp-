@@ -21,7 +21,7 @@
 #include    <TLoU.npcs\config>
 #include    <TLoU.objects\config>
 #include 	<TLoU.players\config>
-#include 	<TLoU.playerStatuses\config>
+#include 	<TLoU.players\statuses\config>
 #include 	<TLoU.weapons\config>
 #include	<TLoU.weapons\bow\config>
 #include 	<TLoU.weapons\projectiles\config>
