@@ -27,19 +27,14 @@
 #define     PROJ_PHYSDROP_COLLIDE_SIMULATION    (false)
 #define     PROJ_PHYSDROP_MASS                  (1.0)
 
-#define     ARROW_RANGE_DAMAGE          (3.0)
-//#define		MAX_ARROW_SPEED			    (40.0)
-#define		MAX_ARROW_DISTANCE		    (40.0)
-#define     MAX_ARROW_STRETCH_TIME      (2000)
 #define		MAX_THROWABLES			    (MAX_PLAYERS * 3)
-
-#define     SHIV_LABEL_DRAW_DIST        (3.0)
-#define     SHIV_ATTACK_DIST            (3.0)
 
 #define     OBJ_MODEL_NAILBOMB_SMOKE    (18673)
 #define     OBJ_MODEL_FIRE_EXPLOSION    (18686)
 #define     OBJ_MODEL_EXPLOSION         (18680)
 #define     OBJ_MODEL_SMOKE             (18715)
+
+new Iterator:NailBmbsList<MAX_THROWABLES>;
 
 // Projectiles data.
 enum e_SERVER_PROJECTILES_DATA
@@ -52,5 +47,3 @@ enum e_SERVER_PROJECTILES_DATA
     Timer:e_iNailBmb_Timer
 };
 new eProjectileData[MAX_THROWABLES][e_SERVER_PROJECTILES_DATA];
-
-new Iterator:NailBmbsList<MAX_THROWABLES>;
