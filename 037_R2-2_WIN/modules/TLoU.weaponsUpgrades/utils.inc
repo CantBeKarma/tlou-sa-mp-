@@ -67,6 +67,29 @@ GetPlayerItemUpgradeLvl(playerid, itemId, upgradeType)
     return -1;
 }
 
+// Returns maximal possible weapon amount that player can have for a specific weapon.
+// Returns:
+// (-1) if item wasn't found in the list of upgradeable items 
+// (x) value of max amount for that item
+GetItemMaxAmountByLevel(itemId, level);
+{
+    if(level == -1)
+    {
+        return -1;
+    }
+    
+    for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+    {
+        if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
+        && eItemsUpgrades[i][e_iItem_UpgradeLvl] == level
+        && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
+        {
+            return eItemsUpgrades[i][e_iItem_MaxAmount];
+        }
+    }
+    return -1;
+}
+
 // Returns maximal possible weapon clipsize that player can have for a specific weapon.
 // Returns:
 // (-1) if player hasn't got an item or didn't find specified item in the list of upgradeable items.
