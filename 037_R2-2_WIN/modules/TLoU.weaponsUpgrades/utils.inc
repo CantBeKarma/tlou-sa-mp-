@@ -118,3 +118,26 @@ bool:SetPlayerItemUpgradeLvl(playerid, itemId, level, upgradeType)
     Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SetPlayerItemUpgradeLvl: set upgrade level to: %d of upgrade type: %d for item id: %d (charUid: %d)", level, upgradeType, itemId, GetPlayerCharUid(playerid));
     return true;
 }
+
+// Gets melee item maximal condition (CND)
+// Returns:
+// 0 - if specified item is not a melee item OR no data found in data table
+// (x) - melee item CND
+GetMeleeItemMaxCND(itemId, bool:extraCnd = false)
+{
+    if(!IsItemType(itemId, ITEM_TYPE_MELEE))
+    {
+        return 0;
+    }
+
+    new cndAmount = 0;
+    for(new i = 0; i != MAX_MELEE_ITEMS; i++)
+    {
+        if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
+        {
+            cndAmount = (!extraCnd) ? (eItemsMeleeCND[i][e_iItemBasicCND]) : (eItemsMeleeCND[i][e_iItemExtraCND]);
+            break;
+        }
+    }
+    return cndAmount;
+}

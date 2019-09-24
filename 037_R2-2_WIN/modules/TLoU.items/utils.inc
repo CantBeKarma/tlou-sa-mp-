@@ -94,7 +94,7 @@
             {
                 if(meleeExtCnd > 0 && itemId != _:ITEM_IDX_PIPE)
                 {
-                    new maxMeleeExtCnd = GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId, true);
+                    new maxMeleeExtCnd = GetMeleeItemMaxCND(itemId, .extraCnd = true);
                     meleeExtCnd = (meleeExtCnd > maxMeleeExtCnd) ? (maxMeleeExtCnd) : (meleeExtCnd);
                 }
                 else
@@ -102,7 +102,7 @@
                     meleeExtCnd = 0;
                 }
 
-                new maxMeleeBasicCnd = GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId);
+                new maxMeleeBasicCnd = GetMeleeItemMaxCND(itemId, .extraCnd = false);
                 itemAmount = (itemAmount > maxMeleeBasicCnd) ? (maxMeleeBasicCnd) : (itemAmount);
 
                 rX = 90.0;
@@ -449,7 +449,7 @@
     // (0) if system tried to check for melee extra CND on item which is not a melee weapon
     // (x) maximal value of an item 
     // (results are possible to be returned from 3 tables - eItemsData | eItemsUpgrades | eItemsMeleeCND)
-    GetPlayerItemMaxAmount(playerid, itemId, bool:checkMeleeExtraCND = false)
+    GetPlayerItemMaxAmount(playerid, itemId)
     {
         // if(!HasPlayerGotItem(playerid, itemId))
         // {
@@ -457,53 +457,27 @@
         // }
 
         new maxAmount = 0;
-        if(checkMeleeExtraCND == true)
+        maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
+        if(maxAmount == -1)
         {
-            if(!IsItemType(itemId, ITEM_TYPE:ITEM_TYPE_MELEE))
+            if(IsItemType(itemId, ITEM_TYPE_WEAPON))
             {
-                return 0;
-            }
-
-            for(new i = 0; i != MAX_MELEE_ITEMS; i++)
-            {
-                if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
+                new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
+            
+                for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
                 {
-                    maxAmount = eItemsMeleeCND[i][e_iItemExtraCND];
-                    break;
-                }
-            }
-        }
-        else
-        {
-            maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
-            if(maxAmount == -1)
-            {
-                if(IsItemType(itemId, ITEM_TYPE_WEAPON))
-                {
-                    new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
-                
-                    for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
+                    if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
+                    && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
+                    && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
                     {
-                        if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
-                        && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
-                        && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
-                        {
-                            maxAmount = eItemsUpgrades[i][e_iItem_MaxAmount];
-                            break;
-                        }
+                        maxAmount = eItemsUpgrades[i][e_iItem_MaxAmount];
+                        break;
                     }
                 }
-                else if(IsItemType(itemId, ITEM_TYPE_MELEE))
-                {
-                    for(new i = 0; i != MAX_MELEE_ITEMS; i++)
-                    {
-                        if(eItemsMeleeCND[i][e_iItemId] == ITEM_IDX:itemId)
-                        {
-                            maxAmount = eItemsMeleeCND[i][e_iItemBasicCND];
-                            break;
-                        }
-                    }
-                }
+            }
+            else if(IsItemType(itemId, ITEM_TYPE_MELEE))
+            {
+                maxAmount = GetMeleeItemMaxCND(itemId, .extraCnd = false);
             }
         }
         return maxAmount;
@@ -598,7 +572,7 @@
 
         if(extraCnd > 0)
         {
-            new maxExtraCnd = GetPlayerItemMaxAmount(playerid, itemId, true);
+            new maxExtraCnd = GetMeleeItemMaxCND(itemId, .extraCnd = true);
             ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = (extraCnd > maxExtraCnd) ? (maxExtraCnd) : (extraCnd);
         }
         else
@@ -926,7 +900,7 @@ ShowPlayerItemLabel(playerid, item_objectId)
 
                     format(labelStr, sizeof(labelStr), "%s\n(CND: %d/%d)", eItemsData[itemId][e_sItem_Name], \
                             (isItemMeleeUpgraded) ? (itemAmount + itemExtAmount) : (itemAmount), \
-                            (isItemMeleeUpgraded) ? GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId) + GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId, true) : GetPlayerItemMaxAmount(INVALID_PLAYER_ID, itemId));
+                            (isItemMeleeUpgraded) ? GetMeleeItemMaxCND(itemId, .extraCnd = false) + GetMeleeItemMaxCND(itemId, .extraCnd = true) : GetMeleeItemMaxCND(itemId, .extraCnd = false));
                 }
 
                 case ITEM_TYPE_INGREDIENT:  format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));

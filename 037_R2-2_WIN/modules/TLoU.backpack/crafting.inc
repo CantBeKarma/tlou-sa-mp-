@@ -48,7 +48,7 @@ public OnPlayerCraftedItem(playerid, craftItemId)
             GivePlayerItem(playerid, itemId);
         }
 
-        SetPlayerItemAmount(playerid, itemId, playerMeleeCnd, GetPlayerItemMaxAmount(playerid, itemId, true));
+        SetPlayerItemAmount(playerid, itemId, playerMeleeCnd, GetMeleeItemMaxCND(itemId, .extraCnd = true));
     }
 
     // Reduct ingredients.

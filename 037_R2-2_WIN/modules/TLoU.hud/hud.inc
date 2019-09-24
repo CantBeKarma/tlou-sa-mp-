@@ -134,7 +134,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
         new 
             maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId),
-            maxMeleeBars = maxBasicCnd + GetPlayerItemMaxAmount(playerid, itemId, true);
+            maxMeleeBars = maxBasicCnd + GetMeleeItemMaxCND(itemId, .extraCnd = true);
 
         new 
             playerMeleeCnd = GetPlayerItemAmount(playerid, itemId),
@@ -257,7 +257,7 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
         
         new 
             maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId),
-            maxMeleeBars = maxBasicCnd + GetPlayerItemMaxAmount(playerid, itemId, true);
+            maxMeleeBars = maxBasicCnd + GetMeleeItemMaxCND(itemId, .extraCnd = true);
 
         for(new tdIdx = 0; tdIdx != maxMeleeBars; tdIdx++)
         {
