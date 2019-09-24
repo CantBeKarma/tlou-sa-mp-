@@ -190,6 +190,24 @@ Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
 Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)return GetXYInFrontOfPlayer(playerid, x, y, distance);
 // Get XY coords behind player with certain distance (for distance substract sign '-' needs to be supplied).
 
+// Changes object facing position towards specified coords.
+SetObjectFaceCoords3D(iObject, Float: fX, Float: fY, Float: fZ, Float: fRollOffset = 0.0, Float: fPitchOffset = 0.0, Float: fYawOffset = 0.0) 
+{
+    new
+        Float: fOX,
+        Float: fOY,
+        Float: fOZ,
+        Float: fPitch
+    ;
+    GetDynamicObjectPos(iObject, fOX, fOY, fOZ);
+
+    fPitch = floatsqroot(floatpower(fX - fOX, 2.0) + floatpower(fY - fOY, 2.0));
+    fPitch = floatabs(atan2(fPitch, fZ - fOZ));
+
+    fZ = atan2(fY - fOY, fX - fOX) + 90.0;
+    SetDynamicObjectRot(iObject, fRollOffset, fPitch + fPitchOffset, fZ + fYawOffset);
+}
+
 // Splits string into two strings based on the split point number position (can use dot Continuation symbols too).
 SplitStringIntoTwoStrings(const string[], 
 	stringPartOne[], 
@@ -212,7 +230,7 @@ SplitStringIntoTwoStrings(const string[],
 }
 
 // Replaces certain characters in a string provided with a replacement string.
-strreplace(string[], const search[], const replacement[], bool:ignorecase = false, pos = 0, limit = -1, maxlength = sizeof(string)) 
+strreplace(string[], const search[], const replacement[], bool:ignorecase = false, pos = 0, limit = -1, maxlength = sizeof(string))
 {
     // No need to do anything if the limit is 0.
     if (limit == 0)
