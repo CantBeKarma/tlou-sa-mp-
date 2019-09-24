@@ -37,14 +37,15 @@
 
     bool:IsPlayerFullOnItem(playerid, itemId)
     {
-        if(!HasPlayerGotItem(playerid, itemId))
+        if(!HasPlayerGotItem(playerid, itemId)
+        || IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return false;
         }
 
         new bool:result = false;
 
-        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && (IsItemUpgradeable(itemId) || IsItemType(itemId, ITEM_TYPE_MELEE)))
+        if(eItemsData[itemId][e_iItem_MaxAmount] == -1 && IsItemUpgradeable(itemId, UPGRADE_TYPE_CLIPSIZE))
         {
             result = (GetPlayerItemAmount(playerid, itemId) >= GetPlayerItemMaxAmount(playerid, itemId));
         }
@@ -445,40 +446,26 @@
 
     // Gets maximal amount of an item type that's possible to get for player.
     // Returns:
-    // (-1) if system didn't find max item values in eItemsUpgrade or eItemsMeleeCND
-    // (0) if system tried to check for melee extra CND on item which is not a melee weapon
+    // (-1) if system didn't find max item values in eItemsData OR eItemsUpgrade
+    // (0) if item's max amount is actually '0'.
     // (x) maximal value of an item 
-    // (results are possible to be returned from 3 tables - eItemsData | eItemsUpgrades | eItemsMeleeCND)
+    // (results are possible to be returned from 2 tables - eItemsData OR eItemsUpgrades)
     GetPlayerItemMaxAmount(playerid, itemId)
     {
-        // if(!HasPlayerGotItem(playerid, itemId))
-        // {
-        //     return 0;
-        // }
-
         new maxAmount = 0;
         maxAmount = eItemsData[itemId][e_iItem_MaxAmount];
         if(maxAmount == -1)
         {
-            if(IsItemType(itemId, ITEM_TYPE_WEAPON))
+            if(IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
             {
                 new playerItemClipSizeLvl = GetPlayerItemUpgradeLvl(playerid, itemId, UPGRADE_TYPE_CLIPSIZE);
-            
-                for(new i = 0; i != MAX_UPGRADE_ITEMS; i++)
-                {
-                    if(eItemsUpgrades[i][e_iItemId] == ITEM_IDX:itemId
-                    && eItemsUpgrades[i][e_iItem_UpgradeLvl] == playerItemClipSizeLvl
-                    && eItemsUpgrades[i][e_iItem_UpgradeType] == UPGRADE_TYPE_CLIPSIZE)
-                    {
-                        maxAmount = eItemsUpgrades[i][e_iItem_MaxAmount];
-                        break;
-                    }
-                }
+                maxAmount = GetItemMaxAmountByLevel(itemId, playerItemClipSizeLvl);
             }
-            else if(IsItemType(itemId, ITEM_TYPE_MELEE))
-            {
-                maxAmount = GetMeleeItemMaxCND(itemId, .extraCnd = false);
-            }
+        }
+
+        if(maxAmount == -1)
+        {
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "GetPlayerItemMaxAmount: received invalid max item amount (-1). ItemId: %d", itemId);
         }
         return maxAmount;
     }
@@ -562,7 +549,7 @@
 
         if(basicCnd > 0)
         {
-            new maxBasicCnd = GetPlayerItemMaxAmount(playerid, itemId);
+            new maxBasicCnd = GetMeleeItemMaxCND(itemId, .extraCnd = false);
             ePlayerItemData[playerid][itemId][e_iItemAmount] = (basicCnd > maxBasicCnd) ? (maxBasicCnd) : (basicCnd);
         }
         else
@@ -596,16 +583,12 @@
         new maxItemAmount = GetPlayerItemMaxAmount(playerid, itemId);
         if(maxItemAmount == -1)
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], ERROR, "SetPlayerItemAmount: received invalid max item amount (-1). ItemId: %d", itemId);
             return false;
         }
 
-        if(!IsItemType(itemId, ITEM_TYPE_MELEE))
+        if(IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
         {
-            if(IsPlayerFullOnItem(playerid, itemId) && amount >= maxItemAmount)
-            {
-                return false;
-            }
+            return false;
         }
 
         new bool:success = true;
@@ -886,7 +869,7 @@ ShowPlayerItemLabel(playerid, item_objectId)
         new itemId, itemAmount, itemExtAmount;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount, .itemExtAmount = itemExtAmount);
 
-        if(IsPlayerFullOnItem(playerid, itemId) && !IsItemType(itemId, ITEM_TYPE_MELEE))
+        if(IsPlayerFullOnItem(playerid, itemId))
         {
             format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
         }
