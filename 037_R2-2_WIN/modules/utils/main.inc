@@ -3,9 +3,9 @@
 #include <TLoU.attachments\utils>
 #include <TLoU.audio\utils>
 #include <TLoU.backpack\utils>
-#include <TLoU.backpackCrafting\utils>
-#include <TLoU.backpackSkills\utils>
-#include <TLoU.backpackCollectibles\utils>
+#include <TLoU.backpack\crafting\utils>
+#include <TLoU.backpack\skills\utils>
+#include <TLoU.backpack\collectibles\utils>
 #include <TLoU.bow\utils>
 #include <TLoU.characters\utils>
 #include <TLoU.chat\utils>

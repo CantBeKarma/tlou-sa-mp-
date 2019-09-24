@@ -31,9 +31,9 @@
 #include    <TLoU.animations\main>
 #include    <TLoU.audio\main>
 #include    <TLoU.backpack\main>
-#include    <TLoU.backpackCrafting\main>
-#include    <TLoU.backpackSkills\main>
-#include    <TLoU.backpackCollectibles\main>
+#include    <TLoU.backpack\crafting\main>
+#include    <TLoU.backpack\skills\main>
+#include    <TLoU.backpack\collectibles\main>
 #include    <TLoU.bow\main>
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
