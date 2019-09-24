@@ -9,6 +9,7 @@
 #include	<TLoU.items\config>
 #include 	<TLoU.backpack\config>
 #include 	<TLoU.backpackCrafting\config>
+#include 	<TLoU.backpackSkills\config>
 #include	<TLoU.bow\config>
 #include    <TLoU.characters\config>
 #include    <TLoU.chat\config>

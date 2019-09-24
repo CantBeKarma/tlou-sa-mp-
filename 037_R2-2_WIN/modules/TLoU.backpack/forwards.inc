@@ -9,10 +9,3 @@ forward OnPlayerViewingCollectibles(playerid, updown);
 forward OnPlayerReadCollectible(playerid, row_title[], row_message[]);
 forward OnPlayerStopReadingCollectible(playerid);
 forward OnPlayerCollectibleLoad(playerid, title[]);
-
-
-
-forward Float:SkillsTd_GetStartBarColumnPosX(targetTextdrawBarIdx);
-forward OnPlayerStartedUpgradingSkill(playerid, skillId);
-forward OnPlayerCanceledUpgradingSkill(playerid);
-forward OnPlayerUpgradedSkill(playerid, skillId);

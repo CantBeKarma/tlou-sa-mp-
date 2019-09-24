@@ -32,6 +32,7 @@
 #include    <TLoU.audio\main>
 #include    <TLoU.backpack\main>
 #include    <TLoU.backpackCrafting\main>
+#include    <TLoU.backpackSkills\main>
 #include    <TLoU.bow\main>
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
