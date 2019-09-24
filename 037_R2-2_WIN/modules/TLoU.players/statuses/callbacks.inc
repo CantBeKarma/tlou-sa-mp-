@@ -8,7 +8,8 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
     if(newStatusId == PLAYER_STATUS_NONE
     || newStatusId == PLAYER_STATUS_DEAD
     || newStatusId == PLAYER_STATUS_FALL
-    || newStatusId == PLAYER_STATUS_BURNING)
+    || newStatusId == PLAYER_STATUS_BURNING
+    || newStatusId == PLAYER_STATUS_STUNNED)
     {
         if(oldStatusId == PLAYER_STATUS_AIMING || IsPlayerAimOrShootCustomItem(playerid))
         {

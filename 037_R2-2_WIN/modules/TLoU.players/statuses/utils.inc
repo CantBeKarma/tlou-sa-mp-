@@ -38,7 +38,8 @@ bool:ValidateStatusChange(playerid, PLAYER_STATUS:newStatusId, statusIssuerId)
     if(newStatusId == PLAYER_STATUS_NONE
     || newStatusId == PLAYER_STATUS_DEAD
     || newStatusId == PLAYER_STATUS_FALL
-    || newStatusId == PLAYER_STATUS_BURNING)
+    || newStatusId == PLAYER_STATUS_BURNING
+    || newStatusId == PLAYER_STATUS_STUNNED)
     {
         if(IsPlayerUsingBackpack(playerid))
         {
