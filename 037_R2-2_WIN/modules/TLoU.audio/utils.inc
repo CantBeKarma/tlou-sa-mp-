@@ -21,7 +21,7 @@ Audio_StopEx(playerid)
 // Plays 3D Audio sound to the next available free 3D slot effect.
 Audio3D_Play(playerid, audioid, Float:x, Float:y, Float:z, Float:distance, bool:ppause = false, bool:loop = false, bool:downmix = false)
 {
-    if(Iter_Alloc(iAudioHandle3D<playerid>) == INVALID_ITERATOR_SLOT)
+    if(Iter_Free(iAudioHandle3D<playerid>) == INVALID_ITERATOR_SLOT)
     {
         return INVALID_ITERATOR_SLOT;
     }
