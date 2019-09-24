@@ -71,7 +71,7 @@ GetPlayerItemUpgradeLvl(playerid, itemId, upgradeType)
 // Returns:
 // (-1) if item wasn't found in the list of upgradeable items 
 // (x) value of max amount for that item
-GetItemMaxAmountByLevel(itemId, level);
+GetItemMaxAmountByLevel(itemId, level)
 {
     if(level == -1)
     {
