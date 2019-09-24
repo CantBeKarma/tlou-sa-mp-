@@ -1,3 +1,5 @@
+forward Float:SkillsTd_GetStartBarColumnPosX(targetTextdrawBarIdx);
+
 // Gets skill maximal possible level.
 Skill_GetMaxLevel(skillId)
 {
@@ -161,7 +163,7 @@ SkillsTd_FillPlayerSkillBars(playerid)
 }
 
 // This function returns internal TEXTDRAW index of which progress bar should start drawing from. 
-// It MUST be used before SkillsTd_GetStartBarColumnPosX()
+// It MUST be used before SkillsTd-GetStartBarColumnPosX()
 SkillsTd_GetStartBarIdx(playerid, skillId, bool:basedOnPlayerSkill)
 {
     new textdrawBarIdx = -1;
