@@ -38,7 +38,6 @@
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
 #include    <TLoU.playerStatuses\main>
-#include    <TLoU.projectiles\main>
 #include    <TLoU.damages\main>
 #include    <TLoU.fire\main>
 #include    <TLoU.health\main>
@@ -52,4 +51,5 @@
 #include    <TLoU.textdraws\main>
 #include    <TLoU.weaponMenu\main>
 #include    <TLoU.weapons\main>
+#include    <TLoU.weapons\projectiles\main>
 #include    <TLoU.commands\main>

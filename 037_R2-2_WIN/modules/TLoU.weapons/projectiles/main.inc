@@ -1,5 +1,5 @@
-#include <TLoU.projectiles\forwards>
-#include <TLoU.projectiles\callbacks>
+#include <TLoU.weapons\projectiles\forwards>
+#include <TLoU.weapons\projectiles\callbacks>
 
 #include <YSI\y_hooks>
 
