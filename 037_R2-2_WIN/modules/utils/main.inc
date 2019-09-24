@@ -5,6 +5,7 @@
 #include <TLoU.backpack\utils>
 #include <TLoU.backpackCrafting\utils>
 #include <TLoU.backpackSkills\utils>
+#include <TLoU.backpackCollectibles\utils>
 #include <TLoU.bow\utils>
 #include <TLoU.characters\utils>
 #include <TLoU.chat\utils>
