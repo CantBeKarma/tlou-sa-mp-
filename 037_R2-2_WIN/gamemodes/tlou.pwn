@@ -34,7 +34,6 @@
 #include    <TLoU.backpack\crafting\main>
 #include    <TLoU.backpack\skills\main>
 #include    <TLoU.backpack\collectibles\main>
-#include    <TLoU.bow\main>
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
 #include    <TLoU.playerStatuses\main>
@@ -51,5 +50,6 @@
 #include    <TLoU.textdraws\main>
 #include    <TLoU.weaponMenu\main>
 #include    <TLoU.weapons\main>
+#include    <TLoU.weapons\bow\main>
 #include    <TLoU.weapons\projectiles\main>
 #include    <TLoU.commands\main>

@@ -6,7 +6,6 @@
 #include <TLoU.backpack\crafting\utils>
 #include <TLoU.backpack\skills\utils>
 #include <TLoU.backpack\collectibles\utils>
-#include <TLoU.bow\utils>
 #include <TLoU.characters\utils>
 #include <TLoU.chat\utils>
 #include <TLoU.fire\utils>
@@ -24,4 +23,5 @@
 #include <TLoU.registerLogin\utils>
 #include <TLoU.textdraws\utils>
 #include <TLoU.weapons\utils>
+#include <TLoU.weapons\bow\utils>
 #include <TLoU.weapons\projectiles\utils>

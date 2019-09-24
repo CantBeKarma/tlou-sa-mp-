@@ -2,6 +2,27 @@
 
 //#define     USE_VPS
 
+// Weapon IDs.
+#define     NO_MELEE                (0)
+#define     NO_THROWABLE            (0)
+#define     WEAPON_UNARMED          (0)
+#define     WEAPON_SHIV             (205)
+#define     WEAPON_MEDKIT           (206)
+#define     WEAPON_BRICK            (207)
+#define     WEAPON_BOTTLE           (212)
+#define     WEAPON_MOLOTOV          (208)
+#define     WEAPON_NAIL_BOMB        (209)
+#define     WEAPON_SMOKE_BOMB       (210)
+#define		WEAPON_BOW				(211)
+#define     WEAPON_PIPE             WEAPON_BAT
+#define     WEAPON_SCISSOR_PIPE     WEAPON_SHOVEL
+#define     WEAPON_HATCHET          WEAPON_DILDO
+#define     WEAPON_MACHETE          WEAPON_VIBRATOR
+#define     WEAPON_9MM              WEAPON_SILENCED
+#define     WEAPON_REVOLVER         WEAPON_DEAGLE
+#define     WEAPON_SHORTY			WEAPON_SAWEDOFF
+#define     WEAPON_ASSAULT          WEAPON_M4
+
 // AUDIO PLUGIN CONFIG
 #if defined USE_VPS
     #define		AUDIO_PLUGIN_PORT		(2560)

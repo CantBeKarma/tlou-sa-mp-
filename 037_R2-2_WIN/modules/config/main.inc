@@ -4,14 +4,12 @@
 
 #include 	<TLoU.animations\config>
 #include	<TLoU.attachments\config>
-#include 	<TLoU.weapons\config>
 #include	<TLoU.audio\config>
 #include	<TLoU.items\config>
 #include 	<TLoU.backpack\config>
 #include 	<TLoU.backpack\crafting\config>
 #include 	<TLoU.backpack\skills\config>
 #include 	<TLoU.backpack\collectibles\config>
-#include	<TLoU.bow\config>
 #include    <TLoU.characters\config>
 #include    <TLoU.chat\config>
 #include    <TLoU.commands\config>
@@ -24,6 +22,8 @@
 #include    <TLoU.objects\config>
 #include 	<TLoU.players\config>
 #include 	<TLoU.playerStatuses\config>
+#include 	<TLoU.weapons\config>
+#include	<TLoU.weapons\bow\config>
 #include 	<TLoU.weapons\projectiles\config>
 #include	<TLoU.registerLogin\config>
 #include  	<TLoU.textdraws\config>
