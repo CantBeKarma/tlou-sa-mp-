@@ -31,6 +31,9 @@
 #define		SKILL_WEAP_SWAY_LVL1	            (2500)
 #define		SKILL_WEAP_SWAY_LVL2	            (0)
 
+// Player's possible skills to upgrade data information.
+new Iterator:SkillsToUpgrade<MAX_PLAYERS, MAX_SKILLS_ITEMS>;
+
 // Backpacks data : SKILLS
 enum e_BACKPACK_SKILL_DATA
 {
@@ -50,5 +53,3 @@ stock const eBackpack_SkillItemsData[MAX_SKILLS_ITEMS][e_BACKPACK_SKILL_DATA] =
     {385.0, 246.488891, 2, 50, "Reduces weapon sway"},
     {385.0, 283.82,     2, 75, "Use a shiv to save yourself when~n~grabbed by a clicker"}
 };
-
-new Iterator:SkillsToUpgrade<MAX_PLAYERS, MAX_SKILLS_ITEMS>;

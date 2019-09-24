@@ -1,5 +1,6 @@
 // MAXIMAL VALUES.
 #define     MAX_CRAFT_ITEMS         (6)
+#define     MAX_INGR_SPRITES        (30)
 
 // CRAFT ITEMS IDs.
 #define     CRAFT_ITEM_MELEE        (0)
@@ -8,6 +9,18 @@
 #define     CRAFT_ITEM_MOLOTOV      (3)
 #define     CRAFT_ITEM_BOMB         (4)
 #define     CRAFT_ITEM_SMOKE_BOMB   (5)
+
+// INGREDIENT IDs.
+#define     INGR_ITEM_BLADE         (0)
+#define     INGR_ITEM_BINDING       (1)
+#define     INGR_ITEM_RAG           (2)
+#define     INGR_ITEM_ALCOHOL       (3)
+#define     INGR_ITEM_EXPLOSIVE     (4)
+#define     INGR_ITEM_SUGAR         (5)
+#define     INGR_ITEM_MELEE         (6)
+
+// Player's possible items to craft data information.
+new Iterator:ItemsToCraft<MAX_PLAYERS, MAX_CRAFT_ITEMS>;
 
 // Backpacks data : CRAFT
 enum e_BACKPACK_CRAFT_DATA
@@ -33,4 +46,48 @@ stock const eBackpack_CraftItemsData[MAX_CRAFT_ITEMS][e_BACKPACK_CRAFT_DATA] =
     {ITEM_IDX_SMOKE_BOMB,   309.666656, 285.674072,     "TLoU:weap_smkbmb",        "SMOKE BOMB",       "Crafts a smoke bomb",           ITEM_IDX_EXPLOSIVE, ITEM_IDX_SUGAR,     AUDIO_CRAFT_SMKBMB}
 };
 
-new Iterator:ItemsToCraft<MAX_PLAYERS, MAX_CRAFT_ITEMS>;
+// Sprites and values of the ingredients in the backpack (for CraftTd_DisplayIngredients() func).
+enum e_INGR_SPRITES
+{
+    ITEM_IDX:e_iIngrId,
+    e_iIngrValue,
+    e_sIngrSprite[32]
+};
+stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
+{
+    {ITEM_IDX_BLADE,         0,     ""},
+    {ITEM_IDX_BLADE,        25,     "TLoU:ingr_blade_quater"},
+    {ITEM_IDX_BLADE,        50,     "TLoU:ingr_blade_half"},
+    {ITEM_IDX_BLADE,        75,     "TLoU:ingr_blade_3quaters"},
+    {ITEM_IDX_BLADE,        100,    "TLoU:ingr_blade_full"},
+
+    {ITEM_IDX_BINDING,       0,     ""},
+    {ITEM_IDX_BINDING,      25,     "TLoU:ingr_binding_quater"},
+    {ITEM_IDX_BINDING,      50,     "TLoU:ingr_binding_half"},
+    {ITEM_IDX_BINDING,      75,     "TLoU:ingr_binding_3quaters"},
+    {ITEM_IDX_BINDING,     100,     "TLoU:ingr_binding_full"},
+
+    {ITEM_IDX_RAG,           0,     ""},
+    {ITEM_IDX_RAG,          25,     "TLoU:ingr_rag_quater"},
+    {ITEM_IDX_RAG,          50,     "TLoU:ingr_rag_half"},
+    {ITEM_IDX_RAG,          75,     "TLoU:ingr_rag_3quaters"},
+    {ITEM_IDX_RAG,         100,     "TLoU:ingr_rag_full"},
+
+    {ITEM_IDX_ALCOHOL,       0,     ""},
+    {ITEM_IDX_ALCOHOL,      25,     "TLoU:ingr_alcohol_quater"},
+    {ITEM_IDX_ALCOHOL,      50,     "TLoU:ingr_alcohol_half"},
+    {ITEM_IDX_ALCOHOL,      75,     "TLoU:ingr_alcohol_3quaters"},
+    {ITEM_IDX_ALCOHOL,     100,     "TLoU:ingr_alcohol_full"},
+
+    {ITEM_IDX_EXPLOSIVE,     0,     ""},
+    {ITEM_IDX_EXPLOSIVE,    25,     "TLoU:ingr_explosive_quater"},
+    {ITEM_IDX_EXPLOSIVE,    50,     "TLoU:ingr_explosive_half"},
+    {ITEM_IDX_EXPLOSIVE,    75,     "TLoU:ingr_explosive_3quaters"},
+    {ITEM_IDX_EXPLOSIVE,   100,     "TLoU:ingr_explosive_full"},
+
+    {ITEM_IDX_SUGAR,         0,     ""},
+    {ITEM_IDX_SUGAR,        25,     "TLoU:ingr_sugar_quater"},
+    {ITEM_IDX_SUGAR,        50,     "TLoU:ingr_sugar_half"},
+    {ITEM_IDX_SUGAR,        75,     "TLoU:ingr_sugar_3quaters"},
+    {ITEM_IDX_SUGAR,       100,     "TLoU:ingr_sugar_full"}
+};
