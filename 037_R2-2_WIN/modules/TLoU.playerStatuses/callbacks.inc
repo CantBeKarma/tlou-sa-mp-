@@ -38,20 +38,14 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
 
         case PLAYER_STATUS_USING_BACKPACK:
         {
-            success = ShowBackpack(playerid);
-            if(success)
-            {
-                OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
-            }
+            ShowBackpack(playerid);
+            OnPlayerOpenBackpack(playerid, PlayerBackpackCategory(playerid));
         }
 
         case PLAYER_STATUS_USING_WEAPMENU:
         {
-            success = ShowWeaponMenu(playerid);
-            if(success)
-            {
-                OnPlayerOpenWeaponMenu(playerid);
-            }
+            ShowWeaponMenu(playerid);
+            OnPlayerOpenWeaponMenu(playerid);
         }
 
         case PLAYER_STATUS_STUNNED:

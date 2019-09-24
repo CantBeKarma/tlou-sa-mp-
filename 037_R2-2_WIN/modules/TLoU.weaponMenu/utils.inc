@@ -365,11 +365,10 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
 //#region Showing & Hiding weapon menu
 
     // Show player weapon menu.
-    bool:ShowWeaponMenu(playerid)
+    ShowWeaponMenu(playerid)
     {
         TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgV]);
         TextDrawShowForPlayer(playerid, eTextDrawInfo[e_weapMenu_BgH]);
-        return true;
     }
 
     // Hide player's weapon menu.

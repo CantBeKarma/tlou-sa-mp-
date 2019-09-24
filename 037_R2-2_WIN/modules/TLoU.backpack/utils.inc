@@ -136,7 +136,7 @@ UpdateNavItemsColors(playerid)
 
 // Show player main backpack textdraws
 // (each category is split in 'ShowBackpackCategory' function).
-bool:ShowBackpack(playerid)
+ShowBackpack(playerid)
 {
     TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Bg]);
     TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_NavLeft]);
@@ -149,7 +149,6 @@ bool:ShowBackpack(playerid)
 
     TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_CatLineTop]);
     TdShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_CatLineBottom]);
-    return true;
 }
 
 // Hide player's backpack menu.
