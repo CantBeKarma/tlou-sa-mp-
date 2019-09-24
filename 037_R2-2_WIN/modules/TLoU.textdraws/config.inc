@@ -1,3 +1,8 @@
+// Used to calculate progress bar percentage length
+#if !defined pb_percent
+	#define 	pb_percent(%1,%2,%3,%4)		((%1 - 3.0) + ((((%1 + 3.0 + %2 - 0.8) - %1) / %3) * %4))
+#endif
+
 // GlobalTds (current count: 112 | limit: 2048)
 enum e_GLOBAL_TD_DATA
 {

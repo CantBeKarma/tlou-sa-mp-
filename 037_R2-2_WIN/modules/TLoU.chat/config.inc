@@ -1,3 +1,6 @@
+// MAXIMAL VALUES.
+#define		MAX_CHAT_LINES			(10)
+
 // TIMERS.
 #define		TIMER_HIDECHAT_DELAY	(5000)
 

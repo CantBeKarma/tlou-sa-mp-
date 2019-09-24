@@ -3,7 +3,6 @@
 // MAIN
 #undef 		MAX_PLAYERS
 #define		MAX_PLAYERS				(50)
-#define		MAX_CHAT_LINES			(10)
 #define		MAX_LOG_FILES			(7)
 
 #define		MAX_PATHFINDER_THREADS	(1) // = MAX_FCNPCS (CHANGE WHEN NECESSARY SINCE I CAN'T ACCESS IT!)
@@ -37,6 +36,7 @@
 #define     DEFAULT_VIRTUAL_WORLD       (0)
 
 //#region FILES LOCATIONS
+
 	#define		PATH_LOG_MAIN				"server"
 	#define     PATH_LOG_SERVER     		""PATH_LOG_MAIN"/server/"
 	#define     PATH_LOG_PLAYERS    		""PATH_LOG_MAIN"/players/"
@@ -45,9 +45,11 @@
 	#define     PATH_LOG_PUNISHMENTS    	""PATH_LOG_PLAYERS"/punishments/"
 	#define     PATH_LOG_CHAT       		""PATH_LOG_PLAYERS"/chat/"
 	#define     PATH_LOG_CMD        		""PATH_LOG_PLAYERS"/cmd/"
+
 //#endregion
 
 //#region COLORS
+
 	#define     COLOR_BLACK             	(0x000000FF)
 	#define		COLOR_BLACK_TRANS			(0x000000DD)
 	#define		COLOR_BG_BLACK_TRANS		(0xFFFFFFDD)
@@ -66,12 +68,9 @@
 //#endregion
 
 //#region HELPERS.
+
 	#if !defined isnull
 		#define	 	isnull(%1) 				((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
-	#endif
-
-	#if !defined pb_percent
-		#define 	pb_percent(%1,%2,%3,%4)		((%1 - 3.0) + ((((%1 + 3.0 + %2 - 0.8) - %1) / %3) * %4))
 	#endif
 
 	#define 	function%0(%1) 			forward%0(%1); public%0(%1)
@@ -92,6 +91,7 @@
 
 	#define		KEY_AIM				KEY_HANDBRAKE
 	#define		KEY_ENTER			KEY_SECONDARY_ATTACK
+
 //#endregion
 
 // Server enumerator.
