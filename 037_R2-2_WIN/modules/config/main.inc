@@ -25,10 +25,10 @@
 #include 	<TLoU.weapons\config>
 #include	<TLoU.weapons\bow\config>
 #include 	<TLoU.weapons\projectiles\config>
+#include 	<TLoU.weapons\upgrades\config>
 #include	<TLoU.registerLogin\config>
 #include  	<TLoU.textdraws\config>
 #include	<TLoU.weaponMenu\config>
-#include 	<TLoU.weaponsUpgrades\config>
 
 main()
 {

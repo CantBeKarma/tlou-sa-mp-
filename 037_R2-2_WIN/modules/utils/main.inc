@@ -11,7 +11,7 @@
 #include <TLoU.fire\utils>
 #include <TLoU.health\utils>
 #include <TLoU.hud\utils>
-#include <TLoU.weaponsUpgrades\utils>
+#include <TLoU.weapons\upgrades\utils>
 #include <TLoU.items\utils>
 #include <TLoU.objects\utils>
 #include <TLoU.npcs\utils>
