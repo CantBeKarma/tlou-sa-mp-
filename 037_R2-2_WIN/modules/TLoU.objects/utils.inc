@@ -1,7 +1,7 @@
 // Reads single item data relation and returns its value to variable sent by reference.
 // May be used to return many relations/data.
 ReadItemRelation(item_objectId, &itemUid = -1, &itemId = -1, &itemTypeId = -1, &Float:itemPosX = 1.0, &Float:itemPosY = 1.0, &Float:itemPosZ = 1.0, &itemVw = -1, &itemIntId = -1, \
-    &itemAmount = -1, &itemExtAmount = -1, &itemCreated = -1)
+    &itemAmount = -1, &itemExtAmount = -1, &itemAreaId = -1, &itemCreated = -1)
 {
     Streamer_GetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
@@ -53,6 +53,11 @@ ReadItemRelation(item_objectId, &itemUid = -1, &itemId = -1, &itemTypeId = -1, &
     if(itemExtAmount != -1)
     {
         itemExtAmount = eObjData[e_iObj_MeleeUpgradedCnd];
+    }
+
+    if(itemAreaId != -1)
+    {
+        itemAreaId = eObjData[e_iObj_SpriteAreaId];
     }
 
     if(itemCreated != -1)
