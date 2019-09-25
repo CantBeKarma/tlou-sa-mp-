@@ -1,6 +1,9 @@
 // 2D Sprites (texture names) are located in "doNotUse.txd" file
 
+#define     MAX_2D_ITEM_SPRITES         MAX_ITEMS_DATA
 #define     MAX_2D_INGR_SPRITES         (24)
+#define     MAX_2D_COLL_SPRITES         (2)
+
 #define     MAX_SPRITES_AT_ONE_TIME		(10)
 #define		ITEM_SPRITE_SPHERE_SIZE		(3.0)
 #define		ITEM_SPRITE_STREAM_DIST		(3.0)
@@ -18,7 +21,7 @@ enum e_PLAYER_2D_SPRITES
 new ePlayerSpriteInfo[MAX_PLAYERS][e_PLAYER_2D_SPRITES];
 
 // ITEM SPRITES - List of ITEM in-game sprites (textures) names.
-stock const Sprites2D_Items[MAX_ITEMS_DATA][25] =
+stock const Sprites2D_Items[MAX_2D_ITEM_SPRITES][25] =
 {
     "",
     "",
@@ -99,7 +102,7 @@ stock const Sprites2D_Ingredients[MAX_2D_INGR_SPRITES][e_2D_INGR_SPRITES] =
 };
 
 // COLLECTIBLE SPRITES - List of COLLECTIBLE in-game sprites (textures) names.
-stock const Sprites2D_Collectibles[][25] =
+stock const Sprites2D_Collectibles[MAX_2D_COLL_SPRITES][25] =
 {
     "sprite_collectible",
     "sprite_firefly"
