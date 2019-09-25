@@ -90,13 +90,11 @@
 
         new query[800];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), 
-            "INSERT INTO collectibles_data (id_item, id_type, x, y, z, virtualWorld, interiorId, title, message) \ 
+            "INSERT INTO collectibles_data \
+            (id_item, id_type, x, y, z, virtualWorld, interiorId, title, message) \ 
             VALUES \
             (%d, %d, %f, %f, %f, %d, %d, '%e', '%e')", \
-            itemId, itemType, \
-            x, y, z, \
-            virtualWorld, interiorId, \
-            title, message);
+            itemId, itemType, x, y, z, virtualWorld, interiorId, title, message);
 
         mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "ddffffffddddssd", itemId, itemType, x, y, z, rX, rY, rZ, virtualWorld, interiorId, 0, 0, title, message, creatorId);
     }
