@@ -1,3 +1,5 @@
+// 2D Sprites (texture names) are located in "doNotUse.txd" file
+
 #define     MAX_2D_INGR_SPRITES         (24)
 #define     MAX_SPRITES_AT_ONE_TIME		(10)
 #define		ITEM_SPRITE_SPHERE_SIZE		(3.0)
@@ -15,8 +17,8 @@ enum e_PLAYER_2D_SPRITES
 }
 new ePlayerSpriteInfo[MAX_PLAYERS][e_PLAYER_2D_SPRITES];
 
-// List of in-game world sprites to display a player.
-stock const eItemGameWorldSprite[MAX_ITEMS_DATA][25] =
+// ITEM SPRITES - List of ITEM in-game sprites (textures) names.
+stock const Sprites2D_Items[MAX_ITEMS_DATA][25] =
 {
     "",
     "",
@@ -56,14 +58,14 @@ stock const eItemGameWorldSprite[MAX_ITEMS_DATA][25] =
     ""
 };
 
-// Sprites and values of the ingredients in the game world (these are located inside "doNotUse.txd")
+// INGREDIENT SPRITES - List of INGREDIENT in-game sprites (textures) names.
 enum e_2D_INGR_SPRITES
 {
     ITEM_IDX:e_iIngrId,
     e_iIngrValue,
     e_sIngrSprite[24]
 };
-stock const eIngrGameWorldSprites[MAX_2D_INGR_SPRITES][e_2D_INGR_SPRITES] =
+stock const Sprites2D_Ingredients[MAX_2D_INGR_SPRITES][e_2D_INGR_SPRITES] =
 {
     {ITEM_IDX_BLADE,        25,     "ingr_blade_quater"},
     {ITEM_IDX_BLADE,        50,     "ingr_blade_half"},
@@ -94,4 +96,11 @@ stock const eIngrGameWorldSprites[MAX_2D_INGR_SPRITES][e_2D_INGR_SPRITES] =
     {ITEM_IDX_SUGAR,        50,     "ingr_sugar_half"},
     {ITEM_IDX_SUGAR,        75,     "ingr_sugar_3quaters"},
     {ITEM_IDX_SUGAR,       100,     "ingr_sugar_full"}
+};
+
+// COLLECTIBLE SPRITES - List of COLLECTIBLE in-game sprites (textures) names.
+stock const Sprites2D_Collectibles[][25] =
+{
+    "sprite_collectible",
+    "sprite_firefly"
 };
