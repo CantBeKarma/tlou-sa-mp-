@@ -3,6 +3,7 @@
 
 enum e_OBJECT_DATA
 {
+	e_iObj_ObjectId,
     e_iObj_Uid,
     e_iObj_ItemId,
     e_iObj_TypeId,

@@ -18,7 +18,7 @@ hook OnGameModeInit()
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerLookAtItem(playerid, item_objectId)
 {
-    ShowPlayerItemLabel(playerid, item_objectId);
+    //ShowPlayerItemLabel(playerid, item_objectId);
 	return 0;
 }
 
@@ -292,7 +292,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnItemCreate(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
     {
-        new objectId = -1;
+        new objectId = INVALID_OBJECT_ID;
         if(itemType == ITEM_TYPE_ARTIFACT || itemType == ITEM_TYPE_FIREFLY_PEND)
         {
             objectId = CreateDynamicObject(eCollectiblesData[itemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
@@ -302,8 +302,9 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
         }
 
-        if(objectId == -1)
+        if(objectId == INVALID_OBJECT_ID)
         {
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnItemCreate: Unable to create item's object (UID: %d)", cache_insert_id());
             return 1;
         }
 
@@ -312,6 +313,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             Streamer_Update(creatorId, STREAMER_TYPE_OBJECT);
         }
 
+        eObjData[e_iObj_ObjectId] = objectId;
         eObjData[e_iObj_Uid] = cache_insert_id();
         eObjData[e_iObj_ItemId] = itemId;
         eObjData[e_iObj_TypeId] = itemType;
@@ -333,6 +335,8 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);
 
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
+
+        SCMF_ALL(-1, "Created item of objectid: %d (var: %d)", objectId, eObjData[e_iObj_ObjectId]);
         return 0;
     }
 
@@ -350,7 +354,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnItemUpdate(updateItemUid, itemType, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId)
     {
-        new objectId = -1;
+        new objectId = INVALID_OBJECT_ID;
         if(itemType == ITEM_TYPE_ARTIFACT || itemType == ITEM_TYPE_FIREFLY_PEND)
         {
             objectId = CreateDynamicObject(eCollectiblesData[newItemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
@@ -360,8 +364,9 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             objectId = CreateDynamicObject(eItemsData[newItemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
         }
 
-        if(objectId == -1)
+        if(objectId == INVALID_OBJECT_ID)
         {
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnItemUpdate: Unable to create item's object (UID: %d)", updateItemUid);
             return 1;
         }
 
@@ -371,6 +376,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             Streamer_Update(updaterId, STREAMER_TYPE_3D_TEXT_LABEL);
         }
 
+        eObjData[e_iObj_ObjectId] = objectId;
         eObjData[e_iObj_Uid] = updateItemUid;
         eObjData[e_iObj_ItemId] = newItemId;
         eObjData[e_iObj_TypeId] = itemType;
@@ -387,21 +393,28 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);
 
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
+        SCMF_ALL(-1, "Updated item. objectid: %d (var: %d)", objectId, eObjData[e_iObj_ObjectId]);
         return 0;
     }
 
 //#endregion
 
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//---------------- OnPlayerEnterDynamicArea ---------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	if(areaid == eObjData[e_iObj_SpriteAreaId])
 	{
-        SCMF(playerid, -1, "You've entered area of itemId: %d (UID: %d)", eObjData[e_iObj_ItemId], eObjData[e_iObj_Uid]);
-        Sprite2D_Create(playerid, areaid, eObjData[e_iObj_ItemId], eObjData[e_fObj_X], eObjData[e_fObj_Y], eObjData[e_fObj_Z], eObjData[e_iObj_Vw], eObjData[e_iObj_Int]);
+        SCMF(playerid, -1, "You've entered area of itemId: %d (UID: %d) (objectid: %d)", eObjData[e_iObj_ItemId], eObjData[e_iObj_Uid], eObjData[e_iObj_ObjectId]);
+        Sprite2D_Create(playerid, areaid, eObjData[e_iObj_ObjectId]);//eObjData[e_iObj_ItemId], eObjData[e_iObj_ItemAmount], eObjData[e_fObj_X], eObjData[e_fObj_Y], eObjData[e_fObj_Z], eObjData[e_iObj_Vw], eObjData[e_iObj_Int]);
 	}
     return 1;
 }
 
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//----------------- OnPlayerLeaveDynArea ------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
 	if (areaid == eObjData[e_iObj_SpriteAreaId])
