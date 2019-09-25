@@ -16,8 +16,8 @@ enum e_OBJECT_DATA
 	e_iObj_MeleeUpgradedCnd,
     e_sObj_Title[MAX_COLL_TIT_LEN],
     e_sObj_InnerMessage[MAX_COLL_MSG_LEN],
-    bool:e_bObj_Created,
-	e_iObj_SpriteAreaId
+    e_iObj_SpriteAreaId,
+	bool:e_bObj_Created
 };
 new eObjData[e_OBJECT_DATA];
 

@@ -290,25 +290,9 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //--------------------- OnItemCreate ----------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnItemCreate(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
+    public OnItemCreate(item_objectId, itemId, itemType, Float:x, Float:y, Float:z, virtualWorld, interiorId, itemAmount, meleeExtCnd, itemTitle[], innerMsg[], creatorId)
     {
-        new objectId = INVALID_OBJECT_ID;
-        if(itemType == ITEM_TYPE_ARTIFACT || itemType == ITEM_TYPE_FIREFLY_PEND)
-        {
-            objectId = CreateDynamicObject(eCollectiblesData[itemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
-        }
-        else
-        {
-            objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
-        }
-
-        if(objectId == INVALID_OBJECT_ID)
-        {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnItemCreate: Unable to create item's object (UID: %d)", cache_insert_id());
-            return 1;
-        }
-
-        eObjData[e_iObj_ObjectId] = objectId;
+        eObjData[e_iObj_ObjectId] = item_objectId;
         eObjData[e_iObj_Uid] = cache_insert_id();
         eObjData[e_iObj_ItemId] = itemId;
         eObjData[e_iObj_TypeId] = itemType;
@@ -326,10 +310,10 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             strcpy(eObjData[e_sObj_InnerMessage], innerMsg, sizeof(eObjData[e_sObj_InnerMessage]));
         }
 
-        eObjData[e_bObj_Created] = true;
         eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);
+        eObjData[e_bObj_Created] = true;
 
-        Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
+        Streamer_SetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
         if(creatorId != INVALID_PLAYER_ID)
         {
@@ -337,43 +321,49 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             Streamer_Update(creatorId, STREAMER_TYPE_AREA);
         }
 
-        SCMF_ALL(-1, "Created item of objectid: %d (var: %d)", objectId, eObjData[e_iObj_ObjectId]);
+        SCMF_ALL(-1, "Created item of objectid: %d (var: %d)", item_objectId, eObjData[e_iObj_ObjectId]);
         return 0;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //--------------------- OnItemDestroy ---------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnItemDestroy(uid_item)
+    public OnItemDestroy(item_objectId, bool:updating)
     {
-        DB_DestroyItem(uid_item);
+        if(!updating)
+        {
+            DB_DestroyItem(eObjData[e_iObj_Uid]);
+        }
+
+        DestroyDynamicArea(eObjData[e_iObj_SpriteAreaId]);
+
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ObjectId]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Uid]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemId]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_X]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Y]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Z]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Vw]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Int]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemAmount]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_MeleeUpgradedCnd]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_Title]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_InnerMessage]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_SpriteAreaId]);
+
+        DestroyDynamicObject(item_objectId);
         return 0;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //--------------------- OnItemUpdate ----------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnItemUpdate(updateItemUid, itemType, newItemId, newItemAmount, newMeleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, updaterId)
+    public OnItemUpdate(item_objectId, itemId, itemType, Float:x, Float:y, Float:z, virtualWorld, interiorId, newItemAmount, newMeleeExtCnd, updateItemUid, updaterId)    
     {
-        new objectId = INVALID_OBJECT_ID;
-        if(itemType == ITEM_TYPE_ARTIFACT || itemType == ITEM_TYPE_FIREFLY_PEND)
-        {
-            objectId = CreateDynamicObject(eCollectiblesData[newItemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
-        }
-        else
-        {
-            objectId = CreateDynamicObject(eItemsData[newItemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
-        }
-
-        if(objectId == INVALID_OBJECT_ID)
-        {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnItemUpdate: Unable to create item's object (UID: %d)", updateItemUid);
-            return 1;
-        }
-
-        eObjData[e_iObj_ObjectId] = objectId;
+        eObjData[e_iObj_ObjectId] = item_objectId;
         eObjData[e_iObj_Uid] = updateItemUid;
-        eObjData[e_iObj_ItemId] = newItemId;
+        eObjData[e_iObj_ItemId] = itemId;
         eObjData[e_iObj_TypeId] = itemType;
         eObjData[e_fObj_X] = x;
         eObjData[e_fObj_Y] = y;
@@ -384,10 +374,10 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_iObj_MeleeUpgradedCnd] = newMeleeExtCnd;
         eObjData[e_sObj_Title][0] = EOS;
         eObjData[e_sObj_InnerMessage][0] = EOS;
-        eObjData[e_bObj_Created] = true;
         eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);
+        eObjData[e_bObj_Created] = true;
 
-        Streamer_SetArrayData(STREAMER_TYPE_OBJECT, objectId, E_STREAMER_EXTRA_ID, eObjData);
+        Streamer_SetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
         if(updaterId != INVALID_PLAYER_ID)
         {
@@ -395,7 +385,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             Streamer_Update(updaterId, STREAMER_TYPE_AREA);
         }
 
-        SCMF_ALL(-1, "Updated item. objectid: %d (var: %d)", objectId, eObjData[e_iObj_ObjectId]);
+        SCMF_ALL(-1, "Updated item. objectid: %d (var: %d)", item_objectId, eObjData[e_iObj_ObjectId]);
         return 0;
     }
 

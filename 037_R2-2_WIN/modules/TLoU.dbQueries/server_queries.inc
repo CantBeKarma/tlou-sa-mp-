@@ -1,9 +1,9 @@
 //#region Items manipulation (create/update/destroy/load items from DB)
 
     // Create new item in database.
-    DB_CommitNewItem(itemId, itemType, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId)
+    DB_CommitNewItem(item_objectId, itemId, Float:x, Float:y, Float:z, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId)
     {
-        new query[512];
+        new query[256];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), 
             "INSERT INTO items_data \
             (id_item, x, y, z, virtualWorld, interiorId, amount, meleeExtCnd) \ 
@@ -11,15 +11,15 @@
             (%d, %f, %f, %f, %d, %d, %d, %d)", \
             itemId, x, y, z, virtualWorld, interiorId, itemAmount, meleeExtCnd);
 
-        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "ddffffffddddssd", itemId, itemType, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, "", "", creatorId);
+        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "dddfffddddssd", item_objectId, itemId, ITEM_TYPE_ITEM, x, y, z, virtualWorld, interiorId, itemAmount, meleeExtCnd, "", "", creatorId);
     }
 
     // Update an existing item in database.
-    DB_UpdateExistingItem(updateItemUid, itemType, itemId, itemAmount, meleeExtCnd, Float:x, Float:y, Float:z, Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, creatorId)
+    DB_UpdateExistingItem(item_objectId, itemId, Float:x, Float:y, Float:z, virtualWorld, interiorId, itemAmount, meleeExtCnd, updateItemUid, creatorId)
     {
         new query[128];
         mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET id_item = %d, amount = %d, meleeExtCnd = %d WHERE uid = %d", itemId, itemAmount, meleeExtCnd, updateItemUid);
-        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemUpdate", "dddddffffffddd", updateItemUid, itemType, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
+        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemUpdate", "dddfffdddddd", item_objectId, itemId, ITEM_TYPE_ITEM, x, y, z, virtualWorld, interiorId, itemAmount, meleeExtCnd, updateItemUid, creatorId);
     }
 
     // Change the flag 'is_created' (destroy) item.
@@ -83,8 +83,10 @@
 //#region Collectibles manipulation (create)
 
     // Create new collectible in database.
-    DB_CommitNewCollectible(itemId, itemType, Float:x, Float:y, Float:z,  Float:rX, Float:rY, Float:rZ, virtualWorld, interiorId, title[], message[], creatorId)
+    DB_CommitNewCollectible(item_objectId, itemId, Float:x, Float:y, Float:z, virtualWorld, interiorId, title[], message[], creatorId)
     {
+        new itemType = eCollectiblesData[itemId][e_iCollectibleType];
+
         strreplace(title, "'", "\'", .maxlength = MAX_COLL_TIT_LEN);
         strreplace(message, "'", "\'", .maxlength = MAX_COLL_MSG_LEN);
 
@@ -96,7 +98,7 @@
             (%d, %d, %f, %f, %f, %d, %d, '%e', '%e')", \
             itemId, itemType, x, y, z, virtualWorld, interiorId, title, message);
 
-        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "ddffffffddddssd", itemId, itemType, x, y, z, rX, rY, rZ, virtualWorld, interiorId, 0, 0, title, message, creatorId);
+        mysql_tquery(eServerInfo[e_SqlHandler], query, "OnItemCreate", "dddfffddddssd", item_objectId, itemId, itemType, x, y, z, virtualWorld, interiorId, 0, 0, title, message, creatorId);
     }
 
 //#endregion

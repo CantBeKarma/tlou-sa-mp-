@@ -162,13 +162,8 @@
     // Create an item.
     CreateOrUpdateItem(itemId, itemAmount, meleeExtCnd = 0, creatorId = INVALID_PLAYER_ID, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, virtualWorld = 0, interiorId = 0, bool:update = false, updateItemUid = -1)
     {
-        if(itemId < 0 || itemId > MAX_ITEMS_DATA)
-        {
-            return false;
-        }
-
-        // Unable to create item if item amount is invalid.
-        if(itemAmount <= 0 || meleeExtCnd < 0)
+        if(itemId < 0 || itemId > MAX_ITEMS_DATA 
+        || itemAmount <= 0 || meleeExtCnd < 0)
         {
             return false;
         }
@@ -184,20 +179,31 @@
             interiorId = GetPlayerInterior(creatorId);
         }
 
-        // Validation position & rotation of the item.
+        // Validation of position & rotation of the item.
         new Float:rX, Float:rY, Float:rZ;
         if(ValidateItemCreation(itemId, itemAmount, meleeExtCnd, z, rX, rY, rZ) == false)
         {
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CreateOrUpdateItem: ItemId: %d couldn't be validated!", itemId);
             return false;
         }
 
-        if(update && updateItemUid != -1)
+        // Try creating item's object id.
+        new item_objectId = INVALID_OBJECT_ID;
+        item_objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+        
+        if(item_objectId == INVALID_OBJECT_ID)
         {
-            DB_UpdateExistingItem(updateItemUid, ITEM_TYPE_ITEM, itemId, itemAmount, meleeExtCnd, x, y, z, rX, rY, rZ, virtualWorld, interiorId, creatorId);
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CreateOrUpdateItem: Unable to create item's dynamic object!");
+            return false;
+        }
+
+        if(update == true && updateItemUid != -1)
+        {
+            DB_UpdateExistingItem(item_objectId, itemId, x, y, z, virtualWorld, interiorId, itemAmount, meleeExtCnd, updateItemUid, creatorId);
         }
         else
         {
-            DB_CommitNewItem(itemId, ITEM_TYPE_ITEM, x, y, z, rX, rY, rZ, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId);
+            DB_CommitNewItem(item_objectId, itemId, x, y, z, virtualWorld, interiorId, itemAmount, meleeExtCnd, creatorId);
         }
         return true;
     }
@@ -227,7 +233,16 @@
             rX = 120.0;
         }
 
-        DB_CommitNewCollectible(itemId, eCollectiblesData[itemId][e_iCollectibleType], x, y, z, rX, rY, rZ, virtualWorld, interiorId, title, innerMsg, creatorId);
+        new item_objectId = INVALID_OBJECT_ID;
+        item_objectId = CreateDynamicObject(eCollectiblesData[itemId][e_iCollectible_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+
+        if(item_objectId == INVALID_OBJECT_ID)
+        {
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CreateCollectible: Unable to create collectible's dynamic object!");
+            return false;
+        }
+        
+        DB_CommitNewCollectible(item_objectId, itemId, x, y, z, virtualWorld, interiorId, title, innerMsg, creatorId);
         return true;
     }
 
@@ -236,32 +251,11 @@
     {
         if(!IsValidDynamicObject(item_objectId))
         {
-            return;
+            return false;
         }
 
-        if(!update)
-        {
-            OnItemDestroy(eObjData[e_iObj_Uid]);
-        }
-
-        DestroyDynamicArea(eObjData[e_iObj_SpriteAreaId]);
-
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ObjectId]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Uid]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemId]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_X]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Y]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, _:eObjData[e_fObj_Z]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Vw]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Int]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemAmount]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_MeleeUpgradedCnd]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_Title]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_InnerMessage]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_SpriteAreaId]);
-
-        DestroyDynamicObject(item_objectId);
+        OnItemDestroy(item_objectId, update);
+        return true;
     }
 
 //#endregion
