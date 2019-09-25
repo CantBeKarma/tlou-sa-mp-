@@ -6,11 +6,11 @@ timer UpdateSpriteTimer[TIMER_UPDATE_SPRITE](playerid, updateSpriteObjectId, upd
 
 	if(IsValidDynamicObject(updateSpriteObjectId))
 	{
-		SetObjectFaceCoords3D(updateSpriteTextObjectId, x, y, z, 0.0, -90.0, -90.0);
+		SetObjectFaceCoords3D(updateSpriteObjectId, x, y, z, 0.0, -90.0, -90.0);
 	}
 
 	if(IsValidDynamicObject(updateSpriteTextObjectId))
 	{
-		SetObjectFaceCoords3D(updateSpriteObjectId, x, y, z, 0.0, -90.0, -90.0);
+		SetObjectFaceCoords3D(updateSpriteTextObjectId, x, y, z, 0.0, -90.0, -90.0);
 	}
 }
