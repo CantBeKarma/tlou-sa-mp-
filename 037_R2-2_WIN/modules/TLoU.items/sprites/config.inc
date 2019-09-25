@@ -1,13 +1,15 @@
 // 2D Sprites (texture names) are located in "doNotUse.txd" file
 
-#define     MAX_2D_ITEM_SPRITES         MAX_ITEMS_DATA
-#define     MAX_2D_INGR_SPRITES         (24)
-#define     MAX_2D_COLL_SPRITES         (2)
+#define     MAX_2D_ITEM_SPRITES             MAX_ITEMS_DATA
+#define     MAX_2D_INGR_SPRITES             (24)
+#define     MAX_2D_COLL_SPRITES             (2)
 
-#define     MAX_SPRITES_AT_ONE_TIME		(10)
-#define		ITEM_SPRITE_SPHERE_SIZE		(3.0)
-#define		ITEM_SPRITE_STREAM_DIST		(3.0)
-#define     TIMER_UPDATE_SPRITE         (10)
+#define     SPRITE_FONTSIZE_ITEM_AMOUNT      (50)
+
+#define     MAX_SPRITES_AT_ONE_TIME         (10)
+#define		ITEM_SPRITE_SPHERE_SIZE		    (3.0)
+#define		ITEM_SPRITE_STREAM_DIST		    (3.0)
+#define     TIMER_UPDATE_SPRITE             (10)
 
 // Current list of sprites for items created for player.
 new Iterator:SpritesCreated<MAX_PLAYERS, MAX_SPRITES_AT_ONE_TIME>;
