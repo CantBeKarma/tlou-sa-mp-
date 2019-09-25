@@ -321,7 +321,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             Streamer_Update(creatorId, STREAMER_TYPE_AREA);
         }
 
-        SCMF_ALL(-1, "Created item of objectid: %d (var: %d)", item_objectId, eObjData[e_iObj_ObjectId]);
+        SCMF_ALL(-1, "Created item of objectid: %d/%d (spriteAreaId: %d)", item_objectId, eObjData[e_iObj_ObjectId], eObjData[e_iObj_SpriteAreaId]);
         return 0;
     }
 
@@ -385,7 +385,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
             Streamer_Update(updaterId, STREAMER_TYPE_AREA);
         }
 
-        SCMF_ALL(-1, "Updated item. objectid: %d (var: %d)", item_objectId, eObjData[e_iObj_ObjectId]);
+        SCMF_ALL(-1, "Updated item of objectid: %d/%d (spriteAreaId: %d)", item_objectId, eObjData[e_iObj_ObjectId], eObjData[e_iObj_SpriteAreaId]);
         return 0;
     }
 
@@ -398,8 +398,11 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	if(areaid == eObjData[e_iObj_SpriteAreaId])
 	{
-        SCMF(playerid, -1, "You've entered area of itemId: %d (UID: %d) (objectid: %d)", eObjData[e_iObj_ItemId], eObjData[e_iObj_Uid], eObjData[e_iObj_ObjectId]);
-        Sprite2D_Create(playerid, eObjData[e_iObj_ObjectId]);
+        SCMF(playerid, -1, "You've entered area of objectid: %d", eObjData[e_iObj_ObjectId]);
+        if(!Sprite2D_Create(playerid, eObjData[e_iObj_ObjectId]))
+        {
+            SCMF(playerid, -1, "Failed CREATING sprite for areaId (%d)", areaid);
+        }
 	}
     return 1;
 }
@@ -411,8 +414,11 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 {
 	if(areaid == eObjData[e_iObj_SpriteAreaId])
 	{
-        SCMF(playerid, -1, "You've left area of itemId: %d (UID: %d)", eObjData[e_iObj_ItemId], eObjData[e_iObj_Uid]);
-		Sprite2D_Destroy(playerid, areaid);
+        SCMF(playerid, -1, "You've left area of objectid: %d", eObjData[e_iObj_ObjectId]);
+		if(!Sprite2D_Destroy(playerid, areaid))
+        {
+            SCMF(playerid, -1, "Failed REMOVING sprite for areaId (%d)", areaid);
+        }
 	}
     return 1;
 }

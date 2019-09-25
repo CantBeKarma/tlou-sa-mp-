@@ -18,7 +18,9 @@ enum e_PLAYER_2D_SPRITES
 {
 	e_iSprite_ObjectId[MAX_SPRITES_AT_ONE_TIME],
     e_iSpriteText_ObjectId[MAX_SPRITES_AT_ONE_TIME],
-	Timer:e_iTimer_UpdateSprite[MAX_SPRITES_AT_ONE_TIME]
+    e_iSprite_AreaId[MAX_SPRITES_AT_ONE_TIME],
+	Timer:e_iTimer_UpdateSprite[MAX_SPRITES_AT_ONE_TIME],
+    bool:e_bSprite_Created[MAX_SPRITES_AT_ONE_TIME]
 }
 new ePlayerSpriteInfo[MAX_PLAYERS][e_PLAYER_2D_SPRITES];
 
