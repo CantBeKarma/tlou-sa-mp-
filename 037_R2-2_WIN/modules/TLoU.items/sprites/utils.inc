@@ -29,10 +29,13 @@ Sprite2D_Create(playerid, item_objectId)
         return false;
     }
 
-    new itemId, itemAmount;
-    ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount);
+    new itemId, itemTypeId, itemAmount;
+    ReadItemRelation(item_objectId, .itemId = itemId, .itemTypeId = itemTypeId, .itemAmount = itemAmount);
 
-    SetDynamicObjectMaterial(spriteObjectId, 0, ITEM_MODEL_TRANS_NO_COLL, "doNotUse", (GetItemType(itemId) == ITEM_TYPE_INGREDIENT) ? (eIngrGameWorldSprites[Sprite2D_FindIngrSpriteIdx(itemId, itemAmount)])  : (eItemGameWorldSprite[itemId]));
+    SetDynamicObjectMaterial(spriteObjectId, 0, ITEM_MODEL_TRANS_NO_COLL, "doNotUse", \
+                                  (itemTypeId == ITEM_TYPE_ARTIFACT || itemTypeId == ITEM_TYPE_FIREFLY_PEND) ? Sprites2D_Collectibles[itemTypeId]
+                                : (itemTypeId == ITEM_TYPE_ITEM && !IsItemType(itemId, ITEM_TYPE_INGREDIENT) ? Sprites2D_Items[itemId]
+                                : Sprites2D_Ingredients[Sprite2D_FindIngrSpriteIdx(itemId, itemAmount)]));
 
     new spriteTextObjectId = INVALID_OBJECT_ID;
 
@@ -108,8 +111,8 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
 {
     for(new i = 0; i != MAX_2D_INGR_SPRITES; i++)
     {
-        if(ingr == _:eIngrGameWorldSprites[i][e_iIngrId]
-        && amount == eIngrGameWorldSprites[i][e_iIngrValue])
+        if(ingr == _:Sprites2D_Ingredients[i][e_iIngrId]
+        && amount == Sprites2D_Ingredients[i][e_iIngrValue])
         {
             return i;
         }
