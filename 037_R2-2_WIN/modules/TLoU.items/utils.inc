@@ -84,7 +84,7 @@
         {
             case ITEM_TYPE_INGREDIENT:
             {
-                if((itemAmount % 25) != 0 || itemAmount > 300)
+                if((itemAmount % 25) != 0 || itemAmount > 100)
                 {
                     return false;
                 }
