@@ -399,7 +399,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 	if(areaid == eObjData[e_iObj_SpriteAreaId])
 	{
         SCMF(playerid, -1, "You've entered area of itemId: %d (UID: %d) (objectid: %d)", eObjData[e_iObj_ItemId], eObjData[e_iObj_Uid], eObjData[e_iObj_ObjectId]);
-        Sprite2D_Create(playerid, areaid, eObjData[e_iObj_ObjectId]);
+        Sprite2D_Create(playerid, eObjData[e_iObj_ObjectId]);
 	}
     return 1;
 }
