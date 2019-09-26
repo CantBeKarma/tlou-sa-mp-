@@ -13,7 +13,7 @@ Sprite2D_Create(playerid, item_objectId)
     new iter = Iter_Free(SpritesCreated<playerid>);
     if(iter == INVALID_ITERATOR_SLOT)
 	{
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Sprite2D_Create: Unable to create 2D sprite for: %s (UID: %d | GUID: %d) (iter count: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), Iter_Count(SpritesCreated<playerid>));
+        //Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Sprite2D_Create: Unable to create 2D sprite for: %s (UID: %d | GUID: %d) (iter count: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), Iter_Count(SpritesCreated<playerid>));
 		return false;
 	}
 
@@ -31,12 +31,12 @@ Sprite2D_Create(playerid, item_objectId)
     }
 
     new spriteTextObjectId = Sprite2D_CreateAmountText(playerid, item_objectId, iter);
+    SCMF(playerid, -1, "spriteObjectId = %d | spriteTextObjectId = %d", spriteObjectId, spriteTextObjectId);
 
 	ePlayerSpriteInfo[playerid][e_iTimer_UpdateSprite][iter] = repeat UpdateSpriteTimer(playerid, spriteObjectId, spriteTextObjectId);
     ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][iter] = item_objectId;
 
     Iter_Add(SpritesCreated<playerid>, iter);
-    Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 	return true;
 }
 
@@ -90,7 +90,7 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
         new itemId, itemAmount;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount);
 
-        if(GetItemType(itemId) != ITEM_TYPE_WEAPON && GetItemType(itemId) == ITEM_TYPE_MELEE)
+        if(GetItemType(itemId) != ITEM_TYPE_WEAPON && GetItemType(itemId) != ITEM_TYPE_MELEE)
         {
             return INVALID_OBJECT_ID;
         }
