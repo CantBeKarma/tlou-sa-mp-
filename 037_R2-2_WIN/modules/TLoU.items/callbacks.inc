@@ -312,16 +312,14 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);        
         eObjData[e_bObj_Created] = true;
 
-        Streamer_SetIntData(STREAMER_TYPE_AREA, eObjData[e_iObj_SpriteAreaId], E_STREAMER_EXTRA_ID, item_objectId);
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
+        Streamer_SetIntData(STREAMER_TYPE_AREA, eObjData[e_iObj_SpriteAreaId], E_STREAMER_EXTRA_ID, item_objectId);
 
         if(creatorId != INVALID_PLAYER_ID)
         {
             Streamer_Update(creatorId, STREAMER_TYPE_OBJECT);
             Streamer_Update(creatorId, STREAMER_TYPE_AREA);
         }
-
-        SCMF_ALL(-1, "Created item of objectid: %d (spriteAreaId: %d)", item_objectId, eObjData[e_iObj_SpriteAreaId]);
         return 0;
     }
 
@@ -375,16 +373,14 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);
         eObjData[e_bObj_Created] = true;
 
-        Streamer_SetIntData(STREAMER_TYPE_AREA, eObjData[e_iObj_SpriteAreaId], E_STREAMER_EXTRA_ID, item_objectId);
         Streamer_SetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
+        Streamer_SetIntData(STREAMER_TYPE_AREA, eObjData[e_iObj_SpriteAreaId], E_STREAMER_EXTRA_ID, item_objectId);
 
         if(updaterId != INVALID_PLAYER_ID)
         {
             Streamer_Update(updaterId, STREAMER_TYPE_OBJECT);
             Streamer_Update(updaterId, STREAMER_TYPE_AREA);
         }
-
-        SCMF_ALL(-1, "Updated item of objectid: %d (spriteAreaId: %d)", item_objectId, eObjData[e_iObj_SpriteAreaId]);
         return 0;
     }
 
@@ -398,15 +394,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
     new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
     if(areaObjectId > 0)
 	{
-        SCMF(playerid, -1, "You've entered area of objectid: %d", areaObjectId);
-        if(!Sprite2D_Create(playerid, areaObjectId))
-        {
-            SCMF(playerid, COLOR_RED, "[FAIL] Didn't create sprite for areaId: %d | areaObjectId: %d", areaid, areaObjectId);
-        }
-        else
-        {
-            SCMF(playerid, 0x00FF00, "[SUCCESS] Created sprite for areaId: %d | areaObjectId: %d", areaid, areaObjectId);
-        }
+        Sprite2D_Create(playerid, areaObjectId);
 	}
     return 1;
 }
@@ -419,15 +407,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
     new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
     if(areaObjectId > 0)
 	{
-        SCMF(playerid, -1, "You've left area of objectid: %d", areaObjectId);
-		if(!Sprite2D_Destroy(playerid, areaObjectId))
-        {
-            SCMF(playerid, COLOR_RED, "[FAIL] Didn't destroy sprite for areaId: %d | areaObjectId: %d", areaid, areaObjectId);
-        }
-        else
-        {
-            SCMF(playerid, 0x00FF00, "[SUCCESS] Destroyed sprite(s) for areaId: %d | areaObjectId: %d", areaid, areaObjectId);
-        }
+		Sprite2D_Destroy(playerid, areaObjectId);
 	}
     return 1;
 }
