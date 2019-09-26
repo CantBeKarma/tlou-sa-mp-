@@ -98,6 +98,7 @@ public OnPlayerFirstSpawn(playerid)
         return 0;
     }
 
+    //MidnightRemoveBuildings(playerid);
     PreparePlayerToSign(playerid);
     return 0;
 }
