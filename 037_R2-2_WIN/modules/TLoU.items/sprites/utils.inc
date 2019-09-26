@@ -13,7 +13,7 @@ Sprite2D_Create(playerid, item_objectId)
     new iter = Iter_Free(SpritesCreated<playerid>);
     if(iter == INVALID_ITERATOR_SLOT)
 	{
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Sprite2D_Create: Unable to create 2D sprite for: %s (UID: %d | GUID: %d). Returned iter: %d (iter count: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), iter, Iter_Count(SpritesCreated<playerid>));
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Sprite2D_Create: Unable to create 2D sprite for: %s (UID: %d | GUID: %d) (iter count: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), Iter_Count(SpritesCreated<playerid>));
 		return false;
 	}
 
