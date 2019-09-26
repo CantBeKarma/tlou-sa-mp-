@@ -58,10 +58,12 @@ AttachItemsToPlayer(playerid, itemId = -1)
 // Gets a free available attachment slot.
 GetFreeAttachmentSlot(playerid)
 {
-    for(new i = 0; i != MAX_PLAYER_ATTACHED_OBJECTS; i++)
+    for(new i = 0; i < MAX_PLAYER_ATTACHED_OBJECTS; i++)
     {
         if(!IsPlayerAttachedObjectSlotUsed(playerid, i))
+		{
 			return i;
+		}
     }
     return -1;
 }
@@ -80,7 +82,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 {
 	if(modelId == -1)
 	{
-		return;	
+		return false;
 	}
 		
 	new 
@@ -89,10 +91,14 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 
 	for(new i = 0; i != MAX_ATTACHMENTS_DATA; i++)
 	{
-		if(eAttachmentsData[i][e_iModelId] != modelId || eAttachmentsData[i][e_bExtraInfo] != extraInfo)
+		if(eAttachmentsData[i][e_iModelId] != modelId 
+		|| eAttachmentsData[i][e_bExtraInfo] != extraInfo)
+		{
 			continue;
+		}
 
-		if(eAttachmentsData[i][e_iSkinId] == GetPlayerSkinEx(playerid) || eAttachmentsData[i][e_iSkinId] == -1)
+		if(eAttachmentsData[i][e_iSkinId] == GetPlayerSkinEx(playerid) 
+		|| eAttachmentsData[i][e_iSkinId] == -1)
 		{
 			attachmentIndex = i;
 
@@ -101,10 +107,12 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 		}
 	}
 
-//#region Slot assignment based on model id
-
 	if(slotIndex == -1 || attachmentIndex == -1)
-		return;
+	{
+		return false;
+	}
+
+//#region Slot assignment based on model id
 
 	switch(modelId)
 	{
@@ -181,6 +189,8 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 		eAttachmentsData[attachmentIndex][e_fOffsetX], eAttachmentsData[attachmentIndex][e_fOffsetY], eAttachmentsData[attachmentIndex][e_fOffsetZ], \
 		eAttachmentsData[attachmentIndex][e_fRotX],    eAttachmentsData[attachmentIndex][e_fRotY],    eAttachmentsData[attachmentIndex][e_fRotZ], \
 		eAttachmentsData[attachmentIndex][e_fScaleX],  eAttachmentsData[attachmentIndex][e_fScaleY],  eAttachmentsData[attachmentIndex][e_fScaleZ]);
+
+	return true;
 }
 
 // Detach weapon models from player's body.
