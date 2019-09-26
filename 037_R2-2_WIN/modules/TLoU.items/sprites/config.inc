@@ -4,10 +4,10 @@
 
 #define     SPRITE_FONTSIZE_ITEM_AMOUNT      (50)
 
-#define     MAX_SPRITES_AT_ONE_TIME         (10)
+#define     MAX_SPRITES_AT_ONE_TIME         (5)
 #define		ITEM_SPRITE_SPHERE_SIZE		    (3.0)
 #define		ITEM_SPRITE_STREAM_DIST		    (3.0)
-#define     TIMER_UPDATE_SPRITE             (10)
+#define     TIMER_UPDATE_SPRITE             (100)
 
 // File name which contains all the 2D textures (from custom.img file)
 stock const SPRITES2D_TXD_FILE_NAME[9] = "doNotUse";
