@@ -10,7 +10,7 @@ Sprite2D_Create(playerid, item_objectId)
         return false;
     }
 
-    new iter = Iter_Free(SpritesCreated<playerid>);
+    new iter = Iter_Alloc(SpritesCreated<playerid>);
     if(iter == INVALID_ITERATOR_SLOT)
 	{
         //Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "Sprite2D_Create: Unable to create 2D sprite for: %s (UID: %d | GUID: %d) (iter count: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), Iter_Count(SpritesCreated<playerid>));
@@ -31,12 +31,11 @@ Sprite2D_Create(playerid, item_objectId)
     }
 
     new spriteTextObjectId = Sprite2D_CreateAmountText(playerid, item_objectId, iter);
-    SCMF(playerid, -1, "spriteObjectId = %d | spriteTextObjectId = %d", spriteObjectId, spriteTextObjectId);
 
 	ePlayerSpriteInfo[playerid][e_iTimer_UpdateSprite][iter] = repeat UpdateSpriteTimer(playerid, spriteObjectId, spriteTextObjectId);
     ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][iter] = item_objectId;
 
-    Iter_Add(SpritesCreated<playerid>, iter);
+    Streamer_Update(creatorId, STREAMER_TYPE_OBJECT);
 	return true;
 }
 
@@ -47,6 +46,7 @@ Sprite2D_Destroy(playerid, item_objectId)
     {
         if(ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][iter] == item_objectId)
         {
+            stop ePlayerSpriteInfo[playerid][e_iTimer_UpdateSprite][iter];
             DestroyDynamicObject(ePlayerSpriteInfo[playerid][e_iSprite_ObjectId][iter]);
             DestroyDynamicObject(ePlayerSpriteInfo[playerid][e_iSpriteText_ObjectId][iter]);
             Iter_Remove(SpritesCreated<playerid>, iter);
