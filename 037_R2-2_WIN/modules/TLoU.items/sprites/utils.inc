@@ -35,7 +35,7 @@ Sprite2D_Create(playerid, item_objectId)
 	ePlayerSpriteInfo[playerid][e_iTimer_UpdateSprite][iter] = repeat UpdateSpriteTimer(playerid, spriteObjectId, spriteTextObjectId);
     ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][iter] = item_objectId;
 
-    Streamer_Update(creatorId, STREAMER_TYPE_OBJECT);
+    Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 	return true;
 }
 
@@ -90,7 +90,7 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
         new itemId, itemAmount;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount);
 
-        if(GetItemType(itemId) != ITEM_TYPE_WEAPON && GetItemType(itemId) != ITEM_TYPE_MELEE)
+        if(!IsItemType(itemId, ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             return INVALID_OBJECT_ID;
         }
@@ -101,8 +101,8 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
         new spriteTextObjectId = INVALID_OBJECT_ID;
         spriteTextObjectId = ePlayerSpriteInfo[playerid][e_iSpriteText_ObjectId][iter] = CreateDynamicObject(ITEM_MODEL_TRANS_NO_COLL, itemPosX, itemPosY, itemPosZ + 0.3, 0.0, 0.0, 0.0, itemVw, itemIntId, playerid, ITEM_SPRITE_STREAM_DIST);
 
-        new spriteTextStr[10];   
-        if(GetItemType(itemId) == ITEM_TYPE_WEAPON)
+        new spriteTextStr[10];
+        if(IsItemType(itemId, ITEM_TYPE_WEAPON))
         {
             if(IsPlayerFullOnItem(playerid, itemId))
             {
@@ -113,7 +113,7 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
                 format(spriteTextStr, sizeof(spriteTextStr), "%d", itemAmount);
             }
         }
-        else if(GetItemType(itemId) == ITEM_TYPE_MELEE)
+        else if(IsItemType(itemId, ITEM_TYPE_MELEE))
         {
             new itemExtAmount;
             ReadItemRelation(item_objectId, .itemExtAmount = itemExtAmount);
