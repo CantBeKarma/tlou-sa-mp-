@@ -148,6 +148,33 @@ CompareZ_Level(Float:fZ, Float:fZ2)//, Float:heightDiff)
 	return INVALID_Z_LEVEL;	
 }
 
+GetPlayerClosestItemObjectId(playerid)
+{
+	new Float:Distance, target = -1;
+
+	foreach(new sprite : SpritesCreated<playerid>)
+	{
+		new item_objectId = ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][sprite];
+		if(target < 0 || Distance > GetDistancePlayerObject(playerid, item_objectId))
+		{
+			target = item_objectId;
+			Distance = GetDistancePlayerObject(playerid, item_objectId);
+		}
+	}
+	return target;
+}
+
+GetDistancePlayerObject(playerid, objectid)
+{
+	new Float:Floats[7];
+
+	GetPlayerPos(playerid, Floats[0], Floats[1], Floats[2]);
+	GetObjectPos(objectid, Floats[3], Floats[4], Floats[5]);
+	Floats[6] = floatsqroot((Floats[3]-Floats[0])*(Floats[3]-Floats[0])+(Floats[4]-Floats[1])*(Floats[4]-Floats[1])+(Floats[5]-Floats[2])*(Floats[5]-Floats[2]));
+
+	return floatround(Floats[6]);
+}
+
 // Camera interploation when opening the backpack.
 MoveCameraNextToPlayer(playerid, Float:distance, Float:offset, move_time, Float:height = 0.0)
 {
