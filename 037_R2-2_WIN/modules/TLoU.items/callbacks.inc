@@ -13,114 +13,104 @@ hook OnGameModeInit()
     return 1;
 }
 
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------ OnPlayerLookAtItem -------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerLookAtItem(playerid, item_objectId)
-{
-    //ShowPlayerItemLabel(playerid, item_objectId);
-	return 0;
-}
-
 //#region PickUp management callbacks (specific items type and main PickUp Item callback)
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerTryPickupItem ------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerTryPickupItem(playerid, item_objectId)
+    public OnPlayerTryPickupItem(playerid)
     {
-        new itemUid, itemId, itemTypeId;
-        ReadItemRelation(item_objectId, .itemUid = itemUid, .itemId = itemId, .itemTypeId = itemTypeId);
-
-        if(itemTypeId == ITEM_TYPE_ARTIFACT || itemTypeId == ITEM_TYPE_FIREFLY_PEND)
+        foreach(new sprite : SpritesCreated<playerid>)
         {
-            OnPlayerPickUpCollectible(playerid, itemId, itemUid, itemTypeId, item_objectId);
-            return 0;
-        }
+            new itemId, item_objectId = ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][sprite];
+            ReadItemRelation(item_objectId, .itemId = itemId);
 
-        if(IsPlayerFullOnItem(playerid, itemId)
-        && (IsItemType(itemId, ITEM_TYPE_INGREDIENT) || IsItemType(itemId, ITEM_TYPE_MEDKIT)
-        || IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_THROWABLE)
-        || IsItemType(itemId, ITEM_TYPE_PROJECTILE)))
-        {
-            return NEXT_ACTION_NONE;
-        }
+            if(IsPlayerFullOnItem(playerid, itemId)
+            && (IsItemType(itemId, ITEM_TYPE_INGREDIENT) || IsItemType(itemId, ITEM_TYPE_MEDKIT)
+            || IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_THROWABLE)
+            || IsItemType(itemId, ITEM_TYPE_PROJECTILE)))
+            {
+                continue;
+            }
 
-        new itemAmount, itemExtAmount;
-        if(IsItemType(itemId, ITEM_TYPE_MELEE))
-        {
-            ReadItemRelation(item_objectId, .itemUid = itemUid, .itemAmount = itemAmount, .itemExtAmount = itemExtAmount);
+            new nextAction = OnPlayerPickUpItem(playerid, item_objectId);
+            if(nextAction == NEXT_ACTION_NONE)
+            {
+                continue;
+            }
+            else
+            {
+                break;
+            }
         }
-        else
-        {
-            ReadItemRelation(item_objectId, .itemUid = itemUid, .itemAmount = itemAmount);
-        }
-
-        OnPlayerPickUpItem(playerid, itemId, itemAmount, itemExtAmount, item_objectId, itemUid);
         return 1;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //------------------ OnPlayerPickUpItem -------------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerPickUpItem(playerid, itemId, itemAmount, itemExtAmount, item_objectId, itemUid)
+    public OnPlayerPickUpItem(playerid, item_objectId)
     {
         new nextAction = NEXT_ACTION_NONE;
 
-        new
-            dropItemId,
-            dropItemAmount = 1,
-            dropItemExtCnd = 0;
+        new itemUid, itemId, itemTypeId;
+        ReadItemRelation(item_objectId, .itemUid = itemUid, .itemId = itemId, .itemTypeId = itemTypeId);
 
-        switch(GetItemType(itemId))
+        if(itemTypeId == ITEM_TYPE_ARTIFACT || itemTypeId == ITEM_TYPE_FIREFLY_PEND)
         {
-            case ITEM_TYPE_INGREDIENT:  nextAction = OnPlayerPickUpIngredient(playerid, itemId, itemAmount, dropItemAmount);
-            case ITEM_TYPE_HEAL:        nextAction = OnPlayerPickUpHealItem(playerid, itemId, itemAmount);
-            case ITEM_TYPE_MELEE:       nextAction = OnPlayerPickUpMeleeItem(playerid, itemId, itemAmount, itemExtAmount, dropItemId, dropItemAmount, dropItemExtCnd);
-            case ITEM_TYPE_THROWABLE:   nextAction = OnPlayerPickUpThrowableItem(playerid, itemId, dropItemId);
-            case ITEM_TYPE_PROJECTILE:  nextAction = OnPlayerPickUpProjectileItem(playerid, itemId, itemAmount);
-            case ITEM_TYPE_WEAPON:      nextAction = OnPlayerPickUpWeapon(playerid, itemId, itemAmount, dropItemAmount);
+            nextAction = OnPlayerPickUpCollectible(playerid, itemUid, itemTypeId);
         }
-
-        switch(nextAction)
+        else
         {
-            case NEXT_ACTION_NONE:
+            new itemAmount, itemExtAmount;
+            ReadItemRelation(item_objectId, .itemAmount = itemAmount, .itemExtAmount = itemExtAmount);
+            
+            new
+                dropItemId,
+                dropItemAmount = 1,
+                dropItemExtCnd = 0;
+
+            switch(GetItemType(itemId))
             {
-                return NEXT_ACTION_NONE;
+                case ITEM_TYPE_INGREDIENT:  nextAction = OnPlayerPickUpIngredient(playerid, itemId, itemAmount, dropItemAmount);
+                case ITEM_TYPE_HEAL:        nextAction = OnPlayerPickUpHealItem(playerid, itemId, itemAmount);
+                case ITEM_TYPE_MELEE:       nextAction = OnPlayerPickUpMeleeItem(playerid, itemId, itemAmount, itemExtAmount, dropItemId, dropItemAmount, dropItemExtCnd);
+                case ITEM_TYPE_THROWABLE:   nextAction = OnPlayerPickUpThrowableItem(playerid, itemId, dropItemId);
+                case ITEM_TYPE_PROJECTILE:  nextAction = OnPlayerPickUpProjectileItem(playerid, itemId, itemAmount);
+                case ITEM_TYPE_WEAPON:      nextAction = OnPlayerPickUpWeapon(playerid, itemId, itemAmount, dropItemAmount);
             }
 
-            case NEXT_ACTION_DESTROY:
+            if(nextAction == NEXT_ACTION_UPDATE)
             {
-                DestroyItem(item_objectId);
-            }
+                new 
+                    Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId,
+                    recreateItemId = (IsItemType(itemId, ITEM_TYPE_MELEE) || IsItemType(itemId, ITEM_TYPE_THROWABLE) ? (dropItemId) : (itemId));
 
-            case NEXT_ACTION_UPDATE:
-            {
-                new Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId;
                 ReadItemRelation(item_objectId, .itemPosX = itemPosX, .itemPosY = itemPosY, .itemPosZ = itemPosZ, .itemVw = itemVw, .itemIntId = itemIntId);
 
                 DestroyItem(item_objectId, .update = true);
-
-                new recreateItemId = (IsItemType(itemId, ITEM_TYPE_MELEE) || IsItemType(itemId, ITEM_TYPE_THROWABLE) ? (dropItemId) : (itemId));
-
                 CreateOrUpdateItem(recreateItemId, dropItemAmount, dropItemExtCnd, playerid, itemPosX, itemPosY, itemPosZ, itemVw, itemIntId, true, itemUid);
             }
         }
 
-        if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+        if(nextAction == NEXT_ACTION_NONE)
         {
-            GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
-            DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+            return NEXT_ACTION_NONE;
+        }
+        else if(nextAction == NEXT_ACTION_DESTROY)
+        {
+            DestroyItem(item_objectId);
         }
 
-        if(eItemsData[itemId][e_iItem_AudioPickupId] != -1)
-        {
-            Audio_PlayEx(playerid, eItemsData[itemId][e_iItem_AudioPickupId]);
-        }
+        Audio_PlayEx(playerid, 
+                          (itemTypeId == ITEM_TYPE_ARTIFACT || itemTypeId == ITEM_TYPE_FIREFLY_PEND) 
+                        ? (eCollectiblesData[itemId][e_iCollectible_AudioPickupId]) 
+                        : (eItemsData[itemId][e_iItem_AudioPickupId])
+                    );
 
         ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);
 
-        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerPickUpItem: charUid: %d pickup itemUid: %d (nextAction: %d)", GetPlayerCharUid(playerid), itemUid, nextAction);
+        Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "OnPlayerPickUpItem: Player %s (UID: %d | GUID: %d) picked up itemUid: %d (nextAction: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemUid, nextAction);
         return nextAction;
     }
 
@@ -252,7 +242,7 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     //---------------- OnPlayerPickUpCollectible --------------
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    public OnPlayerPickUpCollectible(playerid, itemId, itemUid, itemTypeId, item_objectId)
+    public OnPlayerPickUpCollectible(playerid, itemUid, itemTypeId)
     {
         if(itemTypeId == ITEM_TYPE_ARTIFACT)
         {
@@ -268,18 +258,6 @@ public OnPlayerLookAtItem(playerid, item_objectId)
         }
 
         DB_GiveCharacterCollectible(playerid, itemUid);
-        DestroyItem(item_objectId);
-
-        if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-        {
-            GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
-            DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-        }
-
-        ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0);
-
-        Audio_PlayEx(playerid, eCollectiblesData[itemId][e_iCollectible_AudioPickupId]);
-
         return NEXT_ACTION_DESTROY;
     }
 
@@ -330,10 +308,14 @@ public OnPlayerLookAtItem(playerid, item_objectId)
     {
         if(!updating)
         {
-            DB_DestroyItem(eObjData[e_iObj_Uid]);
+            new itemUid;
+            ReadItemRelation(item_objectId, itemUid);
+            DB_DestroyItem(itemUid);
         }
 
-        DestroyDynamicArea(eObjData[e_iObj_SpriteAreaId]);
+        new itemAreaId;
+        ReadItemRelation(item_objectId, .itemAreaId = itemAreaId);
+        DestroyDynamicArea(itemAreaId);
 
         Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Uid]);
         Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemId]);
@@ -424,9 +406,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     
     if(PRESSED(KEY_NO))
     {
-        if(IsPlayerLookingAtItem(playerid))
+        if(HasPlayerGotAnyItemsToPickUp(playerid))
         {
-            OnPlayerTryPickupItem(playerid, GetPlayerFocusedObjectId(playerid));
+            OnPlayerTryPickupItem(playerid);
         }
     }
 	return 1;

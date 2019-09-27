@@ -3,7 +3,7 @@
 hook OnGameModeInit()
 {
     // LoadWorldObjects();
-    // ConnectionIntroWindowObject();
+    ConnectionIntroWindowObject();
     // MidnightsMapping();
     return 1;
 }
