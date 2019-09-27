@@ -55,7 +55,6 @@ ResetBits_ePlayerFlag(playerid)
 	HasPlayerShotNailbomb(playerid)			return Bit_Get(ePlayerFlag[e_bShotNailbomb], playerid);
 	IsPlayerCrouched(playerid)				return (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK);
 	IsPlayerLookingAtPlayer(playerid)		return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedPlayerId(playerid) != INVALID_PLAYER_ID);
-	IsPlayerLookingAtItem(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && GetPlayerFocusedObjectId(playerid) != INVALID_OBJECT_ID);
 	IsPlayerAllowedToShiv(playerid)			return (IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]) && IsPlayerLookingAtPlayer(playerid));
 
 	IsPlayerLookingTimerRunning(playerid)	return Bit_Get(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
@@ -124,7 +123,6 @@ function Enable_OnPlayerLookAt(playerid)
 	
 	EnablePlayerCameraTarget(playerid, true);
 	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
-	GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
 	Bit_Let(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	ePlayerInfo[playerid][e_iTimer_lookingAt] = repeat Timer_OnPlayerIsLooking(playerid);
 }
@@ -139,7 +137,6 @@ Disable_OnPlayerLookAt(playerid)
 
 	EnablePlayerCameraTarget(playerid, false);
 	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
-	GetPlayerFocusedObjectId(playerid) = INVALID_OBJECT_ID;
 	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
 	stop ePlayerInfo[playerid][e_iTimer_lookingAt]; 
 

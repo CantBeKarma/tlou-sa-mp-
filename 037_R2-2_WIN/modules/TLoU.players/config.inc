@@ -11,7 +11,6 @@
 // Other.
 #define		PlayerName(%0)			 		ePlayerInfo[%0][e_sName]
 #define		GetConnectedTime(%0) 	 		NetStats_GetConnectedTime(%0)
-#define		GetPlayerFocusedObjectId(%0)	ePlayerInfo[%0][e_iLookingAtObjId]
 #define		GetPlayerFocusedPlayerId(%0)	ePlayerInfo[%0][e_iLookingAtPlayerId]
 
 //#region Player enum info & bit flags
@@ -30,8 +29,6 @@
 
 		e_iTargetedPlayer,
 		Text3D:e_iPlayerLabel,
-
-		e_iLookingAtObjId,
 		e_iLookingAtPlayerId,
 		Text3D:e_iLookingAt_Label,
 		Timer:e_iTimer_lookingAt,

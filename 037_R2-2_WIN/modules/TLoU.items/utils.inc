@@ -155,6 +155,12 @@
         return true;
     }
 
+    // Checks if player has any items to pick up (has player got any 2D sprites created?)
+    HasPlayerGotAnyItemsToPickUp(playerid)
+    {
+        return (Iter_Count(SpritesCreated<playerid>) > 0);
+    }
+
 //#endregion
 
 //#region Item Create/Update/Destroy
@@ -838,68 +844,3 @@
     }
 
 //#endregion
-
-// Show player item label of the objectid.
-ShowPlayerItemLabel(playerid, item_objectId)
-{
-    new bool:itemCreated;
-    ReadItemRelation(item_objectId, .itemCreated = itemCreated);
-
-    if(!itemCreated)
-    {
-        return false;
-    }
-
-    if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-    {
-        DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-    }
-
-    new itemTypeId;
-    ReadItemRelation(item_objectId, .itemTypeId = itemTypeId);
-
-    new labelStr[32];
-    if(itemTypeId == ITEM_TYPE_ARTIFACT)
-    {
-        format(labelStr, sizeof(labelStr), "Artifact");
-    }
-    else if(itemTypeId == ITEM_TYPE_FIREFLY_PEND)
-    {
-        format(labelStr, sizeof(labelStr), "Firefly Pendant");
-    }
-    else
-    {
-        new itemId, itemAmount, itemExtAmount;
-        ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount, .itemExtAmount = itemExtAmount);
-
-        if(IsPlayerFullOnItem(playerid, itemId))
-        {
-            format(labelStr, sizeof(labelStr), "%s\n{FF0000}(FULL)", eItemsData[itemId][e_sItem_Name]);
-        }
-        else
-        {
-            switch(GetItemType(itemId))
-            {
-                case ITEM_TYPE_MELEE:
-                {
-                    new bool:isItemMeleeUpgraded = (itemExtAmount > 0);
-
-                    format(labelStr, sizeof(labelStr), "%s\n(CND: %d/%d)", eItemsData[itemId][e_sItem_Name], \
-                            (isItemMeleeUpgraded) ? (itemAmount + itemExtAmount) : (itemAmount), \
-                            (isItemMeleeUpgraded) ? GetMeleeItemMaxCND(itemId, .extraCnd = false) + GetMeleeItemMaxCND(itemId, .extraCnd = true) : GetMeleeItemMaxCND(itemId, .extraCnd = false));
-                }
-
-                case ITEM_TYPE_INGREDIENT:  format(labelStr, sizeof(labelStr), "%s\n(%0.2f)", eItemsData[itemId][e_sItem_Name], (float(itemAmount) / 100));
-                case ITEM_TYPE_WEAPON:      format(labelStr, sizeof(labelStr), "%s\n(ammo: %d)", eItemsData[itemId][e_sItem_Name], floatround(itemAmount));
-                default:                    format(labelStr, sizeof(labelStr), "%s", eItemsData[itemId][e_sItem_Name]);
-            }
-        }
-    }
-    
-    new Float:itemPosX, Float:itemPosY, Float:itemPosZ, itemVw, itemIntId;
-    ReadItemRelation(item_objectId, .itemPosX = itemPosX, .itemPosY = itemPosY, .itemPosZ = itemPosZ, .itemVw = itemVw, .itemIntId = itemIntId);
-
-    ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel(labelStr, COLOR_WHITE_TRANS, itemPosX, itemPosY, itemPosZ, ITEM_LABEL_DRAW_DIST, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, itemVw, itemIntId, playerid);
-    Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
-    return true;
-}
