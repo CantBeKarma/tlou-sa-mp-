@@ -86,7 +86,6 @@ PlayerTextDraw_Chat(playerid)
 		
 		chat_posY -= 10.0;
 	}
-	Iter_Clear(PlayerChatMessages<playerid>);
 }
 
 PlayerTextDraw_HUD(playerid)
