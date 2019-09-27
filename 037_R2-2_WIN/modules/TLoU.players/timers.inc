@@ -62,8 +62,7 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 		return 0;
 	}
 
-//#region Looking at player...
-
+	//------------------- LOOKING AT PLAYER/NPC ------------------
 	// If player looks at invalid player.
 	new lookingAt_playerId = GetPlayerCameraTargetPlayer(playerid);
 	if(lookingAt_playerId == INVALID_PLAYER_ID)
@@ -113,7 +112,5 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 	{
 		OnPlayerLookAtPlayer(playerid, lookingAt_playerId);
 	}
-
-//#endregion
     return 0;
 }

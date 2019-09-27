@@ -413,3 +413,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     }
 	return 1;
 }
+
+hook OnPlayerHoldingKey(playerid, key)
+{
+    SCMF(playerid, 0x00FF00FF, "You've started holding key");
+    return 1;
+}
