@@ -40,6 +40,7 @@ hook OnGameModeInit()
             }
             else
             {
+                Sprite2D_UpdateTextNearbyItems(playerid, item_objectId);
                 break;
             }
         }

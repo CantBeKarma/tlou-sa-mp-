@@ -49,11 +49,25 @@ Sprite2D_Destroy(playerid, item_objectId)
             stop ePlayerSpriteInfo[playerid][e_iTimer_UpdateSprite][iter];
             DestroyDynamicObject(ePlayerSpriteInfo[playerid][e_iSprite_ObjectId][iter]);
             DestroyDynamicObject(ePlayerSpriteInfo[playerid][e_iSpriteText_ObjectId][iter]);
+            ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][iter] = INVALID_OBJECT_ID;
             Iter_Remove(SpritesCreated<playerid>, iter);
             return true;
         }
     }
     return false;
+}
+
+Sprite2D_DestroyAll(playerid)
+{
+    foreach(new iter : SpritesCreated<playerid>)
+    {
+        stop ePlayerSpriteInfo[playerid][e_iTimer_UpdateSprite][iter];
+        DestroyDynamicObject(ePlayerSpriteInfo[playerid][e_iSprite_ObjectId][iter]);
+        DestroyDynamicObject(ePlayerSpriteInfo[playerid][e_iSpriteText_ObjectId][iter]);
+        ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][iter] = INVALID_OBJECT_ID;
+    }
+
+    Iter_Clear(SpritesCreated<playerid>);
 }
 
 // Find 2D Sprite index (to use it for static table list) of ingredients.
@@ -128,6 +142,34 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
         SetDynamicObjectMaterialText(spriteTextObjectId, 0, spriteTextStr, .fontsize = SPRITE_FONTSIZE_ITEM_AMOUNT, .fontcolor = 0xFFFF0000);
 
         return spriteTextObjectId;
+    }
+
+    // This function seeks for items nearby player of the same itemId.
+    // Once item was found, it will check if player is full on this item and if he should see "FULL" text instead of an amount.
+    Sprite2D_UpdateTextNearbyItems(playerid, pickedUp_itemObjectId)
+    {
+        new pickedUpItemId;
+        ReadItemRelation(pickedUp_itemObjectId, .itemId = pickedUpItemId);
+
+        foreach(new iter : SpritesCreated<playerid>)
+        {
+            new iterItemId;
+            ReadItemRelation(ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][iter], .itemId = iterItemId);
+
+            if(iterItemId == pickedUpItemId)
+            {
+                if(!IsItemType(iterItemId, ITEM_TYPE_WEAPON))
+                {
+                    continue;
+                }
+
+                if(IsPlayerFullOnItem(playerid, pickedUpItemId))
+                {
+                    SetDynamicObjectMaterialText(ePlayerSpriteInfo[playerid][e_iSpriteText_ObjectId][iter], 0, "FULL", .fontsize = SPRITE_FONTSIZE_ITEM_AMOUNT, .fontcolor = 0xFFFF0000);
+                }
+            }
+        }
+        return 1;
     }
 
     // Injects material (texture) onto created transparent object.
