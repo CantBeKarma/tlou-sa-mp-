@@ -404,18 +404,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         return 1;
     }
     
-    if(PRESSED(KEY_NO))
+    if(RELEASED(KEY_NO))
     {
-        if(HasPlayerGotAnyItemsToPickUp(playerid))
+        if(HasPlayerGotAnyItemsToPickUp(playerid) 
+        && !IsPlayerUsingBackpack(playerid)
+        && !IsPlayerUsingBackpackAnims(playerid))
         {
             OnPlayerTryPickupItem(playerid);
         }
     }
 	return 1;
-}
-
-hook OnPlayerHoldingKey(playerid, key)
-{
-    SCMF(playerid, 0x00FF00FF, "You've started holding key");
-    return 1;
 }

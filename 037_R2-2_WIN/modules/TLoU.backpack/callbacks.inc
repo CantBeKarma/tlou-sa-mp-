@@ -12,16 +12,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     
     if(PRESSED(KEY_NO))
     {
-        if(!IsPlayerCrafting(playerid) && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
+        if(IsPlayerUsingBackpack(playerid) && !IsPlayerCrafting(playerid)
+        && (GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING)
         {
-            if(!IsPlayerUsingBackpack(playerid) && !HasPlayerGotAnyItemsToPickUp(playerid))
-            {
-                SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
-            }
-            else if(IsPlayerUsingBackpack(playerid))
-            {
-                SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
-            }
+            SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
         }
     }
 
@@ -63,6 +57,20 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 OnPlayerCheckCollectibles(playerid, true);
             }
         }
+    }
+    return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------- OnPlayerHoldingKey ------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+hook OnPlayerHoldingKey(playerid, key)
+{
+    if(!IsPlayerUsingBackpack(playerid)
+    && ((GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey]) > TICK_RATE_BP_HOLD_TO_OPEN)
+    && ((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING))
+    {
+        SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);
     }
     return 1;
 }

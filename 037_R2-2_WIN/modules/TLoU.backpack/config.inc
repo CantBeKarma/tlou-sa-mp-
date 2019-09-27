@@ -1,6 +1,7 @@
 // Other defs.
 #define     TICK_RATE_BP_OPENING            (1250)
 #define     TICK_RATE_BP_KEYS_COOLDOWN      (450)
+#define     TICK_RATE_BP_HOLD_TO_OPEN       (400)
 #define     TIMER_USE_BACKPACK		        (50)
 
 // BACKPACK CATEGORIES.
