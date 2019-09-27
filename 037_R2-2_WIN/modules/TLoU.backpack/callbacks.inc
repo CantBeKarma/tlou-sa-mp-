@@ -68,7 +68,7 @@ hook OnPlayerHoldingKey(playerid, key)
 {
     if(key & KEY_NO
     && !IsPlayerUsingBackpack(playerid)
-    && ((GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey]) > TICK_RATE_BP_HOLD_TO_OPEN)
+    && (GetHoldingKeyTime(playerid) > TICK_RATE_BP_HOLD_TO_OPEN)
     && ((GetConnectedTime(playerid) - ePlayerBpInfo[playerid][e_iTickCounter_backpackOpening]) > TICK_RATE_BP_OPENING))
     {
         SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_USING_BACKPACK);

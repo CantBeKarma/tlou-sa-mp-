@@ -15,6 +15,12 @@ IsPlayerHoldingKey(playerid, holdingKey)
     return (keys & holdingKey);
 }
 
+// Check how long player holds key (OnPlayerHoldingKey).
+GetHoldingKeyTime(playerid)
+{
+    return (GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey]);
+}
+
 // Absolute integer value.
 // IntAbs(value)
 // {

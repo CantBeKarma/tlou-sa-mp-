@@ -57,6 +57,7 @@ Sprite2D_Destroy(playerid, item_objectId)
     return false;
 }
 
+// Destroy all 2D sprites that player was seeing.
 Sprite2D_DestroyAll(playerid)
 {
     foreach(new iter : SpritesCreated<playerid>)
@@ -113,7 +114,7 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
         ReadItemRelation(item_objectId, .itemPosX = itemPosX, .itemPosY = itemPosY, .itemPosZ = itemPosZ, .itemVw = itemVw, .itemIntId = itemIntId);
 
         new spriteTextObjectId = INVALID_OBJECT_ID;
-        spriteTextObjectId = ePlayerSpriteInfo[playerid][e_iSpriteText_ObjectId][iter] = CreateDynamicObject(ITEM_MODEL_TRANS_NO_COLL, itemPosX, itemPosY, itemPosZ + 0.3, 0.0, 0.0, 0.0, itemVw, itemIntId, playerid, ITEM_SPRITE_STREAM_DIST);
+        spriteTextObjectId = ePlayerSpriteInfo[playerid][e_iSpriteText_ObjectId][iter] = CreateDynamicObject(ITEM_MODEL_TRANS_NO_COLL, itemPosX, itemPosY, itemPosZ + 0.5, 0.0, 0.0, 0.0, itemVw, itemIntId, playerid, ITEM_SPRITE_STREAM_DIST);
 
         new spriteTextStr[10];
         if(IsItemType(itemId, ITEM_TYPE_WEAPON))

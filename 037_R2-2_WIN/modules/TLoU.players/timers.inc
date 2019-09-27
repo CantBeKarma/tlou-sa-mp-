@@ -41,7 +41,7 @@ timer Callback_HoldKeyTimer[TIMER_HOLDKEY_RATE](playerid, key)
     {
         if(Bit_Get(ePlayerFlag[e_bKeyPress], playerid))
        	{
-			CLF(#OnPlayerReleaseKey, "ddd", playerid, key, GetConnectedTime(playerid) - ePlayerInfo[playerid][e_iTickCounter_holdingKey]);
+			CLF(#OnPlayerReleaseKey, "ddd", playerid, key, GetHoldingKeyTime(playerid));
        	}
         stop ePlayerInfo[playerid][e_iTimer_holdingKey];
 
