@@ -25,6 +25,7 @@ PreparePlayerToSign(playerid)
     ClearChat(playerid);
     CreatePlayerIntroTds(playerid);
     ShowPlayerBlackScreen(playerid);
+    MidnightRemoveBuildings(playerid);
     DisableDefaultAmbientNoise(playerid);
 
     GetPlayerName(playerid, ePlayerInfo[playerid][e_sName], MAX_PLAYER_NAME);

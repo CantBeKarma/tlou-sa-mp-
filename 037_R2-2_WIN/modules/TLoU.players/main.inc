@@ -99,7 +99,6 @@ public OnPlayerFirstSpawn(playerid)
     }
 
     PreparePlayerToSign(playerid);
-    MidnightRemoveBuildings(playerid);
     return 0;
 }
 
