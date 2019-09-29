@@ -497,12 +497,12 @@ YCMD:icmd(playerid, params[], help)
             {
                 if(npcid == -1 || npcid == INVALID_PLAYER_ID)
                 {
-                    SCMF(playerid, -1, "/npc spawn [id] [type]");
+                    SCMF(playerid, -1, "/npc type [id] [type]");
                     return 1;
                 }
                 else if(_:type == -1)
                 {
-                    SCMF(playerid, -1, "/npc spawn [id] [type]");
+                    SCMF(playerid, -1, "/npc type [id] [type]");
                     return 1;
                 }
 
@@ -516,13 +516,10 @@ YCMD:icmd(playerid, params[], help)
                     return 1;
                 }
 
-                new Float:x, Float:y, Float:z;
-                GetPlayerPos(playerid, x, y, z);
-
                 switch(random(2))
                 {
-                    case 0: FCNPC_RunTo(npcid, x, y, z);
-                    case 1: FCNPC_WalkTo(npcid, x, y, z);
+                    case 0: FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_WALK);
+                    case 1: FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN);
                 }
             }
         }
@@ -613,23 +610,6 @@ YCMD:icmd(playerid, params[], help)
             }
         }
         
-        return 1;
-    }
-
-    CMD:zdiff(playerid, params[])
-    {
-        new targetId, Float:diff;
-        if(sscanf(params, "df", targetId, diff)) return SCM(playerid, -1, "/zdiff [targetId] [targetDiff]");
-        {
-            new Float:x, Float:y, Float:z;
-            GetPlayerPos(playerid, x, y, z);
-
-            new Float:x2, Float:y2, Float:z2;
-            FCNPC_GetPosition(targetId, x2, y2, z2);
-
-            new zDiff = CompareZ(z, z2, diff);
-            SCMF(playerid, -1, "Higher than target? : %d", zDiff);
-        }
         return 1;
     }
 
