@@ -41,7 +41,7 @@
 			return true;
 		}
 
-		new skinid = FCNPC_SetSkinBasedOnType(npcid, type);
+		new skinid = FCNPC_SetSkinBasedOnType(npcid);
 		if(skinid == 0)
 		{
 			return false;
@@ -54,153 +54,32 @@
 
 //#endregion
 
-//#region FCNPC : Status management
-
-	// Get the current status of an NPC.
-	NPC_STATUS:FCNPC_GetStatus(npcid) return eNpcInfo[npcid][e_iCurrentStatus];
-
-	// Set NPC a new status.
-	FCNPC_SetStatus(npcid, NPC_STATUS:status, Float:roamX = 0.0, Float:roamY = 0.0, chaseId = INVALID_PLAYER_ID)
-	{
-		if(FCNPC_GetStatus(npcid) == status)
-		{
-			return true;
-		}
-
-		if(FCNPC_IsDeadEx(npcid) && status != NPC_STATUS:STATUS_NONE
-		&& FCNPC_IsNpcDisabled(npcid) && status != NPC_STATUS:STATUS_IDLE)
-		{
-			return false;
-		}
-
-		switch(status)
-		{
-			case STATUS_NONE:
-			{
-				FCNPC_ClearAnims(npcid);
-				FCNPC_StopUpdateTimer(npcid);
-			}
-
-			case STATUS_IDLE: {}
-			case STATUS_ROAM:
-			{
-				new Float:x, Float:y, Float:z;
-				if(floatcmp(roamX, 0.0) == 0 && floatcmp(roamY, 0.0) == 0)
-				{
-					FCNPC_GetPosition(npcid, x, y, z);
-					roamX = x;
-					roamY = y;
-				}
-				
-				FCNPC_OnRoam(npcid, (roamX + random(2) + 0.5), (roamY + random(2) + 0.5), z);
-			}
-
-			case STATUS_CHASE: {}
-			case STATUS_ATTACK:
-			{
-				
-				if(FCNPC_IsBurning(npcid) || FCNPC_IsStunned(npcid))
-				{
-					return false;
-				}
-
-				if(chaseId == INVALID_PLAYER_ID
-				|| IsPlayerDead(chaseId))
-				{
-					return false;
-				}
-
-				eNpcInfo[npcid][e_iChaseId] = chaseId;
-			}
-
-			case STATUS_DISTRACTED:
-			{
-				if(FCNPC_IsBurning(npcid) || FCNPC_IsStunned(npcid))
-				{
-					return false;
-				}
-
-				if(floatcmp(roamX, 0.0) == 0 && floatcmp(roamY, 0.0) == 0)
-				{
-					return false;
-				}
-
-				new Float:z;
-				FCNPC_GetPosition(npcid, z, z, z);
-				
-				if(!IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, roamX, roamY, z))
-				{
-					return false;
-				}
-
-				FCNPC_OnGetDistracted(npcid, roamX, roamY, z);
-			}
-			
-			case STATUS_BURNING:
-			{
-				FCNPC_OnStartBurning(npcid);
-			}
-
-			case STATUS_STUNNED:
-			{
-				if(FCNPC_IsBurning(npcid))
-				{
-					return false;
-				}
-
-				CLF(#FCNPC_OnGetStunned, "d", npcid);
-			}
-
-			case STATUS_DEAD:
-			{
-				FCNPC_ClearAnims(npcid);
-				FCNPC_StopUpdateTimer(npcid);
-			}
-
-			case STATUS_PLAYING_ANIM: {}
-		}
-
-		if(status != STATUS_ROAM && status != STATUS_CHASE)
-		{
-			FCNPC_StopMoving(npcid);
-		}
-
-		if(status != STATUS_NONE && status != STATUS_DEAD)
-		{
-			FCNPC_StartUpdateTimer(npcid);
-		}
-
-		eNpcInfo[npcid][e_iCurrentStatus] = status;
-		SCMF_ALL(-1, "Setting status: %d", _:status);
-		return true;
-	}
-
-//#endregion
-
 //#region Timer updates
 
 	FCNPC_StartUpdateTimer(npcid)
 	{
 		if(FCNPC_IsTimerRunning(npcid))
 		{
-			return;
+			return false;
 		}
 
 		SCMF_ALL(-1, "Starting timer");
 		Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 		eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
+		return true;
 	}
 
 	FCNPC_StopUpdateTimer(npcid)
 	{
 		if(!FCNPC_IsTimerRunning(npcid))
 		{
-			return;
+			return false;
 		}
 
 		SCMF_ALL(-1, "Stopping timer");
 		Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 		stop eNpcInfo[npcid][e_iUpdateTimer];
+		return true;
 	}
 
 //#endregion
@@ -393,15 +272,14 @@
 	{
 		if(IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
 		{
-			return;
+			return false;
 		}
 
 		new Float:x, Float:y, Float:z;
 		FCNPC_GetPosition(npcid, x, y, z);
 
-		eNpcInfo[npcid][e_iRoamAreaId] = CreateDynamicCircle(x, y, 10.0);
-		eNpcInfo[npcid][e_iRoamAreaCenterX] = x;
-		eNpcInfo[npcid][e_iRoamAreaCenterY] = y;
+		eNpcInfo[npcid][e_iRoamAreaId] = CreateDynamicCircle(x, y, AREA_ROAM_SIZE);
+		return true;
 	}
 
 	// Destroy NPC roam area.
@@ -409,12 +287,11 @@
 	{
 		if(!IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
 		{
-			return;
+			return false;
 		}
 
 		DestroyDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]);
-		eNpcInfo[npcid][e_iRoamAreaCenterX] = 0.0;
-		eNpcInfo[npcid][e_iRoamAreaCenterY] = 0.0;
+		return true;
 	}
 
 //#endregion
@@ -444,7 +321,7 @@
 
 		if(FCNPC_GetHealthEx(npcid) <= 0.0)
 		{
-			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_DEAD);
+			FCNPC_SetStatus(npcid, STATUS_DEAD);
 			FCNPC_OnDeathEx(npcid, killerid, weaponid, bodypart);
 		}
 	}
@@ -461,40 +338,13 @@
 		FCNPC_ClearAnims(npcid);
 	}
 
-	// NPC goes to the specific location with a custom animation of running.
-	FCNPC_RunTo(npcid, Float:x, Float:y, Float:z, type = FCNPC_MOVE_TYPE_AUTO, Float:speed = FCNPC_MOVE_SPEED_AUTO, mode = FCNPC_MOVE_MODE_AUTO, pathfinding = FCNPC_MOVE_PATHFINDING_AUTO, Float:radius = 0.0, bool:set_angle = true, Float:min_distance = 0.0, stopdelay = 250)
-	{
-		if(FCNPC_IsDeadEx(npcid))
-		{
-			return;
-		}
-		
-		speed = NpcMovementSpeed[_:FCNPC_GetType(npcid)];
-		radius = NPC_RUN_OFFSET;
-
-		FCNPC_GoTo(npcid, x, y, z, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
-		FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
-	}
-
-	// NPC goes to the specific location with a custiom animation of walking.
-	FCNPC_WalkTo(npcid, Float:x, Float:y, Float:z, type = FCNPC_MOVE_TYPE_AUTO, Float:speed = FCNPC_MOVE_SPEED_AUTO, mode = FCNPC_MOVE_MODE_AUTO, pathfinding = FCNPC_MOVE_PATHFINDING_AUTO, Float:radius = 0.0, bool:set_angle = true, Float:min_distance = 0.0, stopdelay = 250)
-	{
-		if(FCNPC_IsDeadEx(npcid))
-		{
-			return;
-		}
-
-		speed = NpcMovementSpeed[_:FCNPC_GetType(npcid)] / 2;
-		radius = NPC_RUN_OFFSET;
-
-		FCNPC_GoTo(npcid, x, y, z, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
-		FCNPC_ApplyAnimation(npcid, "TLoU", "INF_WALK", 4.1, 1, 1, 1, 0, 0);
-	}
-
 	// Set NPC new random skin based on its type.
-	FCNPC_SetSkinBasedOnType(npcid, NPC_TYPE:type)
+	FCNPC_SetSkinBasedOnType(npcid)
 	{
-		new skinid = 0;
+		new
+			skinid = 0,
+			NPC_TYPE:type = FCNPC_GetType(npcid);
+
 		switch(type)
 		{
 			case TYPE_RUNNER:	skinid = NpcSkinIds[random(7)];
@@ -516,6 +366,11 @@
 	// Check if FCNPC is in a fire area.
 	FCNPC_IsInFireArea(npcid, npcAreaId)
 	{
+		if(!IsPlayerNPC(npcid))
+		{
+			return false;
+		}
+
 		foreach(new i : ServerFires)
 		{
 			if(npcAreaId == eFireData[i][e_iFireAreaId])
@@ -536,12 +391,11 @@
 		}
 		else if(!firstSpawn)
 		{
-			FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+			FCNPC_SetStatus(npcid, STATUS_IDLE);
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 		}
 
 		FCNPC_ClearAnims(npcid);
-
 		FCNPC_SetHealthEx(npcid, 100.0);
 		CreateNpcRoamArea(npcid);
 	}
@@ -594,3 +448,97 @@
 	// }
 
 //#endregion
+
+FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
+{
+	if(FCNPC_IsDeadEx(npcid))
+	{
+		return false;
+	}
+
+	new Float:speed = NpcMovementSpeed[_:FCNPC_GetType(npcid)];
+	if(walkOrRun == FCNPC_MOVE_WALK)
+	{
+		speed = (speed / 2.0);
+	}
+	
+	static Float:radius = NPC_RUN_OFFSET;
+	static pathfinding = FCNPC_MOVE_PATHFINDING_NONE;
+	static Float:min_distance = 0.0;
+	static Float:climbing = 2.0;
+	static Float:cut_size = 1.0;
+
+	new 
+		Float:pX, Float:pY, Float:pZ,
+		Float:nX, Float:nY, Float:nZ;
+
+	GetPlayerPos(playerid, pX, pY, pZ);
+	FCNPC_GetPosition(npcid, nX, nY, nZ);
+
+	if(GetDistanceBetweenPoints1D(nZ, pZ) > climbing)
+	{
+		pZ = nZ;
+	}
+
+	new Float:tX, Float:tY, Float:tZ;
+	if(MovePointColCutLineEx(nX, nY, nZ, pX, pY, pZ, tX, tY, tZ, cut_size))
+    {
+		FCNPC_GoTo(npcid, tX, tY, tZ, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
+
+		if(walkOrRun == FCNPC_MOVE_WALK)
+		{
+			FCNPC_ApplyAnimation(npcid, "TLoU", "INF_WALK", 4.1, 1, 1, 1, 0, 0);
+		}
+		else if(walkOrRun == FCNPC_MOVE_RUN)
+		{
+			FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
+		}
+		return true;
+	}
+	return false;
+}
+
+FCNPC_RandomMoveInDynamicArea(npcid, areaid, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
+{
+	if(FCNPC_IsDeadEx(npcid) || !IsValidDynamicArea(areaid))
+	{
+		return false;
+	}
+
+	new Float:speed = NpcMovementSpeed[_:FCNPC_GetType(npcid)];
+	static Float:radius = NPC_RUN_OFFSET;
+	static pathfinding = FCNPC_MOVE_PATHFINDING_NONE;
+	static Float:min_distance = 0.0;
+	static Float:climbing = 2.0;
+
+	new 
+		Float:tX, Float:tY, Float:tZ,
+		Float:tmp, 
+		count = 0;
+
+	new Float:nX, Float:nY, Float:nZ;
+	FCNPC_GetPosition(npcid, nX, nY, nZ);
+
+	do 
+	{
+		if(count >= 100)
+		{
+			return 0;
+		}
+
+		Random_PointInDynamicArea(areaid, tX, tY, tZ);
+		CA_FindZ_For2DCoord(tX, tY, tZ);
+		tZ += 1.0;
+		count++;
+	} 
+	while 
+	(
+		IsPointInWater(tX, tY) 
+		|| CA_RayCastLine(nX, nY, nZ, tX, tY, tZ, tmp, tmp, tmp) 
+		|| GetDistanceBetweenPoints1D(tZ, nZ) > climbing 
+		|| !IsPointInDynamicArea(areaid, tX, tY, tZ)
+	);
+
+	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_WALK", 4.1, 1, 1, 1, 0, 0);
+	return FCNPC_GoTo(npcid, tX, tY, tZ, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
+}
