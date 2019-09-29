@@ -16,11 +16,15 @@
 #include <TLoU.items\sprites\utils>
 #include <TLoU.objects\utils>
 #include <TLoU.npcs\utils>
-#include <TLoU.damages\utils>
+#include <TLoU.npcs\animations\utils>
+#include <TLoU.npcs\movement\utils>
+#include <TLoU.npcs\statuses\utils>
+#include <TLoU.npcs\types\utils>
 #include <TLoU.dialogs\utils>
 #include <TLoU.weaponMenu\utils>
 #include <TLoU.players\utils>
 #include <TLoU.players\statuses\utils>
+#include <TLoU.players\damages\utils>
 #include <TLoU.registerLogin\utils>
 #include <TLoU.textdraws\utils>
 #include <TLoU.weapons\utils>

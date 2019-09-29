@@ -1,6 +1,7 @@
 #include	<config\natives>
 #include	<config\config>
 #include	<config\mysql>
+#include	<utils\config>
 
 #include 	<TLoU.animations\config>
 #include	<TLoU.attachments\config>
@@ -14,15 +15,20 @@
 #include    <TLoU.characters\config>
 #include    <TLoU.chat\config>
 #include    <TLoU.commands\config>
-#include    <TLoU.damages\config>
 #include	<TLoU.factions\config>
 #include	<TLoU.fire\config>
 #include	<TLoU.health\config>
 #include	<TLoU.hud\config>
 #include    <TLoU.npcs\config>
+#include    <TLoU.npcs\animations\config>
+#include    <TLoU.npcs\damages\config>
+#include    <TLoU.npcs\movement\config>
+#include    <TLoU.npcs\statuses\config>
+#include    <TLoU.npcs\types\config>
 #include    <TLoU.objects\config>
 #include 	<TLoU.players\config>
 #include 	<TLoU.players\statuses\config>
+#include    <TLoU.players\damages\config>
 #include 	<TLoU.weapons\config>
 #include	<TLoU.weapons\bow\config>
 #include 	<TLoU.weapons\projectiles\config>

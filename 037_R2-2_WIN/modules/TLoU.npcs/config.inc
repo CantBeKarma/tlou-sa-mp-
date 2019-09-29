@@ -6,10 +6,8 @@
 #define     RANGE_NPC_CHASE_BY_PATH     (30.0)
 #define		RANGE_NPC_CHASE		        (10.0)
 #define		RANGE_NPC_ATTACK	        (1.1)
-#define     RANGE_Z_DIFF_CHASE          (1.4)
 #define     RANGE_NPC_DISTRACT          (30.0)
 
-#define		NPC_RUN_OFFSET				(0.9)
 #define		NPC_ATTACK_DELAY			(500)
 
 #define		PATHFINDER_Z_DIFF	    	(1.1)
@@ -20,86 +18,7 @@
 #define     MAX_FCNPCS                  (10)
 #define     MAX_NPC_TYPES               (4)
 
-stock const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
-{
-    PED_DAM_ARML_FRMBK, PED_DAM_ARML_FRMFT, PED_DAM_ARML_FRMLT,
-    PED_DAM_ARMR_FRMBK, PED_DAM_ARMR_FRMFT, PED_DAM_ARMR_FRMRT,
-
-    PED_DAM_LEGL_FRMBK, PED_DAM_LEGL_FRMFT, PED_DAM_LEGL_FRMLT,
-    PED_DAM_LEGR_FRMBK, PED_DAM_LEGR_FRMFT, PED_DAM_LEGR_FRMRT,
-
-    PED_DAM_STOMACH_FRMBK, PED_DAM_STOMACH_FRMFT, PED_DAM_STOMACH_FRMLT, PED_DAM_STOMACH_FRMRT
-};
-
-stock const NpcIdleAnimsList[5] =
-{
-    PED_FLEE_LKAROUND_01,
-    PED_DAM_ARML_FRMFT,
-    PED_DAM_ARMR_FRMFT,
-    FLOWERS_FLOWER_HIT,
-    KISSING_GF_CARARGUE_02
-};
-
-stock const NpcAttackAnims[3] =
-{
-	KNIFE_KNIFE_PART,
-    SWORD_SWORD_PART,
-    PED_SHOVE_PARTIAL  
-};
-
-stock const Float:NpcDamageValues[MAX_NPC_TYPES] =
-{
-    5.0, 
-    8.0, 
-    30.0, 
-    100.0
-};
-
-stock const Float:NpcMovementSpeed[MAX_NPC_TYPES] =
-{
-    0.66444, 
-    0.46444, 
-    0.46444, 
-    0.26444
-};
-
-enum NPC_TYPE
-{
-    TYPE_RUNNER,
-    TYPE_STALKER,
-    TYPE_CLICKER,
-    TYPE_BLOATER
-};
-
-stock const NpcTypeNames[MAX_NPC_TYPES][8] =
-{
-    "Runner",
-    "Stalker",
-    "Clicker",
-    "Bloater"
-};
-
-stock const NpcSkinIds[15] =
-{
-    289, 253, 230, 212, 213, 210, 209, 
-    195, 194, 193, 192, 191, 190,
-    SKIN_CLICKER,
-    5
-};
-
-enum NPC_STATUS
-{
-    STATUS_NONE,
-    STATUS_IDLE,
-    STATUS_ROAM,
-    STATUS_CHASE,
-    STATUS_ATTACK,
-    STATUS_DISTRACTED,
-    STATUS_BURNING,
-    STATUS_STUNNED,
-    STATUS_DEAD,
-    STATUS_PLAYING_ANIM
-};
+#define     AREA_ROAM_SIZE              (10.0)
 
 enum e_NPC_DATA
 {
@@ -119,8 +38,6 @@ enum e_NPC_DATA
     Float:e_fDistractedZ,
 
     e_iRoamAreaId,
-    Float:e_iRoamAreaCenterX,
-    Float:e_iRoamAreaCenterY,
 
     Timer:e_iUpdateTimer,
     e_iTickCounter_damageAnim,

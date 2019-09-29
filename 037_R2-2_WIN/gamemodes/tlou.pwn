@@ -37,7 +37,7 @@
 #include    <TLoU.chat\main>
 #include    <TLoU.players\main>
 #include    <TLoU.players\statuses\main>
-#include    <TLoU.damages\main>
+#include    <TLoU.players\damages\main>
 #include    <TLoU.fire\main>
 #include    <TLoU.health\main>
 #include    <TLoU.hud\main>
@@ -46,6 +46,10 @@
 #include    <TLoU.items\main>
 #include    <TLoU.items\sprites\main>
 #include    <TLoU.npcs\main>
+#include    <TLoU.npcs\animations\main>
+#include    <TLoU.npcs\damages\main>
+#include    <TLoU.npcs\movement\main>
+#include    <TLoU.npcs\statuses\main>
 #include    <TLoU.objects\main>
 #include    <TLoU.registerLogin\main>
 #include    <TLoU.textdraws\main>

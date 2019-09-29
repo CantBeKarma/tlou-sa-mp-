@@ -26,7 +26,7 @@ public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Fl
             continue;
         }
 
-        FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_DISTRACTED, x, y);
+        FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
     }
     return 0;
 }
@@ -40,7 +40,7 @@ public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 
     if(IsPlayerNPC(hitid) && !FCNPC_IsBurning(hitid))
     {
-        FCNPC_SetStatus(hitid, NPC_STATUS:STATUS_BURNING);
+        FCNPC_SetStatus(hitid, STATUS_BURNING);
     }
 
     // foreach(new npcid : FCNPC)
@@ -122,7 +122,11 @@ timer OnNailbombExplode[NAILBMB_TRIGGERED_EXPLODE](triggererid, throwerid, nailB
 {
     if(IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, x, y, z))
     {
-        if(!IsPlayerNPC(triggererid))
+        if(IsPlayerNPC(triggererid))
+        {
+            FCNPC_OnGetExplodedByNailbomb(triggererid, throwerid);
+        }
+        else
         {
             OnPlayerGetExplodedByNailbomb(triggererid, throwerid);
         }
