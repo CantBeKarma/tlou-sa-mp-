@@ -1,0 +1,6 @@
+#define FLOAT_PI		 							            (3.14159265358979323846)
+#define FLOAT_DEFECT											(0.000001)
+#define GetDistanceBetweenPoints1D(%1,%2)						VectorSize((%1)-(%2),0.0,0.0)
+#define GetDistanceBetweenPoints2D(%1,%2,%3,%4)					VectorSize((%1)-(%3),(%2)-(%4),0.0)
+#define GetDistanceBetweenPoints3D(%1,%2,%3,%4,%5,%6)			VectorSize((%1)-(%4),(%2)-(%5),(%3)-(%6))
+#define SwapInt(%0,%1)                                          (((%0) ^= (%1)), ((%1) ^= (%0)), ((%0) ^= (%1)))
