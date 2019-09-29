@@ -5,8 +5,6 @@
 #define		MAX_PLAYERS				(50)
 #define		MAX_LOG_FILES			(7)
 
-#define		MAX_PATHFINDER_THREADS	(1) // = MAX_FCNPCS (CHANGE WHEN NECESSARY SINCE I CAN'T ACCESS IT!)
-
 // ON-CLIENT DISPLAY SETTINGS
 //#define		USE_VPS
 #define     SAMP_VERSION            "0.3.7-R3"
@@ -40,11 +38,11 @@
 	#define		PATH_LOG_MAIN				"server"
 	#define     PATH_LOG_SERVER     		""PATH_LOG_MAIN"/server/"
 	#define     PATH_LOG_PLAYERS    		""PATH_LOG_MAIN"/players/"
-	#define     PATH_LOG_MYSQL        		""PATH_LOG_SERVER"/mysql/"
+	#define     PATH_LOG_MYSQL        		""PATH_LOG_SERVER"mysql/"
 	#define     PATH_LOG_NPCS           	""PATH_LOG_MAIN"/npcs/"
-	#define     PATH_LOG_PUNISHMENTS    	""PATH_LOG_PLAYERS"/punishments/"
-	#define     PATH_LOG_CHAT       		""PATH_LOG_PLAYERS"/chat/"
-	#define     PATH_LOG_CMD        		""PATH_LOG_PLAYERS"/cmd/"
+	#define     PATH_LOG_PUNISHMENTS    	""PATH_LOG_PLAYERS"punishments/"
+	#define     PATH_LOG_CHAT       		""PATH_LOG_PLAYERS"chat/"
+	#define     PATH_LOG_CMD        		""PATH_LOG_PLAYERS"cmd/"
 
 //#endregion
 
@@ -67,7 +65,7 @@
 
 //#endregion
 
-//#region HELPERS.
+//#region HELPERS
 
 	#if !defined isnull
 		#define	 	isnull(%1) 				((!(%1[0])) || (((%1[0]) == '\1') && (!(%1[1]))))
@@ -109,7 +107,7 @@ enum e_LOGS
 };
 new Logger:eLogs[e_LOGS];
 
-stock const eLogsPathsData[MAX_LOG_FILES][32] =
+stock const eLogsPathsData[MAX_LOG_FILES][64] =
 {
 	""PATH_LOG_SERVER"",
 	""PATH_LOG_PLAYERS"",
@@ -128,12 +126,14 @@ hook OnGameModeInit()
 	static year, month, day;
 	getdate(year, month, day);
 
+	SetLogPluginLogLevel(ERROR | WARNING | INFO);
+	
 	// Create log files instances.
-	static log_filePathAndName[32];
+	static log_filePathAndName[64];
 	for(new i = 0; i != MAX_LOG_FILES; i++)
 	{
 		format(log_filePathAndName, sizeof(log_filePathAndName), "%s%02d-%02d-%02d", eLogsPathsData[i], year, month, day);
-		eLogs[e_Log_Index][i] = CreateLog(log_filePathAndName);	
+		eLogs[e_Log_Index][i] = CreateLog(log_filePathAndName);
 	}
 
 	Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "Setting up server display settings on SA-MP Client. Please wait...");
@@ -187,7 +187,7 @@ hook OnGameModeExit()
 	Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, " ===================================================== ");
 
 	// Destroying logs.
-	for(new i = 0; i != MAX_LOG_FILES; i++)
+	for(new i = 0; i < MAX_LOG_FILES; i++)
 	{
 		DestroyLog(eLogs[e_Log_Index][i]);
 	}

@@ -531,7 +531,10 @@ YCMD:icmd(playerid, params[], help)
         new npcid, NPC_STATUS:status;
         if(sscanf(params, "dd", npcid, _:status))return SCM(playerid, -1, "/npcstatus [id] [status]");
         {
-            FCNPC_SetStatus(npcid, status);
+            if(!FCNPC_SetStatus(npcid, status))
+            {
+                SCMF(playerid, 0xFF000000, "Unable to change status for NPC");
+            }
         }
         return 1;
     }
