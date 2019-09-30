@@ -3,7 +3,7 @@ FlyBackwardsWhenShot(damagedid)
 {
     if(IsPlayerNPC(damagedid))
     {
-        FCNPC_SetStatus(damageid, STATUS_FALL);
+        FCNPC_SetStatus(damagedid, STATUS_FALL);
         return 1;
     }
 

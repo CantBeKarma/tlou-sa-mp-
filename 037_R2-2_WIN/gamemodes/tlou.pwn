@@ -25,6 +25,8 @@
 #include    <a_mysql_yinline>
 #include    <bcrypt>
 
+forward bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = INVALID_PLAYER_ID);
+
 // Modules.
 #include    <config\main>
 #include    <utils\main>

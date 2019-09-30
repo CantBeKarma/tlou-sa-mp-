@@ -44,7 +44,7 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
 
         case STATUS_FALL:
         {
-            FCNPC_SetAnimCallback(damagedid, BASEBALL_BAT_HIT_3, .freeze = true);
+            FCNPC_SetAnimCallback(npcid, BASEBALL_BAT_HIT_3, .freeze = true);
         }
     }
     return 0;
