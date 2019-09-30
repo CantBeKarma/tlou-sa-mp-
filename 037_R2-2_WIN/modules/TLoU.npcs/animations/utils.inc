@@ -1,3 +1,5 @@
+forward bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = INVALID_PLAYER_ID);
+
 // Return current FCNPCs animation index.
 FCNPC_GetAnimationIndex(npcid)
 {
@@ -14,7 +16,7 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 {
     if(FCNPC_IsDeadEx(npcid) && animationid != KNIFE_KILL_KNIFE_PED_DAMAGE // Is dead and not playing 'knifed' animation.
     || FCNPC_IsDeadEx(npcid) && animationid != BASEBALL_BAT_HIT_3 // Is dead and not playing 'fly back' animation when shot by shotgun.
-    || !FCNPC_SetStatus(npcid, STATUS_PLAYING_ANIM)) // Unable to set status to PLAYING_ANIM
+    || FCNPC_ValidateStatusChange(npcid, STATUS_PLAYING_ANIM) == false)
     {
         return false;
     }
@@ -23,21 +25,18 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
     switch(animationid)
     {
         case KISSING_GF_CARARGUE_02: 	   	tickCounter = -10; // IDLE 
-        case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10; // IDLE
-        
+        case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10; // IDLE/DISTRACTED
         case PED_GAS_CWR:					tickCounter = -4;  // STUNNED
         case PED_IDLE_TIRED:				tickCounter = -4;  // STUNNED
         case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -30; // KNIFED
         case BASEBALL_BAT_HIT_3:			tickCounter = -8;  // SHOT BY SHOTGUN
         case PED_GETUP: 				   	tickCounter = -4;  // GET UP
     }
-
-    SCMF_ALL(-1, "Anim callback | tickcounter = %d", tickCounter);
     
-    //FCNPC_ClearAnims(npcid);
     eNpcInfo[npcid][e_iPlayingAnim_Tick] = tickCounter;
     eNpcInfo[npcid][e_iPlayingAnim_Index] = animationid;
     
+    FCNPC_SetStatus(npcid, STATUS_PLAYING_ANIM);
     FCNPC_SetAnimation(npcid, animationid, 4.1, 0, 1, 1, freeze, 0);
     return true;
 }
@@ -45,14 +44,17 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 // Plays idle anims on NPC.
 FCNPC_PlayIdleActions(npcid)
 {
-    if(FCNPC_IsRoaming(npcid) || FCNPC_IsPlayingAnim(npcid) || FCNPC_IsDeadEx(npcid)
-    || (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_IdleActions]) < TICK_RATE_FCNPC_IDLE)
+    if((GetTickCount() - eNpcInfo[npcid][e_iTickCounter_IdleActions]) < TICK_RATE_FCNPC_IDLE)
     {
         return false;
     }
     eNpcInfo[npcid][e_iTickCounter_IdleActions] = GetTickCount();
 
-    FCNPC_SetAnimCallback(npcid, NpcIdleAnimsList[random(sizeof(NpcIdleAnimsList))]);
+    switch(random(2))
+    {
+        case 0: FCNPC_SetAnimCallback(npcid, NpcIdleAnimsList[random(sizeof(NpcIdleAnimsList))]);
+        case 1: FCNPC_SetStatus(npcid, STATUS_ROAM);
+    }
     return true;
 }
 
@@ -156,15 +158,7 @@ FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId = -1, Float:distanceBe
 
 // Check if animation has finished. 
 // If it hasn't increase the counter until it reaches '0'
-bool:FCNPC_CheckIfAnimationFinished(npcid, animIdx)
+bool:FCNPC_HasCallbackAnimFinished(npcid, animIdx)
 {
-    if(FCNPC_GetAnimationIndex(npcid) != animIdx || eNpcInfo[npcid][e_iPlayingAnim_Tick] >= 0)
-    {
-        return true;
-    }
-    else
-    {
-        eNpcInfo[npcid][e_iPlayingAnim_Tick]++;
-        return false;
-    }
+    return (FCNPC_GetAnimationIndex(npcid) != animIdx || eNpcInfo[npcid][e_iPlayingAnim_Tick] >= 0);
 }

@@ -3,13 +3,38 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatusId, statusIssuerId)
 {
+    if(newStatusId == STATUS_DISABLED
+    || newStatusId == STATUS_IDLE
+    || newStatusId == STATUS_FALL
+    || newStatusId == STATUS_BURNING
+    || newStatusId == STATUS_STUNNED
+    || newStatusId == STATUS_DEAD
+    || newStatusId == STATUS_PLAYING_ANIM)
+    {
+        FCNPC_StopMoving(npcid);
+    }
+
+    if(newStatusId == STATUS_CHASE
+    || newStatusId == STATUS_ATTACK
+    || newStatusId == STATUS_BURNING
+    || newStatusId == STATUS_PLAYING_ANIM)
+    {
+        FCNPC_StartUpdateTimer(npcid);
+    }
+
     switch(newStatusId)
     {
         case 
             STATUS_DISABLED,
             STATUS_DEAD:
         {
+            FCNPC_DestroyRoamArea(npcid);
             FCNPC_StopUpdateTimer(npcid);
+        }
+
+        case STATUS_IDLE:
+        {
+            FCNPC_PlayIdleActions(npcid);
         }
 
         case STATUS_ROAM:
@@ -17,32 +42,22 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
             FCNPC_RandomMoveInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]);
         }
 
-        // case STATUS_DISTRACTED:
-        // {
-        //     FCNPC_OnGetDistracted(npcid, roamX, roamY, z);
-        // }
-
-        // case STATUS_BURNING:
-        // {
-        //     FCNPC_OnStartBurning(npcid);
-        // }
-
-        // case STATUS_STUNNED:
-        // {
-        //     CLF(#FCNPC_OnGetStunned, "d", npcid);
-        // }
-    }
-
-    if(newStatusId != STATUS_ROAM 
-    && newStatusId != STATUS_CHASE)
-    {
-        FCNPC_StopMoving(npcid);
-    }
-
-    if(newStatusId != STATUS_DISABLED 
-    && newStatusId != STATUS_DEAD)
-    {
-        FCNPC_StartUpdateTimer(npcid);
+        case STATUS_FALL:
+        {
+            FCNPC_SetAnimCallback(damagedid, BASEBALL_BAT_HIT_3, .freeze = true);
+        }
     }
     return 0;
 }
+
+// STATUS_DISABLED,
+// STATUS_IDLE,
+// STATUS_ROAM,
+// STATUS_FALL
+// STATUS_CHASE,
+// STATUS_ATTACK,
+// STATUS_DISTRACTED,
+// STATUS_BURNING,
+// STATUS_STUNNED,
+// STATUS_DEAD,
+// STATUS_PLAYING_ANIM

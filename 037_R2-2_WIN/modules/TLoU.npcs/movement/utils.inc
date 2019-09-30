@@ -48,15 +48,16 @@
 // Stops NPC from moving and clear animations used.
 FCNPC_StopMoving(npcid)
 {
-	if(!FCNPC_IsMoving(npcid))
+	if(FCNPC_IsMoving(npcid))
 	{
-		return;
+		FCNPC_Stop(npcid);
+		FCNPC_ClearAnims(npcid);
 	}
-
-	FCNPC_Stop(npcid);
-	FCNPC_ClearAnims(npcid);
 }
 
+// This function makes NPC go to player as long as it reaches collision on the way.
+// For example when NPC goes to player and has a fence during its way - it will stop moving.
+// Movement is set through parameter (WALK or RUN) with animations being applied.
 FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
 {
 	if(FCNPC_IsDeadEx(npcid))
@@ -106,6 +107,57 @@ FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, type =
 	return false;
 }
 
+// This function makes NPC is a copy of FCNPC_GoToPlayer...
+// with only difference with it having coordinates specified where NPC is supposed to go
+// using ColAndreas (going on ground) AND stopping when hitting a collision (e.g. fence)
+FCNPC_GoToOnGroundCol(npcid, Float:posX, Float:posY, Float:posZ, walkOrRun = FCNPC_MOVE_WALK, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
+{
+	if(FCNPC_IsDeadEx(npcid))
+	{
+		return false;
+	}
+
+	new Float:speed = NpcMovementSpeed[_:FCNPC_GetType(npcid)];
+	if(walkOrRun == FCNPC_MOVE_WALK)
+	{
+		speed = (speed / 2.0);
+	}
+	
+	static Float:radius = NPC_RUN_OFFSET;
+	static pathfinding = FCNPC_MOVE_PATHFINDING_NONE;
+	static Float:min_distance = 0.0;
+	static Float:climbing = 2.0;
+	static Float:cut_size = 1.0;
+
+	new Float:nX, Float:nY, Float:nZ;
+	FCNPC_GetPosition(npcid, nX, nY, nZ);
+
+	if(GetDistanceBetweenPoints1D(nZ, posZ) > climbing)
+	{
+		posZ = nZ;
+	}
+
+	new Float:tX, Float:tY, Float:tZ;
+	if(MovePointColCutLineEx(nX, nY, nZ, posX, posY, posZ, tX, tY, tZ, cut_size))
+    {
+		FCNPC_GoTo(npcid, tX, tY, tZ, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
+
+		if(walkOrRun == FCNPC_MOVE_WALK)
+		{
+			FCNPC_ApplyAnimation(npcid, "TLoU", "INF_WALK", 4.1, 1, 1, 1, 0, 0);
+		}
+		else if(walkOrRun == FCNPC_MOVE_RUN)
+		{
+			FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
+		}
+		return true;
+	}
+	return false;
+}
+
+// Each NPC has its own dynamic area in which it's supposed to be moving while roaming (doing nothing).
+// This function finds X, Y, Z in NPCs area id, validates it and moves NPC to the target location
+// Movement is random between WALKING and RUNNING with animations applies
 FCNPC_RandomMoveInDynamicArea(npcid, areaid, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
 {
 	if(FCNPC_IsDeadEx(npcid) || !IsValidDynamicArea(areaid))
@@ -113,7 +165,13 @@ FCNPC_RandomMoveInDynamicArea(npcid, areaid, type = FCNPC_MOVE_TYPE_AUTO, mode =
 		return false;
 	}
 
+	new walkOrRun = random(2);
 	new Float:speed = NpcMovementSpeed[_:FCNPC_GetType(npcid)];
+	if(walkOrRun == FCNPC_MOVE_WALK)
+	{
+		speed = (speed / 2.0);
+	}
+
 	static Float:radius = NPC_RUN_OFFSET;
 	static pathfinding = FCNPC_MOVE_PATHFINDING_NONE;
 	static Float:min_distance = 0.0;
@@ -147,6 +205,13 @@ FCNPC_RandomMoveInDynamicArea(npcid, areaid, type = FCNPC_MOVE_TYPE_AUTO, mode =
 		|| !IsPointInDynamicArea(areaid, tX, tY, tZ)
 	);
 
-	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_WALK", 4.1, 1, 1, 1, 0, 0);
+	if(walkOrRun == FCNPC_MOVE_WALK)
+	{
+		FCNPC_ApplyAnimation(npcid, "TLoU", "INF_WALK", 4.1, 1, 1, 1, 0, 0);
+	}
+	else if(walkOrRun == FCNPC_MOVE_RUN)
+	{
+		FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
+	}
 	return FCNPC_GoTo(npcid, tX, tY, tZ, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
 }

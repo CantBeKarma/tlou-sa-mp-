@@ -32,28 +32,22 @@
 
 	FCNPC_StartUpdateTimer(npcid)
 	{
-		if(FCNPC_IsTimerRunning(npcid))
+		if(!FCNPC_IsTimerRunning(npcid))
 		{
-			return false;
+			SCMF_ALL(-1, "Starting timer");
+			Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
+			eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
 		}
-
-		SCMF_ALL(-1, "Starting timer");
-		Bit_Let(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
-		eNpcInfo[npcid][e_iUpdateTimer] = repeat FCNPC_OnInfectedUpdate(npcid);
-		return true;
 	}
 
 	FCNPC_StopUpdateTimer(npcid)
 	{
-		if(!FCNPC_IsTimerRunning(npcid))
+		if(FCNPC_IsTimerRunning(npcid))
 		{
-			return false;
+			SCMF_ALL(-1, "Stopping timer");
+			Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
+			stop eNpcInfo[npcid][e_iUpdateTimer];
 		}
-
-		SCMF_ALL(-1, "Stopping timer");
-		Bit_Vet(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
-		stop eNpcInfo[npcid][e_iUpdateTimer];
-		return true;
 	}
 
 //#endregion
@@ -61,33 +55,51 @@
 //#region Areas management
 
 	// Create NPC roam area.
-	CreateNpcRoamArea(npcid)
-	{
-		if(IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
-		{
-			return false;
-		}
-
-		new Float:x, Float:y, Float:z;
-		FCNPC_GetPosition(npcid, x, y, z);
-
-		eNpcInfo[npcid][e_iRoamAreaId] = CreateDynamicCircle(x, y, AREA_ROAM_SIZE);
-		return true;
-	}
-
-	// Destroy NPC roam area.
-	DestroyNpcRoamArea(npcid)
+	FCNPC_CreateRoamArea(npcid)
 	{
 		if(!IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
 		{
-			return false;
-		}
+			new Float:x, Float:y, Float:z;
+			FCNPC_GetPosition(npcid, x, y, z);
 
-		DestroyDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]);
-		return true;
+			eNpcInfo[npcid][e_iRoamAreaId] = CreateDynamicCircle(x, y, AREA_ROAM_SIZE);
+		}
+	}
+
+	// Destroy NPC roam area.
+	FCNPC_DestroyRoamArea(npcid)
+	{
+		if(IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
+		{
+			DestroyDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]);
+		}
 	}
 
 //#endregion
+
+FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
+{
+	if(FCNPC_ValidateStatusChange(npcid, STATUS_DISTRACTED) == true)
+	{
+		if(floatcmp(x, 0.0) == 0 
+		&& floatcmp(y, 0.0) == 0 
+		&& floatcmp(z, 0.0) == 0
+		|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
+		{
+			return false;
+		}
+
+		FCNPC_DestroyRoamArea(npcid);
+		FCNPC_SetAnimCallback(npcid, PED_FLEE_LKAROUND_01);
+
+		eNpcInfo[npcid][e_fDistractedX] = x;
+		eNpcInfo[npcid][e_fDistractedY] = y;
+		eNpcInfo[npcid][e_fDistractedZ] = z;
+
+		FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
+	}
+	return false;
+}
 
 forward NPC_STATUS:FCNPC_GetStatus(npcid);
 forward NPC_TYPE:FCNPC_GetType(npcid);
@@ -155,7 +167,7 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 
 		FCNPC_ClearAnims(npcid);
 		FCNPC_SetHealthEx(npcid, 100.0);
-		CreateNpcRoamArea(npcid);
+		FCNPC_CreateRoamArea(npcid);
 	}
 
 //#endregion

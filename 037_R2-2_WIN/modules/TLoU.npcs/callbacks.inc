@@ -13,7 +13,6 @@ public FCNPC_OnRespawn(npcid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnDie(npcid, killerid, weaponid, bodypart)
 {
-	DestroyNpcRoamArea(npcid);
 	FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart);
 	defer FCNPC_DelayRespawn(npcid);
 
@@ -41,22 +40,8 @@ timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
 {
 	switch(FCNPC_GetStatus(npcid))
 	{
-		case STATUS_IDLE:			FCNPC_OnIdle(npcid);
-		// case STATUS_PLAYING_ANIM:	FCNPC_OnPlayingAnim(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
-		// case STATUS_BURNING:		FCNPC_OnBurning(npcid);
-		// case STATUS_ATTACK:			FCNPC_OnAttackPlayer(npcid, eNpcInfo[npcid][e_iChaseId]);
+		case STATUS_PLAYING_ANIM: FCNPC_OnPlayingAnim(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
 	}
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------------ FCNPC_OnIdle -------------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnIdle(npcid)
-{
-	GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~IDLE: NPCID (%d)", npcid);
-
-	FCNPC_PlayIdleActions(npcid);
 	return 0;
 }
 
@@ -160,21 +145,7 @@ public FCNPC_OnGetStunned(npcid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnShakeOffStun(npcid)
 {
-	FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------- FCNPC_OnGetDistracted ---------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnGetDistracted(npcid, Float:x, Float:y, Float:z)
-{
-	DestroyNpcRoamArea(npcid);
-	FCNPC_SetAnimCallback(npcid, PED_FLEE_LKAROUND_01);
-
-	eNpcInfo[npcid][e_fDistractedX] = x;
-	eNpcInfo[npcid][e_fDistractedY] = y;
-	eNpcInfo[npcid][e_fDistractedZ] = z;
+	FCNPC_SetStatus(npcid, STATUS_IDLE);
 	return 0;
 }
 

@@ -1,5 +1,3 @@
-forward bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId);
-
 // Get the current status of an NPC.
 NPC_STATUS:FCNPC_GetStatus(npcid)
 {
@@ -23,17 +21,17 @@ FCNPC_SetStatus(npcid, NPC_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
     return true;
 }
 
-bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId)
+bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = INVALID_PLAYER_ID)
 {
-    if(FCNPC_GetStatus(npcid) == newStatusId 
-    || FCNPC_IsDeadEx(npcid) && newStatusId != STATUS_DISABLED)
-    {
-        return false;
-    }
-
     if(newStatusId == STATUS_DISABLED)
     {
         return true;
+    }
+
+    if(FCNPC_GetStatus(npcid) == newStatusId 
+    || FCNPC_IsDeadEx(npcid) && newStatusId != STATUS_IDLE)
+    {
+        return false;
     }
 
     if(newStatusId == STATUS_ROAM
@@ -54,24 +52,20 @@ bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId)
     
     switch(newStatusId)
     {
+        case STATUS_FALL:
+        {
+            if(FCNPC_GetType(npcid) == TYPE_BLOATER)
+            {
+                success = false;
+            }
+        }
+        
         case STATUS_ATTACK:
         {
             if(statusIssuerId == INVALID_PLAYER_ID || IsPlayerDead(statusIssuerId))
             {
                 success = false;
             }
-        }
-
-        case STATUS_DISTRACTED:
-        {
-            // new Float:z;
-            // FCNPC_GetPosition(npcid, z, z, z);
-
-            // if(floatcmp(roamX, 0.0) == 0 && floatcmp(roamY, 0.0) == 0
-            // || !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, roamX, roamY, z))
-            // {
-            //     success = false;
-            // }
         }
     }
     return success;

@@ -3,16 +3,11 @@ FlyBackwardsWhenShot(damagedid)
 {
     if(IsPlayerNPC(damagedid))
     {
-        if(FCNPC_GetType(damagedid) == NPC_TYPE:TYPE_BLOATER)
-        {
-            return 1;
-        }
-
-        FCNPC_SetAnimCallback(damagedid, BASEBALL_BAT_HIT_3, .freeze = true);
+        FCNPC_SetStatus(damageid, STATUS_FALL);
         return 1;
     }
 
-    SetPlayerStatus(damagedid, PLAYER_STATUS:PLAYER_STATUS_FALL);
+    SetPlayerStatus(damagedid, PLAYER_STATUS_FALL);
 
     if(!IsPlayerDead(damagedid))
     {

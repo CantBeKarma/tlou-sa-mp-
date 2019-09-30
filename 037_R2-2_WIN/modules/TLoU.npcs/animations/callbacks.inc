@@ -5,7 +5,11 @@ public FCNPC_OnPlayingAnim(npcid, animIdx)
 {
     GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM PLAYING: NPCID (%d)", npcid);
 
-    if(FCNPC_CheckIfAnimationFinished(npcid, animIdx))
+    if(!FCNPC_HasCallbackAnimFinished(npcid, animIdx))
+    {
+        eNpcInfo[npcid][e_iPlayingAnim_Tick]++;
+    }
+    else
     {
         FCNPC_OnAnimFinish(npcid, animIdx);
     }
@@ -37,14 +41,13 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
         {
             if(FCNPC_IsDistracted(npcid))
             {
-                SCMF_ALL(-1, "I was distracted. Finished animation, so time to roam to the specific location");
-                FCNPC_SetStatus(npcid, STATUS_ROAM);
+                FCNPC_GoToOnGroundCol(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ], FCNPC_MOVE_RUN);
             }
         }
 
         default:
         {
-            FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+            FCNPC_SetStatus(npcid, STATUS_IDLE);
         }
     }
     //printf("FCNPC_OnAnimFinish(%d, %d)", npcid, animIdx);
