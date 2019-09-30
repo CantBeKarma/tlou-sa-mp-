@@ -71,16 +71,3 @@ public OnPlayerStopBurning(playerid)
     RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
     return 0;
 }
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//-------------------- OnGameModeExit ---------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-hook OnGameModeExit()
-{
-    foreach(new fireId : ServerFires)
-    {
-        DestroyFire(fireId);
-    }
-    Iter_Clear(ServerFires);
-    return 1;
-}
