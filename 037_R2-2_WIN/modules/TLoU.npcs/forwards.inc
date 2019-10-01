@@ -1,10 +1,6 @@
 forward FCNPC_OnIdle(npcid);
 forward FCNPC_OnDie(npcid, killerid, weaponid, bodypart);
-forward FCNPC_OnStartBurning(npcid);
-forward FCNPC_OnBurning(npcid);
 forward FCNPC_OnGetDistracted(npcid, Float:x, Float:y, Float:z);
-forward FCNPC_OnGetExplodedByNailbomb(npcid, throwerid);
-forward FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
 forward FCNPC_OnGetStunned(npcid);
 forward FCNPC_OnShakeOffStun(npcid);
 forward FCNPC_OnEnterDynArea(npcid, areaid);

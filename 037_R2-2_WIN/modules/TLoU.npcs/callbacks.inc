@@ -34,18 +34,6 @@ public FCNPC_OnDie(npcid, killerid, weaponid, bodypart)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//-------------------- FCNPC_OnInfectedUpdate -------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-timer FCNPC_OnInfectedUpdate[TIMER_FCNPC_UPDATE](npcid)
-{
-	switch(FCNPC_GetStatus(npcid))
-	{
-		case STATUS_PLAYING_ANIM: FCNPC_OnPlayingAnim(npcid, eNpcInfo[npcid][e_iPlayingAnim_Index]);
-	}
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------- FCNPC_OnReachDestination ------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnReachDestination(npcid)
@@ -84,44 +72,6 @@ public FCNPC_OnLeaveDynArea(npcid, areaid)
 	{
 		return 1;
 	}
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- FCNPC_OnStartBurning --------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnStartBurning(npcid)
-{
-	SPAO(npcid, OBJECT_MODEL_BURNING);
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------------- FCNPC_OnBurning ------------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnBurning(npcid)
-{
-	FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 1, 1, 1, 0, 0);
-	FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - FIRE_DAMAGE_AMOUNT, .weaponid = WEAPON_MOLOTOV);
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------- FCNPC_OnTriggerNailbomb -------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
-{
-	ApplyAnimation(npcid, "PED", "EV_STEP", 4.1, 0, 1, 1, 0, 0, 0);
-	Audio3D_Play(throwerid, AUDIO_NAILBMB_TRIGGER, x, y, z, 10.0);
-	defer OnNailbombExplode(npcid, throwerid, nailBmbIdx, x, y, z);
-    return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------- FCNPC_OnGetExplodedByNailbomb -----------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnGetExplodedByNailbomb(npcid, throwerid)
-{
 	return 0;
 }
 
