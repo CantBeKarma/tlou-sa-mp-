@@ -79,26 +79,24 @@
 
 FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 {
-	if(FCNPC_ValidateStatusChange(npcid, STATUS_DISTRACTED) == true)
+	if(FCNPC_ValidateStatusChange(npcid, STATUS_DISTRACTED) == false
+	|| floatcmp(x, 0.0) == 0 
+	&& floatcmp(y, 0.0) == 0 
+	&& floatcmp(z, 0.0) == 0
+	|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
 	{
-		if(floatcmp(x, 0.0) == 0 
-		&& floatcmp(y, 0.0) == 0 
-		&& floatcmp(z, 0.0) == 0
-		|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
-		{
-			return false;
-		}
-
-		FCNPC_DestroyRoamArea(npcid);
-		FCNPC_SetAnimCallback(npcid, PED_FLEE_LKAROUND_01);
-
-		eNpcInfo[npcid][e_fDistractedX] = x;
-		eNpcInfo[npcid][e_fDistractedY] = y;
-		eNpcInfo[npcid][e_fDistractedZ] = z;
-
-		FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
+		return false;
 	}
-	return false;
+
+	FCNPC_DestroyRoamArea(npcid);
+	FCNPC_SetAnimCallback(npcid, PED_FLEE_LKAROUND_01);
+
+	eNpcInfo[npcid][e_fDistractedX] = x;
+	eNpcInfo[npcid][e_fDistractedY] = y;
+	eNpcInfo[npcid][e_fDistractedZ] = z;
+
+	FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
+	return true;
 }
 
 forward NPC_STATUS:FCNPC_GetStatus(npcid);
