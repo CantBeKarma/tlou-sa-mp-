@@ -106,11 +106,11 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 
 //#region Utils
 
-	FCNPC_IsIdle(npcid)				return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISABLED);
+	FCNPC_IsDisabled(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISABLED);
+	FCNPC_IsIdle(npcid)				return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_IDLE);
 	FCNPC_IsBurning(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_BURNING);
 	FCNPC_IsStunned(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
 	FCNPC_IsPlayingAnim(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
-	FCNPC_IsRoaming(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_ROAM);
 	FCNPC_IsDistracted(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISTRACTED);
 	FCNPC_IsDeadEx(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
 	FCNPC_IsTimerRunning(npcid)		return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
@@ -136,7 +136,7 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 	// Check if FCNPC is in a fire area.
 	FCNPC_IsInFireArea(npcid, npcAreaId)
 	{
-		if(!IsPlayerNPC(npcid))
+		if(!IsPlayerNPC(npcid) || FCNPC_IsDisabled(npcid))
 		{
 			return false;
 		}

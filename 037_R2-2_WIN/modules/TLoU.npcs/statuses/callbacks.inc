@@ -37,11 +37,6 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
             FCNPC_PlayIdleActions(npcid);
         }
 
-        case STATUS_ROAM:
-        {
-            FCNPC_RandomMoveInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]);
-        }
-
         case STATUS_FALL:
         {
             FCNPC_SetAnimCallback(npcid, BASEBALL_BAT_HIT_3, .freeze = true);
@@ -52,7 +47,6 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
 
 // STATUS_DISABLED,
 // STATUS_IDLE,
-// STATUS_ROAM,
 // STATUS_FALL
 // STATUS_CHASE,
 // STATUS_ATTACK,

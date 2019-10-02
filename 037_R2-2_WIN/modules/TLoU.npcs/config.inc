@@ -1,7 +1,6 @@
 // NPCs Configuration.
 #define     TIMER_FCNPC_RESPAWN         (1000 * 5)
 #define     TIMER_FCNPC_UPDATE          (200)
-#define     TICK_RATE_FCNPC_IDLE        (1000 * 6)
 
 #define     RANGE_NPC_CHASE_BY_PATH     (30.0)
 #define		RANGE_NPC_CHASE		        (10.0)
@@ -40,8 +39,7 @@ enum e_NPC_DATA
     e_iRoamAreaId,
 
     Timer:e_iUpdateTimer,
-    e_iTickCounter_damageAnim,
-    e_iTickCounter_IdleActions
+    e_iTickCounter_damageAnim
 }
 new eNpcInfo[MAX_PLAYERS][e_NPC_DATA];
 

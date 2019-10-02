@@ -42,16 +42,10 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 // Plays idle anims on NPC.
 FCNPC_PlayIdleActions(npcid)
 {
-    if((GetTickCount() - eNpcInfo[npcid][e_iTickCounter_IdleActions]) < TICK_RATE_FCNPC_IDLE)
+    switch(RandomEx(0, 12))
     {
-        return false;
-    }
-    eNpcInfo[npcid][e_iTickCounter_IdleActions] = GetTickCount();
-
-    switch(random(2))
-    {
-        case 0: FCNPC_SetAnimCallback(npcid, NpcIdleAnimsList[random(sizeof(NpcIdleAnimsList))]);
-        case 1: FCNPC_SetStatus(npcid, STATUS_ROAM);
+        case 4: FCNPC_RandomMoveInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]);
+        default: FCNPC_SetAnimCallback(npcid, NpcIdleAnimsList[random(sizeof(NpcIdleAnimsList))]);
     }
     return true;
 }
