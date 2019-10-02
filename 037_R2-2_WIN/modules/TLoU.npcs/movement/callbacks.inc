@@ -1,3 +1,17 @@
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------- FCNPC_OnReachDestination ------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnReachDestination(npcid)
+{
+    FCNPC_ClearAnims(npcid);
+	if(FCNPC_IsIdle(npcid))
+	{
+		SCMF_ALL(-1, "NPC reached destination (while roaming).");
+		FCNPC_PlayIdleActions(npcid);
+	}
+	return 1;
+}
+
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // //--------------------- FCNPC_OnChasePlayer ---------------------
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

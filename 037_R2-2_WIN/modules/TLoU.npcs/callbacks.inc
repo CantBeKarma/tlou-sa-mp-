@@ -34,19 +34,6 @@ public FCNPC_OnDie(npcid, killerid, weaponid, bodypart)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//------------------- FCNPC_OnReachDestination ------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnReachDestination(npcid)
-{
-	if(FCNPC_IsRoaming(npcid))
-	{
-		SCMF_ALL(-1, "NPC reached destination (while roaming).");
-		FCNPC_RandomMoveInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]);
-	}
-	return 1;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //-------------------- FCNPC_OnEnterDynArea ---------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnEnterDynArea(npcid, areaid)
