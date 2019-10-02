@@ -31,17 +31,31 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
             FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);
         }
 
-        // Shot in stomach by shotgun (flew back on impact).
+        // Flew backwards on impact by shotgun shot.
         case BASEBALL_BAT_HIT_3:
         {
-            FCNPC_SetAnimCallback(npcid, PED_GETUP);
+            if(!FCNPC_IsDeadEx(npcid))
+            {
+                FCNPC_SetAnimation(npcid, PED_GETUP, 4.1, 0, 1, 1, 0, 0);
+            }
         }
 
-        case PED_FLEE_LKAROUND_01:
+        // IDLE animations actions/distracted animation.
+        case 
+            PED_FLEE_LKAROUND_01,
+            PED_DAM_ARML_FRMFT,
+            PED_DAM_ARMR_FRMFT,
+            FLOWERS_FLOWER_HIT,
+            KISSING_GF_CARARGUE_02:
         {
             if(FCNPC_IsDistracted(npcid))
             {
                 FCNPC_GoToOnGroundCol(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ], FCNPC_MOVE_RUN);
+            }
+            else if(FCNPC_IsIdle(npcid))
+            {
+                FCNPC_StopUpdateTimer(npcid);
+                FCNPC_SetStatus(npcid, STATUS_IDLE);
             }
         }
 
