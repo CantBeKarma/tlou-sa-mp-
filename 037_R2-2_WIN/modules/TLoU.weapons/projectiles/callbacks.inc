@@ -26,7 +26,7 @@ public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Fl
             continue;
         }
 
-        FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
+        FCNPC_Distract(npcid, x, y, z);
     }
     return 0;
 }

@@ -298,7 +298,7 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 	}
 
 	// If NPC isn't in IDLE state, playing anims or stunned.
-	if(!FCNPC_IsIdle(lookingAt_NpcId) && !FCNPC_IsPlayingAnim(lookingAt_NpcId) && !FCNPC_IsStunned(lookingAt_NpcId))
+	if(!FCNPC_IsDisabled(lookingAt_NpcId) && !FCNPC_IsPlayingAnim(lookingAt_NpcId) && !FCNPC_IsStunned(lookingAt_NpcId))
 	{
 		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
