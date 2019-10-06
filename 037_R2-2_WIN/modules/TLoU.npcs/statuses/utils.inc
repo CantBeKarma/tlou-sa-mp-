@@ -4,12 +4,6 @@ NPC_STATUS:FCNPC_GetStatus(npcid)
     return eNpcInfo[npcid][e_iCurrentStatus];
 }
 
-CMD:npcstatus2(playerid, params[])
-{
-    SCMF(playerid, -1, "NPCID: 49 current status is: %d", _:FCNPC_GetStatus(49));
-    return 1;
-}
-
 // Sets player status (e.g. dead). 
 // Status change can be caused by other player, for example when player shot NPC
 FCNPC_SetStatus(npcid, NPC_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)

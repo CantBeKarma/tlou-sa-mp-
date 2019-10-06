@@ -526,15 +526,37 @@ YCMD:icmd(playerid, params[], help)
         return 1;
     }
 
-    CMD:npcstatus(playerid, params[])
+    YCMD:npcstatus(playerid, params[], help)
     {
+        if(help)
+        {
+            ShowDialogMessage(playerid, "icmd > npcstatus", "Changes NPC status");
+            return 1;
+        }
+
         new npcid, NPC_STATUS:status;
-        if(sscanf(params, "dd", npcid, _:status))return SCM(playerid, -1, "/npcstatus [id] [status]");
+        if(sscanf(params, "dd", npcid, _:status))return ShowDialogMessage(playerid, "Usage..", "Type: /npcstatus (npc_id) (status_id)");
         {
             if(!FCNPC_SetStatus(npcid, status))
             {
                 SCMF(playerid, 0xFF000000, "Unable to change status for NPC");
             }
+        }
+        return 1;
+    }
+
+    YCMD:npcstatus2(playerid, params[], help)
+    {
+        if(help)
+        {
+            ShowDialogMessage(playerid, "icmd > npcstatus2", "checks NPCs current status number");
+            return 1;
+        }
+
+        new npcid;
+        if(sscanf(params, "d", npcid))return ShowDialogMessage(playerid, "Usage..", "Type: /npcstatus2 (npc_id)");
+        {
+            SCMF(playerid, -1, "NPCID: %d current status is: %d", npcid, _:FCNPC_GetStatus(npcid));
         }
         return 1;
     }
