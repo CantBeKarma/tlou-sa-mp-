@@ -30,8 +30,7 @@ hook OnGameModeExit()
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnCreate(npcid)
 {
-    new NPC_TYPE:npcType = TYPE_CLICKER; //RandomEx(NPC_TYPE:RUNNER, NPC_TYPE:BLOATER);
-    if(!FCNPC_SetType(npcid, npcType))
+    if(!FCNPC_SetType(npcid, NPC_TYPE:RandomEx(_:TYPE_RUNNER, _:TYPE_CLICKER)))
     {
         Log(eLogs[e_Log_Index][LOG_INDEX_NPC], WARNING, "FCNPC_OnCreate: Unable to create NPC (couldn't set NPC type)");
         return 1;

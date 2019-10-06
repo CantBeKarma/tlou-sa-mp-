@@ -9,6 +9,15 @@ public FCNPC_OnReachDestination(npcid)
 		SCMF_ALL(-1, "NPC reached destination (while roaming).");
 		FCNPC_PlayIdleActions(npcid);
 	}
+	else if(FCNPC_IsDistracted(npcid))
+	{
+		eNpcInfo[npcid][e_fDistractedX] = 0.0;
+		eNpcInfo[npcid][e_fDistractedY] = 0.0;
+		eNpcInfo[npcid][e_fDistractedZ] = 0.0;
+
+		FCNPC_CreateRoamArea(npcid);
+		FCNPC_SetStatus(npcid, STATUS_IDLE);
+	}
 	return 1;
 }
 

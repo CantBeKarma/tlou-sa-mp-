@@ -23,7 +23,8 @@ FCNPC_SetStatus(npcid, NPC_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
 
 bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = INVALID_PLAYER_ID)
 {
-    if(newStatusId == STATUS_DISABLED)
+    if(newStatusId == STATUS_DISABLED
+    || newStatusId == STATUS_DEAD)
     {
         return true;
     }
