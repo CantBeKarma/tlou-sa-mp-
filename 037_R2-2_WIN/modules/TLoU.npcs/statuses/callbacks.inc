@@ -42,6 +42,11 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
             FCNPC_SetAnimCallback(npcid, BASEBALL_BAT_HIT_3, .freeze = true);
         }
 
+        case STATUS_BURNING:
+        {
+            SPAO(npcid, OBJECT_MODEL_BURNING);
+        }
+
         case STATUS_DISTRACTED:
         {
             FCNPC_StopUpdateTimer(npcid);
