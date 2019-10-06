@@ -80,9 +80,6 @@
 FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 {
 	if(FCNPC_ValidateStatusChange(npcid, STATUS_DISTRACTED) == false
-	|| floatcmp(x, 0.0) == 0 
-	&& floatcmp(y, 0.0) == 0 
-	&& floatcmp(z, 0.0) == 0
 	|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
 	{
 		return false;
@@ -94,8 +91,6 @@ FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 	eNpcInfo[npcid][e_fDistractedX] = x;
 	eNpcInfo[npcid][e_fDistractedY] = y;
 	eNpcInfo[npcid][e_fDistractedZ] = z;
-
-	FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
 	return true;
 }
 
@@ -162,6 +157,10 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 		}
+
+		eNpcInfo[npcid][e_fDistractedX] = 0.0;
+		eNpcInfo[npcid][e_fDistractedY] = 0.0;
+		eNpcInfo[npcid][e_fDistractedZ] = 0.0;
 
 		FCNPC_ClearAnims(npcid);
 		FCNPC_SetHealthEx(npcid, 100.0);

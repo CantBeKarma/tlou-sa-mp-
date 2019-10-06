@@ -3,7 +3,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnPlayingAnim(npcid, animIdx)
 {
-    GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM PLAYING: NPCID (%d)", npcid);
+    //GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM PLAYING: NPCID (%d)", npcid);
 
     if(!FCNPC_HasCallbackAnimFinished(npcid, animIdx))
     {
@@ -21,7 +21,7 @@ public FCNPC_OnPlayingAnim(npcid, animIdx)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnAnimFinish(npcid, animIdx)
 {
-    GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM FINISH: NPCID (%d)", npcid);
+    //GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM FINISH: NPCID (%d)", npcid);
 
     switch(animIdx)
     {
@@ -40,23 +40,21 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
             }
         }
 
-        // IDLE animations actions/distracted animation.
+        // Distracted animation.
+        case PED_FLEE_LKAROUND_01:
+        {
+            FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
+        }
+
+        // IDLE animations.
         case 
-            PED_FLEE_LKAROUND_01,
             PED_DAM_ARML_FRMFT,
             PED_DAM_ARMR_FRMFT,
             FLOWERS_FLOWER_HIT,
             KISSING_GF_CARARGUE_02:
         {
-            if(FCNPC_IsDistracted(npcid))
-            {
-                FCNPC_GoToOnGroundCol(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ], FCNPC_MOVE_RUN);
-            }
-            else
-            {
-                FCNPC_StopUpdateTimer(npcid);
-                FCNPC_SetStatus(npcid, STATUS_IDLE);
-            }
+            FCNPC_StopUpdateTimer(npcid);
+            FCNPC_SetStatus(npcid, STATUS_IDLE);
         }
 
         default:

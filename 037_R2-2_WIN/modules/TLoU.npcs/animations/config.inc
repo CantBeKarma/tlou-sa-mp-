@@ -1,4 +1,4 @@
-#define     MAX_ANIM_IDLE               (5)
+#define     MAX_ANIM_IDLE               (4)
 #define     MAX_ANIM_ATTACK             (3)
 
 stock const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
@@ -14,7 +14,6 @@ stock const NpcDamageAnims[MAX_DAMAGE_ANIMS] =
 
 stock const NpcIdleAnimsList[MAX_ANIM_IDLE] =
 {
-    PED_FLEE_LKAROUND_01,
     PED_DAM_ARML_FRMFT,
     PED_DAM_ARMR_FRMFT,
     FLOWERS_FLOWER_HIT,

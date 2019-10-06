@@ -23,7 +23,7 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
     switch(animationid)
     {
         case KISSING_GF_CARARGUE_02: 	   	tickCounter = -10; // IDLE 
-        case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10; // IDLE/DISTRACTED
+        case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10; // DISTRACTED
         case PED_GAS_CWR:					tickCounter = -4;  // STUNNED
         case PED_IDLE_TIRED:				tickCounter = -4;  // STUNNED
         case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -30; // KNIFED
@@ -63,7 +63,7 @@ FCNPC_ClearAnims(npcid)
 
     FCNPC_ResetAnimation(npcid);
     FCNPC_ClearAnimations(npcid);
-}	
+}
 
 // Plays death animation for dead NPC only
 // Optionally specify a bodypart parameter so it's gonna use different pre-defined animations.

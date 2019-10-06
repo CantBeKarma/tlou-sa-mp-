@@ -41,6 +41,12 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
         {
             FCNPC_SetAnimCallback(npcid, BASEBALL_BAT_HIT_3, .freeze = true);
         }
+
+        case STATUS_DISTRACTED:
+        {
+            FCNPC_StopUpdateTimer(npcid);
+            FCNPC_GoToOnGroundCol(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ], FCNPC_MOVE_RUN);
+        }
     }
     return 0;
 }
