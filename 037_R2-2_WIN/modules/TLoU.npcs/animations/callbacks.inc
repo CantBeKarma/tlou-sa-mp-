@@ -52,7 +52,7 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
             {
                 FCNPC_GoToOnGroundCol(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ], FCNPC_MOVE_RUN);
             }
-            else if(FCNPC_IsIdle(npcid))
+            else
             {
                 FCNPC_StopUpdateTimer(npcid);
                 FCNPC_SetStatus(npcid, STATUS_IDLE);
