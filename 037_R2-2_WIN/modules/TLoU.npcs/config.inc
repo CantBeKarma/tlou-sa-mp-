@@ -17,7 +17,7 @@
 #define     MAX_FCNPCS                  (10)
 #define     MAX_NPC_TYPES               (4)
 
-#define     AREA_ROAM_SIZE              (5.0)
+#define     AREA_ROAM_SIZE              (3.0)
 
 enum e_NPC_DATA
 {
