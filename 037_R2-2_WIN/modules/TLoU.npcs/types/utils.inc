@@ -29,10 +29,10 @@ FCNPC_SetSkinBasedOnType(npcid, NPC_TYPE:type)
 
     switch(type)
     {
-        case TYPE_RUNNER:	skinId = NpcSkinIds[random(7)];
-        case TYPE_STALKER:	skinId = NpcSkinIds[random(6) + 7];
-        case TYPE_CLICKER:	skinId = NpcSkinIds[13];
-        case TYPE_BLOATER:	skinId = NpcSkinIds[14];
+        case TYPE_RUNNER:	skinId = NpcSkinIds[0];
+        case TYPE_STALKER:	skinId = NpcSkinIds[1];
+        case TYPE_CLICKER:	skinId = NpcSkinIds[2];
+        case TYPE_BLOATER:	skinId = NpcSkinIds[3];
     }
 
     if(skinId == 0)

@@ -1,6 +1,6 @@
 #define     MAX_NPC_TYPES           (4)
 #define     MAX_NPC_TYPE_NAME       (8)
-#define     MAX_NPC_SKINS           (15)
+#define     MAX_NPC_SKINS           (4)
 
 enum NPC_TYPE
 {
@@ -12,8 +12,8 @@ enum NPC_TYPE
 
 stock const NpcSkinIds[MAX_NPC_SKINS] =
 {
-    289, 253, 230, 212, 213, 210, 209, 
-    195, 194, 193, 192, 191, 190,
+    SKIN_RUNNER1,
+    230,
     SKIN_CLICKER,
     5
 };

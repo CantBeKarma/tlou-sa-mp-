@@ -6,6 +6,7 @@
 #define     SKIN_SARAH              (316)
 #define     SKIN_HAZMAT             (317)
 #define     SKIN_CLICKER            (318)
+#define     SKIN_RUNNER1            (319)
 
 // -> Attachment slots.
 // #define     SLOT_BACKPACK    		(0)

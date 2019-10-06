@@ -49,6 +49,7 @@
 #define     SKIN_SARAH              (316)
 #define     SKIN_HAZMAT             (317)
 #define     SKIN_CLICKER            (318)
+#define     SKIN_RUNNER1            (319)
 
 // Object models.
 #define     OBJECT_MODEL_JOELBP     (15065)
