@@ -50,6 +50,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		case KNIFE_KILL_KNIFE_PLAYER:
 		{
 			HideItem(playerid);
+			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 		}
 
 		default:

@@ -12,9 +12,7 @@ FCNPC_GetAnimationIndex(npcid)
 // Custom SetAnimation for FCNPC.
 FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 {
-    if(FCNPC_IsDeadEx(npcid) && animationid != KNIFE_KILL_KNIFE_PED_DAMAGE // Is dead and not playing 'knifed' animation.
-    || FCNPC_IsDeadEx(npcid) && animationid != BASEBALL_BAT_HIT_3 // Is dead and not playing 'fly back' animation when shot by shotgun.
-    || FCNPC_ValidateStatusChange(npcid, STATUS_PLAYING_ANIM) == false)
+    if(FCNPC_ValidateStatusChange(npcid, STATUS_PLAYING_ANIM) == false)
     {
         return false;
     }

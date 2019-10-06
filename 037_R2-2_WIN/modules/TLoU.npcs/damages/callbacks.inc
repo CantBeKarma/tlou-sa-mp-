@@ -63,8 +63,8 @@ public FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmou
 
     if(bodypart == BODY_PART_HEAD)
     {
-        if(FCNPC_GetType(npcid) == NPC_TYPE:TYPE_RUNNER
-        || FCNPC_GetType(npcid) == NPC_TYPE:TYPE_STALKER)
+        if(FCNPC_GetType(npcid) == TYPE_RUNNER
+        || FCNPC_GetType(npcid) == TYPE_STALKER)
         {
             FCNPC_SetHealthEx(npcid, 0.0, issuerid, issuerWeaponId, bodypart);
             return 0;
@@ -81,10 +81,15 @@ public FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmou
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnGetShived(npcid, shiverId)
 {
+    // if(FCNPC_ValidateStatusChange(npcid, STATUS_PLAYING_ANIM) == false)
+    // {
+    //     SCMF(shiverId, COLOR_RED, "Unable to shiv NPC!");
+    //     return 1;
+    // }
+
     EquipItem(shiverId, _:ITEM_IDX_SHIV);
     ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
-
-    FCNPC_SetHealthEx(npcid, 0.0, shiverId, WEAPON_SHIV);
+    FCNPC_SetHealthEx(npcid, 0.0, shiverId, .weaponid = WEAPON_SHIV);
 
     new Float:x, Float:y, Float:z;
     GetPlayerPos(shiverId, x, y, z);
@@ -119,7 +124,7 @@ public FCNPC_OnAttackPlayer(npcid, chaseid)
 	if(GetDistanceBetweenPlayers(npcid, chaseid) > RANGE_NPC_ATTACK
 	|| IsPlayerDead(chaseid))
 	{
-		FCNPC_SetStatus(npcid, NPC_STATUS:STATUS_IDLE);
+		FCNPC_SetStatus(npcid, STATUS_IDLE);
 		return 1;
 	}
 
@@ -127,15 +132,6 @@ public FCNPC_OnAttackPlayer(npcid, chaseid)
 	FCNPC_SetAnimation(npcid, NpcAttackAnims[random(sizeof(NpcAttackAnims))], 4.1, 1, 0, 0, 0, 0);
 
 	OnPlayerGetAttackedByNpc(chaseid, npcid);
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- FCNPC_OnStartBurning --------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnStartBurning(npcid)
-{
-	SPAO(npcid, OBJECT_MODEL_BURNING);
 	return 0;
 }
 
