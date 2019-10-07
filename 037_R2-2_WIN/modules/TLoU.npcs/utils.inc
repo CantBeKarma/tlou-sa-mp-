@@ -79,7 +79,8 @@
 
 function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 {
-	if(!IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
+	if(FCNPC_IsUnableToPerformAction(npcid) 
+	|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
 	{
 		return false;
 	}
@@ -95,6 +96,17 @@ function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 	return true;
 }
 
+// Check if FCNPC is unable to perform certain action.
+// e.g.: want to distract him but he's disabled/burning etc.
+FCNPC_IsUnableToPerformAction(npcid)
+{
+	return 
+		FCNPC_IsDisabled(npcid) 
+		|| FCNPC_IsBurning(npcid) 
+		|| FCNPC_IsStunned(npcid)
+		|| FCNPC_IsDeadEx(npcid);
+}
+
 forward NPC_STATUS:FCNPC_GetStatus(npcid);
 forward NPC_TYPE:FCNPC_GetType(npcid);
 
@@ -105,7 +117,6 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 	FCNPC_IsBurning(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_BURNING);
 	FCNPC_IsStunned(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
 	FCNPC_IsPlayingAnim(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
-	FCNPC_IsDistracted(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISTRACTED);
 	FCNPC_IsDeadEx(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
 	FCNPC_IsTimerRunning(npcid)		return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 	Float:FCNPC_GetHealthEx(npcid)	return eNpcInfo[npcid][e_fHealth];
