@@ -1,5 +1,5 @@
 // Maximal values.
-#define     MAX_REMOVE_OBJECTS      (37)
+#define     MAX_REMOVE_OBJECTS      (38)
 
 enum e_OBJECT_DATA
 {
@@ -30,7 +30,7 @@ stock const RemoveObjectsData[MAX_REMOVE_OBJECTS] =
 	1283, 1284, 1315, 1350,
 
 	// Lamp posts.
-	1226, 1290, 1294, 1297, 1298, 3853, 1223,
+	1226, 1290, 1294, 1297, 1298, 3853, 1223, 1232,
 
 	// Gang Tags.
 	1531, 1530, 1529, 1528, 1527, 1526, 1525, 1524, 490,
