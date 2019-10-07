@@ -81,12 +81,6 @@ public FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmou
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnGetShived(npcid, shiverId)
 {
-    // if(FCNPC_ValidateStatusChange(npcid, STATUS_PLAYING_ANIM) == false)
-    // {
-    //     SCMF(shiverId, COLOR_RED, "Unable to shiv NPC!");
-    //     return 1;
-    // }
-
     EquipItem(shiverId, _:ITEM_IDX_SHIV);
     ApplyCallbackAnim(shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
     FCNPC_SetHealthEx(npcid, 0.0, shiverId, .weaponid = WEAPON_SHIV);
