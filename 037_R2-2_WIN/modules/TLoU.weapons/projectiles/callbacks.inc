@@ -43,11 +43,15 @@ public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
         FCNPC_SetStatus(hitid, STATUS_BURNING);
     }
 
-    // foreach(new npcid : FCNPC)
-    // {
-    //     if(FCNPC_Distract(npcid, x, y, z) == 1)
-    //         continue;
-    // }
+    foreach(new npcid : FCNPC)
+    {
+        if(npcid == hitid)
+        {
+            continue;
+        }
+
+        CLF(#FCNPC_Distract, "dfff", npcid, x, y, z);
+    }
     return 0;
 }
 
@@ -59,10 +63,15 @@ public OnSmokebombExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
     CreateProjectileDestroyEffect(_:ITEM_IDX_SMOKE_BOMB, projid, x, y, z);
     StunNearbyPlayersAndNpcs(x, y, z, throwerid);
 
-    // foreach(new npcid : FCNPC)
-    // {
-    //     FCNPC_Distract(npcid, x, y, z);
-    // }
+    foreach(new npcid : FCNPC)
+    {
+        if(npcid == hitid)
+        {
+            continue;
+        }
+        
+        CLF(#FCNPC_Distract, "dfff", npcid, x, y, z);
+    }
     return 0;
 }
 
