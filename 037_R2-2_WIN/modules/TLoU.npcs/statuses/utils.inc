@@ -38,7 +38,6 @@ bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = 
     if(newStatusId == STATUS_IDLE
     || newStatusId == STATUS_CHASE
     || newStatusId == STATUS_ATTACK
-    || newStatusId == STATUS_DISTRACTED
     || newStatusId == STATUS_STUNNED
     || newStatusId == STATUS_PLAYING_ANIM)
     {
