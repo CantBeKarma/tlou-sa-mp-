@@ -3,12 +3,9 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatusId, statusIssuerId)
 {
-    if(newStatusId == STATUS_DISABLED
-    || newStatusId == STATUS_IDLE
-    || newStatusId == STATUS_FALL
+    if(newStatusId == STATUS_FALL
     || newStatusId == STATUS_BURNING
     || newStatusId == STATUS_STUNNED
-    || newStatusId == STATUS_DEAD
     || newStatusId == STATUS_PLAYING_ANIM)
     {
         FCNPC_StopMoving(npcid);
@@ -28,8 +25,9 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
             STATUS_DISABLED,
             STATUS_DEAD:
         {
-            FCNPC_DestroyRoamArea(npcid);
             FCNPC_StopUpdateTimer(npcid);
+            FCNPC_StopMoving(npcid);
+            FCNPC_DestroyRoamArea(npcid);
         }
 
         case STATUS_IDLE:

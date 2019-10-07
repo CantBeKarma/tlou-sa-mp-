@@ -24,7 +24,6 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
         case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10; // DISTRACTED
         case PED_GAS_CWR:					tickCounter = -4;  // STUNNED
         case PED_IDLE_TIRED:				tickCounter = -4;  // STUNNED
-        case KNIFE_KILL_KNIFE_PED_DAMAGE: 	tickCounter = -30; // KNIFED
         case BASEBALL_BAT_HIT_3:			tickCounter = -8;  // SHOT BY SHOTGUN
         case PED_GETUP: 				   	tickCounter = -4;  // GET UP
     }
@@ -65,29 +64,36 @@ FCNPC_ClearAnims(npcid)
 
 // Plays death animation for dead NPC only
 // Optionally specify a bodypart parameter so it's gonna use different pre-defined animations.
-FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart = -1)
+function FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart)
 {
-    if(!FCNPC_IsDeadEx(npcid) 
-    || FCNPC_GetAnimationIndex(npcid) == BASEBALL_BAT_HIT_3) // Got shot in stomach by shotgun
+    if(!FCNPC_IsDeadEx(npcid) || FCNPC_GetAnimationIndex(npcid) == BASEBALL_BAT_HIT_3)
     {
-        return;
+        return false;
     }
 
-    if(weaponid == WEAPON_SHIV)
+    switch(weaponid)
     {
-        FCNPC_SetAnimCallback(npcid, KNIFE_KILL_KNIFE_PED_DAMAGE);
-        return;
-    }
+        case WEAPON_SHIV:
+        {
+            FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DAMAGE, 4.1, 0, 1, 1, 0, 0);
+            wait_ms(1700);
 
-    if(weaponid == WEAPON_MOLOTOV)
-    {
-        FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 0, 1, 1, 1, 0);
-        return;
-    }
+            FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);
+        }
 
-    FCNPC_SetAnimation(npcid, \
-        (bodypart == BODY_PART_HEAD) ? (PED_KO_SHOT_FACE) : (PED_KO_SHOT_STOM), \
-            4.1, 0, 1, 1, 1, 0);
+        case WEAPON_MOLOTOV:
+        {
+            FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 0, 1, 1, 1, 0);
+        }
+
+        default:
+        {
+            FCNPC_SetAnimation(npcid, \
+                (bodypart == BODY_PART_HEAD) ? (PED_KO_SHOT_FACE) : (PED_KO_SHOT_STOM), \
+                    4.1, 0, 1, 1, 1, 0);
+        }
+    }
+    return true;
 }
 
 // Plays 'dead' animation when hit/shot by player.

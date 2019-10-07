@@ -13,7 +13,7 @@ public FCNPC_OnRespawn(npcid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnDie(npcid, killerid, weaponid, bodypart)
 {
-	FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart);
+	CLF(#FCNPC_PlayDeathAnimation, "ddd", npcid, weaponid, bodypart);
 	defer FCNPC_DelayRespawn(npcid);
 
 	if(killerid == INVALID_PLAYER_ID)

@@ -3,11 +3,10 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnPlayingAnim(npcid, animIdx)
 {
-    //GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM PLAYING: NPCID (%d)", npcid);
-
     if(!FCNPC_HasCallbackAnimFinished(npcid, animIdx))
     {
         eNpcInfo[npcid][e_iPlayingAnim_Tick]++;
+        //GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM PLAYING: NPCID (%d)", npcid);
     }
     else
     {
@@ -25,12 +24,6 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
 
     switch(animIdx)
     {
-        // Knifed by other player.
-        case KNIFE_KILL_KNIFE_PED_DAMAGE:
-        {
-            FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DIE, 4.1, 0, 1, 1, 1, 0);
-        }
-
         // Flew backwards on impact by shotgun shot.
         case BASEBALL_BAT_HIT_3:
         {
