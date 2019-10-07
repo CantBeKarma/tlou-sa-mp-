@@ -77,20 +77,21 @@
 
 //#endregion
 
-FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
+function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 {
-	if(FCNPC_ValidateStatusChange(npcid, STATUS_DISTRACTED) == false
-	|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
+	if(!IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
 	{
 		return false;
 	}
 
+	FCNPC_StopUpdateTimer(npcid);
+	FCNPC_StopMoving(npcid);
 	FCNPC_DestroyRoamArea(npcid);
-	FCNPC_SetAnimCallback(npcid, PED_FLEE_LKAROUND_01);
 
-	eNpcInfo[npcid][e_fDistractedX] = x;
-	eNpcInfo[npcid][e_fDistractedY] = y;
-	eNpcInfo[npcid][e_fDistractedZ] = z;
+	FCNPC_SetAnimation(npcid, PED_FLEE_LKAROUND_01, 4.1, 0, 1, 1, 0, 0);
+    wait_ms(1700);
+
+	FCNPC_GoToOnGroundCol(npcid, x, y, z, FCNPC_MOVE_RUN);
 	return true;
 }
 
@@ -157,10 +158,6 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 		}
-
-		eNpcInfo[npcid][e_fDistractedX] = 0.0;
-		eNpcInfo[npcid][e_fDistractedY] = 0.0;
-		eNpcInfo[npcid][e_fDistractedZ] = 0.0;
 
 		FCNPC_ClearAnims(npcid);
 		FCNPC_SetHealthEx(npcid, 100.0);

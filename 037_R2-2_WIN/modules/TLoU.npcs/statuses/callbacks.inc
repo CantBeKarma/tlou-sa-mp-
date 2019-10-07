@@ -44,12 +44,6 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
         {
             SPAO(npcid, OBJECT_MODEL_BURNING);
         }
-
-        case STATUS_DISTRACTED:
-        {
-            FCNPC_StopUpdateTimer(npcid);
-            FCNPC_GoToOnGroundCol(npcid, eNpcInfo[npcid][e_fDistractedX], eNpcInfo[npcid][e_fDistractedY], eNpcInfo[npcid][e_fDistractedZ], FCNPC_MOVE_RUN);
-        }
     }
     return 0;
 }

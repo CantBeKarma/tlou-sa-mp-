@@ -33,12 +33,6 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
             }
         }
 
-        // Distracted animation.
-        case PED_FLEE_LKAROUND_01:
-        {
-            FCNPC_SetStatus(npcid, STATUS_DISTRACTED);
-        }
-
         // IDLE animations.
         case 
             PED_DAM_ARML_FRMFT,

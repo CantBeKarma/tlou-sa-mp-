@@ -26,7 +26,7 @@ public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Fl
             continue;
         }
 
-        FCNPC_Distract(npcid, x, y, z);
+        CLF(#FCNPC_Distract, "dfff", npcid, x, y, z);
     }
     return 0;
 }

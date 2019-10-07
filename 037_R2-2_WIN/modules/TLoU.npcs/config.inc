@@ -32,10 +32,6 @@ enum e_NPC_DATA
     e_iChaseId,
     FCNPC_MovePathId,
 
-    Float:e_fDistractedX,
-    Float:e_fDistractedY,
-    Float:e_fDistractedZ,
-
     e_iRoamAreaId,
 
     Timer:e_iUpdateTimer,
