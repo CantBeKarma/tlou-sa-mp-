@@ -101,7 +101,7 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
         {
             if(issuerItemId == _:ITEM_IDX_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
             {
-                FlyBackwardsWhenShot(damagedId);
+                SetPlayerStatus(damagedId, PLAYER_STATUS_FALL);
             }
             else
             {

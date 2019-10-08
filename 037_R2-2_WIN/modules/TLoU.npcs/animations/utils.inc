@@ -143,7 +143,7 @@ FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId = -1, Float:distanceBe
         {
             if(issuerWeaponId == WEAPON_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
             {
-                FlyBackwardsWhenShot(npcid);
+                FCNPC_SetStatus(npcid, STATUS_FALL);
             }
             else
             {
