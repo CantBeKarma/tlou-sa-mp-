@@ -65,13 +65,21 @@ FCNPC_ClearAnims(npcid)
 // Optionally specify a bodypart parameter so it's gonna use different pre-defined animations.
 function FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart)
 {
-    if(!FCNPC_IsDeadEx(npcid) || FCNPC_GetAnimationIndex(npcid) == BASEBALL_BAT_HIT_3)
+    if(!FCNPC_IsDeadEx(npcid))
     {
         return false;
     }
 
     switch(weaponid)
     {
+        case WEAPON_SHOTGUN:
+        {
+            if(FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3)
+			{
+                FCNPC_SetAnimation(npcid, BASEBALL_BAT_HIT_3, 4.1, 0, 1, 1, 1, 0);
+			}
+        }
+
         case WEAPON_SHIV:
         {
             FCNPC_SetAnimation(npcid, KNIFE_KILL_KNIFE_PED_DAMAGE, 4.1, 0, 1, 1, 0, 0);
