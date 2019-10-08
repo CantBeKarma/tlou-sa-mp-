@@ -32,7 +32,7 @@ public OnPlayerAnimFinish(playerid, animIdx)
 		{
 			if(GetPlayerItemAmount(playerid, GetPlayerEquippedItemId(playerid)) <= 0)
 			{
-				SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+				SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
 			}
 			else
 			{
@@ -40,22 +40,16 @@ public OnPlayerAnimFinish(playerid, animIdx)
 			}
 		}
 
-		// Player is being shived.
-		case KNIFE_KILL_KNIFE_PED_DAMAGE:
-		{
-			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DIE");
-		}
-
 		// When player shived NPC/Player (Remove Shiv model from hand).
 		case KNIFE_KILL_KNIFE_PLAYER:
 		{
 			HideItem(playerid);
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+			SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
 		}
 
 		default:
 		{
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+			SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
 		}
 	}
 	return 1;
