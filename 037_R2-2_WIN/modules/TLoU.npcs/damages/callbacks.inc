@@ -19,7 +19,7 @@ public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
     new Float:distanceBetweenPlayers = 0.0;
     new Float:damageAmount = CalculateDamageAmount(issuerid, npcid, playerItemId, distanceBetweenPlayers, bodypart);
 
-    if(IsItemType(playerItemId, ITEM_TYPE_MELEE))
+    if(IsItemType(playerItemId, ITEM_TYPE_MELEE) || issuerWeaponId == WEAPON_UNARMED)
     {
         FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, damageAmount);
     }
@@ -35,15 +35,15 @@ public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount)
 {
-    // if(FCNPC_IsPlayingAnim(npcid))
-    // {
     FCNPC_ClearAnims(npcid);
-    //}
     FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount, issuerid, issuerWeaponId);
     
-    // Doesn't hide weapon if we are hitting someone.
-    RestartHideHudTimer(issuerid);
-    DegradePlayerMeleeWeapon(issuerid);
+    if(issuerWeaponId != WEAPON_UNARMED)
+    {
+        // Doesn't hide weapon if we are hitting someone.
+        RestartHideHudTimer(issuerid);
+        DegradePlayerMeleeWeapon(issuerid);
+    }
     return 0;
 }
 
