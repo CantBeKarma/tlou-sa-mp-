@@ -6,8 +6,8 @@
 public OnPlayerShivPlayer(playerid, shivedId)
 {    
     EquipItem(playerid, _:ITEM_IDX_SHIV);
-	GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) - 1;
-	ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PLAYER");
+	SetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV, GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV)-1);
+	CLF(#ApplyCallbackAnim, "dss", playerid, "KNIFE", "KILL_KNIFE_PLAYER");
 	SetPlayerHealthEx(shivedId, 0.0, playerid, _:ITEM_IDX_SHIV);
     return 0;
 }
