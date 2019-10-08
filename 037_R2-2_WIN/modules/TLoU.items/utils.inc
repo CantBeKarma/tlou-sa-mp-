@@ -749,7 +749,7 @@
         }
         
         // Hides player's currently equipped itemId if there are any.
-        HideItem(playerid, true);
+        HideItem(playerid, .equippingNewItem = true);
 
         if(itemAmount > 0)
         {
@@ -787,7 +787,11 @@
                 }
             }
         
-            case ITEM_TYPE_PROJECTILE, ITEM_TYPE_THROWABLE, ITEM_TYPE_HEAL:
+            case 
+                ITEM_TYPE_PROJECTILE, 
+                ITEM_TYPE_THROWABLE, 
+                ITEM_TYPE_HEAL,
+                ITEM_TYPE_SHIV:
             {
                 SPAO(playerid, (IsItemType(itemId, ITEM_TYPE_MEDKIT)) ? (ITEM_MODEL_BINDING) : GetItemModel(itemId));
             }
