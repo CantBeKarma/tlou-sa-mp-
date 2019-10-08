@@ -139,7 +139,9 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 
 	switch(ITEM_IDX:itemId)
 	{
-		case ITEM_IDX_NAIL_BOMB:
+		case 
+			ITEM_IDX_NAIL_BOMB,
+			ITEM_IDX_SHOTGUN:
 		{
 			if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
 			{
@@ -161,20 +163,9 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 
 		default:
 		{
-			switch(bodypart)
-			{
-				case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
-				default:
-				{
-					// If player hasn't flew backwards (nailbomb explosion/shotgun shot)
-					// AND not died by shiv
-					if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
-					&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
-					{
-						ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
-					}
-				}
-			}
+			ApplyAnimation(playerid, "PED", \
+									(bodypart == BODY_PART_HEAD) ? "KO_SHOT_FACE" : "KO_SHOT_STOM",  \
+										4.1, 0, 1, 1, 1, 0, 1);
 		}
 	}
 }
