@@ -93,7 +93,11 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Checking if player has any shivs - if so, displays shiv icon and amount.
     HudTd_UpdateShivs(playerid)
     {
-        if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0) TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
+        if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0)
+        {
+            TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
+        }
         else
         {
             TdShowForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
