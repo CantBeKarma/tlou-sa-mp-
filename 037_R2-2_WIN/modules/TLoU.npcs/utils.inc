@@ -92,7 +92,7 @@ function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 	FCNPC_SetAnimation(npcid, PED_FLEE_LKAROUND_01, 4.1, 0, 1, 1, 0, 0);
     wait_ms(1700);
 
-	FCNPC_GoToOnGroundCol(npcid, x, y, z, FCNPC_MOVE_RUN);
+	FCNPC_GoToOnGroundCol(npcid, x + random(6), y + random(6), z, random(2));
 	return true;
 }
 
