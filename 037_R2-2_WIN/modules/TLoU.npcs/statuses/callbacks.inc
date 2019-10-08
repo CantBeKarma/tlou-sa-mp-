@@ -3,14 +3,6 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatusId, statusIssuerId)
 {
-    if(newStatusId == STATUS_FALL
-    || newStatusId == STATUS_BURNING
-    || newStatusId == STATUS_STUNNED
-    || newStatusId == STATUS_PLAYING_ANIM)
-    {
-        FCNPC_StopMoving(npcid);
-    }
-
     if(newStatusId == STATUS_CHASE
     || newStatusId == STATUS_ATTACK
     || newStatusId == STATUS_BURNING
@@ -37,12 +29,26 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
 
         case STATUS_FALL:
         {
+            FCNPC_StopUpdateTimer(npcid);
+            FCNPC_StopMoving(npcid);
             FCNPC_SetAnimCallback(npcid, BASEBALL_BAT_HIT_3, .freeze = true);
         }
 
         case STATUS_BURNING:
         {
+            FCNPC_StopMoving(npcid);
             SPAO(npcid, OBJECT_MODEL_BURNING);
+        }
+
+        case STATUS_STUNNED:
+        {
+            FCNPC_StopMoving(npcid);
+            CLF(#FCNPC_Stun, "d", npcid);
+        }
+        
+        case STATUS_PLAYING_ANIM:
+        {
+            FCNPC_StopMoving(npcid);
         }
     }
     return 0;

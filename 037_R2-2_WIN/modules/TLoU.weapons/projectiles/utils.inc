@@ -216,11 +216,11 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
 
         if(IsPlayerNPC(i))
         {
-			FCNPC_SetStatus(i, NPC_STATUS:STATUS_STUNNED);
+			FCNPC_SetStatus(i, STATUS_STUNNED);
         }
         else
         {
-			SetPlayerStatus(i, PLAYER_STATUS:PLAYER_STATUS_STUNNED);
+			SetPlayerStatus(i, PLAYER_STATUS_STUNNED);
         }
     }
 }
