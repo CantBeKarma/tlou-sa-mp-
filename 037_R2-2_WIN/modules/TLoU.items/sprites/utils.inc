@@ -85,6 +85,43 @@ Sprite2D_FindIngrSpriteIdx(ingr, amount)
     return -1;
 }
 
+// Enabling 2D sprites updates for player
+Sprite2D_EnableUpdate(playerid)
+{
+    Streamer_ToggleItemUpdate(playerid, STREAMER_TYPE_AREA, 1);
+    Streamer_Update(playerid, STREAMER_TYPE_AREA);
+
+    if(IsPlayerInAnyDynamicArea(playerid))
+    {
+        new areas[MAX_SPRITES_AT_ONE_TIME];
+        GetPlayerDynamicAreas(playerid, areas, sizeof(areas));
+
+        for(new areaid = 0; areaid != MAX_SPRITES_AT_ONE_TIME; areaid++)
+        {
+            if(areas[areaid] == 0)
+            {
+                continue;
+            }
+
+            new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areas[areaid], E_STREAMER_EXTRA_ID);
+            if(areaObjectId > 0)
+            {
+                Sprite2D_Create(playerid, areaObjectId);
+            }
+        }
+    }
+}
+
+// Disabling player's 2D sprites updates and destroying all current 2D sprites created for player.
+Sprite2D_DisableUpdate(playerid)
+{
+    if(HasPlayerGotAnyItemsToPickUp(playerid))
+    {
+        Sprite2D_DestroyAll(playerid);
+    }
+    Streamer_ToggleItemUpdate(playerid, STREAMER_TYPE_AREA, 0);
+}
+
 //#region Creating transparent objects and applying textures on them
 
     // Creates transparent object which's texture is going to be changed (2D Sprite)

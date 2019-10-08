@@ -77,6 +77,7 @@
 
 //#endregion
 
+// Put NPC in distracted state and move to specified X, Y, Z coordinates.
 function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 {
 	if(FCNPC_IsUnableToPerformAction(npcid) 
@@ -94,6 +95,18 @@ function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 
 	FCNPC_GoToOnGroundCol(npcid, x + random(6), y + random(6), z, random(2));
 	return true;
+}
+
+// Put NPC in stunned state.
+function FCNPC_Stun(npcid)
+{
+	FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
+	wait_ms(3000);
+
+	FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
+	wait_ms(2000);
+
+	FCNPC_SetStatus(npcid, STATUS_IDLE);
 }
 
 // Check if FCNPC is unable to perform certain action.

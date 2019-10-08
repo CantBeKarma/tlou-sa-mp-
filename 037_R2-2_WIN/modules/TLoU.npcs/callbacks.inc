@@ -63,30 +63,6 @@ public FCNPC_OnLeaveDynArea(npcid, areaid)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//---------------------- FCNPC_OnGetStunned ---------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnGetStunned(npcid)
-{
-	FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
-	wait_ms(3000);
-
-	FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
-	wait_ms(2000);
-
-	FCNPC_OnShakeOffStun(npcid);
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//--------------------- FCNPC_OnShakeOffStun --------------------
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public FCNPC_OnShakeOffStun(npcid)
-{
-	FCNPC_SetStatus(npcid, STATUS_IDLE);
-	return 0;
-}
-
-//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------------ FCNPC_OnUpdate -----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnUpdate(npcid)

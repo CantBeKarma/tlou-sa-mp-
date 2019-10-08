@@ -28,8 +28,7 @@ function ApplyCallbackAnim(playerid, animLib[], animName[])
 
 	wait_ms(150);
 	ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
-	//CLF(#SetPlayerStatus, "dd", playerid, _:PLAYER_STATUS_PLAYING_ANIM);
-	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_PLAYING_ANIM);
+	SetPlayerStatus(playerid, PLAYER_STATUS_PLAYING_ANIM);
 }
 
 // Clear animations using other anim.
@@ -102,7 +101,7 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
         {
             if(issuerItemId == _:ITEM_IDX_SHOTGUN && distanceBetweenPlayers <= SHOTGUN_TORSO_SHOT_DISTANCE)
             {
-                FlyBackwardsWhenShot(damagedId);
+                SetPlayerStatus(damagedId, PLAYER_STATUS_FALL);
             }
             else
             {
@@ -114,7 +113,7 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
 }
 
 // Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
-PlayDeathAnimation(playerid, bodypart, itemId)
+function PlayDeathAnimation(playerid, bodypart, itemId)
 {
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -139,7 +138,9 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 
 	switch(ITEM_IDX:itemId)
 	{
-		case ITEM_IDX_NAIL_BOMB:
+		case 
+			ITEM_IDX_NAIL_BOMB,
+			ITEM_IDX_SHOTGUN:
 		{
 			if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3)
 			{
@@ -149,7 +150,10 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 		
 		case ITEM_IDX_SHIV:
 		{
-			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
+			ApplyAnimation(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE", 4.1, 0, 1, 1, 1, 0);
+			wait_ms(1600);
+
+			ApplyAnimation(playerid, "KNIFE", "KILL_KNIFE_PED_DIE", 4.1, 0, 1, 1, 1, 0);
 		}
 
 		case
@@ -161,20 +165,9 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 
 		default:
 		{
-			switch(bodypart)
-			{
-				case BODY_PART_HEAD: ApplyAnimation(playerid, "PED", "KO_SHOT_FACE", 4.1, 0, 1, 1, 1, 0, 1);
-				default:
-				{
-					// If player hasn't flew backwards (nailbomb explosion/shotgun shot)
-					// AND not died by shiv
-					if(GetPlayerAnimationIndex(playerid) != BASEBALL_BAT_HIT_3 
-					&& GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PED_DIE)
-					{
-						ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.1, 0, 1, 1, 1, 0, 1);
-					}
-				}
-			}
+			ApplyAnimation(playerid, "PED", \
+							(bodypart == BODY_PART_HEAD) ? "KO_SHOT_FACE" : "KO_SHOT_STOM",  \
+								4.1, 0, 1, 1, 1, 0, 1);
 		}
 	}
 }
@@ -226,17 +219,6 @@ IsPlayerUsingBackpackAnims(playerid)
 	|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_IN
 	|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP);
 }
-
-// Determines if player is playing a specific callback animation
-// IsPlayerPlayingContinuosAnim(playerid, animIdx)
-// {
-// 	if(!IsPlayerPlayingCallbackAnim(playerid))
-// 	{
-// 		return false;
-// 	}
-
-// 	return (GetPlayerAnimationIndex(playerid) == animIdx);
-// }
 
 // Check if player is using certain collection of animations (based on index of an animation).
 IsPlayerUsingAnim(playerid, animid)

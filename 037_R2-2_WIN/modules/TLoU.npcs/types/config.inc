@@ -1,5 +1,4 @@
 #define     MAX_NPC_TYPES           (4)
-#define     MAX_NPC_TYPE_NAME       (8)
 #define     MAX_NPC_SKINS           (4)
 
 enum NPC_TYPE
@@ -18,7 +17,7 @@ stock const NpcSkinIds[MAX_NPC_SKINS] =
     5
 };
 
-stock const NpcTypeNames[MAX_NPC_TYPES][MAX_NPC_TYPE_NAME] =
+stock const NpcTypeNames[MAX_NPC_TYPES][8] =
 {
     "Runner",
     "Stalker",

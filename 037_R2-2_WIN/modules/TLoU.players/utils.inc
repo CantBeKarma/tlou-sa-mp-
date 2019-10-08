@@ -116,33 +116,29 @@ UnfreezePlayer(playerid)
 // Enable OnPlayerLookAt callback timer if it isn't running.
 function Enable_OnPlayerLookAt(playerid)
 {
-	if(IsPlayerLookingTimerRunning(playerid))
+	if(!IsPlayerLookingTimerRunning(playerid))
 	{
-		return;
+		EnablePlayerCameraTarget(playerid, true);
+		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
+		Bit_Let(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
+		ePlayerInfo[playerid][e_iTimer_lookingAt] = repeat Timer_OnPlayerIsLooking(playerid);
 	}
-	
-	EnablePlayerCameraTarget(playerid, true);
-	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
-	Bit_Let(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
-	ePlayerInfo[playerid][e_iTimer_lookingAt] = repeat Timer_OnPlayerIsLooking(playerid);
 }
 
 // Disable OnPlayerLookAt callback.
 Disable_OnPlayerLookAt(playerid)
 {
-	if(!IsPlayerLookingTimerRunning(playerid))
+	if(IsPlayerLookingTimerRunning(playerid))
 	{
-		return;
-	}
+		EnablePlayerCameraTarget(playerid, false);
+		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
+		Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
+		stop ePlayerInfo[playerid][e_iTimer_lookingAt]; 
 
-	EnablePlayerCameraTarget(playerid, false);
-	GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
-	Bit_Vet(ePlayerFlag[e_bLookingAtTimerRunning], playerid);
-	stop ePlayerInfo[playerid][e_iTimer_lookingAt]; 
-
-	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-	{
-		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+		{
+			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+		}
 	}
 }
 

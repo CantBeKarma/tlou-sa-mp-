@@ -4,20 +4,12 @@
 //------------------- OnPlayerShivPlayer ------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerShivPlayer(playerid, shivedId)
-{
-	new newShivAmount = GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) - 1;
-	
-	if(newShivAmount <= 0)
-	{
-		//RemovePlayerWeapon(playerid, WEAPON_SHIV);
-	}
-	
-	HideItem(playerid);
-	ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PLAYER");
-
-	SPAO(playerid, ITEM_MODEL_SHIV);
+{    
+    EquipItem(playerid, _:ITEM_IDX_SHIV);
+	SetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV, GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV)-1);
+	CLF(#ApplyCallbackAnim, "dss", playerid, "KNIFE", "KILL_KNIFE_PLAYER");
 	SetPlayerHealthEx(shivedId, 0.0, playerid, _:ITEM_IDX_SHIV);
-	return 0;
+    return 0;
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

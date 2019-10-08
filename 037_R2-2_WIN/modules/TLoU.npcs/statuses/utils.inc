@@ -54,7 +54,8 @@ bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = 
     {
         case STATUS_FALL:
         {
-            if(FCNPC_GetType(npcid) == TYPE_BLOATER)
+            if(FCNPC_IsBurning(npcid) 
+            || FCNPC_GetType(npcid) == TYPE_BLOATER)
             {
                 success = false;
             }

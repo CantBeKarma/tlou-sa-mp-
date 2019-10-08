@@ -7,12 +7,8 @@ NPC_TYPE:FCNPC_GetType(npcid)
 // Set NPC to the specific type and change its skin automatically.
 FCNPC_SetType(npcid, NPC_TYPE:type)
 {
-    if(FCNPC_GetType(npcid) == type)
-    {
-        return true;
-    }
-
-    if(FCNPC_SetSkinBasedOnType(npcid, type) == 0)
+    if(FCNPC_GetType(npcid) == type
+    || FCNPC_SetSkinBasedOnType(npcid, type) == 0)
     {
         return false;
     }
