@@ -220,17 +220,6 @@ IsPlayerUsingBackpackAnims(playerid)
 	|| GetPlayerAnimationIndex(playerid) == BOMBER_BOM_PLANT_LOOP);
 }
 
-// Determines if player is playing a specific callback animation
-// IsPlayerPlayingContinuosAnim(playerid, animIdx)
-// {
-// 	if(!IsPlayerPlayingCallbackAnim(playerid))
-// 	{
-// 		return false;
-// 	}
-
-// 	return (GetPlayerAnimationIndex(playerid) == animIdx);
-// }
-
 // Check if player is using certain collection of animations (based on index of an animation).
 IsPlayerUsingAnim(playerid, animid)
 {
