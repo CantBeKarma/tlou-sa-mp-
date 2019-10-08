@@ -40,11 +40,6 @@ public FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmoun
     FCNPC_ClearAnims(npcid);
     //}
     FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount, issuerid, issuerWeaponId);
-
-    if(issuerWeaponId == WEAPON_UNARMED)
-    {
-        return 0;
-    }
     
     // Doesn't hide weapon if we are hitting someone.
     RestartHideHudTimer(issuerid);

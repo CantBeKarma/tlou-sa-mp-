@@ -20,8 +20,7 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
     new tickCounter = -6;
     switch(animationid)
     {
-        case KISSING_GF_CARARGUE_02: 	   	tickCounter = -10; // IDLE 
-        case PED_FLEE_LKAROUND_01: 	   		tickCounter = -10; // DISTRACTED
+        case KISSING_GF_CARARGUE_02: 	   	tickCounter = -10; // IDLE
         case PED_GAS_CWR:					tickCounter = -4;  // STUNNED
         case PED_IDLE_TIRED:				tickCounter = -4;  // STUNNED
         case BASEBALL_BAT_HIT_3:			tickCounter = -8;  // SHOT BY SHOTGUN
