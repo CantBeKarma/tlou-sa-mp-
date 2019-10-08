@@ -183,7 +183,7 @@ public OnPlayerGetStunned(playerid)
 	ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
 	wait_ms(2000);
 
-	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+	SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
 	return 0;
 }
 
