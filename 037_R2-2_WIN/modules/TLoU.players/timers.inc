@@ -55,6 +55,7 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 {
 	if(!IsPlayerLookingTimerRunning(playerid))
 	{
+		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
 		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
 			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
@@ -64,37 +65,26 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 
 	//------------------- LOOKING AT PLAYER/NPC ------------------
 	// If player looks at invalid player.
-	new lookingAt_playerId = GetPlayerCameraTargetPlayer(playerid);
-	if(lookingAt_playerId == INVALID_PLAYER_ID)
+	new lookingAtId = GetPlayerCameraTargetPlayer(playerid);
+	if(lookingAtId == INVALID_PLAYER_ID)
 	{
-		if(!IsPlayerLookingAtPlayer(playerid))
+		if(IsPlayerLookingAtPlayer(playerid))
 		{
-			return 1;
-		}
-
-		GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
-
-		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-		{
-			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+			GetPlayerFocusedPlayerId(playerid) = INVALID_PLAYER_ID;
+			if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
+			{
+				DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
+			}
 		}
 		return 1;
 	}
 
-	// If player's distance between eachother is higher than allowed.
-	new Float:distance = GetDistanceBetweenPlayers(playerid, lookingAt_playerId);
-	if(distance > SHIV_LABEL_DRAW_DIST)
-	{
-		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-		{
-			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-		}
-		return 1;
-	}
-
-	// If player is looking at dead NPC or dead player.
-	if(IsPlayerNPC(lookingAt_playerId) && FCNPC_IsDeadEx(lookingAt_playerId)
-	|| !IsPlayerNPC(lookingAt_playerId) && IsPlayerDead(lookingAt_playerId))
+	// If players distance between eachother is higher than allowed
+	// OR player is looking at dead player
+	// OR player is looking at dead/disabled NPC
+	if(GetDistanceBetweenPlayers(playerid, lookingAtId) > SHIV_LABEL_DRAW_DIST
+	|| !IsPlayerNPC(lookingAtId) && IsPlayerDead(lookingAtId)
+	|| IsPlayerNPC(lookingAtId) && (FCNPC_IsDeadEx(lookingAtId) || FCNPC_IsDisabled(lookingAtId) || FCNPC_IsBurning(lookingAtId)))
 	{
 		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
 		{
@@ -103,14 +93,14 @@ timer Timer_OnPlayerIsLooking[TIMER_LOOKAT_RATE](playerid)
 		return 1;
 	}
 
-	GetPlayerFocusedPlayerId(playerid) = lookingAt_playerId;
-	if(IsPlayerNPC(lookingAt_playerId))
+	GetPlayerFocusedPlayerId(playerid) = lookingAtId;
+	if(IsPlayerNPC(lookingAtId))
 	{
-		OnPlayerLookAtNPC(playerid, lookingAt_playerId);
+		OnPlayerLookAtNPC(playerid, lookingAtId);
 	}	
 	else
 	{
-		OnPlayerLookAtPlayer(playerid, lookingAt_playerId);
+		OnPlayerLookAtPlayer(playerid, lookingAtId);
 	}
     return 0;
 }

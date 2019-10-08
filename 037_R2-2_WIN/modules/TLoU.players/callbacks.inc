@@ -297,51 +297,24 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 		return 1;
 	}
 
-	// If NPC isn't in IDLE state, playing anims or stunned.
-	if(!FCNPC_IsDisabled(lookingAt_NpcId) 
-	&& !FCNPC_IsPlayingAnim(lookingAt_NpcId) 
-	&& !FCNPC_IsStunned(lookingAt_NpcId)
-	&& !FCNPC_IsBurning(lookingAt_NpcId))
-	{
-		if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-		{
-			DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
-			Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
-		}
-		return 1;
-	}
-
-	if(IsValidDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]))
-	{
-		return 1;
-	}
-
 	new Float:x, Float:y, Float:z;
 	GetPlayerPos(lookingAt_NpcId, x, y, z);
+
+	// If FCNPC is not stunned, it is required for player to be placed behind NPC.
+	if(!FCNPC_IsStunned(lookingAt_NpcId))
+	{
+		GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.3);
+		if(!IsPlayerInRangeOfPoint(playerid, 0.6, x, y, z))
+		{
+			return 1;
+		}
+	}
 
 	new 
 		virtualWorld = GetPlayerVirtualWorld(playerid),
 		interiorId = GetPlayerInterior(playerid);
 
-	// If NPC is stunned show the shiv label from any angle.
-	if(FCNPC_IsStunned(lookingAt_NpcId))
-	{
-		ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", \
-														COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
-
-		Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
-		return 1;
-	}
-
-	GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.3);
-	if(!IsPlayerInRangeOfPoint(playerid, 0.6, x, y, z))
-	{
-		return 1;
-	}
-
-	ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", \
-														COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
-
+	ePlayerInfo[playerid][e_iLookingAt_Label] = CreateDynamic3DTextLabel("SHIV\n{FF0000}(~k~~PED_FIREWEAPON~)", COLOR_WHITE_TRANS, x, y, z, SHIV_LABEL_DRAW_DIST, lookingAt_NpcId, INVALID_VEHICLE_ID, 0, virtualWorld, interiorId, playerid);
 	Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
 	return 0;
 }
