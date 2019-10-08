@@ -46,7 +46,7 @@ public OnPlayerDie(playerid, issuerid, itemId, bodypart)
 
 	FreezePlayer(playerid, true, -1);
 	CreatePlayerPendant(playerid);
-	PlayDeathAnimation(playerid, bodypart, itemId);
+	CLF(#PlayDeathAnimation, "ddd", playerid, bodypart, itemId);
 	CLF(#PlayDeathProcedureForPlayer, "d", playerid);
     return 1;
 }

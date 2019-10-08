@@ -28,8 +28,7 @@ function ApplyCallbackAnim(playerid, animLib[], animName[])
 
 	wait_ms(150);
 	ePlayerInfo[playerid][e_iAnimIdx] = GetPlayerAnimationIndex(playerid);
-	//CLF(#SetPlayerStatus, "dd", playerid, _:PLAYER_STATUS_PLAYING_ANIM);
-	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_PLAYING_ANIM);
+	SetPlayerStatus(playerid, PLAYER_STATUS_PLAYING_ANIM);
 }
 
 // Clear animations using other anim.
@@ -114,7 +113,7 @@ bool:PlayPlayerDamageAnimations(damagedId, bodypart = -1, issuerId = INVALID_PLA
 }
 
 // Plays death animation for player (based on the current position e.g.: in vehicle or on foot).
-PlayDeathAnimation(playerid, bodypart, itemId)
+function PlayDeathAnimation(playerid, bodypart, itemId)
 {
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -151,7 +150,10 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 		
 		case ITEM_IDX_SHIV:
 		{
-			ApplyCallbackAnim(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE");
+			ApplyAnimation(playerid, "KNIFE", "KILL_KNIFE_PED_DAMAGE", 4.1, 0, 1, 1, 1, 0);
+			wait_ms(1600);
+
+			ApplyAnimation(playerid, "KNIFE", "KILL_KNIFE_PED_DIE", 4.1, 0, 1, 1, 1, 0);
 		}
 
 		case
@@ -164,8 +166,8 @@ PlayDeathAnimation(playerid, bodypart, itemId)
 		default:
 		{
 			ApplyAnimation(playerid, "PED", \
-									(bodypart == BODY_PART_HEAD) ? "KO_SHOT_FACE" : "KO_SHOT_STOM",  \
-										4.1, 0, 1, 1, 1, 0, 1);
+							(bodypart == BODY_PART_HEAD) ? "KO_SHOT_FACE" : "KO_SHOT_STOM",  \
+								4.1, 0, 1, 1, 1, 0, 1);
 		}
 	}
 }
