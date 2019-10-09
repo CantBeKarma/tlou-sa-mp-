@@ -30,7 +30,7 @@ Projectile_Throw(playerid, itemId)
 
     if(projid == -1)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Unable to create projectile (ID: %d) for player: %s (ID: %d). Item equipped: %d", projid, PlayerName(playerid), playerid, itemId);
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Throw: Unable to create projectile for player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         return 1;
     }
 
@@ -40,7 +40,7 @@ Projectile_Throw(playerid, itemId)
 
     if(projObjectId == INVALID_OBJECT_ID)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Throw] Invalid object Id for item id: %d (Player data: %s [%d])", itemId, PlayerName(playerid), playerid);
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Throw: Unable to create projectile's objectId. Player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         return 1;
     }
 
@@ -81,7 +81,7 @@ Projectile_Drop_Nailbomb(playerid)
 
     if(projid == -1)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Drop_Nailbomb] Unable to create projectile (ID: %d) for player: %s (ID: %d)", projid, PlayerName(playerid), playerid);
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Drop_Nailbomb: Unable to create projectile for player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         return 1;
     }
 
@@ -89,7 +89,7 @@ Projectile_Drop_Nailbomb(playerid)
     new projObjectId = CreateDynamicObject(GetItemModel(_:ITEM_IDX_NAIL_BOMB), x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, 93.7, 120.0, ang + 60.0);
     if(projObjectId == INVALID_OBJECT_ID)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "[Projectile_Drop_Nailbomb] Invalid object Id. (Player data: %s [%d])", PlayerName(playerid), playerid);
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Drop_Nailbomb: Unable to create projectile's objectId. Player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         return 1;
     }
 
@@ -115,7 +115,10 @@ InitiateNailbomb(projid, throwerid, Float:x, Float:y, Float:z)
 
     new nailBmbIdx = Iter_Alloc(NailBmbsList);
     if(nailBmbIdx == INVALID_ITERATOR_SLOT)
-        return;
+    {
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "InitiateNailbomb: Unable to initiate nailbomb. Iter_Alloc returned INVALID_ITERATOR_SLOT");
+        return false;
+    }
 
     eProjectileData[nailBmbIdx][e_iNailBmb_ObjectId] = eProjectileData[projid][e_iProjectile_ObjectId];
     OnNailbombInitiate(nailBmbIdx, throwerid, x, y, z);
@@ -124,6 +127,7 @@ InitiateNailbomb(projid, throwerid, Float:x, Float:y, Float:z)
     {
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     }
+    return true;
 }
 
 // Finds Nailbomb Index based on its objectid.
