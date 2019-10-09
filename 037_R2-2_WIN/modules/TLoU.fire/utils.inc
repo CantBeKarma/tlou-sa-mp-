@@ -88,7 +88,7 @@ PutPlayerOnFire(playerid, areaid)
         return false;
     }
 
-    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_BURNING);
+    SetPlayerStatus(playerid, PLAYER_STATUS_BURNING);
     ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, eFireData[areaid][e_iFireCreatorId]);
     return true;
 }
@@ -102,6 +102,6 @@ timer PutOutFireOnPlayer[FIRE_PUT_OUT_DELAY](playerid)
     }
     
     stop ePlayerInfo[playerid][e_iTimer_Burning];
-    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+    SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
     return true;
 }

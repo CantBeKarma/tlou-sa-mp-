@@ -12,7 +12,7 @@
 #define     FIRE_MODEL_ID           (18689)
 
 // Other.
-#define     FIRE_RANGE              (3.5)
+#define     FIRE_RANGE              (5.0)
 #define     FIRE_DAMAGE_AMOUNT      (2.0)
 #define     FIRE_DAMAGE_RATE        (200)
 
