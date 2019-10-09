@@ -180,10 +180,13 @@ public OnPlayerGetStunned(playerid)
 	ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
 	wait_ms(3000);
 
-	ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
-	wait_ms(2000);
+	if(GetPlayerAnimationIndex(playerid) == PED_GAS_CWR)
+	{
+		ApplyAnimation(playerid, "PED", "IDLE_TIRED", 4.1, 1, 1, 1, 0, 0);
+		wait_ms(2000);
 
-	SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
+		SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
+	}
 	return 0;
 }
 
@@ -235,7 +238,7 @@ public OnPlayerGetExplodedByNailbomb(playerid, nailbombCreatorId)
         }
     }
 
-    SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_FALL);
+    SetPlayerStatus(playerid, PLAYER_STATUS_FALL);
     SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - DAMAGE_AMOUNT_NAIL_BOMB, nailbombCreatorId, _:ITEM_IDX_NAIL_BOMB);
 
     if(!IsPlayerDead(playerid))

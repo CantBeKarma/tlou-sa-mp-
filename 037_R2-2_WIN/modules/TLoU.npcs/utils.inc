@@ -168,13 +168,16 @@ function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 // Put NPC in stunned state.
 function FCNPC_Stun(npcid)
 {
-	FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 0, 0);
+	FCNPC_SetAnimation(npcid, PED_GAS_CWR, 4.1, 1, 1, 1, 1, 0);
 	wait_ms(3000);
 
-	FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
-	wait_ms(2000);
+	if(FCNPC_GetAnimationIndex(npcid) == PED_GAS_CWR)
+	{
+		FCNPC_SetAnimation(npcid, PED_IDLE_TIRED, 4.1, 1, 1, 1, 0, 0);
+		wait_ms(2000);
 
-	FCNPC_SetStatus(npcid, STATUS_IDLE);
+		FCNPC_SetStatus(npcid, STATUS_IDLE);
+	}
 }
 
 // Puts NPC in burning state (function is updated in infected update timer).
