@@ -376,7 +376,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 {
     if(IsPlayerInItemArea(areaid))
 	{
-        SCMF(playerid, -1, "You've entered ITEM area");
+        new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
         Sprite2D_Create(playerid, areaObjectId);
 	}
     return 1;
@@ -389,7 +389,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 {
     if(IsPlayerInItemArea(areaid))
 	{
-        SCMF(playerid, -1, "You've left ITEM area");
+        new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 		Sprite2D_Destroy(playerid, areaObjectId);
 	}
     return 1;
