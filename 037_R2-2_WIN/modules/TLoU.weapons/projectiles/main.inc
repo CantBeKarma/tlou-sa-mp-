@@ -55,7 +55,7 @@ public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
         {
             if(type == PROJECTILE_COLLIDE_PLAYER)
             {
-                OnNailbombExplode(projid, throwerid, extraid, x, y, z);
+                OnNailbombExplode(extraid, throwerid, projid, x, y, z);
             }
         }
     }
