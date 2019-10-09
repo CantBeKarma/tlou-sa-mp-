@@ -72,7 +72,7 @@ function FCNPC_PlayDeathAnimation(npcid, weaponid, bodypart)
 
     switch(weaponid)
     {
-        case WEAPON_SHOTGUN:
+        case WEAPON_SHOTGUN, WEAPON_NAIL_BOMB:
         {
             if(FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3)
 			{

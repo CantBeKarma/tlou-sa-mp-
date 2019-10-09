@@ -141,5 +141,7 @@ public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, F
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnGetExplodedByNailbomb(npcid, throwerid)
 {
+    FCNPC_SetStatus(npcid, STATUS_FALL);
+    FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - DAMAGE_AMOUNT_NAIL_BOMB, throwerid, _:ITEM_IDX_NAIL_BOMB);
 	return 0;
 }
