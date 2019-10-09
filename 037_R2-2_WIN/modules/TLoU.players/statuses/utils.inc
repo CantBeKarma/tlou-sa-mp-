@@ -1,5 +1,3 @@
-forward bool:ValidateStatusChange(playerid, PLAYER_STATUS:newStatusId, statusIssuerId);
-
 // Gets player's current status ID.
 PLAYER_STATUS:GetPlayerStatus(playerid)
 {
@@ -9,7 +7,7 @@ PLAYER_STATUS:GetPlayerStatus(playerid)
 // Sets player status (e.g. dead). 
 // Status change can be caused by other player, for example when player shot another player
 // and playerid was using a backpack, it will forcibly close backpack for player automatically.
-SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
+bool:SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
 {
     new PLAYER_STATUS:oldStatusId = GetPlayerStatus(playerid);
 

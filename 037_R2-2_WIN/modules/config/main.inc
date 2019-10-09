@@ -1,4 +1,5 @@
 #include	<config\natives>
+#include	<config\global_forwards>
 #include	<config\config>
 #include	<config\mysql>
 #include	<utils\config>

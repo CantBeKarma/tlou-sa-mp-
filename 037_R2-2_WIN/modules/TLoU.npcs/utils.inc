@@ -1,6 +1,3 @@
-forward NPC_STATUS:FCNPC_GetStatus(npcid);
-forward NPC_TYPE:FCNPC_GetType(npcid);
-
 //#region Utils
 
 	FCNPC_IsDisabled(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISABLED);

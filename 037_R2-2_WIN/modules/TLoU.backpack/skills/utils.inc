@@ -1,5 +1,3 @@
-forward Float:SkillsTd_GetStartBarColumnPosX(targetTextdrawBarIdx);
-
 // Gets skill maximal possible level.
 Skill_GetMaxLevel(skillId)
 {
