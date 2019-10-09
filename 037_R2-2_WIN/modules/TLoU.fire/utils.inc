@@ -64,29 +64,17 @@ IsPlayerInFireArea(playerAreaId)
 // Puts player on fire.
 PutPlayerOnFire(playerid, fireCreatorId = INVALID_PLAYER_ID)
 {
-    if(IsPlayerBurning(playerid))
-    {
-        return false;
-    }
-
     if(SetPlayerStatus(playerid, PLAYER_STATUS_BURNING, fireCreatorId) == true)
     {
         ePlayerInfo[playerid][e_iTimer_Burning] = repeat OnPlayerBurn(playerid, fireCreatorId);
     }
-    return true;
 }
 
 // Puts the fire out of player.
 timer PutOutFireOnPlayer[FIRE_PUT_OUT_DELAY](playerid)
 {
-    if(!IsPlayerBurning(playerid))
-    {
-        return false;
-    }
-    
     if(SetPlayerStatus(playerid, PLAYER_STATUS_NONE) == true)
     {
         stop ePlayerInfo[playerid][e_iTimer_Burning];
     }
-    return true;
 }
