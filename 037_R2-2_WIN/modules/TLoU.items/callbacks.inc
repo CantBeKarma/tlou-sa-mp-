@@ -374,7 +374,13 @@ hook OnGameModeInit()
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-    if(IsPlayerInItemArea(areaid))
+    if(!IsPlayerLogged(playerid) 
+    || !IsPlayerControllable(playerid))
+    {
+        return 1;
+    }
+
+    if(IsPlayerInItemArea(areaid) && GetPlayerStatus(playerid) != PLAYER_STATUS_BURNING)
 	{
         new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
         Sprite2D_Create(playerid, areaObjectId);
@@ -387,7 +393,13 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-    if(IsPlayerInItemArea(areaid))
+    if(!IsPlayerLogged(playerid) 
+    || !IsPlayerControllable(playerid))
+    {
+        return 1;
+    }
+    
+    if(IsPlayerInItemArea(areaid) && GetPlayerStatus(playerid) != PLAYER_STATUS_BURNING)
 	{
         new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
 		Sprite2D_Destroy(playerid, areaObjectId);

@@ -1,42 +1,40 @@
 #include	<YSI\y_hooks>
 
-//#region Fire areas callbacks
-
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    //---------------- OnPlayerEnterDynamicArea ---------------
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    hook OnPlayerEnterDynArea(playerid, areaid)
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------ OnPlayerEnterDynArea -----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+hook OnPlayerEnterDynArea(playerid, areaid)
+{
+    if(!IsPlayerLogged(playerid) 
+    || !IsPlayerControllable(playerid))
     {
-        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
-        {
-            return 1;
-        }
-
-        if(IsPlayerInFireArea(areaid))
-        {
-            PutPlayerOnFire(playerid, eFireData[e_iFireCreatorId]);
-        }
         return 1;
     }
 
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    //---------------- OnPlayerLeaveDynamicArea ---------------
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    hook OnPlayerLeaveDynArea(playerid, areaid)
+    if(IsPlayerInFireArea(areaid))
     {
-        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
-        {
-            return 1;
-        }
+        PutPlayerOnFire(playerid, eFireData[e_iFireCreatorId]);
+    }
+    return 1;
+}
 
-        if(IsPlayerInFireArea(areaid))
-        {
-            defer PutOutFireOnPlayer(playerid);
-        }
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------ OnPlayerLeaveDynArea -----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+hook OnPlayerLeaveDynArea(playerid, areaid)
+{
+    if(!IsPlayerLogged(playerid) 
+    || !IsPlayerControllable(playerid))
+    {
         return 1;
     }
 
-//#endregion
+    if(IsPlayerInFireArea(areaid))
+    {
+        defer PutOutFireOnPlayer(playerid);
+    }
+    return 1;
+}
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnPlayerStartBurning -----------------

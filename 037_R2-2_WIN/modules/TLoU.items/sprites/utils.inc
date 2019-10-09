@@ -119,7 +119,11 @@ Sprite2D_DisableUpdate(playerid)
     {
         Sprite2D_DestroyAll(playerid);
     }
-    Streamer_ToggleItemUpdate(playerid, STREAMER_TYPE_AREA, 0);
+
+    if(GetPlayerStatus(playerid) != PLAYER_STATUS_BURNING)
+    {
+        Streamer_ToggleItemUpdate(playerid, STREAMER_TYPE_AREA, 0);
+    }
 }
 
 //#region Creating transparent objects and applying textures on them
