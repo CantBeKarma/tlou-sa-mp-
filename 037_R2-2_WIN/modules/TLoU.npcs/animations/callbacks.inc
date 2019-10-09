@@ -21,6 +21,10 @@ public FCNPC_OnPlayingAnim(npcid, animIdx)
 public FCNPC_OnAnimFinish(npcid, animIdx)
 {
     //GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM FINISH: NPCID (%d)", npcid);
+    if(FCNPC_GetAnimationIndex(npcid) != animIdx)
+    {
+        return 1;
+    }
 
     switch(animIdx)
     {
