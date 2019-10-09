@@ -161,6 +161,12 @@
         return (Iter_Count(SpritesCreated<playerid>) > 0);
     }
 
+    IsPlayerInItemArea(playerAreaId)
+    {
+        new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+        return (areaObjectId > 0 && GetDynamicObjectModel(areaObjectId) != FIRE_MODEL_ID);
+    }
+
 //#endregion
 
 //#region Item Create/Update/Destroy
