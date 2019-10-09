@@ -35,10 +35,8 @@ bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = 
         return false;
     }
 
-    if(newStatusId == STATUS_IDLE
-    || newStatusId == STATUS_CHASE
+    if(newStatusId == STATUS_CHASE
     || newStatusId == STATUS_ATTACK
-    || newStatusId == STATUS_STUNNED
     || newStatusId == STATUS_PLAYING_ANIM)
     {
         if(FCNPC_IsBurning(npcid) 
@@ -52,6 +50,14 @@ bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = 
     
     switch(newStatusId)
     {
+        case STATUS_STUNNED:
+        {
+            if(FCNPC_IsBurning(npcid))
+            {
+                success = false;
+            }
+        }
+        
         case STATUS_FALL:
         {
             if(FCNPC_IsBurning(npcid) 

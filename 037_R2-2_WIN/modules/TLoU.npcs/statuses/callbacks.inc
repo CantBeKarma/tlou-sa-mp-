@@ -42,6 +42,7 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
 
         case STATUS_STUNNED:
         {
+            FCNPC_StopUpdateTimer(npcid);
             FCNPC_StopMoving(npcid);
             CLF(#FCNPC_Stun, "d", npcid);
         }
