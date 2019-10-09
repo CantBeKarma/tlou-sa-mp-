@@ -170,6 +170,7 @@ CreateProjectileDestroyEffect(itemId, projid, Float:x, Float:y, Float:z, thrower
             if(Iter_Contains(NailBmbsList, projid))
             {
                 Iter_Remove(NailBmbsList, projid);
+                stop eProjectileData[projid][e_iNailBmb_Timer];
             }
             else
             {
