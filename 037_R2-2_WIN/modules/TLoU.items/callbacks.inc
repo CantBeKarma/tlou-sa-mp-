@@ -25,6 +25,11 @@ hook OnGameModeInit()
             new itemId, item_objectId = ePlayerSpriteInfo[playerid][e_iSprite_CreatedForObjectId][sprite];
             ReadItemRelation(item_objectId, .itemId = itemId);
 
+            if(!OnPlayerScreen(playerid, ePlayerSpriteInfo[playerid][e_iSprite_ObjectId][sprite], item_dynamic_object))
+            {
+                continue;
+            }
+
             if(IsPlayerFullOnItem(playerid, itemId)
             && (IsItemType(itemId, ITEM_TYPE_INGREDIENT) || IsItemType(itemId, ITEM_TYPE_MEDKIT)
             || IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_THROWABLE)
