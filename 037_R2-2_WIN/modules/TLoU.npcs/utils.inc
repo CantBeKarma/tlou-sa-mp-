@@ -1,3 +1,73 @@
+forward NPC_STATUS:FCNPC_GetStatus(npcid);
+forward NPC_TYPE:FCNPC_GetType(npcid);
+
+//#region Utils
+
+	FCNPC_IsDisabled(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISABLED);
+	FCNPC_IsIdle(npcid)				return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_IDLE);
+	FCNPC_IsBurning(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_BURNING);
+	FCNPC_IsStunned(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
+	FCNPC_IsPlayingAnim(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
+	FCNPC_IsDeadEx(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
+	FCNPC_IsTimerRunning(npcid)		return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
+	Float:FCNPC_GetHealthEx(npcid)	return eNpcInfo[npcid][e_fHealth];
+
+	// Set FCNPC dest. health value (cannot be lower than 0.0).
+	FCNPC_SetHealthEx(npcid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
+	{
+		if(npcid == INVALID_PLAYER_ID || FCNPC_IsDeadEx(npcid))
+		{
+			return;
+		}
+
+		eNpcInfo[npcid][e_fHealth] = (health <= 0.0 ? 0.0 : health);
+
+		if(FCNPC_GetHealthEx(npcid) <= 0.0)
+		{
+			FCNPC_SetStatus(npcid, STATUS_DEAD);
+			FCNPC_OnDie(npcid, killerid, weaponid, bodypart);
+		}
+	}
+
+	// Check if FCNPC is in a fire area.
+	FCNPC_IsInFireArea(npcid, npcAreaId)
+	{
+		if(!IsPlayerNPC(npcid) || FCNPC_IsDisabled(npcid))
+		{
+			return false;
+		}
+
+		foreach(new i : ServerFires)
+		{
+			if(npcAreaId == eFireData[i][e_iFireAreaId])
+			{
+				return IsPlayerInDynamicArea(npcid, i);
+			}
+		}
+		return false;
+	}
+	
+	// Prepares FCNPC for (re)spawn (first spawn or not are both supported).
+	FCNPC_PrepareForSpawn(npcid, bool:firstSpawn = false)
+	{
+		if(firstSpawn)
+		{
+			PreloadAnimations(npcid);
+			SetPlayerTeam(npcid, FACTION_NONE);
+		}
+		else if(!firstSpawn)
+		{
+			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
+			FCNPC_SetStatus(npcid, STATUS_IDLE);
+		}
+
+		FCNPC_ClearAnims(npcid);
+		FCNPC_SetHealthEx(npcid, 100.0);
+		FCNPC_CreateRoamArea(npcid);
+	}
+
+//#endregion
+
 //#region Create/Reset/Clear data
 
 	// Create specified amount of infected based on 'MAX_FCNPCS'
@@ -109,6 +179,16 @@ function FCNPC_Stun(npcid)
 	FCNPC_SetStatus(npcid, STATUS_IDLE);
 }
 
+// Puts NPC in burning state (function is updated in infected update timer).
+function FCNPC_Burn(npcid)
+{
+	if(FCNPC_IsBurning(npcid))
+	{
+		FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 1, 1, 1, 0, 0);
+		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - FIRE_DAMAGE_AMOUNT, .weaponid = WEAPON_MOLOTOV);
+	}
+}
+
 // Check if FCNPC is unable to perform certain action.
 // e.g.: want to distract him but he's disabled/burning etc.
 FCNPC_IsUnableToPerformAction(npcid)
@@ -119,73 +199,3 @@ FCNPC_IsUnableToPerformAction(npcid)
 		|| FCNPC_IsStunned(npcid)
 		|| FCNPC_IsDeadEx(npcid);
 }
-
-forward NPC_STATUS:FCNPC_GetStatus(npcid);
-forward NPC_TYPE:FCNPC_GetType(npcid);
-
-//#region Utils
-
-	FCNPC_IsDisabled(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DISABLED);
-	FCNPC_IsIdle(npcid)				return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_IDLE);
-	FCNPC_IsBurning(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_BURNING);
-	FCNPC_IsStunned(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
-	FCNPC_IsPlayingAnim(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
-	FCNPC_IsDeadEx(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
-	FCNPC_IsTimerRunning(npcid)		return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
-	Float:FCNPC_GetHealthEx(npcid)	return eNpcInfo[npcid][e_fHealth];
-
-	// Set FCNPC dest. health value (cannot be lower than 0.0).
-	FCNPC_SetHealthEx(npcid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
-	{
-		if(npcid == INVALID_PLAYER_ID || FCNPC_IsDeadEx(npcid))
-		{
-			return;
-		}
-
-		eNpcInfo[npcid][e_fHealth] = (health <= 0.0 ? 0.0 : health);
-
-		if(FCNPC_GetHealthEx(npcid) <= 0.0)
-		{
-			FCNPC_SetStatus(npcid, STATUS_DEAD);
-			FCNPC_OnDie(npcid, killerid, weaponid, bodypart);
-		}
-	}
-
-	// Check if FCNPC is in a fire area.
-	FCNPC_IsInFireArea(npcid, npcAreaId)
-	{
-		if(!IsPlayerNPC(npcid) || FCNPC_IsDisabled(npcid))
-		{
-			return false;
-		}
-
-		foreach(new i : ServerFires)
-		{
-			if(npcAreaId == eFireData[i][e_iFireAreaId])
-			{
-				return IsPlayerInDynamicArea(npcid, i);
-			}
-		}
-		return false;
-	}
-	
-	// Prepares FCNPC for (re)spawn (first spawn or not are both supported).
-	FCNPC_PrepareForSpawn(npcid, bool:firstSpawn = false)
-	{
-		if(firstSpawn)
-		{
-			PreloadAnimations(npcid);
-			SetPlayerTeam(npcid, FACTION_NONE);
-		}
-		else if(!firstSpawn)
-		{
-			FCNPC_SetStatus(npcid, STATUS_IDLE);
-			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
-		}
-
-		FCNPC_ClearAnims(npcid);
-		FCNPC_SetHealthEx(npcid, 100.0);
-		FCNPC_CreateRoamArea(npcid);
-	}
-
-//#endregion

@@ -6,4 +6,3 @@ forward FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmo
 forward FCNPC_OnGetHitByThrowable(npcId, issuerId, itemId);
 forward FCNPC_OnGetExplodedByNailbomb(npcid, throwerid);
 forward FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z);
-forward FCNPC_OnBurning(npcid);
