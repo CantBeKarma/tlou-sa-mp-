@@ -87,8 +87,10 @@
 	#define 	RELEASED(%0) 			(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
 	#define 	HOLDING(%0) 			((newkeys & (%0)) == (%0))
 
-	#define		KEY_AIM				KEY_HANDBRAKE
-	#define		KEY_ENTER			KEY_SECONDARY_ATTACK
+	#define		KEY_AIM						KEY_HANDBRAKE
+	#define		KEY_ENTER					KEY_SECONDARY_ATTACK
+
+	#define 	GetDynamicObjectModel(%0) 	Streamer_GetIntData(STREAMER_TYPE_OBJECT, %0, E_STREAMER_MODEL_ID)
 
 //#endregion
 
