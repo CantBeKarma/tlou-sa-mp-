@@ -45,7 +45,7 @@ public FCNPC_OnEnterDynArea(npcid, areaid)
 
 	if(FCNPC_IsInFireArea(npcid, areaid))
 	{
-		FCNPC_SetStatus(npcid, STATUS_BURNING);
+		FCNPC_SetStatus(npcid, STATUS_BURNING, eFireData[areaid][e_iFireCreatorId]);
 	}
 	return 0;
 }

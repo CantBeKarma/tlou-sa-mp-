@@ -57,6 +57,7 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 		}
 		else if(!firstSpawn)
 		{
+			eNpcInfo[npcid][e_iFireCreatorId] = INVALID_PLAYER_ID;
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
 		}
@@ -180,13 +181,10 @@ function FCNPC_Stun(npcid)
 }
 
 // Puts NPC in burning state (function is updated in infected update timer).
-function FCNPC_Burn(npcid)
+function FCNPC_Burn(npcid, fireCreatorId)
 {
-	if(FCNPC_IsBurning(npcid))
-	{
-		FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 1, 1, 1, 0, 0);
-		FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - FIRE_DAMAGE_AMOUNT, .weaponid = WEAPON_MOLOTOV);
-	}
+	FCNPC_SetAnimation(npcid, PED_FLOOR_HIT_F, 4.1, 1, 1, 1, 0, 0);
+	FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - FIRE_DAMAGE_AMOUNT, fireCreatorId, WEAPON_MOLOTOV);
 }
 
 // Check if FCNPC is unable to perform certain action.
