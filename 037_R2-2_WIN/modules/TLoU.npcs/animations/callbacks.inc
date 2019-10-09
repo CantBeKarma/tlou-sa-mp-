@@ -6,7 +6,6 @@ public FCNPC_OnPlayingAnim(npcid, animIdx)
     if(!FCNPC_HasCallbackAnimFinished(npcid, animIdx))
     {
         eNpcInfo[npcid][e_iPlayingAnim_Tick]++;
-        //GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM PLAYING: NPCID (%d)", npcid);
     }
     else
     {
@@ -20,9 +19,9 @@ public FCNPC_OnPlayingAnim(npcid, animIdx)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnAnimFinish(npcid, animIdx)
 {
-    //GameTextForAllf(500, 3, "~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ ~n~ANIM FINISH: NPCID (%d)", npcid);
     if(FCNPC_GetAnimationIndex(npcid) != animIdx)
     {
+        Log(eLogs[e_Log_Index][LOG_INDEX_NPC], WARNING, "FCNPC_OnAnimFinish: NPC (ID: %d) was supposed to finish animation ID: %d (instead current NPC animation ID is: %d)", npcid, animIdx, FCNPC_GetAnimationIndex(npcid));
         return 1;
     }
 
@@ -33,7 +32,8 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
         {
             if(!FCNPC_IsDeadEx(npcid))
             {
-                FCNPC_SetAnimation(npcid, PED_GETUP, 4.1, 0, 1, 1, 0, 0);
+                FCNPC_SetStatus(npcid, STATUS_DISABLED);
+                FCNPC_SetAnimCallback(npcid, PED_GETUP);
             }
         }
 
@@ -53,6 +53,5 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
             FCNPC_SetStatus(npcid, STATUS_IDLE);
         }
     }
-    //printf("FCNPC_OnAnimFinish(%d, %d)", npcid, animIdx);
     return 1;
 }
