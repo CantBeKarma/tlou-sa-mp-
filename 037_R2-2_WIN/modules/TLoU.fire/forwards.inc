@@ -1,2 +1,2 @@
-forward OnPlayerStartBurning(playerid, fireCreatorId);
+forward OnPlayerStartBurning(playerid);
 forward OnPlayerStopBurning(playerid);

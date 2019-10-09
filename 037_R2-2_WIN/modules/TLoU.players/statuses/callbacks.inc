@@ -57,7 +57,7 @@ public OnPlayerStatusChanged(playerid, PLAYER_STATUS:oldStatusId, PLAYER_STATUS:
 
         case PLAYER_STATUS_BURNING:
         {
-            OnPlayerStartBurning(playerid, statusIssuerId);
+            OnPlayerStartBurning(playerid);
         }
     }
 

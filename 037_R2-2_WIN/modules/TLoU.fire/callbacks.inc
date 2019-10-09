@@ -14,7 +14,7 @@
 
         if(IsPlayerInFireArea(areaid))
         {
-            PutPlayerOnFire(playerid, areaid);
+            PutPlayerOnFire(playerid, eFireData[areaid][e_iFireCreatorId]);
         }
         return 1;
     }
@@ -41,7 +41,7 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnPlayerStartBurning -----------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerStartBurning(playerid, fireCreatorId)
+public OnPlayerStartBurning(playerid)
 {
     HideItem(playerid);
     SPAO(playerid, OBJECT_MODEL_BURNING);
