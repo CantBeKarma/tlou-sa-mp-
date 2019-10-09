@@ -19,7 +19,7 @@ public OnPlayerShotArrow(playerid)
 	{
 		if(IsPlayerAimingWeapon(playerid))
 		{
-			SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+			SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
 		}
 	}
 	return 1;
