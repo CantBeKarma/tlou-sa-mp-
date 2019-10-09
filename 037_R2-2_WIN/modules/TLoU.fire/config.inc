@@ -1,6 +1,4 @@
 // Max definitions.
-#define     MAX_POSSIBLE_FIRES      (300)
-
 #define     MIN_FIRES_PER_MOLOTOV   (3)
 #define     MAX_FIRES_PER_MOLOTOV   (5)
 
@@ -25,6 +23,4 @@ enum e_FIRE_DATA
     e_iFireAreaId,
     e_iFireCreatorId
 }
-new eFireData[MAX_POSSIBLE_FIRES][e_FIRE_DATA];
-
-new Iterator:ServerFires<MAX_POSSIBLE_FIRES>;
+new eFireData[e_FIRE_DATA];

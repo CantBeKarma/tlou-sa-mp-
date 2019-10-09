@@ -34,14 +34,8 @@
 			return false;
 		}
 
-		foreach(new i : ServerFires)
-		{
-			if(npcAreaId == eFireData[i][e_iFireAreaId])
-			{
-				return IsPlayerInDynamicArea(npcid, i);
-			}
-		}
-		return false;
+		new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, npcAreaId, E_STREAMER_EXTRA_ID);
+		return (GetDynamicObjectModel(areaObjectId) == FIRE_MODEL_ID);
 	}
 	
 	// Prepares FCNPC for (re)spawn (first spawn or not are both supported).

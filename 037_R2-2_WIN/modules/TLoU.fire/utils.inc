@@ -1,46 +1,33 @@
 // Function creates a fire objects and configures settings.
 CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
 {
-    new fireId = Iter_Alloc(ServerFires);
-    if(fireId == INVALID_ITERATOR_SLOT)
-    {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CreateFire: Unable to create fire. Iter_Alloc returned INVALID_ITERATOR_SLOT");
-        return 1;
-    }
-
-    // Below magic trick is required, because server checks if player is in a fire area
-    // from ID of 1 instead of 0 example: CreateDynamic[...] IDs start from 1, where Iterator ID starts from 0
-    if(fireId == 0)
-    {
-        fireId = Iter_Alloc(ServerFires);
-        Iter_Remove(ServerFires, 0);
-
-        if(fireId == INVALID_ITERATOR_SLOT)
-        {
-            return 1;
-        }
-    }
-
     new firesCount = RandomEx(MIN_FIRES_PER_MOLOTOV, MAX_FIRES_PER_MOLOTOV);
+    new firesObjectIds[MAX_FIRES_PER_MOLOTOV];
+
     for(new i = 0; i != firesCount; i++)
     {
         if(i == 0)
         {
-            eFireData[fireId][e_fFirePos_X] = x;
-            eFireData[fireId][e_fFirePos_Y] = y;
+            eFireData[e_fFirePos_X] = x;
+            eFireData[e_fFirePos_Y] = y;
+            eFireData[e_iFireCreatorId] = fireCreatorId;
 
-            CreateDynamicObject(OBJ_MODEL_FIRE_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
-            eFireData[fireId][e_iFireAreaId] = CreateDynamicSphere(x, y, z, FIRE_RANGE);
-            eFireData[fireId][e_iFireCreatorId] = fireCreatorId;
+            CreateDynamicObject(OBJ_MODEL_FIRE_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);            
         }
         else
         {
-            eFireData[fireId][e_fFirePos_X] = x + random(3);
-            eFireData[fireId][e_fFirePos_Y] = y + random(3);
+            eFireData[e_fFirePos_X] = x + random(3);
+            eFireData[e_fFirePos_Y] = y + random(3);
         }
 
-        eFireData[fireId][e_fFirePos_Z] = z - 2.5;
-        eFireData[fireId][e_iFireObjectId][i] = CreateDynamicObject(FIRE_MODEL_ID, eFireData[fireId][e_fFirePos_X], eFireData[fireId][e_fFirePos_Y], eFireData[fireId][e_fFirePos_Z], 0.0, 0.0, 0.0);
+        eFireData[e_fFirePos_Z] = z - 2.5;
+        firesObjectIds[i] = eFireData[e_iFireObjectId][i] = CreateDynamicObject(FIRE_MODEL_ID, eFireData[e_fFirePos_X], eFireData[e_fFirePos_Y], eFireData[e_fFirePos_Z], 0.0, 0.0, 0.0);
+
+        if(i == 0)
+        {
+            eFireData[e_iFireAreaId] = CreateDynamicSphere(x, y, z, FIRE_RANGE);
+            Streamer_SetIntData(STREAMER_TYPE_AREA, eFireData[e_iFireAreaId], E_STREAMER_EXTRA_ID, eFireData[e_iFireObjectId][0]);
+        }
     }
 
     foreach(new playerid : Player)
@@ -48,37 +35,30 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     }
 
-    defer DestroyFire(fireId);
+    defer DestroyFire(firesObjectIds, eFireData[e_iFireAreaId]);
     return 0;
 }
 
 // Destroys fire after certain amount of time.
-timer DestroyFire[FIRE_DESTROY_DELAY](fireId)
+timer DestroyFire[FIRE_DESTROY_DELAY](firesObjectIds[], fireAreaId)
 {
-    if(Iter_Contains(ServerFires, fireId))
-    {
-        Iter_Remove(ServerFires, fireId);
-    }
-
-    if(IsValidDynamicArea(eFireData[fireId][e_iFireAreaId]))
-    {
-        DestroyDynamicArea(eFireData[fireId][e_iFireAreaId]); 
-    }
+    DestroyDynamicArea(fireAreaId);
 
     for(new i = 0; i != MAX_FIRES_PER_MOLOTOV; i++)
     {
-        if(!IsValidDynamicObject(eFireData[fireId][e_iFireObjectId][i]))
+        if(!IsValidDynamicObject(firesObjectIds[i]))
         {
             break;
         }
-        DestroyDynamicObject(eFireData[fireId][e_iFireObjectId][i]);
+        DestroyDynamicObject(firesObjectIds[i]);
     }
 }
 
 // Check if player's area is fire area.
 IsPlayerInFireArea(playerAreaId)
 {
-    return Iter_Contains(ServerFires, playerAreaId);
+    new areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, playerAreaId, E_STREAMER_EXTRA_ID);
+    return (GetDynamicObjectModel(areaObjectId) == FIRE_MODEL_ID);
 }
 
 // Puts player on fire.

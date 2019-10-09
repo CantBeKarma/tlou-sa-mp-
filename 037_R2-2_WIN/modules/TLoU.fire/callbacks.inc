@@ -14,7 +14,7 @@
 
         if(IsPlayerInFireArea(areaid))
         {
-            PutPlayerOnFire(playerid, eFireData[areaid][e_iFireCreatorId]);
+            PutPlayerOnFire(playerid, eFireData[e_iFireCreatorId]);
         }
         return 1;
     }
@@ -24,7 +24,7 @@
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     hook OnPlayerLeaveDynArea(playerid, areaid)
     {
-        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid) || !IsPlayerBurning(playerid))
+        if(!IsPlayerLogged(playerid) || !IsPlayerControllable(playerid))
         {
             return 1;
         }
