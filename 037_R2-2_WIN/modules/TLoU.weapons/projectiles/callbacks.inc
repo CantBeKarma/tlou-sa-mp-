@@ -93,7 +93,7 @@ timer OnNailbombUpdate[TICK_RATE_NAILBMB_UPDATE](nailBmbIdx, throwerid, Float:x,
     for(new i = 0; i != MAX_PLAYERS; i++)
     {
         if(!IsPlayerConnected(i) || i == throwerid
-        || !IsPlayerInRangeOfPoint(i, NAILBOMB_TRIGGER_RANGE, x, y, z))
+        || !IsPlayerInRangeOfPoint(i, NAILBOMB_INITIATE_RANGE, x, y, z))
         {
             continue;
         }
