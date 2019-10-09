@@ -4,6 +4,7 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
     new fireId = Iter_Alloc(ServerFires);
     if(fireId == INVALID_ITERATOR_SLOT)
     {
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CreateFire: Unable to create fire. Iter_Alloc returned INVALID_ITERATOR_SLOT");
         return 1;
     }
 
@@ -29,7 +30,7 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
             eFireData[fireId][e_fFirePos_Y] = y;
 
             CreateDynamicObject(OBJ_MODEL_FIRE_EXPLOSION, x, y, z, 0.0, 0.0, 0.0);
-            eFireData[fireId][e_iFireAreaId] = CreateDynamicCircle(x, y, FIRE_RANGE);
+            eFireData[fireId][e_iFireAreaId] = CreateDynamicSphere(x, y, z, FIRE_RANGE);
             eFireData[fireId][e_iFireCreatorId] = fireCreatorId;
         }
         else
@@ -53,7 +54,7 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
 
 // Destroys fire after certain amount of time.
 timer DestroyFire[FIRE_DESTROY_DELAY](fireId)
-{    
+{
     if(Iter_Contains(ServerFires, fireId))
     {
         Iter_Remove(ServerFires, fireId);

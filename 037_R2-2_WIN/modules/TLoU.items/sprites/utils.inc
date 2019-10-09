@@ -279,7 +279,7 @@ OnPlayerScreen(playerid, targetid, Item3D_Type:target_type = item_player, elemen
 	new 
         Float:x, Float:y, Float:z,
         Float:tx, Float:ty, Float:tz,
-        Float:prx, Float:prz, worldid;
+        Float:prx, Float:prz;
 
 	GetPlayerCameraPos(playerid, x, y, z);
 	GetPlayerCameraRotation(playerid, prx, prz);
