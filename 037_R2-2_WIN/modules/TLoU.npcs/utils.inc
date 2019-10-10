@@ -7,24 +7,6 @@
 	FCNPC_IsPlayingAnim(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
 	FCNPC_IsDeadEx(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
 	FCNPC_IsTimerRunning(npcid)		return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
-	Float:FCNPC_GetHealthEx(npcid)	return eNpcInfo[npcid][e_fHealth];
-
-	// Set FCNPC dest. health value (cannot be lower than 0.0).
-	FCNPC_SetHealthEx(npcid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
-	{
-		if(npcid == INVALID_PLAYER_ID || FCNPC_IsDeadEx(npcid))
-		{
-			return;
-		}
-
-		eNpcInfo[npcid][e_fHealth] = (health <= 0.0 ? 0.0 : health);
-
-		if(FCNPC_GetHealthEx(npcid) <= 0.0)
-		{
-			FCNPC_SetStatus(npcid, STATUS_DEAD);
-			FCNPC_OnDie(npcid, killerid, weaponid, bodypart);
-		}
-	}
 
 	// Check if FCNPC is in a fire area.
 	FCNPC_IsInFireArea(npcid, npcAreaId)
@@ -48,7 +30,6 @@
 		}
 		else if(!firstSpawn)
 		{
-			eNpcInfo[npcid][e_iFireCreatorId] = INVALID_PLAYER_ID;
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
 		}
@@ -139,6 +120,25 @@
 
 //#endregion
 
+Float:FCNPC_GetHealthEx(npcid)return eNpcInfo[npcid][e_fHealth];
+
+// Set FCNPC dest. health value (cannot be lower than 0.0).
+FCNPC_SetHealthEx(npcid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = -1, bodypart = -1)
+{
+	if(npcid == INVALID_PLAYER_ID || FCNPC_IsDeadEx(npcid))
+	{
+		return;
+	}
+
+	eNpcInfo[npcid][e_fHealth] = (health <= 0.0 ? 0.0 : health);
+
+	if(FCNPC_GetHealthEx(npcid) <= 0.0)
+	{
+		FCNPC_SetStatus(npcid, STATUS_DEAD);
+		FCNPC_OnDie(npcid, killerid, weaponid, bodypart);
+	}
+}
+
 // Put NPC in distracted state and move to specified X, Y, Z coordinates.
 function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 {
@@ -155,7 +155,10 @@ function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 	FCNPC_SetAnimation(npcid, PED_FLEE_LKAROUND_01, 4.1, 0, 1, 1, 0, 0);
     wait_ms(1700);
 
-	FCNPC_GoToOnGroundCol(npcid, x + random(6), y + random(6), z, random(2));
+	if(!FCNPC_IsUnableToPerformAction(npcid))
+	{
+		FCNPC_GoToOnGroundCol(npcid, x + random(6), y + random(6), z, random(2));
+	}
 	return true;
 }
 
