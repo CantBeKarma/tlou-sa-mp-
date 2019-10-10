@@ -4,6 +4,16 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
     new firesCount = RandomEx(MIN_FIRES_PER_MOLOTOV, MAX_FIRES_PER_MOLOTOV);
     new firesObjectIds[MAX_FIRES_PER_MOLOTOV];
 
+    new 
+        virtualWorld = 0, 
+        interiorId = 0;
+        
+    if(fireCreatorId != INVALID_PLAYER_ID)
+    {
+        virtualWorld = GetPlayerVirtualWorld(fireCreatorId);
+        interiorId = GetPlayerInterior(fireCreatorId);
+    }
+
     z -= 2.2;
     for(new i = 0; i != firesCount; i++)
     {
@@ -13,20 +23,10 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
             y = y + random(2);
         }
 
-        firesObjectIds[i] = CreateDynamicObject(FIRE_MODEL_ID, x, y, z, 0.0, 0.0, 0.0);
+        firesObjectIds[i] = CreateDynamicObject(FIRE_MODEL_ID, x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId);
         
         if(i == 0)
         {
-            new 
-                virtualWorld = 0, 
-                interiorId = 0;
-                
-            if(fireCreatorId != INVALID_PLAYER_ID)
-            {
-                virtualWorld = GetPlayerVirtualWorld(fireCreatorId);
-                interiorId = GetPlayerInterior(fireCreatorId);
-            }
-
             CreateDynamicObject(OBJ_MODEL_FIRE_EXPLOSION, x, y, z, 0.0, 0.0, 0.0, virtualWorld, interiorId);
 
             eFireData[e_iFireAreaId] = CreateDynamicSphere(x, y, z, FIRE_RANGE, virtualWorld, interiorId);
@@ -57,7 +57,7 @@ timer DestroyFire[FIRE_DESTROY_DELAY](firesObjectIds[], fireAreaId)
 
     for(new i = 0; i != MAX_FIRES_PER_MOLOTOV; i++)
     {
-        if(!IsValidDynamicObject(firesObjectIds[i]))
+        if(firesObjectIds[i] == 0)
         {
             break;
         }
