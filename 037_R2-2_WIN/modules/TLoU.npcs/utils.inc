@@ -30,6 +30,7 @@
 		}
 		else if(!firstSpawn)
 		{
+			eNpcInfo[npcid][e_iFireCreatorId] = INVALID_PLAYER_ID;
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
 		}
