@@ -3,6 +3,12 @@
 ReadItemRelation(item_objectId, &itemUid = -1, &itemId = -1, &itemTypeId = -1, &Float:itemPosX = 1.0, &Float:itemPosY = 1.0, &Float:itemPosZ = 1.0, &itemVw = -1, &itemIntId = -1, \
     &itemAmount = -1, &itemExtAmount = -1, &itemAreaId = -1, &itemCreated = -1)
 {
+    if(!IsValidDynamicObject(fire_objectId))
+    {
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "ReadItemRelation: Tried to read invalid object ID data");
+        return 1;
+    }
+
     Streamer_GetArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData);
 
     if(itemUid != -1)
