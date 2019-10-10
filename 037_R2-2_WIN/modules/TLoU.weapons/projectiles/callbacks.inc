@@ -40,7 +40,7 @@ public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 
     if(IsPlayerNPC(hitid) && !FCNPC_IsBurning(hitid))
     {
-        FCNPC_SetStatus(hitid, STATUS_BURNING);
+        FCNPC_SetStatus(hitid, STATUS_BURNING, throwerid);
     }
 
     foreach(new npcid : FCNPC)
