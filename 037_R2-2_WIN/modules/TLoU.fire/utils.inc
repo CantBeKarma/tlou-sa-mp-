@@ -4,15 +4,15 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
     new firesCount = RandomEx(MIN_FIRES_PER_MOLOTOV, MAX_FIRES_PER_MOLOTOV);
     new firesObjectIds[MAX_FIRES_PER_MOLOTOV];
 
+    z -= 2.2;
     for(new i = 0; i != firesCount; i++)
     {
         if(i > 0)
         {
-            x += random(2) + 1;
-            y += random(2) + 1;
+            x = x + random(2);
+            y = y + random(2);
         }
 
-        z -= 2.0;
         firesObjectIds[i] = CreateDynamicObject(FIRE_MODEL_ID, x, y, z, 0.0, 0.0, 0.0);
         
         if(i == 0)
