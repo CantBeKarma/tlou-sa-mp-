@@ -50,6 +50,11 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
 // Destroys fire after certain amount of time.
 timer DestroyFire[FIRE_DESTROY_DELAY](firesObjectIds[], fireAreaId)
 {
+    DestroyDynamicArea(fireAreaId);
+    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireAreaId]);
+    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireCreatorId]);
+    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_bFireCreated]);
+
     for(new i = 0; i != MAX_FIRES_PER_MOLOTOV; i++)
     {
         if(!IsValidDynamicObject(firesObjectIds[i]))
@@ -59,11 +64,6 @@ timer DestroyFire[FIRE_DESTROY_DELAY](firesObjectIds[], fireAreaId)
 
         DestroyDynamicObject(firesObjectIds[i]);
     }
-
-    DestroyDynamicArea(fireAreaId);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireAreaId]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireCreatorId]);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_bFireCreated]);
 }
 
 // Check if player's area is fire area.
