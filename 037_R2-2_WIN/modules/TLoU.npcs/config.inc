@@ -27,8 +27,6 @@ enum e_NPC_DATA
     e_iPlayingAnim_Tick,
     e_iPlayingAnim_Index,
 
-    e_iFireCreatorId,
-
     Float:e_fHealth,
 
     e_iChaseId,
