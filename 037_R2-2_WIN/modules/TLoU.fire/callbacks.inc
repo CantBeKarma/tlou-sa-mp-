@@ -13,7 +13,12 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 
     if(IsPlayerInFireArea(areaid))
     {
-        PutPlayerOnFire(playerid, eFireData[e_iFireCreatorId]);
+        new 
+            fireCreatorId = INVALID_PLAYER_ID,
+            areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+        
+        ReadFireRelation(areaObjectId, .fireCreatorId = fireCreatorId);
+        PutPlayerOnFire(playerid, fireCreatorId);
     }
     return 1;
 }
@@ -51,12 +56,6 @@ public OnPlayerStartBurning(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 timer OnPlayerBurn[FIRE_DAMAGE_RATE](playerid, fireCreatorId)
 {
-    if(!IsPlayerBurning(playerid))
-    {
-        stop ePlayerInfo[playerid][e_iTimer_Burning];
-        return 1;
-    }
-
     SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - FIRE_DAMAGE_AMOUNT, fireCreatorId, _:ITEM_IDX_MOLOTOV);
     return 0;
 }

@@ -45,7 +45,12 @@ public FCNPC_OnEnterDynArea(npcid, areaid)
 
 	if(FCNPC_IsInFireArea(npcid, areaid))
 	{
-		FCNPC_SetStatus(npcid, STATUS_BURNING);
+		new 
+            fireCreatorId = INVALID_PLAYER_ID,
+            areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
+
+		ReadFireRelation(areaObjectId, .fireCreatorId = fireCreatorId);
+		FCNPC_SetStatus(npcid, STATUS_BURNING, fireCreatorId);
 	}
 	return 0;
 }
