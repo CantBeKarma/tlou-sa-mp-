@@ -16,11 +16,8 @@
 
 enum e_FIRE_DATA
 {
-    e_iFireObjectId[MAX_FIRES_PER_MOLOTOV],
-    Float:e_fFirePos_X,
-    Float:e_fFirePos_Y,
-    Float:e_fFirePos_Z,
     e_iFireAreaId,
-    e_iFireCreatorId
+    e_iFireCreatorId,
+    bool:e_bFireCreated
 }
 new eFireData[e_FIRE_DATA];
