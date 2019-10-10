@@ -38,6 +38,7 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
         {
             FCNPC_StopMoving(npcid);
             SPAO(npcid, OBJECT_MODEL_BURNING);
+            eNpcInfo[npcid][e_iFireCreatorId] = statusIssuerId;
         }
 
         case STATUS_STUNNED:
