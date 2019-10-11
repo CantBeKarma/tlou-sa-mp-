@@ -117,70 +117,78 @@ CraftTd_HighlightSelection(playerid, newSelection, oldSelection = -1)
     {
         PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][oldSelection], COLOR_GRAY);
 
+        new 
+            tdIngrStripeIdx1 = -1,
+            tdIngrStripeIdx2 = -1;
+
+        new
+            tdIngrNameIdx1 = -1,
+            tdIngrNameIdx2 = -1;
+
+        new
+            tdIngrBoxIdx1 = -1,
+            tdIngrBoxIdx2 = -1;
+
+        new 
+            tdIngrIconIdx1 = -1,
+            tdIngrIconIdx2 = -1;
+
         switch(oldSelection)
         {
             case CRAFT_ITEM_MELEE,  CRAFT_ITEM_SHIV:
             {
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][0]);
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][1]);
+                tdIngrStripeIdx1 = tdIngrNameIdx1 = 0;
+                tdIngrStripeIdx2 = tdIngrNameIdx2 = 1;
 
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][0], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][1], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][6], COLOR_GRAY);
-
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][0], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][3], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][18], COLOR_GRAY);
-
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], COLOR_GRAY);                
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][3], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][18], COLOR_GRAY);
+                tdIngrBoxIdx1 = tdIngrIconIdx1 = 0;
+                tdIngrBoxIdx2 = tdIngrIconIdx2 = 3;
             }
 
             case CRAFT_ITEM_MEDKIT, CRAFT_ITEM_MOLOTOV:
             {
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][2]);
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][3]);
+                tdIngrStripeIdx1 = tdIngrNameIdx1 = 2;
+                tdIngrStripeIdx2 = tdIngrNameIdx2 = 3;
 
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][2], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][3], COLOR_GRAY);
-
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][6], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][9], COLOR_GRAY);
-
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][6], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][9], COLOR_GRAY);
+                tdIngrBoxIdx1 = tdIngrIconIdx1 = 6;
+                tdIngrBoxIdx2 = tdIngrIconIdx2 = 9;
             }
 
             case CRAFT_ITEM_BOMB:
             {
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][0]);
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][4]);
+                tdIngrStripeIdx1 = tdIngrNameIdx1 = 0;
+                tdIngrStripeIdx2 = tdIngrNameIdx2 = 4;
 
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][0], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][4], COLOR_GRAY);
-
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][0], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][12], COLOR_GRAY);
-
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][0], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], COLOR_GRAY);
+                tdIngrBoxIdx1 = tdIngrIconIdx1 = 0;
+                tdIngrBoxIdx2 = tdIngrIconIdx2 = 12;
             }
 
             case CRAFT_ITEM_SMOKE_BOMB:
             {
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][4]);
-                TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][5]);
+                tdIngrStripeIdx1 = tdIngrNameIdx1 = 4;
+                tdIngrStripeIdx2 = tdIngrNameIdx2 = 5;
 
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][4], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][5], COLOR_GRAY);
-
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][12], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][15], COLOR_GRAY);
-            
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][12], COLOR_GRAY);
-                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][15], COLOR_GRAY);
+                tdIngrBoxIdx1 = tdIngrIconIdx1 = 12;
+                tdIngrBoxIdx2 = tdIngrIconIdx2 = 15;
             }
+        }
+
+        TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][tdIngrStripeIdx1]);
+        TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][tdIngrStripeIdx2]);
+
+        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][tdIngrNameIdx1], COLOR_GRAY);
+        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][tdIngrNameIdx2], COLOR_GRAY);
+
+        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][tdIngrBoxIdx1], COLOR_GRAY);
+        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][tdIngrBoxIdx2], COLOR_GRAY);
+
+        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIngrIconIdx1], COLOR_GRAY);
+        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIngrIconIdx2], COLOR_GRAY);
+
+        if(oldSelection == CRAFT_ITEM_MELEE)
+        {
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][6], COLOR_GRAY);
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][18], COLOR_GRAY);
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][18], COLOR_GRAY);
         }
     }
     PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][newSelection], COLOR_WHITE);
