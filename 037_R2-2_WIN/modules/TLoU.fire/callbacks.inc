@@ -16,7 +16,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
         new 
             fireCreatorId = INVALID_PLAYER_ID,
             areaObjectId = Streamer_GetIntData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID);
-        
+
         ReadFireRelation(areaObjectId, .fireCreatorId = fireCreatorId);
         PutPlayerOnFire(playerid, fireCreatorId);
     }
