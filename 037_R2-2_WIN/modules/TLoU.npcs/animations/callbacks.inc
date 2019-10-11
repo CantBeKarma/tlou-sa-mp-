@@ -21,6 +21,13 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
 {
     if(FCNPC_GetAnimationIndex(npcid) != animIdx)
     {
+        for(new i = 0; i < sizeof(NpcDamageAnims); i++)
+        {
+            if(FCNPC_GetAnimationIndex(npcid) == i) // Don't log DAMAGE animations
+            {
+                return 0;
+            }
+        }
         Log(eLogs[e_Log_Index][LOG_INDEX_NPC], WARNING, "FCNPC_OnAnimFinish: NPC (ID: %d) was supposed to finish animation ID: %d (instead current NPC animation ID is: %d)", npcid, animIdx, FCNPC_GetAnimationIndex(npcid));
         return 1;
     }
