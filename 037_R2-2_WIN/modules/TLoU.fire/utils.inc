@@ -43,25 +43,20 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     }
 
-    defer DestroyFire(firesObjectIds, eFireData[e_iFireAreaId]);
+    defer DestroyFire(firesObjectIds, firesCount, eFireData[e_iFireAreaId]);
     return 0;
 }
 
 // Destroys fire after certain amount of time.
-timer DestroyFire[FIRE_DESTROY_DELAY](firesObjectIds[], fireAreaId)
+timer DestroyFire[FIRE_DESTROY_DELAY](firesObjectIds[], firesObjectIdsLen, fireAreaId)
 {
     DestroyDynamicArea(fireAreaId);
     Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireAreaId]);
     Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireCreatorId]);
     Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_bFireCreated]);
 
-    for(new i = 0; i != MAX_FIRES_PER_MOLOTOV; i++)
+    for(new i = 0; i < firesObjectIdsLen; i++)
     {
-        if(firesObjectIds[i] == 0)
-        {
-            break;
-        }
-
         DestroyDynamicObject(firesObjectIds[i]);
     }
 }
