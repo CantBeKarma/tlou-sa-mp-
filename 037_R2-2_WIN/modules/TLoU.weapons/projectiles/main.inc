@@ -29,6 +29,11 @@ public OnProjectileCollide(projid, type, Float:x, Float:y, Float:z, extraid)
         return 1;
     }
 
+    if(type == PROJECTILE_COLLIDE_PLAYER && IsPlayerNPC(extraid) && FCNPC_IsUnableToPerformAction(extraid))
+    {
+        return 1;
+    }
+
     new itemId = Streamer_GetIntData(STREAMER_TYPE_OBJECT, eProjectileData[projid][e_iProjectile_ObjectId], E_STREAMER_EXTRA_ID);
 
     switch(ITEM_IDX:itemId)

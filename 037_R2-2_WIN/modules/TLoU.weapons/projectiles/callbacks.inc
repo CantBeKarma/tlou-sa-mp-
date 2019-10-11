@@ -11,7 +11,10 @@ public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Fl
     {
         if(IsPlayerNPC(hitid))
         {
-            FCNPC_OnGetHitByThrowable(hitid, throwerid, itemId);
+            if(!FCNPC_IsUnableToPerformAction(hitid))
+            {
+                FCNPC_OnGetHitByThrowable(hitid, throwerid, itemId);
+            }
         }
         else
         {
@@ -38,7 +41,7 @@ public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
 {
     CreateProjectileDestroyEffect(_:ITEM_IDX_MOLOTOV, projid, x, y, z, throwerid);
 
-    if(IsPlayerNPC(hitid) && !FCNPC_IsBurning(hitid))
+    if(IsPlayerNPC(hitid))
     {
         FCNPC_SetStatus(hitid, STATUS_BURNING, throwerid);
     }
@@ -102,7 +105,10 @@ timer OnNailbombUpdate[TICK_RATE_NAILBMB_UPDATE](nailBmbIdx, throwerid, Float:x,
         
         if(IsPlayerNPC(i))
         {
-            FCNPC_OnTriggerNailbomb(i, throwerid, nailBmbIdx, x, y, z);
+            if(!FCNPC_IsUnableToPerformAction(i))
+            {
+                FCNPC_OnTriggerNailbomb(i, throwerid, nailBmbIdx, x, y, z);
+            }
         }
         else
         {
