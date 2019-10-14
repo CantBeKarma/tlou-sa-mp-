@@ -16,9 +16,9 @@
 
             if(!ValidatePassword(inputtext))
             {
-                new msg_signUpFailed[142 + 170];
+                static msg_signUpFailed[sizeof(msg_signUp) + 163];
                 strcat(msg_signUpFailed, msg_signUp, sizeof(msg_signUpFailed));
-                strcat(msg_signUpFailed, "\n\n{FF0000}You've either entered too short/long password (min. 5, max. 20) OR you've used restricted characters!", sizeof(msg_signUpFailed));
+                strcat(msg_signUpFailed, "\n\n{FF0000}You've entered too short/long password (min. 5, max. 20) OR you've used restricted characters!", sizeof(msg_signUpFailed));
                 strcat(msg_signUpFailed, "\n{FF0000}Allowed text characters: a-z, A-Z, 0-9, !?@#$", sizeof(msg_signUpFailed));
 
                 Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, tit_signUp, msg_signUpFailed, "Sign up", "Quit");
@@ -34,7 +34,7 @@
     {
         static tit_signIn[8] = "Sign in";
         static msg_signIn[144] = "Welcome back to the \"The Last of Us (SA-MP) Project\"\nWe have found you in our database. Please enter your account password below to sign in:";
-        new msg_signInFailed[144 + 41];
+        static msg_signInFailed[sizeof(msg_signIn) + 41];
         
         if(wrongPassword)
         {
@@ -87,7 +87,7 @@
 
             if(isnull(inputtext) || strlen(inputtext) < MIN_COLL_TIT_LEN || strlen(inputtext) > MAX_COLL_TIT_LEN)
             {
-                new msg_createTitleFailed[sizeof(msg_createTitle) + 95];
+                static msg_createTitleFailed[sizeof(msg_createTitle) + 95];
                 strcat(msg_createTitleFailed, msg_createTitle, sizeof(msg_createTitleFailed));
                 strcat(msg_createTitleFailed, "\n{FF0000}Invalid input!\n{FF0000}Title cannot be shorter than 6 AND longer than 20 characters", sizeof(msg_createTitleFailed));
 
