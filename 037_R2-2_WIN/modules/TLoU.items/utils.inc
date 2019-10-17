@@ -619,6 +619,7 @@
 
         new maxPlayerShivCnd = GetPlayerMaxShivCND(playerid);
         ePlayerItemData[playerid][_:ITEM_IDX_SHIV][e_iItemShivCnd] = (cnd > maxPlayerShivCnd) ? (maxPlayerShivCnd) : (cnd);
+        UpdateTextDrawsIfNecessary(playerid, _:ITEM_IDX_SHIV);
         return true;
     }
 
