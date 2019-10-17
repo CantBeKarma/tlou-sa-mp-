@@ -35,6 +35,11 @@ public OnPlayerUpgradedSkill(playerid, skillId)
     new newLevel = Skill_GetPlayerLevel(playerid, skillId) + 1;
     Skill_SetPlayerLevel(playerid, skillId, newLevel);
 
+    if(skillId == SKILL_ITEM_SHIV_MASTER)
+    {
+        SetPlayerShivCND(playerid, GetPlayerMaxShivCND(playerid));
+    }
+
     Audio_StopEx(playerid);
     Audio_PlayEx(playerid, AUDIO_CRAFT_FINISH);
     return 1;

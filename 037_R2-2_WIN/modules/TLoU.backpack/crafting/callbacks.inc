@@ -35,6 +35,11 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     {
         GivePlayerItem(playerid, itemId);
         SetPlayerItemAmount(playerid, itemId, GetPlayerItemAmount(playerid, itemId) + 1);
+
+        if(craftItemId == CRAFT_ITEM_SHIV)
+        {
+            SetPlayerShivCND(playerid, GetPlayerMaxShivCND(playerid));
+        }
     }
     else
     {
