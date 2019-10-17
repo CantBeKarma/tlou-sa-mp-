@@ -5,10 +5,6 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerRespawn(playerid)
 {
-	if(IsPlayerDead(playerid))
-	{
-		HideDeathProcedureTds(playerid);
-	}
 	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
 
 	new Float:charHealth = GetPlayerHealthEx(playerid);
@@ -344,6 +340,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(IsPlayerDead(playerid) 
 		&& IsPlayerTextDrawVisible(playerid, ePlayerTextDrawInfo[playerid][e_DeathProcedure][1]))
 		{
+			HideDeathProcedureTds(playerid);
 			SpawnPlayer(playerid);
 			return 0;
 		}
