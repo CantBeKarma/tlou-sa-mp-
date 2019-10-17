@@ -1,7 +1,7 @@
 CMD:cmd(playerid, params[])
 {
     static icmdTip[73] = "Type: /icmd (command_name) to find more information about a command.\n\n";
-    static cmdListRow1[67] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise\n";
+    static cmdListRow1[74] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise, /shiv\n";
     static cmdListRow2[52] = "/itemlist, /createitem, /createmelee, /createnote\n";
     static cmdListRow3[47] = "/giveitem, /givemelee, /myitems, /removeitem\n";
     static cmdListRow4[43] = "/skills, /myskills, /setskill, /setsupps\n";
@@ -33,6 +33,31 @@ YCMD:icmd(playerid, params[], help)
     else
     {
         Command_ReProcess(playerid, params, true);
+    }
+    return 1;
+}
+
+YCMD:shiv(playerid, params[], help)
+{
+    if(help)
+    {
+        new string[64];
+        format(string, sizeof(string), "Your shiv CND: %d (MAX: %d)", GetPlayerShivCND(playerid), GetPlayerMaxShivCND(playerid));
+        ShowDialogMessage(playerid, "Your shiv information", string);
+        return 0;
+    }
+
+    new shivCnd;
+    if(sscanf(params, "d", shivCnd))return ShowDialogMessage(playerid, "Usage..", "Type: /shiv (cnd)");
+    {
+        if(SetPlayerShivCND(playerid, shivCnd))
+        {
+            ShowDialogMessage(playerid, "Success", "Successfully changed shiv CND");
+        }
+        else
+        {
+            ShowDialogMessage(playerid, "Failure", "Failed changing shiv CND");
+        }
     }
     return 1;
 }
