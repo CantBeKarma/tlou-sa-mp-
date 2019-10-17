@@ -48,7 +48,7 @@ enum e_GLOBAL_TD_DATA
 };
 new eTextDrawInfo[e_GLOBAL_TD_DATA];
 
-// PlayerTds (current count: 251 | limit: 256)
+// PlayerTds (current count: 253 | limit: 256)
 enum e_PLAYER_TD_DATA
 {
 	PlayerText:e_BlackScreen,
@@ -89,6 +89,7 @@ enum e_PLAYER_TD_DATA
 	PlayerText:e_Hud_Bg,
 	PlayerText:e_Hud_Melee,
 	PlayerText:e_Hud_Shiv_Amount,
+	PlayerText:e_Hud_Shiv_Cnd[2],
 	PlayerText:e_Hud_Weapon,
 	PlayerText:e_Hud_Ammo,
 	PlayerText:e_Hud_Bullet_9mm[14],

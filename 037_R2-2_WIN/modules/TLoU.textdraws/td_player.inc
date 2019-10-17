@@ -119,6 +119,27 @@ PlayerTextDraw_HUD(playerid)
 	PlayerTextDrawFont				(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount], 2);
 	PlayerTextDrawSetProportional	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount], 1);
 
+	new 
+		Float:shivCndBox_PosX = 569.432983,
+		Float:shivCndBox_TextSizeX = 561.466430;
+
+	for(new i = 0; i < 2; i++)
+	{
+		ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i] = CreatePlayerTextDraw(playerid, shivCndBox_PosX, 335.181152, "SHIV_CND_BOXES");
+		PlayerTextDrawLetterSize	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], 0.000000, -0.119543);
+		PlayerTextDrawTextSize		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], shivCndBox_TextSizeX, 0.000000);
+		PlayerTextDrawAlignment		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], 1);
+		PlayerTextDrawColor			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], 0);
+		PlayerTextDrawUseBox		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], true);
+		PlayerTextDrawBoxColor		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], -1061109505);
+		PlayerTextDrawSetShadow		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], 0);
+		PlayerTextDrawSetOutline	(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], 0);
+		PlayerTextDrawFont			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i], 0);
+
+		shivCndBox_PosX = 575.766235;
+		shivCndBox_TextSizeX = 567.799499;
+	}
+
 	ePlayerTextDrawInfo[playerid][e_Hud_Weapon] = CreatePlayerTextDraw(playerid, 507.333221, 324.385223, "TLoU:weap_shot_horiz");
 	PlayerTextDrawLetterSize		(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon], 0.000000, 0.000000);
 	PlayerTextDrawTextSize			(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Weapon], 50.333328, 50.607410);

@@ -41,6 +41,11 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
         TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Wrench]);
         TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
+        for(new i = 0; i < GetPlayerShivCND(playerid); i++)
+        {
+            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i]);
+        }
+
         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Melee]);
 
         TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Hp_Outline]);
@@ -97,6 +102,11 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
         {
             TdHideForPlayer(playerid, eTextDrawInfo[e_Hud_Shiv]);
             PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
+
+            for(new i = 0; i < GetPlayerShivCND(playerid); i++)
+            {
+                PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i]);
+            }
         }
         else
         {
@@ -107,6 +117,11 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
             PlayerTextDrawSetStr_s(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount], itemAmountStr);
             PlayerTdShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Amount]);
+
+            for(new i = 0; i < GetPlayerShivCND(playerid); i++)
+            {
+                PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Shiv_Cnd][i]);
+            }
         }
     }
 
