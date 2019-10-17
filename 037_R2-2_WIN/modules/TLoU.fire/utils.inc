@@ -51,7 +51,7 @@ CreateFire(Float:x, Float:y, Float:z, fireCreatorId = INVALID_PLAYER_ID)
 timer DestroyFire[FIRE_DESTROY_DELAY](firesObjectIds[], firesObjectIdsLen, fireAreaId)
 {
     DestroyDynamicArea(fireAreaId);
-    Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireAreaId]);
+    Streamer_RemoveArrayData(STREAMER_TYPE_AREA, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireAreaId]);
     Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_iFireCreatorId]);
     Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, firesObjectIds[0], E_STREAMER_EXTRA_ID, eFireData[e_bFireCreated]);
 
