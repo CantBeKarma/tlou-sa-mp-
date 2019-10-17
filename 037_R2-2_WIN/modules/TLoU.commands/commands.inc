@@ -45,8 +45,16 @@ YCMD:icmd(playerid, params[], help)
         return 1;
     }
 
-    CMD:hp(playerid, params[])
+    YCMD:hp(playerid, params[], help)
     {
+        if(help)
+        {
+            new string[64];
+            format(string, sizeof(string), "Your current hp is: %f", GetPlayerHealthEx(playerid));
+            ShowDialogMessage(playerid, "icmd > hp", string);
+            return 0;
+        }
+
         new Float:hp;
         if(sscanf(params, "f", hp))return ShowDialogMessage(playerid, "Usage..", "Type: /hp (health_points)");
         {
