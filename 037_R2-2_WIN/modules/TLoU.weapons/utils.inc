@@ -143,6 +143,10 @@ bool:DegradePlayerShivCND(playerid)
 		{
 			RemovePlayerItem(playerid, _:ITEM_IDX_SHIV);
 		}
+		else
+		{
+			SetPlayerShivCND(playerid, GetPlayerMaxShivCND(playerid));
+		}
 	}
 
 	return true;

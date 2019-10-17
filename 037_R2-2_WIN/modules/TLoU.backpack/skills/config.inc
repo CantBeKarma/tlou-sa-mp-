@@ -10,7 +10,11 @@
 #define     SKILL_ITEM_WEAP_SWAY        (4)
 #define     SKILL_ITEM_SHIV_MASTER      (5)
 
-// Skills boosts (speed values in ms, weapon sway is amount of drunk effect value)
+// Skills boosts 
+// MAX_HP in FLOAT maximal HP values for each level
+// SPEED values are miliseconds (ms)
+// WEAPON SWAY in amount drunk effect
+// SHIV MASTER in amount CND
 #define     SKILL_MAXHP_LVL0                    (100.0)
 #define     SKILL_MAXHP_LVL1                    (120.0)
 #define     SKILL_MAXHP_LVL2                    (140.0)
@@ -35,9 +39,9 @@
 #define		SKILL_WEAP_SWAY_LVL1	            (2500)
 #define		SKILL_WEAP_SWAY_LVL2	            (0)
 
-#define     SKILL_SHIV_MASTER_LVL0              (1)
-#define     SKILL_SHIV_MASTER_LVL1              (2)
-#define     SKILL_SHIV_MASTER_LVL2              (3)
+#define     SKILL_SHIV_MASTER_LVL0              (0)
+#define     SKILL_SHIV_MASTER_LVL1              (1)
+#define     SKILL_SHIV_MASTER_LVL2              (2)
 
 // Player's possible skills to upgrade data information.
 new Iterator:SkillsToUpgrade<MAX_PLAYERS, MAX_SKILLS_ITEMS>;
