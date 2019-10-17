@@ -27,14 +27,14 @@ public OnPlayerStartedHealing(playerid)
 public OnPlayerIsHealing(playerid, healSpeed, Float:oldHealth, Float:destHealth)
 {
 	new Float:currentHealth = GetPlayerHealthEx(playerid);
-	if(currentHealth >= 100.0 || currentHealth >= destHealth)
+	if(currentHealth >= GetPlayerMaxHealth(playerid) || currentHealth >= destHealth)
 	{
 		OnPlayerHealed(playerid, oldHealth, currentHealth);
 	}
 	else
 	{
 		SetPlayerHealthEx(playerid, currentHealth + RESTORE_HP_WITH_MEDKIT_AMOUNT);
-		SetTimerEx("HealMyself", healSpeed, false, "dff", playerid, oldHealth, destHealth);
+		SetTimerEx("HealMyself", healSpeed, false, "ddff", playerid, healSpeed, oldHealth, destHealth);
 	}
 	return 0;
 }
@@ -44,7 +44,7 @@ public OnPlayerIsHealing(playerid, healSpeed, Float:oldHealth, Float:destHealth)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerCanceledHealing(playerid, Float:oldHealth)
 {
-	SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_NONE);
+	SetPlayerStatus(playerid, PLAYER_STATUS_NONE);
 	ePlayerInfo[playerid][e_iTimer_HideHud] = defer HideHud(playerid);
 
 	Audio_StopEx(playerid);
@@ -117,7 +117,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
     {
         if(IsPlayerIdle(playerid) && IsItemType(GetPlayerEquippedItemId(playerid), ITEM_TYPE_MEDKIT))
 		{
-			if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < 100.0)
+			if(!IsPlayerHealing(playerid) && GetPlayerHealthEx(playerid) < GetPlayerMaxHealth(playerid))
 			{
 				SetPlayerStatus(playerid, PLAYER_STATUS_HEALING);
 				OnPlayerStartedHealing(playerid);
