@@ -328,7 +328,7 @@
             return false;
         }
 
-        if(GetPlayerEquippedItemId(playerid) == itemId)
+        if(GetPlayerEquippedItemId(playerid) == itemId && itemId != _:ITEM_IDX_SHIV)
         {
             HideItem(playerid);
         }
@@ -542,6 +542,32 @@
         return -1;
     }
 
+    // Returns player's maximal shiv CND based on player's skill level: SHIV-MASTER
+    // Returns:
+    // Appropriate cnd based on player's level
+    GetPlayerMaxShivCND(playerid)
+    {
+        new shivMasterLvl = Skill_GetPlayerLevel(playerid, SKILL_ITEM_SHIV_MASTER);
+
+        return (shivMasterLvl == 0) ? (SKILL_SHIV_MASTER_LVL0) 
+             : (shivMasterLvl == 1) ? (SKILL_SHIV_MASTER_LVL1) 
+             : (SKILL_SHIV_MASTER_LVL2);
+    }
+
+    // Returns player's current Shiv item condition (CND).
+    // Returns:
+    // (0) - if player hasn't got an item.
+    // (x) - condition of a shiv
+    GetPlayerShivCND(playerid)
+    {
+        if(!HasPlayerGotItem(playerid, ITEM_IDX_SHIV))
+        {
+            return 0;
+        }
+
+        return ePlayerItemData[playerid][e_iItemShivCnd];
+    }
+    
 //#endregion
 
 //#region Items | Set Values
@@ -577,6 +603,22 @@
         {
             ePlayerItemData[playerid][itemId][e_iItemMeleeExtraCND] = 0;
         }
+        return true;
+    }
+
+    // Set's player's shiv CND.
+    // Returns:
+    // false - if CND was set successfully
+    // true - if CND wasn't set successfully (player hasn't got SHIV)
+    bool:SetPlayerShivCND(playerid, cnd)
+    {
+        if(!HasPlayerGotItem(playerid, _:ITEM_IDX_SHIV))
+        {
+            return false;
+        }
+
+        new maxPlayerShivCnd = GetPlayerMaxShivCND(playerid);
+        ePlayerItemData[playerid][e_iItemShivCnd] = (cnd > maxPlayerShivCnd) ? (maxPlayerShivCnd) : (cnd);
         return true;
     }
 
@@ -646,67 +688,6 @@
             UpdateTextDrawsIfNecessary(playerid, itemId);
         }
         return true;
-    }
-
-    UpdateTextDrawsIfNecessary(playerid, itemId)
-    {
-        if(IsPlayerUsingWeaponMenu(playerid)
-        && (IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_PROJECTILE)
-        ||  IsItemType(itemId, ITEM_TYPE_THROWABLE) || IsItemType(itemId, ITEM_TYPE_MEDKIT) || IsItemType(itemId, ITEM_TYPE_INGREDIENT)))
-        {
-            WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId);
-            CraftTd_CheckWhatsToCraft(playerid);
-        }
-
-        if(GetPlayerEquippedItemId(playerid) == itemId)
-        {
-            HudTd_UpdateWeaponAmmo(playerid, itemId);
-            HudTd_DisplayMeleeWeaponBars(playerid, itemId);
-        }
-
-        switch(GetItemType(itemId))
-        {
-            case ITEM_TYPE_INGREDIENT:
-            {
-                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
-                {
-                    new selectedCraft = Craft_GetSelection(playerid);
-                    CraftTd_CheckWhatsToCraft(playerid);
-                    CraftTd_UpdateViewingItem(playerid, selectedCraft);
-                    CraftTd_HighlightSelection(playerid, selectedCraft);
-                    CraftTd_DisplayIngredients(playerid, itemId);
-                }
-                
-                UpdateNavItemsColors(playerid);
-            }
-
-            case ITEM_TYPE_MELEE, ITEM_TYPE_SHIV:
-            {
-                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
-                {
-                    if(ITEM_IDX:itemId == ITEM_IDX_SHIV)
-                    {
-                        CraftTd_UpdateItemAmount(playerid, itemId);
-                    }
-                    else
-                    {
-                        CraftTd_UpdateViewingItem(playerid, CRAFT_ITEM_MELEE);
-                    }
-                }
-                else
-                {
-                    ShowHud(playerid);
-                }
-            }
-
-            default:
-            {
-                if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
-                {
-                    CraftTd_UpdateItemAmount(playerid, itemId);
-                }
-            }
-        }
     }
 
 //#endregion
@@ -855,3 +836,67 @@
     }
 
 //#endregion
+
+// Updates interface textdraws if it's necessary to update, based on player's current activity.
+// For example: if player is using item of the same itemId specified as param - it will update HUD
+// OR ingredients are going to be updated only when player uses backpack.
+UpdateTextDrawsIfNecessary(playerid, itemId)
+{
+    if(IsPlayerUsingWeaponMenu(playerid)
+    && (IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_PROJECTILE)
+    ||  IsItemType(itemId, ITEM_TYPE_THROWABLE) || IsItemType(itemId, ITEM_TYPE_MEDKIT) || IsItemType(itemId, ITEM_TYPE_INGREDIENT)))
+    {
+        WeapMenuTd_DisplayWeapsAndAmmo(playerid, itemId);
+        CraftTd_CheckWhatsToCraft(playerid);
+    }
+
+    if(GetPlayerEquippedItemId(playerid) == itemId)
+    {
+        HudTd_UpdateWeaponAmmo(playerid, itemId);
+        HudTd_DisplayMeleeWeaponBars(playerid, itemId);
+    }
+
+    switch(GetItemType(itemId))
+    {
+        case ITEM_TYPE_INGREDIENT:
+        {
+            if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
+            {
+                new selectedCraft = Craft_GetSelection(playerid);
+                CraftTd_CheckWhatsToCraft(playerid);
+                CraftTd_UpdateViewingItem(playerid, selectedCraft);
+                CraftTd_HighlightSelection(playerid, selectedCraft);
+                CraftTd_DisplayIngredients(playerid, itemId);
+            }
+            
+            UpdateNavItemsColors(playerid);
+        }
+
+        case ITEM_TYPE_MELEE, ITEM_TYPE_SHIV:
+        {
+            if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
+            {
+                if(ITEM_IDX:itemId == ITEM_IDX_SHIV)
+                {
+                    CraftTd_UpdateItemAmount(playerid, itemId);
+                }
+                else
+                {
+                    CraftTd_UpdateViewingItem(playerid, CRAFT_ITEM_MELEE);
+                }
+            }
+            else
+            {
+                ShowHud(playerid);
+            }
+        }
+
+        default:
+        {
+            if(IsPlayerUsingBackpack(playerid) && PlayerBackpackCategory(playerid) == BACKPACK_CATEGORY_CRAFTING)
+            {
+                CraftTd_UpdateItemAmount(playerid, itemId);
+            }
+        }
+    }
+}

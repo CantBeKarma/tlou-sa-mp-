@@ -35,6 +35,10 @@
 #define		SKILL_WEAP_SWAY_LVL1	            (2500)
 #define		SKILL_WEAP_SWAY_LVL2	            (0)
 
+#define     SKILL_SHIV_MASTER_LVL0              (1)
+#define     SKILL_SHIV_MASTER_LVL1              (2)
+#define     SKILL_SHIV_MASTER_LVL2              (3)
+
 // Player's possible skills to upgrade data information.
 new Iterator:SkillsToUpgrade<MAX_PLAYERS, MAX_SKILLS_ITEMS>;
 
