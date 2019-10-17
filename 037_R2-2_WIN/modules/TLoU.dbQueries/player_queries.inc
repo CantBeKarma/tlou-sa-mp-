@@ -15,10 +15,10 @@
     }
 
     // Updates player weapon ammo/amount | melee condition
-    DB_UpdateCharItemAmount(playerid, itemId, amount, meleeExtCnd = 0)
+    DB_UpdateCharItemAmount(playerid, itemId, amount, meleeExtCnd = 0, shivCnd = 0)
     {
-        new query[110];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET amount = %d, meleeExtCnd = %d WHERE id_item = %d AND uid_owner = %d", amount, meleeExtCnd, itemId, GetPlayerCharUid(playerid));
+        new query[120];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "UPDATE items_data SET amount = %d, meleeExtCnd = %d, shivCnd = %d WHERE id_item = %d AND uid_owner = %d", amount, meleeExtCnd, shivCnd, itemId, GetPlayerCharUid(playerid));
         mysql_tquery(eServerInfo[e_SqlHandler], query);
 
         if(IsItemType(itemId, ITEM_TYPE_MELEE) && IsPlayerMeleeUpgraded(playerid))
@@ -27,7 +27,7 @@
         }
         else
         {
-            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Updated itemId: %d with amount: %d for character: %s (UID: %d | GUID: %d)", itemId, amount, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+            Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Updated itemId: %d with amount: %d (shivCnd: %d) for character: %s (UID: %d | GUID: %d)", itemId, amount, shivCnd, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         }
     }
 
@@ -273,7 +273,8 @@
             new 
                 row_idItem,
                 row_amount,
-                row_meleeExtCnd;
+                row_meleeExtCnd,
+                row_shivCnd;
 
             for(new i = 0; i != rowsCount; i++)
             {
@@ -286,6 +287,11 @@
                 {
                     cache_get_value_name_int(i, "meleeExtCnd", row_meleeExtCnd);
                     SetPlayerItemAmount(playerid, row_idItem, row_amount, row_meleeExtCnd, .logAndNotLoadingFromDB = false);
+                }
+                else if(IsItemType(row_idItem, ITEM_TYPE_SHIV))
+                {
+                    cache_get_value_name_int(i, "shivCnd", row_shivCnd);
+                    SetPlayerShivCND(playerid, row_shivCnd);
                 }
                 else
                 {
@@ -405,7 +411,8 @@
     {
         new 
             itemAmount = 0,
-            meleeExtCnd = 0;
+            meleeExtCnd = 0,
+            shivCnd = 0;
 
         for(new i = 0; i != MAX_ITEMS_DATA; i++)
         {
@@ -421,8 +428,14 @@
                 meleeExtCnd = GetPlayerMeleeExtraCnd(playerid, i);
             }
 
-            DB_UpdateCharItemAmount(playerid, i, itemAmount, meleeExtCnd);
+            if(IsItemType(i, ITEM_TYPE_SHIV))
+            {
+                shivCnd = GetPlayerShivCND(playerid);
+            }
+
+            DB_UpdateCharItemAmount(playerid, i, itemAmount, meleeExtCnd, shivCnd);
             itemAmount = meleeExtCnd = 0;
+            shivCnd = 0;
         }
     }
 
