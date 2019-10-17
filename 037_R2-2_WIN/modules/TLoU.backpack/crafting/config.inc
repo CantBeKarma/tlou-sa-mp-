@@ -91,3 +91,27 @@ stock const eIngrSprites[MAX_INGR_SPRITES][e_INGR_SPRITES] =
     {ITEM_IDX_SUGAR,        75,     "TLoU:ingr_sugar_3quaters"},
     {ITEM_IDX_SUGAR,       100,     "TLoU:ingr_sugar_full"}
 };
+
+// Ingredients textdraw indexes of:
+// stripes, names, boxes and icons in the backpack inventory (crafting section)
+enum e_INGR_TD_IDXS
+{
+    e_iCraftItemId,
+    e_iTdIngrStripeAndName1Idx,
+    e_iTdIngrStripeAndName2Idx,
+
+    e_iTdIngrBoxAndIcon1Idx,
+    e_iTdIngrBoxAndIcon2Idx,
+
+    e_iTdExtra1Id,
+    e_iTdExtra2Id
+};
+stock const eIngrTextDrawIndexes[MAX_CRAFT_ITEMS][e_INGR_TD_IDXS] =
+{
+    {CRAFT_ITEM_MELEE,          0,  1,  0,   3,   6,  18},
+    {CRAFT_ITEM_SHIV,           0,  1,  0,   3,  -1,  -1},
+    {CRAFT_ITEM_MEDKIT,         2,  3,  6,   9,  -1,  -1},
+    {CRAFT_ITEM_MOLOTOV,        2,  3,  6,   9,  -1,  -1},
+    {CRAFT_ITEM_BOMB,           0,  4,  0,  12,  -1,  -1},
+    {CRAFT_ITEM_SMOKE_BOMB,     4,  5, 12,  15,  -1,  -1}
+};

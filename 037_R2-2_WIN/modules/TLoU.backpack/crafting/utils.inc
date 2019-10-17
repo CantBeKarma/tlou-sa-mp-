@@ -110,6 +110,8 @@ CraftTd_UpdateViewingItem(playerid, selection)
     }
 }
 
+
+
 // Crafting : Highlight selection of current craft item player has selected + Show if he's got enough ingredients to craft it.
 CraftTd_HighlightSelection(playerid, newSelection, oldSelection = -1)
 {
@@ -117,78 +119,33 @@ CraftTd_HighlightSelection(playerid, newSelection, oldSelection = -1)
     {
         PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][oldSelection], COLOR_GRAY);
 
-        new 
-            tdIngrStripeIdx1 = -1,
-            tdIngrStripeIdx2 = -1;
-
-        new
-            tdIngrNameIdx1 = -1,
-            tdIngrNameIdx2 = -1;
-
-        new
-            tdIngrBoxIdx1 = -1,
-            tdIngrBoxIdx2 = -1;
-
-        new 
-            tdIngrIconIdx1 = -1,
-            tdIngrIconIdx2 = -1;
-
-        switch(oldSelection)
+        for(new i = 0; i < MAX_CRAFT_ITEMS; i++)
         {
-            case CRAFT_ITEM_MELEE,  CRAFT_ITEM_SHIV:
+            if(eIngrTextDrawIndexes[i][e_iCraftItemId] != oldSelection)
             {
-                tdIngrStripeIdx1 = tdIngrNameIdx1 = 0;
-                tdIngrStripeIdx2 = tdIngrNameIdx2 = 1;
-
-                tdIngrBoxIdx1 = tdIngrIconIdx1 = 0;
-                tdIngrBoxIdx2 = tdIngrIconIdx2 = 3;
+                continue;
             }
 
-            case CRAFT_ITEM_MEDKIT, CRAFT_ITEM_MOLOTOV:
-            {
-                tdIngrStripeIdx1 = tdIngrNameIdx1 = 2;
-                tdIngrStripeIdx2 = tdIngrNameIdx2 = 3;
+            TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][ eIngrTextDrawIndexes[i][e_iTdIngrStripeAndName1Idx] ]);
+            TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][ eIngrTextDrawIndexes[i][e_iTdIngrStripeAndName2Idx] ]);
 
-                tdIngrBoxIdx1 = tdIngrIconIdx1 = 6;
-                tdIngrBoxIdx2 = tdIngrIconIdx2 = 9;
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][ eIngrTextDrawIndexes[i][e_iTdIngrStripeAndName1Idx] ], COLOR_GRAY);
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][ eIngrTextDrawIndexes[i][e_iTdIngrStripeAndName2Idx] ], COLOR_GRAY);
+
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][ eIngrTextDrawIndexes[i][e_iTdIngrBoxAndIcon1Idx] ], COLOR_GRAY);
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][ eIngrTextDrawIndexes[i][e_iTdIngrBoxAndIcon2Idx] ], COLOR_GRAY);
+
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][ eIngrTextDrawIndexes[i][e_iTdIngrBoxAndIcon1Idx] ], COLOR_GRAY);
+            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][ eIngrTextDrawIndexes[i][e_iTdIngrBoxAndIcon2Idx] ], COLOR_GRAY);
+
+            if(oldSelection == CRAFT_ITEM_MELEE)
+            {
+                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][ eIngrTextDrawIndexes[i][e_iTdExtra1Id] ], COLOR_GRAY);
+                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][ eIngrTextDrawIndexes[i][e_iTdExtra2Id] ], COLOR_GRAY);
+                PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][ eIngrTextDrawIndexes[i][e_iTdExtra2Id] ], COLOR_GRAY);
             }
 
-            case CRAFT_ITEM_BOMB:
-            {
-                tdIngrStripeIdx1 = tdIngrNameIdx1 = 0;
-                tdIngrStripeIdx2 = tdIngrNameIdx2 = 4;
-
-                tdIngrBoxIdx1 = tdIngrIconIdx1 = 0;
-                tdIngrBoxIdx2 = tdIngrIconIdx2 = 12;
-            }
-
-            case CRAFT_ITEM_SMOKE_BOMB:
-            {
-                tdIngrStripeIdx1 = tdIngrNameIdx1 = 4;
-                tdIngrStripeIdx2 = tdIngrNameIdx2 = 5;
-
-                tdIngrBoxIdx1 = tdIngrIconIdx1 = 12;
-                tdIngrBoxIdx2 = tdIngrIconIdx2 = 15;
-            }
-        }
-
-        TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][tdIngrStripeIdx1]);
-        TextDrawHideForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_IngrStripe][tdIngrStripeIdx2]);
-
-        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][tdIngrNameIdx1], COLOR_GRAY);
-        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][tdIngrNameIdx2], COLOR_GRAY);
-
-        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][tdIngrBoxIdx1], COLOR_GRAY);
-        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][tdIngrBoxIdx2], COLOR_GRAY);
-
-        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIngrIconIdx1], COLOR_GRAY);
-        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][tdIngrIconIdx2], COLOR_GRAY);
-
-        if(oldSelection == CRAFT_ITEM_MELEE)
-        {
-            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrName][6], COLOR_GRAY);
-            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrBox][18], COLOR_GRAY);
-            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Rs_IngrIcon][18], COLOR_GRAY);
+            break;
         }
     }
     PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Bp_Ls_CraftItems][newSelection], COLOR_WHITE);
