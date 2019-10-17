@@ -560,12 +560,12 @@
     // (x) - condition of a shiv
     GetPlayerShivCND(playerid)
     {
-        if(!HasPlayerGotItem(playerid, ITEM_IDX_SHIV))
+        if(!HasPlayerGotItem(playerid, _:ITEM_IDX_SHIV))
         {
             return 0;
         }
 
-        return ePlayerItemData[playerid][e_iItemShivCnd];
+        return ePlayerItemData[playerid][_:ITEM_IDX_SHIV][e_iItemShivCnd];
     }
     
 //#endregion
@@ -618,7 +618,7 @@
         }
 
         new maxPlayerShivCnd = GetPlayerMaxShivCND(playerid);
-        ePlayerItemData[playerid][e_iItemShivCnd] = (cnd > maxPlayerShivCnd) ? (maxPlayerShivCnd) : (cnd);
+        ePlayerItemData[playerid][_:ITEM_IDX_SHIV][e_iItemShivCnd] = (cnd > maxPlayerShivCnd) ? (maxPlayerShivCnd) : (cnd);
         return true;
     }
 
