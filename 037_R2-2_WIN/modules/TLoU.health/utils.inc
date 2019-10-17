@@ -1,3 +1,13 @@
+// Gets player's maximal health value based on player's skill level of MAX HP.
+Float:GetPlayerMaxHealth(playerid)
+{
+    new maxHpLvl = Skill_GetPlayerLevel(playerid, SKILL_ITEM_MAXHP);
+
+    return (maxHpLvl == 0) ? (SKILL_MAXHP_LVL0) 
+         : (maxHpLvl == 1) ? (SKILL_MAXHP_LVL1) 
+         : (SKILL_MAXHP_LVL2);
+}
+
 // Get player health value.
 Float:GetPlayerHealthEx(playerid)
 {
@@ -13,23 +23,25 @@ SetPlayerHealthEx(playerid, Float:health, killerId = INVALID_PLAYER_ID, itemId =
         return;
     }
 
+    new Float:maxPlayerHealth = GetPlayerMaxHealth(playerid);
     new Float:oldHealth = eCharsInfo[playerid][e_fHealth];
-    new Float:newHealth = eCharsInfo[playerid][e_fHealth] = (health <= 0.0 ? 0.0 : health >= 100.0 ? 100.0 : health);
+    new Float:newHealth = eCharsInfo[playerid][e_fHealth] = (health <= 0.0 ? 0.0 : health >= maxPlayerHealth ? maxPlayerHealth : health);
 
+    AdjustPlayerHealthBar(playerid, maxPlayerHealth);
     OnPlayerHealthChange(playerid, oldHealth, newHealth);
 
     if(GetPlayerHealthEx(playerid) <= 0.0)
     {
-        SetPlayerStatus(playerid, PLAYER_STATUS:PLAYER_STATUS_DEAD);
+        SetPlayerStatus(playerid, PLAYER_STATUS_DEAD);
         OnPlayerDie(playerid, killerId, itemId, bodypart);
     }
 }
 
 // Changes player health bar length
 // (calculates its length so it doesn't go over its limit).
-AdjustPlayerHealthBar(playerid)
+AdjustPlayerHealthBar(playerid, Float:maxPlayerHealth)
 {
-    PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status], pb_percent(528.9, 35.3, 100.0, GetPlayerHealthEx(playerid)), 0.0);
+    PlayerTextDrawTextSize(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Hp_Status], pb_percent(528.9, 35.3, maxPlayerHealth, GetPlayerHealthEx(playerid)), 0.0);
 }
 
 // (recursive) Function which makes player heal himself with a medkit.

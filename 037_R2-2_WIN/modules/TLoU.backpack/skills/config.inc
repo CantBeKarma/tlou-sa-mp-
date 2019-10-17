@@ -11,6 +11,10 @@
 #define     SKILL_ITEM_SHIV_MASTER      (5)
 
 // Skills boosts (speed values in ms, weapon sway is amount of drunk effect value)
+#define     SKILL_MAXHP_LVL0                    (100.0)
+#define     SKILL_MAXHP_LVL1                    (120.0)
+#define     SKILL_MAXHP_LVL2                    (140.0)
+
 #define		SKILL_HEAL_SPEED_LVL0		        (500)
 #define		SKILL_HEAL_SPEED_LVL1		        (300)
 #define		SKILL_HEAL_SPEED_LVL2		        (100)

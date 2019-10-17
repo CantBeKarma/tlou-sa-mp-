@@ -81,7 +81,6 @@ public OnPlayerHealed(playerid, Float:oldHealth, Float:newHealth)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerHealthChange(playerid, Float:oldHealth, Float:newHealth)
 {
-	AdjustPlayerHealthBar(playerid);
 	ShowHud(playerid);
 	
 	if(newHealth <= MIN_HEALTH_FLASH_HUD)
