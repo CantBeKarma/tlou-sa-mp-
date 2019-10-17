@@ -11,7 +11,12 @@ public OnPlayerStartedHealing(playerid)
 	new Float:oldHealth = GetPlayerHealthEx(playerid);
 	new Float:destHealth = oldHealth + RESTORE_HEALTH_WIH_BANDAGE;
 
-	HealMyself(playerid, oldHealth, destHealth);
+	new healSpeed = 
+			(Skill_GetPlayerLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (SKILL_HEAL_SPEED_LVL0) 
+		  : (Skill_GetPlayerLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (SKILL_HEAL_SPEED_LVL1) 
+		  : (SKILL_HEAL_SPEED_LVL2);
+
+	HealMyself(playerid, healSpeed, oldHealth, destHealth);
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_LOOP", 4.0, 1, 0, 0, 0, 0);
 	return 0;
 }
@@ -19,7 +24,7 @@ public OnPlayerStartedHealing(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //------------------ OnPlayerIsHealing --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerIsHealing(playerid, Float:oldHealth, Float:destHealth)
+public OnPlayerIsHealing(playerid, healSpeed, Float:oldHealth, Float:destHealth)
 {
 	new Float:currentHealth = GetPlayerHealthEx(playerid);
 	if(currentHealth >= 100.0 || currentHealth >= destHealth)
@@ -28,13 +33,7 @@ public OnPlayerIsHealing(playerid, Float:oldHealth, Float:destHealth)
 	}
 	else
 	{
-		new healSpeed = 
-			  (Skill_GetPlayerLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 0) ? (SKILL_HEAL_SPEED_LVL0) 
-			: (Skill_GetPlayerLevel(playerid, SKILL_ITEM_HEAL_SPEED) == 1) ? (SKILL_HEAL_SPEED_LVL1) 
-			: (SKILL_HEAL_SPEED_LVL2);
-
 		SetPlayerHealthEx(playerid, currentHealth + RESTORE_HP_WITH_MEDKIT_AMOUNT);
-
 		SetTimerEx("HealMyself", healSpeed, false, "dff", playerid, oldHealth, destHealth);
 	}
 	return 0;

@@ -33,7 +33,7 @@ AdjustPlayerHealthBar(playerid)
 }
 
 // (recursive) Function which makes player heal himself with a medkit.
-function HealMyself(playerid, Float:oldHealth, Float:destHealth)
+function HealMyself(playerid, healSpeed, Float:oldHealth, Float:destHealth)
 {
     if(!IsPlayerHealing(playerid))
     {
@@ -42,7 +42,7 @@ function HealMyself(playerid, Float:oldHealth, Float:destHealth)
 
     if(IsPlayerHoldingKey(playerid, KEY_FIRE))
     {
-        OnPlayerIsHealing(playerid, oldHealth, destHealth);
+        OnPlayerIsHealing(playerid, healSpeed, oldHealth, destHealth);
     }
     else
     {
