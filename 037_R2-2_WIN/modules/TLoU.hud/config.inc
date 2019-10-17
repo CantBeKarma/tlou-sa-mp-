@@ -3,7 +3,7 @@
 #define		TIMER_HUD_FLASH_RATE	(100)
 
 // MAX/MIN definitions.
-#define		MAX_HUD_WEAPONS				(17)
+#define		MAX_HUD_WEAPONS				(18)
 #define		MIN_HEALTH_FLASH_HUD		(30.0)
 
 // Hud menu items data (icons, sizes, positions of icon/total bullet count)
@@ -38,5 +38,6 @@ stock const eHudMenu_Items[MAX_HUD_WEAPONS][e_HUDMENU_DATA] =
     {ITEM_IDX_PIPE, 			"TLoU:weap_pipe",	   	 	 36.666633, 44.800029, 527.999816, 331.436859, 0.0, 0.0},
     {ITEM_IDX_SCSR_PIPE, 		"TLoU:weap_scsr_pipe",	 	 40.999946, 44.385219, 516.999755, 331.436798, 0.0, 0.0},
     {ITEM_IDX_HATCHET,			"TLoU:weap_hatchet",		 33.999958, 48.533359, 528.333129, 326.044158, 0.0, 0.0},
-    {ITEM_IDX_MACHETE,			"TLoU:weap_machete",		 36.666633, 44.800029, 527.999816, 331.436859, 0.0, 0.0}
+    {ITEM_IDX_MACHETE,			"TLoU:weap_machete",		 36.666633, 44.800029, 527.999816, 331.436859, 0.0, 0.0},
+    {ITEM_IDX_SHIV,             "TLoU:weap_shiv",            30.333280, 34.844493, 532.999816, 338.073974, 0.0, 0.0}
 };
