@@ -9,3 +9,4 @@ forward NPC_TYPE:FCNPC_GetType(npcid);
 forward bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = INVALID_PLAYER_ID);
 
 forward bool:SetPlayerShivCND(playerid, cnd);
+forward bool:DegradePlayerShivCND(playerid);

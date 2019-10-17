@@ -123,6 +123,31 @@ DegradePlayerMeleeWeapon(playerid)
 	}
 }
 
+// Reduces condition of player's shiv item. If condition is 0 shiv item is being reduced from overall amount.
+// If over amount is 0 then item is removed from that player.
+bool:DegradePlayerShivCND(playerid)
+{
+	if(!HasPlayerGotItem(playerid, _:ITEM_IDX_SHIV))
+	{
+		return false;
+	}
+
+	if(GetPlayerShivCND(playerid) > 0)
+	{
+		SetPlayerShivCND(playerid, GetPlayerShivCND(playerid)-1);
+	}
+	else
+	{
+		SetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV, GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV)-1);
+		if(GetPlayerItemAmount(playerid, _:ITEM_IDX_SHIV) <= 0)
+		{
+			RemovePlayerItem(playerid, _:ITEM_IDX_SHIV);
+		}
+	}
+
+	return true;
+}
+
 // Reloads player's weapon
 ReloadWeapon(playerid)
 {

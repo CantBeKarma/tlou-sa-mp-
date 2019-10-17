@@ -77,11 +77,7 @@ public FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmou
 public FCNPC_OnGetShived(npcid, shiverId)
 {
     EquipItem(shiverId, _:ITEM_IDX_SHIV);
-    SetPlayerItemAmount(shiverId, _:ITEM_IDX_SHIV, GetPlayerItemAmount(shiverId, _:ITEM_IDX_SHIV)-1);
-    if(GetPlayerItemAmount(shiverId, _:ITEM_IDX_SHIV) <= 0)
-	{
-		RemovePlayerItem(shiverId, _:ITEM_IDX_SHIV);
-	}
+    DegradePlayerShivCND(shiverId);
 
     CLF(#ApplyCallbackAnim, "dss", shiverId, "KNIFE", "KILL_KNIFE_PLAYER");
     FCNPC_SetHealthEx(npcid, 0.0, shiverId, .weaponid = WEAPON_SHIV);
