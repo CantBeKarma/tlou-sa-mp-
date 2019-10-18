@@ -488,6 +488,21 @@ YCMD:shiv(playerid, params[], help)
 
 //#region DEBUG CMDs
 
+    CMD:time(playerid, params[])
+    {
+        new hour;
+        if(sscanf(params, "d", hour))return ShowDialogMessage(playerid, "Usage..", "Type: /time (hour)");
+        {
+            if(hour < 0 || hour > 23)
+            {
+                return ShowDialogMessage(playerid, "Failure!", "You can't set hour below 0 and higher than 23.");
+            }
+
+            SetWorldTime(hour);
+        }
+        return 1;
+    }
+
     CMD:movecam(playerid, params[])
     {
         new Float:test1, Float:test2;
