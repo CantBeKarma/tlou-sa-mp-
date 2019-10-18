@@ -48,15 +48,18 @@
 // Starts chasing player (updating)
 bool:FCNPC_ChasePlayer(npcid, playerid)
 {
-	if(FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN) == true)
-	{
-		GameTextForPlayerf(playerid, 1000, 5, "~n~~n~~n~~n~~n~~g~NPC %d is chasing you!", npcid);
-	}
-	else
+	new Float:x, Float:y, Float:z;
+	FCNPC_GetPosition(npcid, x, y, z);
+
+	if(!IsPlayerInRangeOfPoint(playerid, RANGE_NPC_LOOSE_PLAYER, x, y, z)
+	|| FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN) == false)
 	{
 		GameTextForPlayerf(playerid, 3000, 5, "~n~~n~~n~~n~~n~~r~NPC %d lost you!", npcid);
 		FCNPC_SetStatus(npcid, STATUS_IDLE);
+		return false;
 	}
+
+	GameTextForPlayerf(playerid, 1000, 5, "~n~~n~~n~~n~~n~~g~NPC %d is chasing you!", npcid);
 	return true;
 }
 
