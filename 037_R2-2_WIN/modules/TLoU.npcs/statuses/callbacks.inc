@@ -30,8 +30,7 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
         FCNPC_StopMoving(npcid);
     }
 
-    if(newStatusId == STATUS_DISABLED
-    || newStatusId == STATUS_DEAD
+    if(newStatusId == STATUS_DEAD
     || newStatusId == STATUS_CHASE
     || newStatusId == STATUS_ATTACK)
     {
