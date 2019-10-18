@@ -4,7 +4,9 @@
 public FCNPC_OnPlayingAnim(npcid, animIdx)
 {
     new chaseId = GetAvailablePlayerToChase(npcid);
-	if(chaseId != INVALID_PLAYER_ID)
+	if(chaseId != INVALID_PLAYER_ID 
+    && animIdx != PED_GETUP 
+    && animIdx != BASEBALL_BAT_HIT_3)
 	{
         eNpcInfo[npcid][e_iPlayingAnim_Tick] = 0;
         eNpcInfo[npcid][e_iPlayingAnim_Index] = 0;
@@ -52,6 +54,10 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
 
         default:
         {
+            if(animIdx == PED_GETUP)
+            {
+                SCMF_ALL(-1, "GETUP_ANIM_FINISHED");
+            }
             FCNPC_SetStatus(npcid, STATUS_IDLE);
         }
     }

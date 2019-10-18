@@ -23,7 +23,9 @@ forward FCNPC_OnIdle(npcid);
 public FCNPC_OnIdle(npcid)
 {
 	new chaseId = GetAvailablePlayerToChase(npcid);
-	if(chaseId != INVALID_PLAYER_ID)
+	if(chaseId != INVALID_PLAYER_ID 
+	&& FCNPC_GetAnimationIndex(npcid) != PED_GETUP 
+	&& FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3)
 	{
 		FCNPC_SetStatus(npcid, STATUS_CHASE, chaseId);
 	}
