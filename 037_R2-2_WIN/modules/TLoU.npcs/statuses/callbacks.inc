@@ -11,14 +11,30 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
         FCNPC_StartUpdateTimer(npcid);
     }
 
+    if(newStatusId == STATUS_DISABLED
+    || newStatusId == STATUS_DEAD
+    || newStatusId == STATUS_FALL
+    || newStatusId == STATUS_STUNNED)
+    {
+        FCNPC_StopUpdateTimer(npcid);
+    }
+
+    if(newStatusId == STATUS_DISABLED
+    || newStatusId == STATUS_DEAD
+    || newStatusId == STATUS_FALL
+    || newStatusId == STATUS_BURNING
+    || newStatusId == STATUS_STUNNED
+    || newStatusId == STATUS_PLAYING_ANIM)
+    {
+        FCNPC_StopMoving(npcid);
+    }
+
     switch(newStatusId)
     {
         case 
             STATUS_DISABLED,
             STATUS_DEAD:
         {
-            FCNPC_StopUpdateTimer(npcid);
-            FCNPC_StopMoving(npcid);
             FCNPC_DestroyRoamArea(npcid);
         }
 
@@ -29,39 +45,24 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
 
         case STATUS_FALL:
         {
-            FCNPC_StopUpdateTimer(npcid);
-            FCNPC_StopMoving(npcid);
             FCNPC_SetAnimCallback(npcid, BASEBALL_BAT_HIT_3, .freeze = true);
         }
 
         case STATUS_BURNING:
         {
-            FCNPC_StopMoving(npcid);
             SPAO(npcid, OBJECT_MODEL_BURNING);
             eNpcInfo[npcid][e_iFireCreatorId] = statusIssuerId;
         }
 
         case STATUS_STUNNED:
         {
-            FCNPC_StopUpdateTimer(npcid);
-            FCNPC_StopMoving(npcid);
             CLF(#FCNPC_Stun, "d", npcid);
         }
-        
-        case STATUS_PLAYING_ANIM:
+
+        case STATUS_CHASE:
         {
-            FCNPC_StopMoving(npcid);
+            FCNPC_GoToPlayerOnGroundCol(npcid, statusIssuerId, FCNPC_MOVE_RUN);
         }
     }
     return 0;
 }
-
-// STATUS_DISABLED,
-// STATUS_IDLE,
-// STATUS_FALL
-// STATUS_CHASE,
-// STATUS_ATTACK,
-// STATUS_BURNING,
-// STATUS_STUNNED,
-// STATUS_DEAD,
-// STATUS_PLAYING_ANIM
