@@ -6,7 +6,7 @@ NPC_STATUS:FCNPC_GetStatus(npcid)
 
 // Sets player status (e.g. dead). 
 // Status change can be caused by other player, for example when player shot NPC
-FCNPC_SetStatus(npcid, NPC_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
+bool:FCNPC_SetStatus(npcid, NPC_STATUS:status, statusIssuerId = INVALID_PLAYER_ID)
 {
     new NPC_STATUS:oldStatusId = FCNPC_GetStatus(npcid);
 
