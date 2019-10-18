@@ -42,7 +42,7 @@ FCNPC_PlayIdleActions(npcid)
     {
         switch(RandomEx(0, 12))
         {
-            case 4: FCNPC_RandomMoveInDynamicArea(npcid, eNpcInfo[npcid][e_iRoamAreaId]);
+            case 4, 8: FCNPC_RandomMoveInDynamicArea(npcid);
             default: FCNPC_SetAnimCallback(npcid, NpcIdleAnimsList[random(sizeof(NpcIdleAnimsList))]);
         }
     }
