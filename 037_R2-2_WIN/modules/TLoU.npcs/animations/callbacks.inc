@@ -51,7 +51,6 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
             FLOWERS_FLOWER_HIT,
             KISSING_GF_CARARGUE_02:
         {
-            FCNPC_StopUpdateTimer(npcid);
             FCNPC_SetStatus(npcid, STATUS_IDLE);
         }
 
