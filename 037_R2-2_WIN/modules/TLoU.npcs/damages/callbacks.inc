@@ -131,6 +131,9 @@ public FCNPC_OnAttackPlayer(npcid, chaseid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnTriggerNailbomb(npcid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
 {
+    FCNPC_SetStatus(npcid, STATUS_DISABLED);
+    wait_ms(100);
+    
 	ApplyAnimation(npcid, "PED", "EV_STEP", 4.1, 0, 1, 1, 0, 0, 0);
 	Audio3D_Play(throwerid, AUDIO_NAILBMB_TRIGGER, x, y, z, 10.0);
 	defer OnNailbombExplode(npcid, throwerid, nailBmbIdx, x, y, z);

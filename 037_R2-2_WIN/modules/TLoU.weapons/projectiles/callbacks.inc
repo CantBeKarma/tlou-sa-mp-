@@ -107,7 +107,7 @@ timer OnNailbombUpdate[TICK_RATE_NAILBMB_UPDATE](nailBmbIdx, throwerid, Float:x,
         {
             if(!FCNPC_IsUnableToPerformAction(i))
             {
-                FCNPC_OnTriggerNailbomb(i, throwerid, nailBmbIdx, x, y, z);
+                CLF(#FCNPC_OnTriggerNailbomb, "dddfff", i, throwerid, nailBmbIdx, x, y, z);
             }
         }
         else
