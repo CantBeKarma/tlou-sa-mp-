@@ -66,14 +66,14 @@ bool:FCNPC_ChasePlayer(npcid, playerid)
 // Check which player's are available to chase near NPC and make sure they are not stealth etc.
 GetAvailablePlayerToChase(npcid)
 {
-	new Float:x, Float:y, Float:z;
-	FCNPC_GetPosition(npcid, x, y, z);
+	new Float:nX, Float:nY, Float:nZ;
+	FCNPC_GetPosition(npcid, nX, nY, nZ);
 
 	foreach(new playerid : Player)
 	{
 		if(IsPlayerCrouched(playerid)
 		|| GetPlayerSpeed(playerid) == 0.0
-		|| !IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, x, y, z))
+		|| !IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, nX, nY, nZ))
 		{
 			continue;
 		}
@@ -125,10 +125,11 @@ bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, t
 	if(GetDistanceBetweenPoints1D(nZ, pZ) > climbing)
 	{
 		pZ = nZ;
+		return false;
 	}
 
 	new Float:tX, Float:tY, Float:tZ;
-	if(MovePointColCutLineEx(nX, nY, nZ, pX, pY, pZ, tX, tY, tZ, cut_size))
+	if(MovePointColCutLineEx(nX, nY, nZ, pX, pY, pZ, tX, tY, tZ, cut_size, true))
     {
 		FCNPC_GoTo(npcid, tX, tY, tZ, type, speed, mode, pathfinding, radius, set_angle, min_distance, stopdelay);
 

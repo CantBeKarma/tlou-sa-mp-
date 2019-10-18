@@ -206,7 +206,7 @@ Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)return GetX
 		return (rotation - floatround(rotation / 360.0, floatround_floor) * 360.0);
 	}
 
-	MovePointColCutLineEx(Float:sX, Float:sY, Float:sZ, Float:eX, Float:eY, Float:eZ, &Float:x, &Float:y, &Float:z, Float:cut_size = 0.0)
+	MovePointColCutLineEx(Float:sX, Float:sY, Float:sZ, Float:eX, Float:eY, Float:eZ, &Float:x, &Float:y, &Float:z, Float:cut_size = 0.0, bool:npcChasingPlayer = false)
 	{
 		new Float:radius, Float:rx, Float:rz;
 		x = y = z = 0.0;
@@ -228,9 +228,14 @@ Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance)return GetX
 		{
 			radius -= cut_size;
 		} 
-		else 
+		else // reached some place like fence in front of him or anything like it.
 		{
 			radius = FLOAT_DEFECT;
+
+			if(npcChasingPlayer)
+			{
+				return false;
+			}
 		}
 
 		GetPointInFront3D(sX, sY, sZ, rx, rz, radius, x, y, z);
