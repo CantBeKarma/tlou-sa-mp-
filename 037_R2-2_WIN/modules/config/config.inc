@@ -128,6 +128,9 @@ hook OnGameModeInit()
 	static year, month, day;
 	getdate(year, month, day);
 
+	static hour, minute, second;
+	gettime(hour, minute, second);
+
 	SetLogPluginLogLevel(ERROR | WARNING | INFO);
 	
 	// Create log files instances.
@@ -162,7 +165,7 @@ hook OnGameModeInit()
 	//MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
 	//PathFinder_Init(MapAndreas_GetAddress(), MAX_PATHFINDER_THREADS);
 
-	// SetWorldTime(hour);
+	SetWorldTime(hour);
     ShowNameTags(false);
 	ShowPlayerMarkers(false);
     DisableInteriorEnterExits();
