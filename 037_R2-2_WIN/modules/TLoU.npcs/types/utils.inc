@@ -14,6 +14,7 @@ FCNPC_SetType(npcid, NPC_TYPE:type)
     }
     
     eNpcInfo[npcid][e_iType] = type;
+    FCNPC_SetHealthEx(npcid, NpcHealthValues[_:type]);
     Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "FCNPC_SetType: Successfully changed type of NPC (ID: %d) to %s", npcid, NpcTypeNames[_:type]);
     return true;
 }

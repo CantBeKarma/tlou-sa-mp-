@@ -24,3 +24,11 @@ stock const NpcTypeNames[MAX_NPC_TYPES][8] =
     "Clicker",
     "Bloater"
 };
+
+stock const Float:NpcHealthValues[MAX_NPC_TYPES] =
+{
+    100.0,
+    120.0,
+    140.0,
+    160.0
+};

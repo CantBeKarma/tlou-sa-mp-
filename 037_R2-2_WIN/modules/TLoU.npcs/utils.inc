@@ -36,7 +36,7 @@
 		}
 
 		FCNPC_ClearAnims(npcid);
-		FCNPC_SetHealthEx(npcid, 100.0);
+		FCNPC_SetHealthEx(npcid, NpcHealthValues[_:FCNPC_GetType(npcid)]);
 		FCNPC_CreateRoamArea(npcid);
 	}
 
