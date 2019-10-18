@@ -42,7 +42,6 @@ GetAvailablePlayerToChase(npcid)
 	foreach(new playerid : Player)
 	{
 		if(IsPlayerCrouched(playerid)
-		|| eNpcInfo[npcid][e_iChaseId] == playerid
 		|| GetPlayerSpeed(playerid) == 0.0
 		|| !IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, x, y, z))
 		{

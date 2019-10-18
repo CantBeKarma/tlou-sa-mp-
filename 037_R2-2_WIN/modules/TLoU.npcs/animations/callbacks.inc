@@ -28,7 +28,7 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
                 return 0;
             }
         }
-        Log(eLogs[e_Log_Index][LOG_INDEX_NPC], WARNING, "FCNPC_OnAnimFinish: NPC (ID: %d) was supposed to finish animation ID: %d (instead current NPC animation ID is: %d)", npcid, animIdx, FCNPC_GetAnimationIndex(npcid));
+        //Log(eLogs[e_Log_Index][LOG_INDEX_NPC], WARNING, "FCNPC_OnAnimFinish: NPC (ID: %d) was supposed to finish animation ID: %d (instead current NPC animation ID is: %d)", npcid, animIdx, FCNPC_GetAnimationIndex(npcid));
         return 1;
     }
 
