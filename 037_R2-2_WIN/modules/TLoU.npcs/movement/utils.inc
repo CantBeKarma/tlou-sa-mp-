@@ -63,6 +63,26 @@ bool:FCNPC_ChasePlayer(npcid, playerid)
 	return true;
 }
 
+// Check which player's are available to chase near NPC and make sure they are not stealth etc.
+GetAvailablePlayerToChase(npcid)
+{
+	new Float:x, Float:y, Float:z;
+	FCNPC_GetPosition(npcid, x, y, z);
+
+	foreach(new playerid : Player)
+	{
+		if(IsPlayerCrouched(playerid)
+		|| GetPlayerSpeed(playerid) == 0.0
+		|| !IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, x, y, z))
+		{
+			continue;
+		}
+
+		return playerid;
+	}
+	return INVALID_PLAYER_ID;
+}
+
 // Stops NPC from moving and clear animations used.
 FCNPC_StopMoving(npcid)
 {

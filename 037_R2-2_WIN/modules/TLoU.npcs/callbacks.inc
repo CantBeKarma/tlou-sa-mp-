@@ -1,4 +1,23 @@
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------------ FCNPC_OnIdle -------------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnIdle(npcid)
+{
+	new chaseId = GetAvailablePlayerToChase(npcid);
+	if(chaseId != INVALID_PLAYER_ID 
+	&& FCNPC_GetAnimationIndex(npcid) != PED_GETUP 
+	&& FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3)
+	{
+		FCNPC_SetStatus(npcid, STATUS_CHASE, chaseId);
+	}
+	else
+	{
+		FCNPC_PlayIdleActions(npcid);
+	}
+	return 1;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //----------------------- FCNPC_OnRespawn -----------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnRespawn(npcid)
