@@ -503,7 +503,7 @@ YCMD:shiv(playerid, params[], help)
     CMD:npc(playerid, params[])
     {
         new option[32], npcid, NPC_TYPE:type;
-        if(sscanf(params, "s[32]D(-1)D(-1)", option, npcid, _:type))return SCM(playerid, -1, "/npc [create/spawn/type/move]");
+        if(sscanf(params, "s[32]D(-1)D(-1)", option, npcid, _:type))return SCM(playerid, -1, "/npc [create/spawn/type/move/status/check]");
         {
             if(!strcmp(option, "create", false))
             {
@@ -555,41 +555,34 @@ YCMD:shiv(playerid, params[], help)
                     case 1: FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN);
                 }
             }
-        }
-        return 1;
-    }
-
-    YCMD:npcstatus(playerid, params[], help)
-    {
-        if(help)
-        {
-            ShowDialogMessage(playerid, "icmd > npcstatus", "Changes NPC status");
-            return 1;
-        }
-
-        new npcid, NPC_STATUS:status;
-        if(sscanf(params, "dd", npcid, _:status))return ShowDialogMessage(playerid, "Usage..", "Type: /npcstatus (npc_id) (status_id)");
-        {
-            if(!FCNPC_SetStatus(npcid, status))
+            else if(!strcmp(option, "status", false))
             {
-                SCMF(playerid, 0xFF000000, "Unable to change status for NPC");
+                if(npcid == -1 || npcid == INVALID_PLAYER_ID)
+                {
+                    SCMF(playerid, -1, "/npc status [id] [status]");
+                    return 1;
+                }
+                else if(_:type == -1)
+                {
+                    SCMF(playerid, -1, "/npc status [id] [status]");
+                    return 1;
+                }
+
+                if(!FCNPC_SetStatus(npcid, NPC_STATUS:type))
+                {
+                    SCMF(playerid, 0xFF000000, "Unable to change status for NPC");
+                }
             }
-        }
-        return 1;
-    }
+            else if(!strcmp(option, "check", false))
+            {
+                if(npcid == -1 || npcid == INVALID_PLAYER_ID)
+                {
+                    SCMF(playerid, -1 , "/npc check [id]");
+                    return 1;
+                }
 
-    YCMD:npcstatus2(playerid, params[], help)
-    {
-        if(help)
-        {
-            ShowDialogMessage(playerid, "icmd > npcstatus2", "checks NPCs current status number");
-            return 1;
-        }
-
-        new npcid;
-        if(sscanf(params, "d", npcid))return ShowDialogMessage(playerid, "Usage..", "Type: /npcstatus2 (npc_id)");
-        {
-            SCMF(playerid, -1, "NPCID: %d current status is: %d", npcid, _:FCNPC_GetStatus(npcid));
+                SCMF(playerid, -1, "NPCID: %d current status is: %d", npcid, _:FCNPC_GetStatus(npcid));
+            }
         }
         return 1;
     }
