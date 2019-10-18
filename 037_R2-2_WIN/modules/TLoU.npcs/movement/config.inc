@@ -4,6 +4,8 @@
 #define     MAX_NPC_TYPES               (4)
 #define		NPC_RUN_OFFSET				(0.9)
 
+#define     RANGE_NPC_START_CHASE       (12.0)
+
 stock const Float:NpcMovementSpeed[MAX_NPC_TYPES] =
 {
     0.66444, 

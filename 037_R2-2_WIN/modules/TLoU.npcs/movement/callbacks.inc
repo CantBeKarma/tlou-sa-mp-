@@ -11,6 +11,7 @@ public FCNPC_OnReachDestination(npcid)
 	}
 	else
 	{
+		SCMF_ALL(-1, "NPC reached destition (while NOT roaming)");
 		FCNPC_CreateRoamArea(npcid);
 		FCNPC_SetStatus(npcid, STATUS_IDLE);
 	}
