@@ -213,19 +213,31 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
 {
     for(new i = 0; i != MAX_PLAYERS; i++)
     {
-        if(!IsPlayerConnected(i) || i == throwerid
-        || !IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
+        if(!IsPlayerConnected(i) || i == throwerid)
         {
             continue;
         }
 
-        if(IsPlayerNPC(i) && !FCNPC_IsUnableToPerformAction(i))
+        if(IsPlayerInRangeOfPoint(i, SMOKEBMB_AFFECT_RANGE, x, y, z))
         {
-            FCNPC_SetStatus(i, STATUS_STUNNED);
+            if(IsPlayerNPC(i))
+            {
+                if(!FCNPC_IsUnableToPerformAction(i))
+                {
+                    FCNPC_SetStatus(i, STATUS_STUNNED);
+                }
+            }
+            else
+            {
+                SetPlayerStatus(i, PLAYER_STATUS_STUNNED);
+            }
         }
         else
         {
-			SetPlayerStatus(i, PLAYER_STATUS_STUNNED);
+            if(IsPlayerNPC(i))
+            {
+                CLF(#FCNPC_Distract, "dfff", i, x, y, z);
+            }
         }
     }
 }
@@ -236,19 +248,33 @@ ExplodeNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYE
 {
     for(new i = 0; i != MAX_PLAYERS; i++)
     {
-        if(!IsPlayerConnected(i)
-        || !IsPlayerInRangeOfPoint(i, NAILBOMB_EXPLODE_RANGE, x, y, z))
+        if(!IsPlayerConnected(i))
         {
             continue;
         }
 
-        if(IsPlayerNPC(i) && !FCNPC_IsUnableToPerformAction(i))
+        if(IsPlayerInRangeOfPoint(i, NAILBOMB_EXPLODE_RANGE, x, y, z))
         {
-            FCNPC_OnGetExplodedByNailbomb(i, throwerid);
+            if(IsPlayerNPC(i))
+            {
+                if(!FCNPC_IsBurning(i) 
+                && !FCNPC_IsStunned(i)
+                && !FCNPC_IsDeadEx(i))
+                {
+                    FCNPC_OnGetExplodedByNailbomb(i, throwerid);
+                }
+            }
+            else
+            {
+                OnPlayerGetExplodedByNailbomb(i, throwerid);
+            }
         }
         else
         {
-            OnPlayerGetExplodedByNailbomb(i, throwerid);
+            if(IsPlayerNPC(i))
+            {
+                CLF(#FCNPC_Distract, "dfff", i, x, y, z);
+            }
         }
     }
 }
