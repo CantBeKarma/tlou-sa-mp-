@@ -202,7 +202,7 @@
 
         // Try creating item's object id.
         new item_objectId = INVALID_OBJECT_ID;
-        item_objectId = CreateDynamicObject(eItemsData[itemId][e_iItem_ModelId], x, y, z, rX, rY, rZ, virtualWorld, interiorId);
+        item_objectId = CreateDynamicObject(GetItemModel(itemId), x, y, z, rX, rY, rZ, virtualWorld, interiorId);
         
         if(item_objectId == INVALID_OBJECT_ID)
         {

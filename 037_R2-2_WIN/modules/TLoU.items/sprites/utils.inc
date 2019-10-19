@@ -188,11 +188,8 @@ Sprite2D_DisableUpdate(playerid)
 
     // This function seeks for items nearby player of the same itemId.
     // Once item was found, it will check if player is full on this item and if he should see "FULL" text instead of an amount.
-    Sprite2D_UpdateTextNearbyItems(playerid, pickedUp_itemObjectId)
+    Sprite2D_UpdateTextNearbyItems(playerid, pickedUpItemId)
     {
-        new pickedUpItemId;
-        ReadItemRelation(pickedUp_itemObjectId, .itemId = pickedUpItemId);
-
         foreach(new iter : SpritesCreated<playerid>)
         {
             new iterItemId;

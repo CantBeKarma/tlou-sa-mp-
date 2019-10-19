@@ -45,7 +45,7 @@ hook OnGameModeInit()
             }
             else
             {
-                Sprite2D_UpdateTextNearbyItems(playerid, item_objectId);
+                Sprite2D_UpdateTextNearbyItems(playerid, itemId);
                 break;
             }
         }
@@ -192,10 +192,14 @@ hook OnGameModeInit()
     {
         new playerThrowableItemId = GetPlayerThrowableItemId(playerid);
 
-        new nextAction = (playerThrowableItemId != -1) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
+        new nextAction = (playerThrowableItemId != -1 && GetPlayerItemAmount(playerid, playerThrowableItemId) > 0) ? (NEXT_ACTION_UPDATE) : (NEXT_ACTION_DESTROY);
         if(nextAction == NEXT_ACTION_UPDATE)
         {
             dropItemId = playerThrowableItemId;
+        }
+
+        if(playerThrowableItemId != -1)
+        {
             RemovePlayerItem(playerid, playerThrowableItemId);
         }
 
@@ -292,6 +296,11 @@ hook OnGameModeInit()
             strcpy(eObjData[e_sObj_Title], itemTitle, sizeof(eObjData[e_sObj_Title]));
             strcpy(eObjData[e_sObj_InnerMessage], innerMsg, sizeof(eObjData[e_sObj_InnerMessage]));
         }
+        else
+        {
+            eObjData[e_sObj_Title][0] = EOS;
+            eObjData[e_sObj_InnerMessage][0] = EOS;
+        }
 
         eObjData[e_iObj_SpriteAreaId] = CreateDynamicSphere(x, y, z, ITEM_SPRITE_SPHERE_SIZE, virtualWorld, interiorId);        
         eObjData[e_bObj_Created] = true;
@@ -312,16 +321,13 @@ hook OnGameModeInit()
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnItemDestroy(item_objectId, bool:updating)
     {
+        new itemUid, itemAreaId;
+        ReadItemRelation(item_objectId, .itemUid = itemUid, .itemAreaId = itemAreaId);
+
         if(!updating)
         {
-            new itemUid;
-            ReadItemRelation(item_objectId, itemUid);
             DB_DestroyItem(itemUid);
         }
-
-        new itemAreaId;
-        ReadItemRelation(item_objectId, .itemAreaId = itemAreaId);
-        DestroyDynamicArea(itemAreaId);
 
         Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_Uid]);
         Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_ItemId]);
@@ -335,8 +341,9 @@ hook OnGameModeInit()
         Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_Title]);
         Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_sObj_InnerMessage]);
         Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_bObj_Created]);
-        Streamer_RemoveArrayData(STREAMER_TYPE_AREA, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_SpriteAreaId]);
+        Streamer_RemoveArrayData(STREAMER_TYPE_OBJECT, item_objectId, E_STREAMER_EXTRA_ID, eObjData[e_iObj_SpriteAreaId]);
 
+        DestroyDynamicArea(itemAreaId);
         DestroyDynamicObject(item_objectId);
         return 0;
     }
