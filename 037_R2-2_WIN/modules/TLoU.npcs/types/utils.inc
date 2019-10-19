@@ -7,12 +7,11 @@ NPC_TYPE:FCNPC_GetType(npcid)
 // Set NPC to the specific type and change its skin automatically.
 FCNPC_SetType(npcid, NPC_TYPE:type)
 {
-    if(FCNPC_GetType(npcid) == type
-    || FCNPC_SetSkinBasedOnType(npcid, type) == 0)
+    if(FCNPC_SetSkinBasedOnType(npcid, type) == 0)
     {
         return false;
     }
-    
+
     eNpcInfo[npcid][e_iType] = type;
     FCNPC_SetHealthEx(npcid, NpcHealthValues[_:type]);
     Log(eLogs[e_Log_Index][LOG_INDEX_NPC], INFO, "FCNPC_SetType: Successfully changed type of NPC (ID: %d) to %s", npcid, NpcTypeNames[_:type]);

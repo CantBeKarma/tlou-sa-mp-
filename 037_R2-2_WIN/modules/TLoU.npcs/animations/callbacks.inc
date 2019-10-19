@@ -54,10 +54,6 @@ public FCNPC_OnAnimFinish(npcid, animIdx)
 
         default:
         {
-            if(animIdx == PED_GETUP)
-            {
-                SCMF_ALL(-1, "GETUP_ANIM_FINISHED");
-            }
             FCNPC_SetStatus(npcid, STATUS_IDLE);
         }
     }
