@@ -219,16 +219,36 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
             continue;
         }
 
-        if(IsPlayerNPC(i))
+        if(IsPlayerNPC(i) && !FCNPC_IsUnableToPerformAction(i))
         {
-            if(!FCNPC_IsUnableToPerformAction(i))
-            {
-                FCNPC_SetStatus(i, STATUS_STUNNED);
-            }
+            FCNPC_SetStatus(i, STATUS_STUNNED);
         }
         else
         {
 			SetPlayerStatus(i, PLAYER_STATUS_STUNNED);
+        }
+    }
+}
+
+// Explode all nearby players and FCNPCs that are in range of x, y, z coordinates.
+// Optional: throwerid - so he won't get stunned if he's the initiator of the projectile.
+ExplodeNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_ID)
+{
+    for(new i = 0; i != MAX_PLAYERS; i++)
+    {
+        if(!IsPlayerConnected(i)
+        || !IsPlayerInRangeOfPoint(i, NAILBOMB_EXPLODE_RANGE, x, y, z))
+        {
+            continue;
+        }
+
+        if(IsPlayerNPC(i) && !FCNPC_IsUnableToPerformAction(i))
+        {
+            FCNPC_OnGetExplodedByNailbomb(i, throwerid);
+        }
+        else
+        {
+            OnPlayerGetExplodedByNailbomb(i, throwerid);
         }
     }
 }

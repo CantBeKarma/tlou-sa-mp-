@@ -135,24 +135,13 @@ public OnPlayerTriggerNailbomb(triggererid, throwerid, nailBmbIdx, Float:x, Floa
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 timer OnNailbombExplode[NAILBMB_TRIGGERED_EXPLODE](triggererid, throwerid, nailBmbIdx, Float:x, Float:y, Float:z)
 {
+    #pragma unused triggererid
     CreateProjectileDestroyEffect(_:ITEM_IDX_NAIL_BOMB, nailBmbIdx, x, y, z);
-    if(IsPlayerInRangeOfPoint(triggererid, NAILBOMB_EXPLODE_RANGE, x, y, z))
-    {
-        if(IsPlayerNPC(triggererid))
-        {
-            FCNPC_OnGetExplodedByNailbomb(triggererid, throwerid);
-        }
-        else
-        {
-            OnPlayerGetExplodedByNailbomb(triggererid, throwerid);
-        }
-    }
-    else
-    {
-        foreach(new npcid : FCNPC)
-        {
-            CLF(#FCNPC_Distract, "dfff", npcid, x, y, z);
-        }
+    ExplodeNearbyPlayersAndNpcs(x, y, z, throwerid);
+
+    foreach(new npcid : FCNPC)
+    {        
+        CLF(#FCNPC_Distract, "dfff", npcid, x, y, z);
     }
     return 0;
 }
