@@ -430,14 +430,11 @@ YCMD:shiv(playerid, params[], help)
     {
         for(new i = 0; i < MAX_ITEMS_DATA; i++)
         {
-            if(!GivePlayerItem(playerid, i))
-            {
-                continue;
-            }
+            GivePlayerItem(playerid, i);
 
             new 
                 maxItemAmount = 0,
-                maxMeleeCnd = 0;                
+                maxMeleeCnd = 0;
 
             if(IsItemType(i, ITEM_TYPE_MELEE))
             {
