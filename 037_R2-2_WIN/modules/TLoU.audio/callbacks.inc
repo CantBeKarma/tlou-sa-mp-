@@ -9,7 +9,10 @@ public Audio_OnClientConnect(playerid)
     }
 
     Audio_PlayStreamed(playerid, "http://localhost/TLoU/ambient_noise/TLoU_Ambient_-_Main_menu_theme.mp3");
-    ConnectionIntroProcedure(playerid);
+
+    #if !defined SKIP_INTRO
+        CLF(#ConnectionIntroProcedure, "d", playerid);
+    #endif
 	return 1;
 }
 

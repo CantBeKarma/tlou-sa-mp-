@@ -99,6 +99,11 @@ public OnPlayerFirstSpawn(playerid)
     }
 
     PreparePlayerToSign(playerid);
+
+    #if defined SKIP_INTRO
+        PlayerTextDrawHide(playerid, ePlayerTextDrawInfo[playerid][e_BlackScreen]);
+        TextDrawShowForPlayer(playerid, eTextDrawInfo[e_MainMenu_Prompt]);
+    #endif
     return 0;
 }
 

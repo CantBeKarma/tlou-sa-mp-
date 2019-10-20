@@ -4,6 +4,7 @@
 #undef 		MAX_PLAYERS
 #define		MAX_PLAYERS				(50)
 #define		MAX_LOG_FILES			(7)
+#define 	SKIP_INTRO				// comment out to have default connection intro
 
 // ON-CLIENT DISPLAY SETTINGS
 //#define		USE_VPS
@@ -48,6 +49,7 @@
 
 //#region COLORS
 
+	#define		COLOR_GREEN					(0x00FF00FF)
 	#define     COLOR_BLACK             	(0x000000FF)
 	#define		COLOR_BLACK_TRANS			(0x000000DD)
 	#define		COLOR_BG_BLACK_TRANS		(0xFFFFFFDD)

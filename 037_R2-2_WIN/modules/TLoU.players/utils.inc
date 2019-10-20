@@ -141,7 +141,7 @@ Disable_OnPlayerLookAt(playerid)
 }
 
 // Main-menu theme with The Last of Us logo + prompt.
-ConnectionIntroProcedure(playerid)
+function ConnectionIntroProcedure(playerid)
 {
 	if(IsPlayerLogged(playerid))
 	{
