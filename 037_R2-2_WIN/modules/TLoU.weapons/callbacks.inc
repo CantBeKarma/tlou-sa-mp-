@@ -21,6 +21,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         
         // Equipping melee weapon
         if(IsPlayerIdle(playerid) 
+        && !IsPlayerAllowedToShiv(playerid)
         && !IsItemType(currentItemId, ITEM_TYPE_MEDKIT)
         && ITEM_IDX:currentItemId != ITEM_IDX_NAIL_BOMB)
         {
@@ -45,7 +46,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         {
             // Perform SFX when trying to shoot (no ammo click noise) a few times...
             if(ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] < RandomEx(MIN_NOAMMO_CLICKS, MAX_NOAMMO_CLICKS))
-            {   
+            {
                 Audio_PlayEx(playerid, AUDIO_WEAP_NOAMMO);
                 ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks]++;
             }
@@ -196,7 +197,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 
         // If old item was a weapon OR melee AND new item is either bow/medkit/projectile/throwable.
         if((IsItemType(oldItemId, ITEM_TYPE_WEAPON) || IsItemType(oldItemId, ITEM_TYPE_MELEE))
-        && (IsItemType(newItemId, ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE_MEDKIT)
+        && (IsItemType(newItemId, ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE_MEDKIT) || IsItemType(newItemId, ITEM_TYPE_SHIV)
         ||  IsItemType(newItemId, ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE_THROWABLE)))
         {
             SPAO(playerid, GetItemModel(newItemId));
@@ -205,7 +206,7 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 
         // If old item was either bow/medkit/projectile/throwable AND new item is weapon OR melee.
         if((IsItemType(newItemId, ITEM_TYPE_WEAPON) || IsItemType(newItemId, ITEM_TYPE_MELEE))
-        && (IsItemType(oldItemId, ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE_MEDKIT)
+        && (IsItemType(oldItemId, ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE_MEDKIT) || IsItemType(oldItemId, ITEM_TYPE_SHIV)
         ||  IsItemType(oldItemId, ITEM_TYPE_PROJECTILE) || IsItemType(oldItemId, ITEM_TYPE_THROWABLE)))
         {
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
