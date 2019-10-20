@@ -39,6 +39,11 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
 
     switch(newStatusId)
     {
+        case STATUS_IDLE:
+        {
+            FCNPC_CreateRoamArea(npcid);
+        }
+        
         case STATUS_FALL:
         {
             FCNPC_SetAnimCallback(npcid, BASEBALL_BAT_HIT_3, .freeze = true);

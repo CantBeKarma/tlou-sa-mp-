@@ -30,6 +30,7 @@
 		}
 		else if(!firstSpawn)
 		{
+			eNpcInfo[npcid][e_iRoamAreaId] = INVALID_STREAMER_ID;
 			eNpcInfo[npcid][e_iFireCreatorId] = INVALID_PLAYER_ID;
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
@@ -37,7 +38,6 @@
 
 		FCNPC_ClearAnims(npcid);
 		FCNPC_SetHealthEx(npcid, NpcHealthValues[_:FCNPC_GetType(npcid)]);
-		FCNPC_CreateRoamArea(npcid);
 	}
 
 //#endregion
@@ -101,11 +101,10 @@
 	// Create NPC roam area.
 	FCNPC_CreateRoamArea(npcid)
 	{
-		if(!IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
+		if(eNpcInfo[npcid][e_iRoamAreaId] == INVALID_STREAMER_ID)
 		{
 			new Float:x, Float:y, Float:z;
 			FCNPC_GetPosition(npcid, x, y, z);
-
 			eNpcInfo[npcid][e_iRoamAreaId] = CreateDynamicCircle(x, y, AREA_ROAM_SIZE);
 		}
 	}
@@ -113,9 +112,10 @@
 	// Destroy NPC roam area.
 	FCNPC_DestroyRoamArea(npcid)
 	{
-		if(IsValidDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]))
+		if(eNpcInfo[npcid][e_iRoamAreaId] != INVALID_STREAMER_ID)
 		{
 			DestroyDynamicArea(eNpcInfo[npcid][e_iRoamAreaId]);
+			eNpcInfo[npcid][e_iRoamAreaId] = INVALID_STREAMER_ID;
 		}
 	}
 

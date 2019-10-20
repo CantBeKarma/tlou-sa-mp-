@@ -200,7 +200,7 @@ FCNPC_GoToOnGroundCol(npcid, Float:posX, Float:posY, Float:posZ, walkOrRun = FCN
 FCNPC_RandomMoveInDynamicArea(npcid, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
 {
 	new areaid = eNpcInfo[npcid][e_iRoamAreaId];
-	if(FCNPC_IsDeadEx(npcid) || !IsValidDynamicArea(areaid))
+	if(FCNPC_IsDeadEx(npcid) || areaid == INVALID_STREAMER_ID)
 	{
 		return false;
 	}
