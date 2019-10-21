@@ -300,10 +300,11 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 	GetPlayerPos(lookingAt_NpcId, x, y, z);
 
 	// If FCNPC is not stunned, it is required for player to be placed behind NPC.
-	GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.1);
+	//GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.1);
 
 	if(!FCNPC_IsStunned(lookingAt_NpcId)
-	&& !IsPlayerInRangeOfPoint(playerid, 0.5, x, y, z))
+	&& !IsPlayerBehindPlayer(playerid, lookingAt_NpcId, 0.5))
+	//&& !IsPlayerInRangeOfPoint(playerid, 0.5, x, y, z))
 	{
 		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
 	}
