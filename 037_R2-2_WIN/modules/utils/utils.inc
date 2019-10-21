@@ -101,27 +101,27 @@ DisableDefaultAmbientNoise(playerid)
 		return ((a1 < range) && (a1 > -range));
 	}
 
+	// Set player's facing angle where he's currently looking (useful for custom-weapons).
+	SetAngleBasedOnCam(playerid)
+	{
+		new Float:pCamX, Float:pCamY, Float:pCamZ;
+		GetPlayerCameraPos(playerid, pCamX, pCamY, pCamZ);
+
+		new Float:pCamVecX, Float:pCamVecY, Float:pCamVecZ;
+		GetPlayerCameraFrontVector(playerid, pCamVecX, pCamVecY, pCamVecZ);
+
+		new Float:pPosX, Float:pPosY, Float:pPosZ, Float:angle;
+		GetPlayerPos(playerid, pPosX, pPosY, pPosZ);
+
+		new Float:dest_angleX, Float:dest_angleY;
+		dest_angleX = (pCamX + pCamVecX);
+		dest_angleY = (pCamY + pCamVecY);
+		angle = atan2(dest_angleX - pPosX, dest_angleY - pPosY);
+		
+		SetPlayerFacingAngle(playerid, 180.0 - angle);
+	}
+
 //#endregion
-
-// Set player's facing angle where he's currently looking (useful for custom-weapons).
-SetAngleBasedOnCam(playerid)
-{
-	new Float:pCamX, Float:pCamY, Float:pCamZ;
-	GetPlayerCameraPos(playerid, pCamX, pCamY, pCamZ);
-
-	new Float:pCamVecX, Float:pCamVecY, Float:pCamVecZ;
-	GetPlayerCameraFrontVector(playerid, pCamVecX, pCamVecY, pCamVecZ);
-
-	new Float:pPosX, Float:pPosY, Float:pPosZ, Float:angle;
-	GetPlayerPos(playerid, pPosX, pPosY, pPosZ);
-
-	new Float:dest_angleX, Float:dest_angleY;
-	dest_angleX = (pCamX + pCamVecX);
-	dest_angleY = (pCamY + pCamVecY);
-	angle = atan2(dest_angleX - pPosX, dest_angleY - pPosY);
-	
-	SetPlayerFacingAngle(playerid, 180.0 - angle);
-}
 
 // Check distance between players.
 Float:GetDistanceBetweenPlayers(playerid, targetplayerid)
