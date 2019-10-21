@@ -79,7 +79,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
         // If player doesn't have any weapon equipped (or has melee)
         // and pressed KEY_AIM | instant equip last weapon used.
-        if(GetPlayerEquippedItemId(playerid) == -1)
+        if(GetPlayerEquippedItemId(playerid) == -1 && !IsPlayerAllowedToShiv(playerid))
         {
             EquipItem(playerid, GetPlayerLastEquippedItemId(playerid));
         }

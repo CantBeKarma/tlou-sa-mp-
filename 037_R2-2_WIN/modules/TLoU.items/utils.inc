@@ -710,21 +710,13 @@
             return false;
         }
 
-        // If player is allowed to shiv, do not equip melee weapon and hide player weapon.
-        if(IsPlayerAllowedToShiv(playerid) && IsItemType(itemId, ITEM_TYPE_MELEE))
-		{
-            SCMF(playerid, -1, "Stopped at 2nd validation");
-            HideItem(playerid);
-            return false;
-        }
-
         // Tries to equip last weapon but has some weapon equipped already (and not using weapon menu).
         if(GetPlayerEquippedItemId(playerid) != -1
         && GetPlayerLastEquippedItemId(playerid) == itemId
         && !IsPlayerUsingWeaponMenu(playerid)
         && ePlayerWeapon[playerid][e_iTickCounter_NoAmmoClicks] == 0)
         {
-            SCMF(playerid, -1, "Stopped at 3rd validation");
+            SCMF(playerid, -1, "Stopped at 2nd validation");
             return false;
         }
 
@@ -733,7 +725,7 @@
         // Equipping weapons with no ammo/amount is allowed for items of type WEAPON.
         if(itemAmount <= 0 && !IsItemType(itemId, ITEM_TYPE_WEAPON))
         {
-            SCMF(playerid, -1, "Stopped at 4th validation");
+            SCMF(playerid, -1, "Stopped at 3rd validation");
             return false;
         }
         
