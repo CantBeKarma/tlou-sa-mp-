@@ -209,8 +209,8 @@ public OnPlayerGetHitByThrowable(playerid, issuerId, itemId)
 public OnPlayerGetArrowShot(playerid, damagerid)
 {
 	ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
-	ApplyAnimation(playerid, "PED", "HIT_GUN_BUTT", 4.1, 0, 1, 1, 0, 350);
-	Bit_Vet(ePlayerFlag[e_bShootingCustomWeapon], damagerid);
+	PlayPlayerDamageAnimations(playerid, BODY_PART_TORSO);
+	SetPlayerHealthEx(playerid, GetPlayerHealthEx(playerid) - PlayerWeaponBodyDamage[damagerid], damagerid, WEAPON_BOW);
 	return 1;
 }
 
