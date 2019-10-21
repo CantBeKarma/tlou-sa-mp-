@@ -91,30 +91,5 @@ public FCNPC_OnLeaveDynArea(npcid, areaid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnUpdate(npcid)
 {
-	if(FCNPC_IsDeadEx(npcid))
-	{
-		return 1;
-	}
-
-	foreach(new playerid : Player)
-	{
-		if(!IsValidDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]) 
-		|| IsDynamicObjectMoving(ePlayerWeapon[playerid][e_iArrowObjectId]))
-		{
-			continue;
-		}
-
-		new Float:x, Float:y, Float:z;
-		GetDynamicObjectPos(ePlayerWeapon[playerid][e_iArrowObjectId], x, y, z);
-
-		if(!IsPlayerInRangeOfPoint(npcid, ARROW_RANGE_DAMAGE, x, y, z))
-		{
-			continue;
-		}
-
-		DestroyPlayerArrow(playerid);
-		FCNPC_OnGetArrowShot(npcid, playerid);
-		break;
-	}
 	return 1;
 }

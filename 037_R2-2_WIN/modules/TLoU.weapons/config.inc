@@ -43,8 +43,6 @@ enum e_PLAYER_WEAPONS_DATA
 {
     Float:e_fWeapon_BodyDamage,
     Float:e_fWeapon_HeadDamage,
-    
-    e_iArrowObjectId,
 
     e_iTickCounter_bowString,
     e_iTickCounter_projectileThrow,

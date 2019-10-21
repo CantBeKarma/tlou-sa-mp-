@@ -2,3 +2,4 @@
 #define     ARROW_RANGE_DAMAGE          (3.0)
 #define		MAX_ARROW_DISTANCE		    (40.0)
 #define     MAX_ARROW_STRETCH_TIME      (2000)
+#define     TIMER_ARROW_UPDATE_RATE     (100)

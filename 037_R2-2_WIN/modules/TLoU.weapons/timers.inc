@@ -27,7 +27,7 @@ timer Key_AimingCustomWeapon[100](playerid)
     new equippedItemId = GetPlayerEquippedItemId(playerid);
     
     // If player was aiming arrow and moved.
-    if(ePlayerWeapon[playerid][e_bAimingArrow])
+    if(IsPlayerAimingBow(playerid))
     {
         if(updown != 0 || leftright != 0)
         {

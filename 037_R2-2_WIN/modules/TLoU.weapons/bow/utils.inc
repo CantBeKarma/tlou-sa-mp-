@@ -1,7 +1,9 @@
+IsPlayerAimingBow(playerid)	return (ePlayerWeapon[playerid][e_bAimingArrow]);
+
 // Pull player's bow string.
 Bow_PullString(playerid)
 {
-	if(ePlayerWeapon[playerid][e_bAimingArrow])
+	if(IsPlayerAimingBow(playerid))
 	{
 		return;
 	}
@@ -41,7 +43,7 @@ Bow_ReleaseString(playerid)
 Arrow_FireArrow(playerid)
 {
 	// Validation.
-	if(GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW) <= 0 || ePlayerWeapon[playerid][e_iArrowObjectId] != -1)
+	if(GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW) <= 0)
 	{
 		return 1;
 	}
@@ -65,8 +67,14 @@ Arrow_FireArrow(playerid)
 	new Float:dest_arrowY = pCamY + floatmul((distance / 100) * 4.2, floatsin(pAngle, degrees)) + floatmul(pCamVecY, distance);
 	new Float:dest_arrowZ = pCamZ + ((distance / 100) * 10.5) + floatmul(pCamVecZ, distance);
 
-	ePlayerWeapon[playerid][e_iArrowObjectId] = CreateDynamicObject(ITEM_MODEL_ARROW, pPosX, pPosY, pPosZ + 0.5, 0.0, 0.0, pAngle - 79.0);
-	MoveDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId], dest_arrowX, dest_arrowY, dest_arrowZ, (distance * 1.5));
+	new arrowObjectId = CreateDynamicObject(ITEM_MODEL_ARROW, pPosX, pPosY, pPosZ + 0.5, 0.0, 0.0, pAngle - 79.0);
+	if(arrowObjectId == INVALID_OBJECT_ID)
+	{
+		Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Arrow_FireArrow: Unable to create arrow for player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+		return 1;
+	}
+
+	MoveDynamicObject(arrowObjectId, dest_arrowX, dest_arrowY, dest_arrowZ, (distance * 1.5));
 
 	foreach(new i : Player)
 	{
@@ -75,17 +83,51 @@ Arrow_FireArrow(playerid)
 
 	ePlayerWeapon[playerid][e_bAimingArrow] = false;
 	Bit_Let(ePlayerFlag[e_bShootingCustomWeapon], playerid);
+	
 	OnPlayerShotArrow(playerid);
+	OnArrowObjectUpdate(playerid, arrowObjectId);
 	return 0;
 }
 
-// Destroy player arrow (and reset arrow variable).
-DestroyPlayerArrow(playerid)
+// Check player in range of arrow object and return his ID (or NPC ID)
+GetEntityInRangeOfArrow(Float:x, Float:y, Float:z, shooterId)
 {
-	if(IsValidDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]))
-	{
-		DestroyDynamicObject(ePlayerWeapon[playerid][e_iArrowObjectId]);
-	}
-	
-	ePlayerWeapon[playerid][e_iArrowObjectId] = -1;
+    for(new i = 0; i != MAX_PLAYERS; i++)
+    {
+        if(!IsPlayerConnected(i) || i == shooterId
+        || !IsPlayerInRangeOfPoint(i, ARROW_RANGE_DAMAGE, x, y, z))
+        {
+            continue;
+        }
+
+        if(IsPlayerNPC(i))
+        {
+            if(FCNPC_IsUnableToPerformAction(i))
+            {
+                continue;
+            }
+        }
+        else
+        {
+            if(IsPlayerDead(i)
+            || IsPlayerBurning(i)
+            || IsPlayerStunned(i)
+            || IsPlayerFall(i))
+            {
+                continue;
+            }
+        }
+        return i;
+    }
+    return INVALID_PLAYER_ID;
+}
+
+// Recreate arrow item once stopped moving.
+Random_CreateArrowItem(Float:x, Float:y, Float:z)
+{
+    if(RandomEx(0, 2) == 1)
+    {
+        CA_FindZ_For2DCoord(x, y, z);
+        CreateOrUpdateItem(_:ITEM_IDX_ARROW, 1, .x = x, .y = y, .z = z);
+    }
 }

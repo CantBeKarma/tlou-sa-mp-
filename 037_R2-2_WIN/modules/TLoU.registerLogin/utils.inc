@@ -69,8 +69,6 @@ ResetVariables(playerid)
 	ePlayerBpInfo[playerid][e_iBackpackSelected_Skill] = 0;
 	ePlayerBpInfo[playerid][e_iBackpackSelected_ViewColl] = 0;
 
-    ePlayerWeapon[playerid][e_iArrowObjectId] = -1;
-
     ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
     ePlayerInfo[playerid][e_iLastEquippedItemId] = -1;
     
