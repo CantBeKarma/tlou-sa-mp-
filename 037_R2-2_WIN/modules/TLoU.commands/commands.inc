@@ -696,4 +696,15 @@ YCMD:shiv(playerid, params[], help)
         return 1;
     }
 
+    CMD:facing(playerid, params[])
+    {
+        new targetId;
+        if(sscanf(params, "d", targetId))return ShowDialogMessage(playerid, "Usage..", "Type: /facing (target_id)");
+        {
+            new facing = IsPlayerFacingPlayer(playerid, targetId);
+            SCMF(playerid, (facing ? COLOR_GREEN : COLOR_RED), "%s", (facing ? "You're facing that character!" : "You're NOT facing that character!"));
+        }
+        return 1;
+    }
+
 //#endregion
