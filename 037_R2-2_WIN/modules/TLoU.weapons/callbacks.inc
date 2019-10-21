@@ -94,6 +94,8 @@ public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y
 {
     if(GetObjectModel(objectid) == -1)
     {
+        SCMF(playerid, -1, "You shot a nailbomb. GetDynamicObjectModel result = %d", GetDynamicObjectModel(objectid));
+        
         new nailBmbIdx = FindNailbombIdx(objectid);
         if(nailBmbIdx != INVALID_ITERATOR_SLOT)
         {
