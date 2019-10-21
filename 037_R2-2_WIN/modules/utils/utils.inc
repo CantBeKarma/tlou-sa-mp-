@@ -39,21 +39,69 @@ DisableDefaultAmbientNoise(playerid)
 	return PlayerPlaySound(playerid, 1, 0.0, 0.0, 0.0);
 }
 
-// Face player against player.
-SetPlayerToFacePlayer(playerid, targetid)
-{
-	static
-		Float:x, Float:y, Float:z, Float:angle,
-		Float:x2, Float:y2, Float:z2;
+//#region Facing angles functions
 
-	GetPlayerPos(targetid, x, y, z);
-	GetPlayerPos(playerid, x2, y2, z2);
+	// Face player against player.
+	SetPlayerToFacePlayer(playerid, targetid)
+	{
+		static
+			Float:x, Float:y, Float:z, Float:angle,
+			Float:x2, Float:y2, Float:z2;
 
-	angle = (180.0 - atan2(x2 - x, y2 - y));
+		GetPlayerPos(targetid, x, y, z);
+		GetPlayerPos(playerid, x2, y2, z2);
 
-	if(IsPlayerNPC(playerid)) FCNPC_SetAngle(playerid, angle + (5.0 * -1));
-	else SetPlayerFacingAngle(playerid, angle + (5.0 * -1));
-}
+		angle = (180.0 - atan2(x2 - x, y2 - y));
+
+		if(IsPlayerNPC(playerid)) FCNPC_SetAngle(playerid, angle + (5.0 * -1));
+		else SetPlayerFacingAngle(playerid, angle + (5.0 * -1));
+	}
+
+	// Check if player is facing another player.
+	IsPlayerFacingPlayer(playerid, targetid, Float:range =  10.0)
+	{
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(targetid, x, y, z);
+
+		return IsPlayerFacingPoint(playerid, x, y, range);
+	}
+
+	// Check if player is behind other player on given distance.
+	IsPlayerBehindPlayer(playerid, targetid, Float:range = 10.0)
+	{
+		new Float:playerAngle, Float:targetAngle;
+		GetPlayerFacingAngle(playerid, playerAngle);
+		GetPlayerFacingAngle(targetid, targetAngle);
+
+		return (IsAngleInRangeOfAngle(playerAngle, targetAngle, range) && IsPlayerFacingPlayer(playerid, targetid, range));
+	}
+
+	// Check if player is facing specified point in the world (x, y).
+	IsPlayerFacingPoint(playerid, Float:x, Float:y, Float:range = 10.0)
+	{
+		new Float:pX, Float:pY, Float:pZ;
+		GetPlayerPos(playerid, pX, pY, pZ);
+
+		new Float:facing;
+		GetPlayerFacingAngle(playerid, facing);
+
+		new Float:angle;
+
+		if( pY > y ) angle = (-acos((pX - x) / floatsqroot((pX - x)*(pX - x) + (pY - y)*(pY - y))) - 90.0);
+		else if( pY < y && pX < x ) angle = (acos((pX - x) / floatsqroot((pX - x)*(pX - x) + (pY - y)*(pY - y))) - 450.0);
+		else if( pY < y ) angle = (acos((pX - x) / floatsqroot((pX - x)*(pX - x) + (pY - y)*(pY - y))) - 90.0);
+
+		return (IsAngleInRangeOfAngle(-angle, facing, range));
+	}
+
+	// Check if player is in any range of the angle point.
+	static IsAngleInRangeOfAngle(Float:a1, Float:a2, Float:range = 10.0)
+	{
+		a1 -= a2;
+		return ((a1 < range) && (a1 > -range));
+	}
+
+//#endregion
 
 // Set player's facing angle where he's currently looking (useful for custom-weapons).
 SetAngleBasedOnCam(playerid)
