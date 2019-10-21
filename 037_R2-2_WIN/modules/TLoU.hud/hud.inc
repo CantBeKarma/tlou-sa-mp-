@@ -350,7 +350,9 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
     // HUD : Updates overall ammo display.
     HudTd_UpdateWeaponAmmo(playerid, itemId)
     {
-        if(!IsItemType(itemId, ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE_PROJECTILE) && !IsItemType(itemId, ITEM_TYPE_MEDKIT))
+        if(!IsItemType(itemId, ITEM_TYPE_WEAPON) 
+        && !IsItemType(itemId, ITEM_TYPE_PROJECTILE) 
+        && !IsItemType(itemId, ITEM_TYPE_MEDKIT))
         {
             PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Ammo]);
             return true;

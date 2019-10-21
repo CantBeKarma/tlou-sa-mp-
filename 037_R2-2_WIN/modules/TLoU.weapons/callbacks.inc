@@ -188,35 +188,25 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
 {
     if(oldItemId != -1)
     {
-        // Attach old item to player it if was only a WEAPON type.
-        if(IsItemType(oldItemId, ITEM_TYPE_WEAPON))
+        // Attach old item to player only if it was either weapon OR melee.
+        if(IsItemType(oldItemId, ITEM_TYPE_WEAPON) 
+        || IsItemType(oldItemId, ITEM_TYPE_MELEE))
         {
-            AttachItemsToPlayer(playerid, oldItemId);
-            HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
-        }
-
-        // If old item was a weapon OR melee AND new item is either bow/medkit/projectile/throwable.
-        if((IsItemType(oldItemId, ITEM_TYPE_WEAPON) || IsItemType(oldItemId, ITEM_TYPE_MELEE))
-        && (IsItemType(newItemId, ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE_MEDKIT) || IsItemType(newItemId, ITEM_TYPE_SHIV)
-        ||  IsItemType(newItemId, ITEM_TYPE_PROJECTILE) || IsItemType(newItemId, ITEM_TYPE_THROWABLE)))
-        {
-            SPAO(playerid, GetItemModel(newItemId));
             ResetPlayerWeapons(playerid);
+            AttachItemsToPlayer(playerid, oldItemId);
+
+            HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
+            HudTd_HideMeleeWeaponBars(playerid, oldItemId);
         }
 
-        // If old item was either bow/medkit/projectile/throwable AND new item is weapon OR melee.
-        if((IsItemType(newItemId, ITEM_TYPE_WEAPON) || IsItemType(newItemId, ITEM_TYPE_MELEE))
-        && (IsItemType(oldItemId, ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE_MEDKIT) || IsItemType(oldItemId, ITEM_TYPE_SHIV)
-        ||  IsItemType(oldItemId, ITEM_TYPE_PROJECTILE) || IsItemType(oldItemId, ITEM_TYPE_THROWABLE)))
+        // If new item is bullet weapon OR melee weapon 
+        // AND old item was either bow/medkit/shiv/projectile/throwable.
+        if((IsItemType(newItemId, ITEM_TYPE_BULLET_WEAPON) || IsItemType(newItemId, ITEM_TYPE_MELEE))
+        && (IsItemType(oldItemId, ITEM_TYPE_BOW) || IsItemType(oldItemId, ITEM_TYPE_MEDKIT) 
+        || IsItemType(oldItemId, ITEM_TYPE_SHIV) || IsItemType(oldItemId, ITEM_TYPE_PROJECTILE) 
+        || IsItemType(oldItemId, ITEM_TYPE_THROWABLE)))
         {
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
-        }
-
-        // If old item is melee weapon.
-        if(IsItemType(oldItemId, ITEM_TYPE_MELEE))
-        {
-            AttachItemsToPlayer(playerid, oldItemId);
-            HudTd_HideMeleeWeaponBars(playerid, oldItemId);
         }
     }
 
