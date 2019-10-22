@@ -28,6 +28,7 @@
 // Modules.
 #include    <config\main>
 #include    <utils\main>
+#include    <utils\3DTryg\main>
 #include    <TLoU.animations\main>
 #include    <TLoU.audio\main>
 #include    <TLoU.backpack\main>

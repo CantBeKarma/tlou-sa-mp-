@@ -1,3 +1,4 @@
+forward Float:CompressRotation(Float:rotation);
 forward Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance);
 
 forward PLAYER_STATUS:GetPlayerStatus(playerid);

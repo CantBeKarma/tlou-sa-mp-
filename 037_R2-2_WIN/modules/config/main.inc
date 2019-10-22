@@ -2,7 +2,7 @@
 #include	<config\global_forwards>
 #include	<config\config>
 #include	<config\mysql>
-#include	<utils\config>
+#include	<utils\3DTryg\config>
 
 #include 	<TLoU.animations\config>
 #include	<TLoU.attachments\config>
