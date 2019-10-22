@@ -8,6 +8,11 @@
 	FCNPC_IsDeadEx(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
 	FCNPC_IsTimerRunning(npcid)		return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 
+	FCNPC_IsPlayingFallAnim(npcid)
+	{
+		return (FCNPC_GetAnimationIndex(npcid) == PED_GETUP || FCNPC_GetAnimationIndex(npcid) == BASEBALL_BAT_HIT_3);
+	}
+
 	// Check if FCNPC is in a fire area.
 	FCNPC_IsInFireArea(npcid, npcAreaId)
 	{
@@ -143,7 +148,7 @@ FCNPC_SetHealthEx(npcid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = 
 // Put NPC in distracted state and move to specified X, Y, Z coordinates.
 function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
 {
-	if(FCNPC_IsUnableToPerformAction(npcid) 
+	if(FCNPC_IsUnableToPerformAction(npcid)
 	|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
 	{
 		return false;
@@ -193,5 +198,6 @@ FCNPC_IsUnableToPerformAction(npcid)
 		FCNPC_IsDisabled(npcid) 
 		|| FCNPC_IsBurning(npcid) 
 		|| FCNPC_IsStunned(npcid)
-		|| FCNPC_IsDeadEx(npcid);
+		|| FCNPC_IsDeadEx(npcid)
+		|| FCNPC_IsPlayingFallAnim(npcid);
 }

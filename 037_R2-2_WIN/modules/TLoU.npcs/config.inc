@@ -4,7 +4,7 @@
 
 #define     RANGE_NPC_CHASE_BY_PATH     (30.0)
 #define		RANGE_NPC_CHASE		        (10.0)
-#define		RANGE_NPC_ATTACK	        (1.1)
+#define		RANGE_NPC_ATTACK	        (2.0)
 #define     RANGE_NPC_DISTRACT          (30.0)
 
 #define		NPC_ATTACK_DELAY			(500)
