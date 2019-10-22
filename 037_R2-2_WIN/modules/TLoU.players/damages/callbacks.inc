@@ -89,9 +89,9 @@ public OnPlayerShootPlayer(damagedId, issuerId, issuerItemId, Float:damageAmount
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//----------------- OnPlayerGetAttackedByNpc --------------------
+//----------------- OnPlayerGetAttackedByNPC --------------------
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-public OnPlayerGetAttackedByNpc(playerid, npcid)
+public OnPlayerGetAttackedByNPC(playerid, npcid)
 {
 	new bool:success = PlayPlayerDamageAnimations(playerid, .issuerId = npcid);
 
