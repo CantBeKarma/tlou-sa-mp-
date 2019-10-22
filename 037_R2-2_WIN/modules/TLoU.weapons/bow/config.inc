@@ -3,3 +3,4 @@
 #define		MAX_ARROW_DISTANCE		    (40.0)
 #define     MAX_ARROW_STRETCH_TIME      (2000)
 #define     TIMER_ARROW_UPDATE_RATE     (100)
+#define     TICK_RATE_ARROW_SHOOT       (500)

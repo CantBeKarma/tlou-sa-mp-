@@ -44,7 +44,7 @@ Arrow_FireArrow(playerid)
 {
 	// Validation.
 	if(GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW) <= 0
-	|| GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
+	|| GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_ARROW_SHOOT)
 	{
 		return 1;
 	}
