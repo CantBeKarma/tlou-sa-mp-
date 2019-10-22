@@ -64,10 +64,29 @@ DisableDefaultAmbientNoise(playerid)
 	IsPlayerBehindPlayer(playerid, targetid, Float:range = 10.0)
 	{
 		new Float:playerAngle, Float:targetAngle;
-		GetPlayerFacingAngle(playerid, playerAngle);
-		GetPlayerFacingAngle(targetid, targetAngle);
+		// GetPlayerFacingAngle(targetid, targetAngle);
+        // GetPlayerFacingAngle(playerid, playerAngle);
+		if(IsPlayerNPC(playerid))
+		{
+			playerAngle = FCNPC_GetAngle(playerid);
+		}
+		else
+		{
+			GetPlayerFacingAngle(playerid, playerAngle);
+		}
 
-		return (IsAngleInRangeOfAngle(playerAngle, targetAngle, range) && IsPlayerFacingPlayer(playerid, targetid, range));
+		if(IsPlayerNPC(targetid))
+		{
+			targetAngle = FCNPC_GetAngle(targetid);
+		}
+		else
+		{
+			GetPlayerFacingAngle(targetid, targetAngle);
+		}
+		
+		SCMF_ALL(-1, "Target angle: %f", targetAngle);
+
+		return (IsAngleInRangeOfAngle(playerAngle, targetAngle, range));// && IsPlayerFacingPlayer(playerid, targetid, range));
 	}
 
 	// Check if player is facing specified point in the world (x, y).
@@ -89,7 +108,7 @@ DisableDefaultAmbientNoise(playerid)
 	}
 
 	// Check if player is in any range of the angle point.
-	static IsAngleInRangeOfAngle(Float:a1, Float:a2, Float:range = 10.0)
+	IsAngleInRangeOfAngle(Float:a1, Float:a2, Float:range = 10.0)
 	{
 		a1 -= a2;
 		return ((a1 < range) && (a1 > -range));

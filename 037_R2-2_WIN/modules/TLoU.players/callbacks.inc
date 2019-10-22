@@ -303,8 +303,7 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 	//GetXYBehindPlayer(lookingAt_NpcId, x, y, -1.1);
 
 	if(!FCNPC_IsStunned(lookingAt_NpcId)
-	&& !IsPlayerBehindPlayer(playerid, lookingAt_NpcId, 0.5))
-	//&& !IsPlayerInRangeOfPoint(playerid, 0.5, x, y, z))
+	&& !IsPlayerBehindPlayer(playerid, lookingAt_NpcId)) //)
 	{
 		DestroyDynamic3DTextLabel(ePlayerInfo[playerid][e_iLookingAt_Label]);
 	}
@@ -322,6 +321,15 @@ public OnPlayerLookAtNPC(playerid, lookingAt_NpcId)
 
 	Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
 	return 0;
+}
+
+IsPlayerBehindPlayer(playerid, targetid, Float:range = -1.1)
+{
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(lookingAt_NpcId, x, y, z);
+	GetXYBehindPlayer(targetid, x, y, range);
+
+!IsPlayerInRangeOfPoint(playerid, 0.5, x, y, z)
 }
 
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
