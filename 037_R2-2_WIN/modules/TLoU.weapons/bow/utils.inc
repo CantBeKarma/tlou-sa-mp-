@@ -43,7 +43,8 @@ Bow_ReleaseString(playerid)
 Arrow_FireArrow(playerid)
 {
 	// Validation.
-	if(GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW) <= 0)
+	if(GetPlayerItemAmount(playerid, _:ITEM_IDX_BOW) <= 0
+	|| GetConnectedTime(playerid) - (ePlayerWeapon[playerid][e_iTickCounter_projectileThrow]) < TICK_RATE_PROJECTILE_THROW)
 	{
 		return 1;
 	}
@@ -83,6 +84,7 @@ Arrow_FireArrow(playerid)
 
 	ePlayerWeapon[playerid][e_bAimingArrow] = false;
 	Bit_Let(ePlayerFlag[e_bShootingCustomWeapon], playerid);
+	ePlayerWeapon[playerid][e_iTickCounter_projectileThrow] = GetConnectedTime(playerid);
 	
 	OnPlayerShotArrow(playerid);
 	OnArrowObjectUpdate(playerid, arrowObjectId);
