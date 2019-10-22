@@ -707,4 +707,15 @@ YCMD:shiv(playerid, params[], help)
         return 1;
     }
 
+    CMD:behind(playerid, params[])
+    {
+        new targetId, Float:distance;
+        if(sscanf(params, "df", targetId, distance))return ShowDialogMessage(playerid, "Usage..", "Type: /behind (target_id) (distance)");
+        {
+            new behind = IsPlayerBehindPlayer(playerid, targetId, distance);
+            SCMF(playerid, (behind ? COLOR_GREEN : COLOR_RED), "%s", (behind ? "You're behind that character!" : "You're NOT behind that character!"));
+        }
+        return 1;
+    }
+
 //#endregion
