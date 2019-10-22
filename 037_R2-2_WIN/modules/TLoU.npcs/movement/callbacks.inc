@@ -18,29 +18,31 @@ public FCNPC_OnReachDestination(npcid)
 	return 1;
 }
 
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// //--------------------- FCNPC_OnChasePlayer ---------------------
-// //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// public FCNPC_OnChasePlayer(npcid, chaseid)
-// {
-// 	GameTextForPlayer(chaseid, "~n~~n~~n~~n~~n~NATIVE CHASE", 1000, 5);
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//--------------------- FCNPC_OnChasePlayer ---------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnChasePlayer(npcid, chaseid)
+{
+	GameTextForPlayerf(chaseid, 1000, 5, "~n~~n~~n~~n~~n~~g~NPC %d is chasing you!", npcid);
 
-// 	new Float:chasePosX, Float:chasePosY, Float:chasePosZ;
-// 	GetPlayerPos(chaseid, chasePosX, chasePosY, chasePosZ);
+	new Float:x, Float:y, Float:z;
+	FCNPC_GetPosition(npcid, x, y, z);
+	if(IsPlayerInRangeOfPoint(chaseid, RANGE_NPC_ATTACK, x, y, z))
+	{
+		FCNPC_SetStatus(npcid, STATUS_ATTACK, chaseid);
+	}
+	return 1;
+}
 
-// 	new Float:npcPosZ;
-// 	FCNPC_GetPosition(npcid, npcPosZ, npcPosZ, npcPosZ);
-
-// 	if(!CompareZ(chasePosZ, npcPosZ, RANGE_Z_DIFF_CHASE) || IsPlayerUsingAnim(chaseid, ANIM_COLLECTION_CLIMB))
-// 	{
-// 		SCMF_ALL(-1, "FCNPC_OnChasePlayer: Higher or lower than a player is! Distracting...");
-// 		GetXYBehindPlayer(chaseid, chasePosX, chasePosY, -5.0);
-// 		CA_FindZ_For2DCoord(chasePosX, chasePosY, chasePosZ);
-
-// 		FCNPC_Distract(npcid, chasePosX, chasePosY, chasePosZ, true);
-// 	}
-// 	return 1;
-// }
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//--------------------- FCNPC_OnLostPlayer ----------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnLostPlayer(npcid, chaseid)
+{
+	GameTextForPlayerf(chaseid, 3000, 5, "~n~~n~~n~~n~~n~~r~NPC %d lost you!", npcid);
+	FCNPC_SetStatus(npcid, STATUS_IDLE);
+	return 1;
+}
 
 // //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // //------------------ FCNPC_OnChasePlayerByPath ------------------

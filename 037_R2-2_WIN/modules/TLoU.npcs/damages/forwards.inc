@@ -1,4 +1,5 @@
 forward FCNPC_OnAttackPlayer(npcid, chaseid);
+forward FCNPC_OnStopAttackingPlayer(npcid, chaseid);
 forward FCNPC_OnGetArrowShot(npcid, damagerid);
 forward FCNPC_OnGetShived(npcid, shiverId);
 forward FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount);

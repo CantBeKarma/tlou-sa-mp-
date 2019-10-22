@@ -1,2 +1,2 @@
 forward FCNPC_OnChasePlayer(npcid, chaseid);
-forward FCNPC_OnChasePlayerByPath(npcid, chaseid, pathid);
+forward FCNPC_OnLostPlayer(npcid, chaseid);

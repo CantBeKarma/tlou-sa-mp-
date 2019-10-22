@@ -1,27 +1,5 @@
 //#region OLD movement code
 
-	// // Put NPC in the chase state after given playerid (chaseid).
-	// FCNPC_ChasePlayer(npcid, chaseid)
-	// {
-	// 	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]))
-	// 	{
-	// 		FCNPC_DestroyMovePath(eNpcInfo[npcid][FCNPC_MovePathId]);
-	// 	}
-
-	// 	FCNPC_SetStatus(npcid, NPC_STATUS:CHASE);
-
-	// 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
-	// 	{
-	// 		eNpcInfo[npcid][e_iChasedId] = chaseid;
-	// 	}
-
-	// 	FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
-
-	// 	new npcType = FCNPC_GetType(npcid);
-	// 	FCNPC_GoToPlayer(npcid, chaseid, MOVE_TYPE_AUTO, NpcMovementSpeed[npcType], false, NPC_RUN_OFFSET, true);
-	// 	FCNPC_OnChasePlayer(npcid, chaseid);
-	// }
-
 	// // Put NPC in the chase state by path to the specific point (not using native GoTo).
 	// FCNPC_ChasePlayerByPath(npcid, chaseid)
 	// {
@@ -54,12 +32,11 @@ bool:FCNPC_ChasePlayer(npcid, playerid)
 	if(!IsPlayerInRangeOfPoint(playerid, RANGE_NPC_LOOSE_PLAYER, x, y, z)
 	|| FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN) == false)
 	{
-		GameTextForPlayerf(playerid, 3000, 5, "~n~~n~~n~~n~~n~~r~NPC %d lost you!", npcid);
-		FCNPC_SetStatus(npcid, STATUS_IDLE);
+		FCNPC_OnLostPlayer(npcid, playerid);
 		return false;
 	}
 
-	GameTextForPlayerf(playerid, 1000, 5, "~n~~n~~n~~n~~n~~g~NPC %d is chasing you!", npcid);
+	FCNPC_OnChasePlayer(npcid, playerid);
 	return true;
 }
 
@@ -73,7 +50,12 @@ GetAvailablePlayerToChase(npcid)
 	{
 		if(IsPlayerCrouched(playerid)
 		|| GetPlayerSpeed(playerid) == 0.0
-		|| !IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, nX, nY, nZ))
+		|| !IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, nX, nY, nZ)
+		|| IsPlayerDead(playerid) 
+		|| IsPlayerBurning(playerid)
+		|| IsPlayerStunned(playerid) 
+		|| IsPlayerFall(playerid) 
+    	|| CA_IsPlayerNearWater(playerid))
 		{
 			continue;
 		}
@@ -98,7 +80,7 @@ FCNPC_StopMoving(npcid)
 // Movement is set through parameter (WALK or RUN) with animations being applied.
 bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
 {
-	if(FCNPC_IsUnableToPerformAction(npcid))
+	if(FCNPC_IsUnableToPerformAction(npcid) || CA_IsPlayerNearWater(playerid))
 	{
 		return false;
 	}

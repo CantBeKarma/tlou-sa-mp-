@@ -61,7 +61,7 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
             CLF(#FCNPC_Stun, "d", npcid);
         }
 
-        case STATUS_CHASE:
+        case STATUS_CHASE, STATUS_ATTACK:
         {
             eNpcInfo[npcid][e_iChaseId] = statusIssuerId;
             // Further works happening in TLoU.npcs\timers.inc

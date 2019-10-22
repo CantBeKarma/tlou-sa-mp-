@@ -17,6 +17,7 @@
 #include <TLoU.objects\utils>
 #include <TLoU.npcs\utils>
 #include <TLoU.npcs\animations\utils>
+#include <TLoU.npcs\damages\utils>
 #include <TLoU.npcs\movement\utils>
 #include <TLoU.npcs\statuses\utils>
 #include <TLoU.npcs\types\utils>

@@ -112,17 +112,22 @@ public FCNPC_OnGetHitByThrowable(npcId, issuerId, itemId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnAttackPlayer(npcid, chaseid)
 {
-	if(GetDistanceBetweenPlayers(npcid, chaseid) > RANGE_NPC_ATTACK
-	|| IsPlayerDead(chaseid))
-	{
-		FCNPC_SetStatus(npcid, STATUS_IDLE);
-		return 1;
-	}
+    GameTextForPlayerf(chaseid, 1000, 5, "~n~~n~~n~~n~~n~~g~NPC %d is attacking you!", npcid);
 
 	SetPlayerToFacePlayer(npcid, chaseid);
 	FCNPC_SetAnimation(npcid, NpcAttackAnims[random(sizeof(NpcAttackAnims))], 4.1, 1, 0, 0, 0, 0);
 
-	OnPlayerGetAttackedByNpc(chaseid, npcid);
+	OnPlayerGetAttackedByNPC(chaseid, npcid);
+	return 0;
+}
+
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//------------------ FCNPC_OnStopAttackingPlayer ----------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+public FCNPC_OnStopAttackingPlayer(npcid, chaseid)
+{
+    GameTextForPlayerf(chaseid, 3000, 5, "~n~~n~~n~~n~~n~~r~NPC %d stopped attacking you!", npcid);
+    FCNPC_SetStatus(npcid, STATUS_IDLE);
 	return 0;
 }
 
