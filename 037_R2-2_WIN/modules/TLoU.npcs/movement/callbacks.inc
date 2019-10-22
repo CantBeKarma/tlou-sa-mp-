@@ -37,8 +37,7 @@ public FCNPC_OnChasePlayer(npcid, chaseid)
 public FCNPC_OnLostPlayer(npcid, chaseid)
 {
 	GameTextForPlayerf(chaseid, 3000, 5, "~n~~n~~n~~n~~n~~r~NPC %d lost you!", npcid);
-
-	//SCMF(chaseid, -1, "Distance between you two: %f", GetDistanceBetweenPlayers(npcid, chaseid));
+	
 	if(GetDistanceBetweenPlayers(npcid, chaseid) <= RANGE_NPC_ATTACK)
 	{
 		FCNPC_SetStatus(npcid, STATUS_ATTACK, chaseid);
