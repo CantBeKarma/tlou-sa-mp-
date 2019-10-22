@@ -1,3 +1,5 @@
+forward Float:GetXYBehindPlayer(playerid, &Float:x, &Float:y, Float:distance);
+
 forward PLAYER_STATUS:GetPlayerStatus(playerid);
 forward bool:SetPlayerStatus(playerid, PLAYER_STATUS:status, statusIssuerId = INVALID_PLAYER_ID);
 forward bool:ValidateStatusChange(playerid, PLAYER_STATUS:newStatusId, statusIssuerId);
