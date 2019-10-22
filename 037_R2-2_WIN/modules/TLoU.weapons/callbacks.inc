@@ -92,10 +92,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerShootDynamicObject(playerid, weaponid, objectid, Float:x, Float:y, Float:z)
 {
-    if(GetObjectModel(objectid) == -1)
+    if(GetDynamicObjectModel(objectid) == ITEM_MODEL_BOMB)
     {
-        SCMF(playerid, -1, "You shot a nailbomb. GetDynamicObjectModel result = %d", GetDynamicObjectModel(objectid));
-        
         new nailBmbIdx = FindNailbombIdx(objectid);
         if(nailBmbIdx != INVALID_ITERATOR_SLOT)
         {
@@ -194,7 +192,6 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         if(IsItemType(oldItemId, ITEM_TYPE_WEAPON) 
         || IsItemType(oldItemId, ITEM_TYPE_MELEE))
         {
-            ResetPlayerWeapons(playerid);
             AttachItemsToPlayer(playerid, oldItemId);
 
             HudTd_HideWeaponCurrentAmmo(playerid, oldItemId);
@@ -209,6 +206,14 @@ public OnPlayerWeaponChange(playerid, newItemId, oldItemId)
         || IsItemType(oldItemId, ITEM_TYPE_THROWABLE)))
         {
             RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
+        }
+
+        if((IsItemType(oldItemId, ITEM_TYPE_BULLET_WEAPON) || IsItemType(oldItemId, ITEM_TYPE_MELEE))
+        && (IsItemType(newItemId, ITEM_TYPE_BOW) || IsItemType(newItemId, ITEM_TYPE_MEDKIT) 
+        || IsItemType(newItemId, ITEM_TYPE_SHIV) || IsItemType(newItemId, ITEM_TYPE_PROJECTILE) 
+        || IsItemType(newItemId, ITEM_TYPE_THROWABLE)))
+        {
+            ResetPlayerWeapons(playerid);
         }
     }
 
