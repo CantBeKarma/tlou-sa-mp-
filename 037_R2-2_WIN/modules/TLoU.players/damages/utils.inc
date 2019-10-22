@@ -2,7 +2,7 @@
 // Optional param: bodypart.
 Float:CalculateDamageAmount(damagerid, targetid, damagerItemId, &Float:distanceBetweenPlayers, bodypart = -1)
 {
-    if(IsItemType(damagerItemId, ITEM_TYPE_MELEE))
+    if(IsItemType(damagerItemId, ITEM_TYPE_MELEE) || IsItemType(damagerItemId, ITEM_TYPE_BOW))
     {
         return PlayerWeaponBodyDamage[damagerid];
     }
