@@ -61,7 +61,7 @@ DisableDefaultAmbientNoise(playerid)
 	}
 
 	// Check if player is behind player on specified range (has to be in 0.5m of that range).
-	IsPlayerBehindPlayer(playerid, targetid, Float:range = 1.1)
+	IsPlayerBehindPlayer(playerid, targetid, Float:range = 1.0)
 	{
 		new Float:x, Float:y, Float:z;
 		GetPlayerPos(targetid, x, y, z);
