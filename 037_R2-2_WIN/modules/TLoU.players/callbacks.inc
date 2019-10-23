@@ -173,6 +173,8 @@ public OnPlayerTargetPlayer(playerid, newTargetId, oldTargetId)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerGetStunned(playerid)
 {
+	static coughSFX = 19024;
+	PlayerPlaySound(playerid, coughSFX, 0.0, 0.0, 0.0);
 	ApplyAnimation(playerid, "PED", "GAS_CWR", 4.1, 1, 1, 1, 0, 0);
 	wait_ms(3000);
 
