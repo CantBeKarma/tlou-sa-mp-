@@ -38,7 +38,7 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 // Plays idle anims on NPC.
 FCNPC_PlayIdleActions(npcid)
 {
-    if(FCNPC_IsIdle(npcid))
+    if(FCNPC_IsIdle(npcid) && !FCNPC_IsMoving(npcid))
     {
         switch(RandomEx(0, 12))
         {
