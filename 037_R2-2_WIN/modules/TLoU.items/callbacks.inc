@@ -32,8 +32,8 @@ hook OnGameModeInit()
 
             if(IsPlayerFullOnItem(playerid, itemId)
             && (IsItemType(itemId, ITEM_TYPE_INGREDIENT) || IsItemType(itemId, ITEM_TYPE_MEDKIT)
-            || IsItemType(itemId, ITEM_TYPE_WEAPON) || IsItemType(itemId, ITEM_TYPE_THROWABLE)
-            || IsItemType(itemId, ITEM_TYPE_PROJECTILE)))
+             || IsItemType(itemId, ITEM_TYPE_WEAPON)     || IsItemType(itemId, ITEM_TYPE_THROWABLE)
+             || IsItemType(itemId, ITEM_TYPE_PROJECTILE) || IsItemType(itemId, ITEM_TYPE_AMMO)))
             {
                 continue;
             }
