@@ -1,4 +1,4 @@
-OnPlayerScreen(playerid, targetid, Item3D_Type:target_type = item_player, element_orientation:orientation = o_front, Float:rx = INVALID_ROTATION, Float:rz = INVALID_ROTATION, \
+IsTargetOnPlayerScreen(playerid, targetid, Item3D_Type:target_type = item_player, element_orientation:orientation = o_front, Float:rx = INVALID_ROTATION, Float:rz = INVALID_ROTATION, \
                     Float:vrx = VERTICAL_CAMERA_RADIUS, Float:vrz = HORIZONTAL_CAMERA_RADIUS, bool:testLOS = true, bool:testVW = true)
 {
 	new 
