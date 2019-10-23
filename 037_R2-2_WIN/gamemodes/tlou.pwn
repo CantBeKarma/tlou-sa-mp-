@@ -25,6 +25,9 @@
 #include    <a_mysql_yinline>
 #include    <bcrypt>
 
+// Tests.
+#include    <utils\testsounds>
+
 // Modules.
 #include    <config\main>
 #include    <utils\main>
