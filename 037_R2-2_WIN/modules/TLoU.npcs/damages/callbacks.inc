@@ -35,8 +35,8 @@ public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount)
 {
-    FCNPC_ClearAnims(npcid);
     FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount, issuerid, issuerWeaponId);
+    FCNPC_PlayDamageAnimation(npcid, RandomEx(BODY_PART_LEFT_ARM, BODY_PART_RIGHT_ARM));
     
     if(issuerWeaponId != WEAPON_UNARMED)
     {

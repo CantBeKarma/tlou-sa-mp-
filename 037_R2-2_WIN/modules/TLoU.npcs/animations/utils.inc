@@ -130,12 +130,12 @@ FCNPC_PlayDeadAnimIfDead(npcid)
 }
 
 // Plays damage animations on NPC when shot.
-FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
+bool:FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId = -1, Float:distanceBetweenPlayers = 0.0)
 {
-    if(FCNPC_IsDeadEx(npcid)
+    if(FCNPC_IsUnableToPerformAction(npcid)
     || (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_DAM_ANIM)
     {
-        return;
+        return false;
     }
     eNpcInfo[npcid][e_iTickCounter_damageAnim] = GetTickCount();
     
@@ -159,6 +159,7 @@ FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId = -1, Float:distanceBe
             }
         }
     }
+    return true;
 }
 
 // Check if animation has finished. 
