@@ -35,8 +35,8 @@
 		}
 		else if(!firstSpawn)
 		{
-			eNpcInfo[npcid][e_iRoamAreaId] = INVALID_STREAMER_ID;
-			eNpcInfo[npcid][e_iFireCreatorId] = INVALID_PLAYER_ID;
+			ResetEnum_eNpcInfo(npcid);
+
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
 		}
