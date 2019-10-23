@@ -14,6 +14,11 @@ public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
         return 0;
     }
 
+    if(!FCNPC_IsChasingPlayer(npcid) && !FCNPC_IsAttackingPlayer(npcid))
+    {
+        FCNPC_SetStatus(npcid, STATUS_CHASE, issuerid);
+    }
+
     new playerItemId = GetPlayerEquippedItemId(issuerid);
     new issuerWeaponId = GetItemNativeWeaponId(playerItemId);
     new Float:distanceBetweenPlayers = 0.0;

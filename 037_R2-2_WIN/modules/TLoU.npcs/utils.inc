@@ -6,6 +6,8 @@
 	FCNPC_IsStunned(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_STUNNED);
 	FCNPC_IsPlayingAnim(npcid)		return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_PLAYING_ANIM);
 	FCNPC_IsDeadEx(npcid)			return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_DEAD);
+	FCNPC_IsChasingPlayer(npcid)	return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_CHASE);
+	FCNPC_IsAttackingPlayer(npcid)	return (FCNPC_GetStatus(npcid) == NPC_STATUS:STATUS_ATTACK);
 	FCNPC_IsTimerRunning(npcid)		return Bit_Get(eNpcFlag[e_bIsUpdateTimerRunning], npcid);
 
 	FCNPC_IsPlayingFallAnim(npcid)
