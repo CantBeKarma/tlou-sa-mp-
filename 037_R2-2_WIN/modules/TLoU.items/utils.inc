@@ -37,6 +37,11 @@
 
     bool:IsPlayerFullOnItem(playerid, itemId)
     {
+        if(IsItemType(itemId, ITEM_TYPE_ARROW))
+        {
+            itemId = _:ITEM_IDX_BOW;
+        }
+
         if(!HasPlayerGotItem(playerid, itemId)
         || IsItemType(itemId, ITEM_TYPE_MELEE))
         {
@@ -63,6 +68,7 @@
             case ITEM_TYPE_BULLET_WEAPON: return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId != ITEM_IDX_BOW);
             case ITEM_TYPE_MEDKIT:        return (GetItemType(itemId) == ITEM_TYPE_HEAL && ITEM_IDX:itemId == ITEM_IDX_MEDKIT);
             case ITEM_TYPE_BOW:           return (GetItemType(itemId) == ITEM_TYPE_WEAPON && ITEM_IDX:itemId == ITEM_IDX_BOW);
+            case ITEM_TYPE_ARROW:         return (GetItemType(itemId) == ITEM_TYPE_AMMO && ITEM_IDX:itemId == ITEM_IDX_ARROW);
         }
         return (GetItemType(itemId) == typeId);
     }
@@ -72,7 +78,8 @@
         if(GetItemType(itemId) == ITEM_TYPE_SHIV
         || GetItemType(itemId) == ITEM_TYPE_PROJECTILE
         || GetItemType(itemId) == ITEM_TYPE_THROWABLE
-        || IsItemType(itemId, ITEM_TYPE_MEDKIT))
+        || IsItemType(itemId, ITEM_TYPE_MEDKIT)
+        || IsItemType(itemId, ITEM_TYPE_ARROW))
         {
             if(itemAmount > 1)
             {

@@ -84,6 +84,7 @@ hook OnGameModeInit()
                 case ITEM_TYPE_THROWABLE:   nextAction = OnPlayerPickUpThrowableItem(playerid, itemId, dropItemId);
                 case ITEM_TYPE_PROJECTILE:  nextAction = OnPlayerPickUpProjectileItem(playerid, itemId, itemAmount);
                 case ITEM_TYPE_WEAPON:      nextAction = OnPlayerPickUpWeapon(playerid, itemId, itemAmount, dropItemAmount);
+                case ITEM_TYPE_AMMO:        nextAction = OnPlayerPickUpAmmo(playerid, itemId, itemAmount);
             }
 
             if(nextAction == NEXT_ACTION_UPDATE)
@@ -247,6 +248,23 @@ hook OnGameModeInit()
             dropItemAmount = (newItemAmount - playerWeapon_MaxAmmo);
         }
         return nextAction;
+    }
+
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    //------------------- OnPlayerPickUpAmmo ------------------
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+    public OnPlayerPickUpAmmo(playerid, itemId, itemAmount)
+    {
+        SCMF(playerid, -1, "OnPlayerPickUpAmmo");
+        if(IsItemType(itemId, ITEM_TYPE_ARROW))
+        {
+            SCMF(playerid, -1, "You're picking up an arrow!");
+            itemId = _:ITEM_IDX_BOW;
+
+            new newItemAmount = (GetPlayerItemAmount(playerid, itemId) + itemAmount);
+            SetPlayerItemAmount(playerid, itemId, newItemAmount);
+        }
+        return 0;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
