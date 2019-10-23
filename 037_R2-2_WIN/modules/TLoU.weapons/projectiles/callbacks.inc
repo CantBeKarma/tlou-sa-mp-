@@ -29,7 +29,7 @@ public OnThrowableDestroy(projid, throwerid, hitid, itemId, Float:x, Float:y, Fl
             continue;
         }
 
-        CLF(#FCNPC_Distract, "dfff", npcid, x, y, z);
+        CLF(#FCNPC_Distract, "dffff", npcid, x, y, z, DIST3D_THROWABLE_BREAK_RANGE);
     }
     return 0;
 }
@@ -53,7 +53,7 @@ public OnMolotovExplode(projid, throwerid, hitid, Float:x, Float:y, Float:z)
             continue;
         }
 
-        CLF(#FCNPC_Distract, "dfff", npcid, x, y, z);
+        CLF(#FCNPC_Distract, "dffff", npcid, x, y, z, DIST3D_EXPLODE_RANGE);
     }
     return 0;
 }

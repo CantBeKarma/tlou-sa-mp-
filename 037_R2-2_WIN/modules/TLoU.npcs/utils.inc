@@ -146,10 +146,10 @@ FCNPC_SetHealthEx(npcid, Float:health, killerid = INVALID_PLAYER_ID, weaponid = 
 }
 
 // Put NPC in distracted state and move to specified X, Y, Z coordinates.
-function FCNPC_Distract(npcid, Float:x, Float:y, Float:z)
+function FCNPC_Distract(npcid, Float:x, Float:y, Float:z, Float:range)
 {
 	if(FCNPC_IsUnableToPerformAction(npcid)
-	|| !IsPlayerInRangeOfPoint(npcid, RANGE_NPC_DISTRACT, x, y, z))
+	|| !IsPlayerInRangeOfPoint(npcid, range, x, y, z))
 	{
 		return false;
 	}

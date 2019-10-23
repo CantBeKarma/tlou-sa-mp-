@@ -236,7 +236,7 @@ StunNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYER_I
         {
             if(IsPlayerNPC(i))
             {
-                CLF(#FCNPC_Distract, "dfff", i, x, y, z);
+                CLF(#FCNPC_Distract, "dffff", i, x, y, z, DIST3D_EXPLODE_RANGE);
             }
         }
     }
@@ -273,7 +273,7 @@ ExplodeNearbyPlayersAndNpcs(Float:x, Float:y, Float:z, throwerid = INVALID_PLAYE
         {
             if(IsPlayerNPC(i))
             {
-                CLF(#FCNPC_Distract, "dfff", i, x, y, z);
+                CLF(#FCNPC_Distract, "dffff", i, x, y, z, DIST3D_EXPLODE_RANGE);
             }
         }
     }
