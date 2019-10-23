@@ -146,7 +146,8 @@ Sprite2D_DisableUpdate(playerid)
         new itemId, itemAmount;
         ReadItemRelation(item_objectId, .itemId = itemId, .itemAmount = itemAmount);
 
-        if(!IsItemType(itemId, ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE_MELEE))
+        if(!IsItemType(itemId, ITEM_TYPE_WEAPON) && !IsItemType(itemId, ITEM_TYPE_MELEE)
+        || IsItemType(itemId, ITEM_TYPE_ARROW))
         {
             return INVALID_OBJECT_ID;
         }
@@ -197,7 +198,8 @@ Sprite2D_DisableUpdate(playerid)
 
             if(iterItemId == pickedUpItemId)
             {
-                if(!IsItemType(iterItemId, ITEM_TYPE_WEAPON))
+                if(!IsItemType(iterItemId, ITEM_TYPE_WEAPON) 
+                || IsItemType(iterItemId, ITEM_TYPE_ARROW))
                 {
                     continue;
                 }

@@ -47,7 +47,7 @@ stock const Sprites2D_Items[MAX_2D_ITEM_SPRITES][25] =
     "sprite_weap_hunt_rif",
     "sprite_weap_assault",
     "sprite_weap_bow",
-    "",
+    "sprite_arrow",
 
     "sprite_weap_shiv",
     "sprite_weap_medkit",
