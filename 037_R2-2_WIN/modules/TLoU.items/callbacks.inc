@@ -264,7 +264,7 @@ hook OnGameModeInit()
             new newItemAmount = (GetPlayerItemAmount(playerid, itemId) + itemAmount);
             SetPlayerItemAmount(playerid, itemId, newItemAmount);
         }
-        return 0;
+        return NEXT_ACTION_DESTROY;
     }
 
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
