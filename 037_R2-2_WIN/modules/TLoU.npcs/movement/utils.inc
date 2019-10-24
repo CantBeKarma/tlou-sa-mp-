@@ -30,7 +30,8 @@ bool:FCNPC_ChasePlayer(npcid, playerid)
 	FCNPC_GetPosition(npcid, x, y, z);
 
 	if(!IsPlayerInRangeOfPoint(playerid, RANGE_NPC_LOOSE_PLAYER, x, y, z)
-	|| FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN) == false)
+	|| FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN) == false
+	|| (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_ATTACK_AFTER_DAM)
 	{
 		FCNPC_OnLostPlayer(npcid, playerid);
 		return false;
@@ -80,7 +81,8 @@ FCNPC_StopMoving(npcid)
 // Movement is set through parameter (WALK or RUN) with animations being applied.
 bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
 {
-	if(FCNPC_IsUnableToPerformAction(npcid) || CA_IsPlayerNearWater(playerid))
+	if(FCNPC_IsUnableToPerformAction(npcid) || CA_IsPlayerNearWater(playerid)
+	|| (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_ATTACK_AFTER_DAM)
 	{
 		return false;
 	}

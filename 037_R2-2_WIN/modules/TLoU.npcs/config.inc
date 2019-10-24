@@ -1,6 +1,7 @@
 // NPCs Configuration.
 #define     TIMER_FCNPC_RESPAWN         (1000 * 6)
 #define     TIMER_FCNPC_UPDATE          (200)
+#define		TICK_RATE_ATTACK_AFTER_DAM	(300)
 
 #define     RANGE_NPC_CHASE_BY_PATH     (30.0)
 #define		RANGE_NPC_CHASE		        (10.0)
