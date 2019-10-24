@@ -21,6 +21,8 @@ hook OnGameModeExit()
     foreach(new npcid : FCNPC)
 	{
 	    FCNPC_Destroy(npcid);
+		ResetEnum_eNpcInfo(npcid);
+		ResetEnum_eNpcFlag(npcid);
 	}
     return 1;
 }
