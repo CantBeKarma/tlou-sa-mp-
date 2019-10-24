@@ -255,15 +255,13 @@ hook OnGameModeInit()
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     public OnPlayerPickUpAmmo(playerid, itemId, itemAmount)
     {
-        SCMF(playerid, -1, "OnPlayerPickUpAmmo");
         if(IsItemType(itemId, ITEM_TYPE_ARROW))
         {
-            SCMF(playerid, -1, "You're picking up an arrow!");
             itemId = _:ITEM_IDX_BOW;
-
-            new newItemAmount = (GetPlayerItemAmount(playerid, itemId) + itemAmount);
-            SetPlayerItemAmount(playerid, itemId, newItemAmount);
         }
+
+        new newItemAmount = (GetPlayerItemAmount(playerid, itemId) + itemAmount);
+        SetPlayerItemAmount(playerid, itemId, newItemAmount);
         return NEXT_ACTION_DESTROY;
     }
 
