@@ -41,6 +41,7 @@ public FCNPC_OnStatusChanged(npcid, NPC_STATUS:oldStatusId, NPC_STATUS:newStatus
     {
         case STATUS_IDLE:
         {
+            FCNPC_Stop(npcid);
             FCNPC_CreateRoamArea(npcid);
         }
         

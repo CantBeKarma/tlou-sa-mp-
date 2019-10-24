@@ -14,11 +14,6 @@ public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
         return 0;
     }
 
-    if(!FCNPC_IsChasingPlayer(npcid) && !FCNPC_IsAttackingPlayer(npcid))
-    {
-        FCNPC_SetStatus(npcid, STATUS_CHASE, issuerid);
-    }
-
     new playerItemId = GetPlayerEquippedItemId(issuerid);
     new issuerWeaponId = GetItemNativeWeaponId(playerItemId);
     new Float:distanceBetweenPlayers = 0.0;
@@ -32,6 +27,11 @@ public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
     {
         FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, damageAmount, distanceBetweenPlayers, bodypart);
     }
+
+    if(!FCNPC_IsChasingPlayer(npcid) && !FCNPC_IsAttackingPlayer(npcid))
+    {
+        FCNPC_SetStatus(npcid, STATUS_CHASE, issuerid);
+    }
     return 0;
 }
 
@@ -41,7 +41,7 @@ public FCNPC_OnTakeDamage(npcid, issuerid, Float:amount, weaponid, bodypart)
 public FCNPC_OnGetHitByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmount)
 {
     FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - damageAmount, issuerid, issuerWeaponId);
-    FCNPC_PlayDamageAnimation(npcid, RandomEx(BODY_PART_LEFT_ARM, BODY_PART_RIGHT_ARM));
+    CLF(#FCNPC_PlayDamageAnimation, "dddf", npcid, RandomEx(BODY_PART_LEFT_ARM, BODY_PART_RIGHT_ARM), issuerWeaponId, 0.0);
     
     if(issuerWeaponId != WEAPON_UNARMED)
     {
@@ -72,7 +72,7 @@ public FCNPC_OnGetShotByPlayer(npcid, issuerid, issuerWeaponId, Float:damageAmou
     }
 
     FCNPC_SetHealthEx(npcid, (FCNPC_GetHealthEx(npcid) - damageAmount), issuerid, issuerWeaponId, bodypart);
-    FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId, distanceBetweenPlayers);
+    CLF(#FCNPC_PlayDamageAnimation, "dddf", npcid, bodypart, issuerWeaponId, distanceBetweenPlayers);
     return 0;
 }
 
@@ -99,7 +99,7 @@ public FCNPC_OnGetShived(npcid, shiverId)
 public FCNPC_OnGetArrowShot(npcid, damagerid)
 {
     ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
-    FCNPC_PlayDamageAnimation(npcid, BODY_PART_TORSO);
+    CLF(#FCNPC_PlayDamageAnimation, "dddf", npcid, BODY_PART_TORSO, WEAPON_BOW, 0.0);
     FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - PlayerWeaponBodyDamage[damagerid], damagerid, WEAPON_BOW);
     return 1;
 }
