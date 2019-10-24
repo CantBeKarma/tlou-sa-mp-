@@ -1,6 +1,5 @@
 // TICK RATES.
 #define     TICK_RATE_CBUG      (250)
-#define     TICK_RATE_DAM_ANIM  (1800)
 
 // TIMERS.
 #define		TIMER_GETUP_DELAY		(800)
