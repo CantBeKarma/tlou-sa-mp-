@@ -66,7 +66,8 @@ ResetBits_ePlayerFlag(playerid)
 		return !IsPlayerAimingWeapon(playerid)
 			&& !IsPlayerUsingBackpack(playerid) 
 			&& !IsPlayerUsingWeaponMenu(playerid)
-			&& !IsPlayerUnableToPerformAction(playerid);
+			&& !IsPlayerUnableToPerformAction(playerid)
+			&& !IsPlayerAimOrShootCustomItem(playerid);
 	}
 
 	GetPlayerGuid(playerid)
