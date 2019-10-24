@@ -62,6 +62,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                     {
                         ApplyAnimation(playerid, "TLoU", "WEAPON_SWITCH", 4.1, 0, 1, 1, 0, 0);
                         EquipItem(playerid, itemId);
+
+                        if(IsPlayerAimingWeapon(playerid))
+                        {
+                            TogglePlayerAction(playerid, PLAYER_ACTION_FIRE_WEAPON, true);
+                        }
                     }
                 }
             }
