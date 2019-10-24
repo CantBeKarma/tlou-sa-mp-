@@ -50,6 +50,16 @@ bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = 
     
     switch(newStatusId)
     {
+        case STATUS_CHASE:
+        {
+            if(statusIssuerId == INVALID_PLAYER_ID
+            || FCNPC_IsPlayingFallAnim(npcid)
+            || (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_ATTACK_AFTER_DAM)
+            {
+                success = false;
+            }
+        }
+
         case STATUS_STUNNED:
         {
             if(FCNPC_IsBurning(npcid))

@@ -4,14 +4,11 @@
 public FCNPC_OnPlayingAnim(npcid, animIdx)
 {
     new chaseId = GetAvailablePlayerToChase(npcid);
-	if(chaseId != INVALID_PLAYER_ID 
-    && animIdx != PED_GETUP 
-    && animIdx != BASEBALL_BAT_HIT_3)
+	if(FCNPC_SetStatus(npcid, STATUS_CHASE, chaseId))
 	{
         eNpcInfo[npcid][e_iPlayingAnim_Tick] = 0;
         eNpcInfo[npcid][e_iPlayingAnim_Index] = 0;
-		FCNPC_SetStatus(npcid, STATUS_CHASE, chaseId);
-        return 0;
+		return 0;
 	}
 
     if(!FCNPC_HasCallbackAnimFinished(npcid, animIdx))

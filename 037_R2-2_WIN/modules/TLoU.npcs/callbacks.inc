@@ -4,13 +4,7 @@
 public FCNPC_OnIdle(npcid)
 {
 	new chaseId = GetAvailablePlayerToChase(npcid);
-	if(chaseId != INVALID_PLAYER_ID 
-	&& FCNPC_GetAnimationIndex(npcid) != PED_GETUP 
-	&& FCNPC_GetAnimationIndex(npcid) != BASEBALL_BAT_HIT_3)
-	{
-		FCNPC_SetStatus(npcid, STATUS_CHASE, chaseId);
-	}
-	else
+	if(!FCNPC_SetStatus(npcid, STATUS_CHASE, chaseId))
 	{
 		FCNPC_PlayIdleActions(npcid);
 	}

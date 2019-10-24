@@ -38,7 +38,8 @@ FCNPC_SetAnimCallback(npcid, animationid, bool:freeze = false)
 // Plays idle anims on NPC.
 FCNPC_PlayIdleActions(npcid)
 {
-    if(FCNPC_IsIdle(npcid) && !FCNPC_IsMoving(npcid))
+    if(FCNPC_IsIdle(npcid) && !FCNPC_IsMoving(npcid)
+    && (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) >= TICK_RATE_ATTACK_AFTER_DAM)
     {
         switch(RandomEx(0, 12))
         {
@@ -137,10 +138,10 @@ bool:FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId = -1, Float:dista
     {
         return false;
     }
+
+    FCNPC_StopMoving(npcid);
     eNpcInfo[npcid][e_iTickCounter_damageAnim] = GetTickCount();
     
-    FCNPC_ClearAnims(npcid);
-
     switch(bodypart)
     {
         case BODY_PART_LEFT_ARM:  FCNPC_SetAnimation(npcid, NpcDamageAnims[random(3)], 4.1, 0, 1, 1, 0, 0);

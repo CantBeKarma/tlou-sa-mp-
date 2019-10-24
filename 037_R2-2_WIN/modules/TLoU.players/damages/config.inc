@@ -1,5 +1,5 @@
 #define     TICK_RATE_DAM_ANIM  		(1800)
-#define		TICK_RATE_ATTACK_AFTER_DAM	(1300)
+#define		TICK_RATE_ATTACK_AFTER_DAM	(1500)
 
 #define     BODY_PART_TORSO     	(3)
 #define     BODY_PART_GROIN     	(4)

@@ -12,7 +12,9 @@
 
 	FCNPC_IsPlayingFallAnim(npcid)
 	{
-		return (FCNPC_GetAnimationIndex(npcid) == PED_GETUP || FCNPC_GetAnimationIndex(npcid) == BASEBALL_BAT_HIT_3);
+		return 
+        	(FCNPC_GetAnimationIndex(npcid) == PED_GETUP 
+        	|| FCNPC_GetAnimationIndex(npcid) == BASEBALL_BAT_HIT_3);
 	}
 
 	// Check if FCNPC is in a fire area.
