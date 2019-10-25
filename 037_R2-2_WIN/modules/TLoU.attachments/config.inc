@@ -1,3 +1,5 @@
+#define     INVALID_ATTACH_SLOT         (-2)
+
 //#region Models
 
     #define     ITEM_MODEL_SHIV         (15071)

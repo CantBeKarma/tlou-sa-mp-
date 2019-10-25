@@ -65,7 +65,7 @@ GetFreeAttachmentSlot(playerid)
 			return i;
 		}
     }
-    return -1;
+    return INVALID_ATTACH_SLOT;
 }
 
 // Check if attached object slot is used - if so, remove attached object.
