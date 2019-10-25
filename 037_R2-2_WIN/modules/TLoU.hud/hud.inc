@@ -384,41 +384,61 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
 
         if(maxWeaponClipSize == -1)
         {
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "HudTd_DisplayWeaponCurrentAmmo: Invalid maxWeaponClipSize for itemId: %d", itemId);
             return false;
         }
 
-        for(new tdIdx = 0; tdIdx != maxWeaponClipSize; tdIdx++)
+        for(new bulletTdIdx = 0; bulletTdIdx != maxWeaponClipSize; bulletTdIdx++)
         {
+            new PlayerText:textdrawId = PlayerText:-1;
             switch(ITEM_IDX:itemId)
             {
-                case ITEM_IDX_9MM:              PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
-                case ITEM_IDX_REVOLVER:         PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
-                case ITEM_IDX_SHORTY:           PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx],   (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx]);
-                case ITEM_IDX_SHOTGUN:          PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx],  (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx]);
-                case ITEM_IDX_RIFLE:            PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx],    (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx]);
-                case ITEM_IDX_ASSAULT_RIFLE:    PlayerTextDrawColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  (tdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS)), PlayerTextDrawShow(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
+                case ITEM_IDX_9MM:           textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][bulletTdIdx];
+                case ITEM_IDX_REVOLVER:      textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][bulletTdIdx];
+                case ITEM_IDX_SHORTY:        textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][bulletTdIdx];
+                case ITEM_IDX_SHOTGUN:       textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][bulletTdIdx];
+                case ITEM_IDX_RIFLE:         textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][bulletTdIdx];
+                case ITEM_IDX_ASSAULT_RIFLE: textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][bulletTdIdx];
             }
+
+            if(textdrawId == PlayerText:-1)
+            {
+                Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "HudTd_DisplayWeaponCurrentAmmo: Invalid textdrawId for itemId: %d (bulletTdIdx: %d)", itemId, bulletTdIdx);
+                break;
+            }
+
+            PlayerTextDrawColor(playerid, textdrawId, (bulletTdIdx < currentClipAmmo) ? (COLOR_WHITE) : (COLOR_GRAY_TRANS));
+            PlayerTextDrawShow(playerid, textdrawId);
         }
         return true;
     }
 
     // HUD : Update certain bullet color.
-    HudTd_ReduceWeaponCurrentAmmo(playerid, itemId, tdIdx)
+    HudTd_ReduceWeaponCurrentAmmo(playerid, itemId, bulletTdIdx)
     {
         if(!IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON))
         {
             return false;
         }
 
+        new PlayerText:textdrawId = PlayerText:-1;
         switch(ITEM_IDX:itemId)
         {
-            case ITEM_IDX_9MM:            PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx],      COLOR_GRAY_TRANS);
-            case ITEM_IDX_REVOLVER:       PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx], COLOR_GRAY_TRANS);
-            case ITEM_IDX_SHORTY:         PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx],   COLOR_GRAY_TRANS);
-            case ITEM_IDX_SHOTGUN:        PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx],  COLOR_GRAY_TRANS);
-            case ITEM_IDX_RIFLE:          PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx],    COLOR_GRAY_TRANS);
-            case ITEM_IDX_ASSAULT_RIFLE:  PlayerTdSetColor(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx],  COLOR_GRAY_TRANS);
+            case ITEM_IDX_9MM:           textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][bulletTdIdx];
+            case ITEM_IDX_REVOLVER:      textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][bulletTdIdx];
+            case ITEM_IDX_SHORTY:        textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][bulletTdIdx];
+            case ITEM_IDX_SHOTGUN:       textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][bulletTdIdx];
+            case ITEM_IDX_RIFLE:         textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][bulletTdIdx];
+            case ITEM_IDX_ASSAULT_RIFLE: textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][bulletTdIdx];
         }
+
+        if(textdrawId == PlayerText:-1)
+        {
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "HudTd_ReduceWeaponCurrentAmmo: Invalid textdrawId for itemId: %d (bulletTdIdx: %d)", itemId, bulletTdIdx);
+            return false;
+        }
+
+        PlayerTdSetColor(playerid, textdrawId, COLOR_GRAY_TRANS);
         return true;
     }
 
@@ -433,20 +453,30 @@ IsHudVisibleForPlayer(playerid)return IsPlayerTextDrawVisible(playerid, ePlayerT
         new maxItemClipSize = GetPlayerItemMaxClipSize(playerid, itemId);
         if(maxItemClipSize == -1)
         {
+            Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "HudTd_HideWeaponCurrentAmmo: Invalid maxWeaponClipSize for itemId: %d", itemId);
             return false;
         }
 
-        for(new tdIdx = 0; tdIdx != maxItemClipSize; tdIdx++)
+        for(new bulletTdIdx = 0; bulletTdIdx != maxItemClipSize; bulletTdIdx++)
         {
+            new PlayerText:textdrawId = PlayerText:-1;
             switch(ITEM_IDX:itemId)
             {
-                case ITEM_IDX_9MM:            PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][tdIdx]);
-                case ITEM_IDX_REVOLVER:       PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][tdIdx]);
-                case ITEM_IDX_SHORTY:         PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][tdIdx]);
-                case ITEM_IDX_SHOTGUN:        PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][tdIdx]);
-                case ITEM_IDX_RIFLE:          PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][tdIdx]);
-                case ITEM_IDX_ASSAULT_RIFLE:  PlayerTdHide(playerid, ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][tdIdx]);
+                case ITEM_IDX_9MM:           textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_9mm][bulletTdIdx];
+                case ITEM_IDX_REVOLVER:      textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Revolver][bulletTdIdx];
+                case ITEM_IDX_SHORTY:        textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shorty][bulletTdIdx];
+                case ITEM_IDX_SHOTGUN:       textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Shotgun][bulletTdIdx];
+                case ITEM_IDX_RIFLE:         textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Rifle][bulletTdIdx];
+                case ITEM_IDX_ASSAULT_RIFLE: textdrawId = ePlayerTextDrawInfo[playerid][e_Hud_Bullet_Assault][bulletTdIdx];
             }
+
+            if(textdrawId == PlayerText:-1)
+            {
+                Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "HudTd_HideWeaponCurrentAmmo: Invalid textdrawId for itemId: %d (bulletTdIdx: %d)", itemId, bulletTdIdx);
+                break;
+            }
+
+            PlayerTdHide(playerid, textdrawId);
         }
         return true;
     }
