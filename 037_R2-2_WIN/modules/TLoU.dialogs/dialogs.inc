@@ -34,7 +34,7 @@
     {
         static tit_signIn[8] = "Sign in";
         static msg_signIn[144] = "Welcome back to the \"The Last of Us (SA-MP) Project\"\nWe have found you in our database. Please enter your account password below to sign in:";
-        static msg_signInFailed[sizeof(msg_signIn) + 41];
+        new msg_signInFailed[sizeof(msg_signIn) + 41];
         
         if(wrongPassword)
         {
@@ -87,7 +87,7 @@
 
             if(isnull(inputtext) || strlen(inputtext) < MIN_COLL_TIT_LEN || strlen(inputtext) > MAX_COLL_TIT_LEN)
             {
-                static msg_createTitleFailed[sizeof(msg_createTitle) + 95];
+                new msg_createTitleFailed[sizeof(msg_createTitle) + 95];
                 strcat(msg_createTitleFailed, msg_createTitle, sizeof(msg_createTitleFailed));
                 strcat(msg_createTitleFailed, "\n{FF0000}Invalid input!\n{FF0000}Title cannot be shorter than 6 AND longer than 20 characters", sizeof(msg_createTitleFailed));
 
