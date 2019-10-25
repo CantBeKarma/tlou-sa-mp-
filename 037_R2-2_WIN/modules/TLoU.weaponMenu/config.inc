@@ -16,7 +16,8 @@
 #define     HIDE_WEAPMENU_PART_HORI     (1)
 
 // Maximal amounts.
-#define     MAX_WEAPMENU_ITEMS        (9)
+#define     MAX_WEAPMENU_ITEMS          (9)
+#define     MAX_SWAP_TEXT_POSITIONS     (4)
 
 // Other.
 #define     WeapMenu_GetSelectionV(%0)      ePlayerWeapMenu[%0][e_iWeapMenu_SelectedItemV]
@@ -56,3 +57,19 @@ enum e_PLAYER_WEAPMENU_DATA
     e_iWeapMenu_H_Rs_ItemId[3]
 };
 new ePlayerWeapMenu[MAX_PLAYERS][e_PLAYER_WEAPMENU_DATA];
+
+enum e_SWAP_TEXT_HELP_DATA
+{
+    e_iHorizontalPosId,
+    Float:e_fTextPosX,
+    Float:e_fTextPosY,
+    Float:e_fMouseIconPosX,
+    Float:e_fMouseIconPosY
+};
+stock const eWeapMenu_SwapTextHelp[MAX_SWAP_TEXT_POSITIONS][e_SWAP_TEXT_HELP_DATA] =
+{
+    {WEAPON_MENU_H_LEFT0, 345.666656, 278.755615, 368.999603, 281.244445},
+    {WEAPON_MENU_H_LEFT1, 389.666656, 278.755615, 413.666351, 281.244445},
+    {WEAPON_MENU_H_RIGHT0, 468.666717, 278.755615, 492.666625, 281.244445},
+    {WEAPON_MENU_H_RIGHT1, 519.333312, 278.755615, 542.999694, 281.244445}
+};

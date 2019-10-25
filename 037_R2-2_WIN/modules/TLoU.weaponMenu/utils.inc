@@ -274,12 +274,13 @@ WeapMenu_GetTdIdxOfItemId(playerid, itemId)
     // DO NOT USE ANYWHERE ! - Used internally in WeapMenuTd_ShowSwapTextHelp().
     WeapMenu_MoveSwapTextHelp(playerid, selectionH)
     {
-        switch(selectionH)
+        for(new i = 0; i < MAX_SWAP_TEXT_POSITIONS; i++)
         {
-            case WEAPON_MENU_H_LEFT0:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 345.666656, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 368.999603, 281.244445);
-            case WEAPON_MENU_H_LEFT1:  PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 389.666656, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 413.666351, 281.244445);
-            case WEAPON_MENU_H_RIGHT0: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 468.666717, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 492.666625, 281.244445);
-            case WEAPON_MENU_H_RIGHT1: PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], 519.333312, 278.755615), PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], 542.999694, 281.244445);
+            if(eWeapMenu_SwapTextHelp[i][e_iHorizontalPosId] == selectionH)
+            {
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][0], eWeapMenu_SwapTextHelp[i][e_fTextPosX], eWeapMenu_SwapTextHelp[i][e_fTextPosY]);
+                PlayerTextDrawSetPos(playerid, ePlayerTextDrawInfo[playerid][e_weapMenu_howToSwap][1], eWeapMenu_SwapTextHelp[i][e_fMouseIconPosX], eWeapMenu_SwapTextHelp[i][e_fMouseIconPosY]);
+            }
         }
     }
 
