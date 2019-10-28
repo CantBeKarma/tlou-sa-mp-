@@ -40,6 +40,7 @@
 		else if(!firstSpawn)
 		{
 			ResetEnum_eNpcInfo(npcid);
+			FCNPC_SetType(npcid, NPC_TYPE:random(MAX_NPC_TYPES));
 
 			RemovePlayerAttachedObj(npcid, eCharsInfo[npcid][e_iAttachSlot_Dynamic]);
 			FCNPC_SetStatus(npcid, STATUS_IDLE);
