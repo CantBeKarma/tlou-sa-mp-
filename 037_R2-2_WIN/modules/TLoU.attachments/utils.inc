@@ -82,6 +82,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 {
 	if(modelId == -1)
 	{
+		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "SPAO: Tried to attach invalid model ID (-1)");
 		return false;
 	}
 		
@@ -102,88 +103,34 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 		{
 			attachmentIndex = i;
 
-			slotIndex = GetFreeAttachmentSlot(playerid);
+			slotIndex = eAttachmentsData[i][e_iSlotId];
 			break;
 		}
 	}
 
-	if(slotIndex == -1 || attachmentIndex == -1)
+	if(attachmentIndex == -1)
 	{
+		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "SPAO: Retrievied invalid attachmentIndex (-1) for skin model: %d - attach model: %d", GetPlayerSkinEx(playerid), modelId);
 		return false;
 	}
 
-//#region Slot assignment based on model id
-
-	switch(modelId)
+	if(slotIndex == -1)
 	{
-		case 
-			OBJECT_MODEL_JOELBP,
-			OBJECT_MODEL_ELLIEBP,
-			OBJECT_MODEL_TESSBP,
-			OBJECT_MODEL_BILLBP:
-			{
-				if(eCharsInfo[playerid][e_iAttachSlot_Backpack] != -1)
-					slotIndex = eCharsInfo[playerid][e_iAttachSlot_Backpack];
-				else
-					eCharsInfo[playerid][e_iAttachSlot_Backpack] = slotIndex;		
-			}
-
-		case 
-			ITEM_MODEL_PIPE,
-			ITEM_MODEL_SCSR_PIPE,
-			ITEM_MODEL_HATCHET,
-			ITEM_MODEL_MACHETE:
-			{
-				if(eCharsInfo[playerid][e_iAttachSlot_Melee] != -1)
-					slotIndex = eCharsInfo[playerid][e_iAttachSlot_Melee];
-				else
-					eCharsInfo[playerid][e_iAttachSlot_Melee] = slotIndex;
-			}
-
-		case ITEM_MODEL_9MM, ITEM_MODEL_SHORTY:
+		new playersDynamicSlotId = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
+		if(IsPlayerAttachedObjectSlotUsed(playerid, playersDynamicSlotId))
 		{
-			if(eCharsInfo[playerid][e_iAttachSlot_9mm] != -1)
-				slotIndex = eCharsInfo[playerid][e_iAttachSlot_9mm];
-			else
-				eCharsInfo[playerid][e_iAttachSlot_9mm] = slotIndex;
+			RemovePlayerAttachedObj(playerid, playersDynamicSlotId);
 		}
 
-		case ITEM_MODEL_REVOLVER:
+		slotIndex = GetFreeAttachmentSlot(playerid);
+		if(slotIndex == -1)
 		{
-			if(eCharsInfo[playerid][e_iAttachSlot_Revolver] != -1)
-				slotIndex = eCharsInfo[playerid][e_iAttachSlot_Revolver];
-			else
-				eCharsInfo[playerid][e_iAttachSlot_Revolver] = slotIndex;
-
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SPAO: slotIndex is invalid (-1). No free attachment slot is available for player!");
+			return false;
 		}
 
-		case ITEM_MODEL_SHOTGUN, ITEM_MODEL_ASSAULT:
-		{
-			if(eCharsInfo[playerid][e_iAttachSlot_LongGunOne] != -1)
-				slotIndex = eCharsInfo[playerid][e_iAttachSlot_LongGunOne];
-			else
-				eCharsInfo[playerid][e_iAttachSlot_LongGunOne] = slotIndex;
-
-		}
-
-		case ITEM_MODEL_RIFLE, ITEM_MODEL_BOW:
-		{
-			if(eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] != -1)
-				slotIndex = eCharsInfo[playerid][e_iAttachSlot_LongGunTwo];
-			else
-				eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] = slotIndex;
-		}
-
-		default: 
-		{
-			if(eCharsInfo[playerid][e_iAttachSlot_Dynamic] != -1)
-				slotIndex = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
-			else
-				eCharsInfo[playerid][e_iAttachSlot_Dynamic] = slotIndex;
-		}
+		eCharsInfo[playerid][e_iAttachSlot_Dynamic] = slotIndex;
 	}
-	
-//#endregion
 
 	SetPlayerAttachedObject(playerid, slotIndex, eAttachmentsData[attachmentIndex][e_iModelId], eAttachmentsData[attachmentIndex][e_iBoneId], \
 		eAttachmentsData[attachmentIndex][e_fOffsetX], eAttachmentsData[attachmentIndex][e_fOffsetY], eAttachmentsData[attachmentIndex][e_fOffsetZ], \
@@ -201,55 +148,24 @@ DetachWeaponFromPlayersBody(playerid, itemId)
 		return false;
 	}
 
-    // Depends on the weapon Id - if new weapon is equipped then remove its attached object from player's body.
     new slotId = -1;
-    switch(ITEM_IDX:itemId)
-    {
-        case 
-			ITEM_IDX_9MM, 
-			ITEM_IDX_SHORTY:        
-			{
-				slotId = eCharsInfo[playerid][e_iAttachSlot_9mm];
-			}
 
-        case ITEM_IDX_REVOLVER:
+	for(new i = 0; i != MAX_ATTACHMENTS_DATA; i++)
+	{
+		if(GetItemModel(itemId) != eAttachmentsData[i][e_iModelId])
 		{
-			slotId = eCharsInfo[playerid][e_iAttachSlot_Revolver];
+			continue;
 		}
-        
-        case 
-            ITEM_IDX_SHOTGUN,
-            ITEM_IDX_ASSAULT_RIFLE:
-            {
-                slotId = eCharsInfo[playerid][e_iAttachSlot_LongGunOne];
-            }
-            
-        case 
-            ITEM_IDX_RIFLE,
-            ITEM_IDX_BOW:
-            {
-                slotId = eCharsInfo[playerid][e_iAttachSlot_LongGunTwo];
-            }
 
-        case 
-            ITEM_IDX_PIPE,
-            ITEM_IDX_SCSR_PIPE,
-            ITEM_IDX_HATCHET,
-            ITEM_IDX_MACHETE:
-            {
-                slotId = eCharsInfo[playerid][e_iAttachSlot_Melee];
-            }
-        
-        default:
-        {
-            // No need for seeking of dynamic object (e.g. projectiles, throwables, shiv)
-            // since they are not attached to player's body at all.
-            // so in fact, they are not going to be removed so we stop the code here from going any further.
+		slotId = eAttachmentsData[i][e_iSlotId];
+		break;
+	}
 
-            // slotId = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
-            return true;
-        }
-    }
+	if(slotId == -1)
+	{
+		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "SPAO: Retrievied invalid slotId (-1) for item model: %d", GetItemModel(itemId));
+		return false;
+	}
 
     RemovePlayerAttachedObj(playerid, slotId);
 	return true;

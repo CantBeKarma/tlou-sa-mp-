@@ -72,13 +72,6 @@ ResetVariables(playerid)
     ePlayerInfo[playerid][e_iCurrentEquippedItemId] = -1;
     ePlayerInfo[playerid][e_iLastEquippedItemId] = -1;
     
-    eCharsInfo[playerid][e_iAttachSlot_Backpack] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_9mm] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_Revolver] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_LongGunOne] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_LongGunTwo] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_Melee] = -1;
-    eCharsInfo[playerid][e_iAttachSlot_GasMask] = -1;
     eCharsInfo[playerid][e_iAttachSlot_Dynamic] = -1;
 }
 
