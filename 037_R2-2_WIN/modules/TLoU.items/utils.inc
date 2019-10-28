@@ -315,10 +315,9 @@
         ePlayerItemData[playerid][itemId][e_iItemId] = itemId;
         UpdateTextDrawsIfNecessary(playerid, itemId);
 
-        AttachItemsToPlayer(playerid, itemId);
-
         if(!logOrLoadFromDB)
         {
+            AttachItemsToPlayer(playerid, itemId);
             Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "GivePlayerItem: Player %s (UID: %d | GUID: %d) was given itemId: %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), itemId);
         }
         return true;
