@@ -104,7 +104,7 @@ public FCNPC_OnGetArrowShot(npcid, damagerid)
 
     if(!FCNPC_IsChasingPlayer(npcid) && !FCNPC_IsAttackingPlayer(npcid))
     {
-        FCNPC_SetStatus(npcid, STATUS_CHASE, issuerid);
+        FCNPC_SetStatus(npcid, STATUS_CHASE, damagerid);
     }
     return 1;
 }
