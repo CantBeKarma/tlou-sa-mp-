@@ -291,6 +291,7 @@
                 else if(IsItemType(row_idItem, ITEM_TYPE_SHIV))
                 {
                     cache_get_value_name_int(i, "shivCnd", row_shivCnd);
+                    SetPlayerItemAmount(playerid, row_idItem, row_amount, .logAndNotLoadingFromDB = false);
                     SetPlayerShivCND(playerid, row_shivCnd);
                 }
                 else
@@ -302,8 +303,8 @@
             Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "[DB] Loaded: %d items for character: %s (UID: %d | GUID: %d)", rowsCount, PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         }
 
-        new query[110];
-        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `id_item`, `amount`, `meleeExtCnd` FROM `items_data` WHERE `uid_owner` = %d ORDER BY `uid_owner`", GetPlayerCharUid(playerid));
+        new query[120];
+        mysql_format(eServerInfo[e_SqlHandler], query, sizeof(query), "SELECT `id_item`, `amount`, `meleeExtCnd`, `shivCnd` FROM `items_data` WHERE `uid_owner` = %d ORDER BY `uid_owner`", GetPlayerCharUid(playerid));
         mysql_tquery_inline(eServerInfo[e_SqlHandler], query, using inline OnCharItemsDataReceived);
         return true;
     }
