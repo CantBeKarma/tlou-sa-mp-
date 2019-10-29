@@ -100,7 +100,7 @@ public FCNPC_OnGetArrowShot(npcid, damagerid)
 {
     ShowPlayerHitMarker(damagerid, BODY_PART_TORSO);
     CLF(#FCNPC_PlayDamageAnimation, "dddf", npcid, BODY_PART_TORSO, WEAPON_BOW, 0.0);
-    FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - PlayerWeaponBodyDamage[damagerid], damagerid, WEAPON_BOW);
+    FCNPC_SetHealthEx(npcid, FCNPC_GetHealthEx(npcid) - PlayerWeaponBodyDamage[damagerid], damagerid, WEAPON_BOW, BODY_PART_TORSO);
 
     if(!FCNPC_IsChasingPlayer(npcid) && !FCNPC_IsAttackingPlayer(npcid))
     {
