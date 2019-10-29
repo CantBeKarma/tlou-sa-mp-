@@ -58,7 +58,7 @@ AttachItemsToPlayer(playerid, itemId = -1)
 // Gets a free available attachment slot.
 GetFreeAttachmentSlot(playerid)
 {
-    for(new i = 0; i < MAX_PLAYER_ATTACHED_OBJECTS; i++)
+    for(new i = MIN_ATTACH_SLOT_START; i < MAX_PLAYER_ATTACHED_OBJECTS; i++)
     {
         if(!IsPlayerAttachedObjectSlotUsed(playerid, i))
 		{

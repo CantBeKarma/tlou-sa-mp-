@@ -72,8 +72,9 @@
 
 #define     OBJECT_MODEL_BURNING    (18692)
 
-// Maximal values definitions.
+// Minimal/Maximal values definitions.
 #define		MAX_ATTACHMENTS_DATA	(31)
+#define     MIN_ATTACH_SLOT_START   (6) // 0-5 are reserved
 
 // Data related to the attachments.
 enum e_ATTACHMENTS_DATA
