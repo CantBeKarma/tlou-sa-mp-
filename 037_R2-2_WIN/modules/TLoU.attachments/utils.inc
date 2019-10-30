@@ -90,6 +90,37 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 		slotIndex = -1, 
 		attachmentIndex = -1;
 
+	FindAttachDataInfo(playerid, modelId, extraInfo, slotIndex, attachmentIndex);
+
+	if(attachmentIndex == -1)
+	{
+		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "SPAO: Retrievied invalid attachmentIndex (-1) for skin model: %d - attach model: %d", GetPlayerSkinEx(playerid), modelId);
+		return false;
+	}
+
+	if(slotIndex == -1)
+	{
+		RemoveDynamicAttachedObj(playerid);
+		FindFreeDynamicAttachSlotIdx(playerid, slotIndex);
+
+		if(slotIndex == -1)
+		{
+			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SPAO: slotIndex is invalid (-1). No free attachment slot is available for player!");
+			return false;
+		}
+	}
+
+	SetPlayerAttachedObject(playerid, slotIndex, eAttachmentsData[attachmentIndex][e_iModelId], eAttachmentsData[attachmentIndex][e_iBoneId], \
+		eAttachmentsData[attachmentIndex][e_fOffsetX], eAttachmentsData[attachmentIndex][e_fOffsetY], eAttachmentsData[attachmentIndex][e_fOffsetZ], \
+		eAttachmentsData[attachmentIndex][e_fRotX],    eAttachmentsData[attachmentIndex][e_fRotY],    eAttachmentsData[attachmentIndex][e_fRotZ], \
+		eAttachmentsData[attachmentIndex][e_fScaleX],  eAttachmentsData[attachmentIndex][e_fScaleY],  eAttachmentsData[attachmentIndex][e_fScaleZ]);
+
+	return true;
+}
+
+// Finds attachment data information in the table and returns its values by reference.
+FindAttachDataInfo(playerid, modelId, bool:extraInfo, &slotIndex, &attachmentIndex)
+{
 	for(new i = 0; i != MAX_ATTACHMENTS_DATA; i++)
 	{
 		if(eAttachmentsData[i][e_iModelId] != modelId 
@@ -107,36 +138,28 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 			break;
 		}
 	}
+}
 
-	if(attachmentIndex == -1)
+// Removes dynamically attached object to the player if used
+RemoveDynamicAttachedObj(playerid)
+{
+	new playersDynamicSlotId = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
+	if(IsPlayerAttachedObjectSlotUsed(playerid, playersDynamicSlotId))
 	{
-		Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], WARNING, "SPAO: Retrievied invalid attachmentIndex (-1) for skin model: %d - attach model: %d", GetPlayerSkinEx(playerid), modelId);
+		RemovePlayerAttachedObj(playerid, playersDynamicSlotId);
+	}
+}
+
+// Finds free dynamic attachment slot for player (between 6-9 slots).
+FindFreeDynamicAttachSlotIdx(playerid, &slotIndex)
+{
+	slotIndex = GetFreeAttachmentSlot(playerid);
+	if(slotIndex == -1)
+	{
 		return false;
 	}
 
-	if(slotIndex == -1)
-	{
-		new playersDynamicSlotId = eCharsInfo[playerid][e_iAttachSlot_Dynamic];
-		if(IsPlayerAttachedObjectSlotUsed(playerid, playersDynamicSlotId))
-		{
-			RemovePlayerAttachedObj(playerid, playersDynamicSlotId);
-		}
-
-		slotIndex = GetFreeAttachmentSlot(playerid);
-		if(slotIndex == -1)
-		{
-			Log(eLogs[e_Log_Index][LOG_INDEX_PLAYER], INFO, "SPAO: slotIndex is invalid (-1). No free attachment slot is available for player!");
-			return false;
-		}
-
-		eCharsInfo[playerid][e_iAttachSlot_Dynamic] = slotIndex;
-	}
-
-	SetPlayerAttachedObject(playerid, slotIndex, eAttachmentsData[attachmentIndex][e_iModelId], eAttachmentsData[attachmentIndex][e_iBoneId], \
-		eAttachmentsData[attachmentIndex][e_fOffsetX], eAttachmentsData[attachmentIndex][e_fOffsetY], eAttachmentsData[attachmentIndex][e_fOffsetZ], \
-		eAttachmentsData[attachmentIndex][e_fRotX],    eAttachmentsData[attachmentIndex][e_fRotY],    eAttachmentsData[attachmentIndex][e_fRotZ], \
-		eAttachmentsData[attachmentIndex][e_fScaleX],  eAttachmentsData[attachmentIndex][e_fScaleY],  eAttachmentsData[attachmentIndex][e_fScaleZ]);
-
+	eCharsInfo[playerid][e_iAttachSlot_Dynamic] = slotIndex;
 	return true;
 }
 
