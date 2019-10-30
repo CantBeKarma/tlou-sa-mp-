@@ -757,7 +757,8 @@
             {
                 if(ITEM_IDX:itemId == ITEM_IDX_BOW)
                 {
-                    SPAO(playerid, GetItemModel(itemId), true);
+                    new slotIndex = GetDynamicSlotIndexForModel(playerid, GetItemModel(itemId));
+                    SetPlayerAttachedObject(playerid, slotIndex, GetItemModel(itemId), 6, -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000);
                 }
                 else
                 {

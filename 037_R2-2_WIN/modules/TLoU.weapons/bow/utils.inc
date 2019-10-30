@@ -12,7 +12,8 @@ Bow_PullString(playerid)
 	Audio_PlayEx(playerid, AUDIO_BOW_PULL);
 
 	SPAO(playerid, ITEM_MODEL_ARROW);
-	SPAO(playerid, ITEM_MODEL_BOW, true);
+	new slotIndex = GetDynamicSlotIndexForModel(playerid, ITEM_MODEL_BOW);
+	SetPlayerAttachedObject(playerid, slotIndex, ITEM_MODEL_BOW, 6, -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000);
 
 	ePlayerWeapon[playerid][e_bAimingArrow] = true;
 	ePlayerWeapon[playerid][e_iTickCounter_bowString] = GetConnectedTime(playerid);
@@ -24,7 +25,8 @@ Bow_ReleaseString(playerid)
 	Audio_StopEx(playerid);
 	Audio_PlayEx(playerid, AUDIO_BOW_CANCEL);
 	
-	SPAO(playerid, ITEM_MODEL_BOW, true);
+	new slotIndex = GetDynamicSlotIndexForModel(playerid, ITEM_MODEL_BOW);
+	SetPlayerAttachedObject(playerid, slotIndex, ITEM_MODEL_BOW, 6, -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000);
 	RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
 
 	// normal = -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000
