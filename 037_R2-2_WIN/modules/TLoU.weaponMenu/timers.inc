@@ -1,5 +1,5 @@
 // Player pressing keys in weapon menu / using weapon menu.
-timer Key_WeaponMenu[50](playerid)
+timer Key_WeaponMenu[TIMER_USE_WEAPMENU](playerid)
 {
     if(IsPlayerUsingWeaponMenu(playerid))
     {
