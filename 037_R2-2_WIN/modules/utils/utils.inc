@@ -33,6 +33,20 @@ DisableDefaultAmbientNoise(playerid)
 	return PlayerPlaySound(playerid, 1, 0.0, 0.0, 0.0);
 }
 
+// Checks if specified model Id is the one from available items in
+// left side or right side of the weapon menu
+IsModelFromLsRsWeapMenu(modelId)
+{
+	return 
+		(modelId == ITEM_MODEL_9MM
+		|| modelId == ITEM_MODEL_REVOLVER
+		|| modelId == ITEM_MODEL_SHORTY
+		|| modelId == ITEM_MODEL_SHOTGUN
+		|| modelId == ITEM_MODEL_RIFLE
+		|| modelId == ITEM_MODEL_ASSAULT
+		|| modelId == ITEM_MODEL_BOW);
+}
+
 //#region Facing angles functions
 
 	// Face player against player.
