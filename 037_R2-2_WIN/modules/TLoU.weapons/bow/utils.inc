@@ -63,37 +63,19 @@ Arrow_FireArrow(playerid)
 		return 1;
 	}
 
-	// Physics.
-	new Float:pCamX, Float:pCamY, Float:pCamZ;
-	GetPlayerCameraPos(playerid, pCamX, pCamY, pCamZ);
-
-	new Float:pCamVecX, Float:pCamVecY, Float:pCamVecZ;
-	GetPlayerCameraFrontVector(playerid, pCamVecX, pCamVecY, pCamVecZ);
-
-	new Float:pPosX, Float:pPosY, Float:pPosZ, Float:pAngle;
-	GetPlayerPos(playerid, pPosX, pPosY, pPosZ);
-	GetPlayerFacingAngle(playerid, pAngle);
-	GetXYInFrontOfPlayer(playerid, pPosX, pPosY, 1.2);
-
-	new stretch_time = (GetConnectedTime(playerid) - ePlayerWeapon[playerid][e_iTickCounter_bowString]);
-	new Float:distance = (stretch_time >= MAX_ARROW_STRETCH_TIME) ? (MAX_ARROW_DISTANCE) : ((stretch_time / 1000.0) * 15);
-
-	new Float:dest_arrowX = pCamX + floatmul((distance / 100) * 3, floatcos(pAngle, degrees)) + floatmul(pCamVecX, distance);
-	new Float:dest_arrowY = pCamY + floatmul((distance / 100) * 4.2, floatsin(pAngle, degrees)) + floatmul(pCamVecY, distance);
-	new Float:dest_arrowZ = pCamZ + ((distance / 100) * 10.5) + floatmul(pCamVecZ, distance);
-
-	new arrowObjectId = CreateDynamicObject(ITEM_MODEL_ARROW, pPosX, pPosY, pPosZ + 0.5, 0.0, 0.0, pAngle - 79.0);
+	new arrowObjectId = CreateArrowObjectForPlayer(playerid);
 	if(arrowObjectId == INVALID_OBJECT_ID)
 	{
-		Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Arrow_FireArrow: Unable to create arrow for player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
 		return 1;
 	}
 
-	MoveDynamicObject(arrowObjectId, dest_arrowX, dest_arrowY, dest_arrowZ, (distance * 1.5));
+	new Float:destArrowX, Float:destArrowY, Float:destArrowZ, Float:distance;
+	CalculateArrowDestinationXYZ(playerid, destArrowX, destArrowY, destArrowZ, distance);
+	MoveDynamicObject(arrowObjectId, destArrowX, destArrowY, destArrowZ, (distance * 1.5));
 
 	foreach(new i : Player)
 	{
-		Streamer_UpdateEx(i, pPosX, pPosY, pPosZ, .type = STREAMER_TYPE_OBJECT);
+		Streamer_Update(i, STREAMER_TYPE_OBJECT);
 	}
 
 	ePlayerWeapon[playerid][e_bAimingArrow] = false;
@@ -103,6 +85,43 @@ Arrow_FireArrow(playerid)
 	OnPlayerShotArrow(playerid);
 	OnArrowObjectUpdate(playerid, arrowObjectId);
 	return 0;
+}
+
+// Creates arrow object in front of a player and returns its object ID.
+CreateArrowObjectForPlayer(playerid)
+{
+	new Float:pPosX, Float:pPosY, Float:pPosZ, Float:pAngle;
+	GetPlayerPos(playerid, pPosX, pPosY, pPosZ);
+	GetPlayerFacingAngle(playerid, pAngle);
+	GetXYInFrontOfPlayer(playerid, pPosX, pPosY, 1.2);
+
+	new arrowObjectId = CreateDynamicObject(ITEM_MODEL_ARROW, pPosX, pPosY, pPosZ + 0.5, 0.0, 0.0, pAngle - 79.0);
+	if(arrowObjectId == INVALID_OBJECT_ID)
+	{
+		Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CreateArrowObjectForPlayer: Unable to create arrow for player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
+		return INVALID_OBJECT_ID;
+	}
+	return arrowObjectId;
+}
+
+// Calculate XYZ destination of arrow object and return its X, Y, Z & distance by reference.
+CalculateArrowDestinationXYZ(playerid, &Float:destArrowX, &Float:destArrowY, &Float:destArrowZ, &Float:distance)
+{
+	new Float:pCamX, Float:pCamY, Float:pCamZ;
+	GetPlayerCameraPos(playerid, pCamX, pCamY, pCamZ);
+
+	new Float:pCamVecX, Float:pCamVecY, Float:pCamVecZ;
+	GetPlayerCameraFrontVector(playerid, pCamVecX, pCamVecY, pCamVecZ);
+
+	new Float:pAngle;
+	GetPlayerFacingAngle(playerid, pAngle);
+
+	new stretch_time = (GetConnectedTime(playerid) - ePlayerWeapon[playerid][e_iTickCounter_bowString]);
+	distance = (stretch_time >= MAX_ARROW_STRETCH_TIME) ? (MAX_ARROW_DISTANCE) : ((stretch_time / 1000.0) * 15);
+
+	destArrowX = pCamX + floatmul((distance / 100) * 3, floatcos(pAngle, degrees)) + floatmul(pCamVecX, distance);
+	destArrowY = pCamY + floatmul((distance / 100) * 4.2, floatsin(pAngle, degrees)) + floatmul(pCamVecY, distance);
+	destArrowZ = pCamZ + ((distance / 100) * 10.5) + floatmul(pCamVecZ, distance);
 }
 
 // Check player in range of arrow object and return his ID (or NPC ID)
