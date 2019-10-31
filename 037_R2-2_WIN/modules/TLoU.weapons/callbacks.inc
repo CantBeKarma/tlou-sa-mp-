@@ -22,6 +22,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         // Equipping melee weapon
         if(IsPlayerIdle(playerid) 
         && !IsPlayerAllowedToShiv(playerid)
+        && GetPlayerAnimationIndex(playerid) != KNIFE_KILL_KNIFE_PLAYER
         && !IsItemType(currentItemId, ITEM_TYPE_MEDKIT)
         && ITEM_IDX:currentItemId != ITEM_IDX_NAIL_BOMB)
         {
