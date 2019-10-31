@@ -1,42 +1,88 @@
-//#region OLD movement code
+// Check if NPC can chase a player
+bool:FCNPC_ValidateChasingPlayer(npcid, playerid)
+{
+	new Float:nX, Float:nY, Float:nZ;
+	FCNPC_GetPosition(npcid, nX, nY, nZ);
 
-	// // Put NPC in the chase state by path to the specific point (not using native GoTo).
-	// FCNPC_ChasePlayerByPath(npcid, chaseid)
-	// {
-	// //	if(FCNPC_IsValidMovePath(eNpcInfo[npcid][FCNPC_MovePathId]) && eNpcInfo[npcid][e_iCurrentStatus] == NPC_STATUS_CHASING_BY_PATH)
-	// //		return 1;
+	if(!IsPlayerInRangeOfPoint(playerid, RANGE_NPC_LOOSE_PLAYER, nX, nY, nZ)
+	|| FCNPC_IsUnableToPerformAction(npcid) 
+	|| CA_IsPlayerNearWater(playerid)
+	|| (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_ATTACK_AFTER_DAM)
+	{
+		return false;
+	}
 
-	// 	if(eNpcInfo[npcid][e_iChasedId] == INVALID_PLAYER_ID || eNpcInfo[npcid][e_iChasedId] != chaseid)
-	// 		eNpcInfo[npcid][e_iChasedId] = chaseid;
-		
-	// 	static Float:z;
+	new Float:pX, Float:pY, Float:pZ;
+	GetPlayerPos(playerid, pX, pY, pZ);
 
-	// 	new Float:npcPosX, Float:npcPosY;
-	// 	FCNPC_GetPosition(npcid, npcPosX, npcPosY, z);
-		
-	// 	new Float:chasePosX, Float:chasePosY;
-	// 	GetPlayerPos(chaseid, chasePosX, chasePosY, z);
+	static Float:climbing = 2.0;
+	if(GetDistanceBetweenPoints1D(nZ, pZ) > climbing)
+	{
+		pZ = nZ;
+		return false;
+	}
 
-	// 	PathFinder_FindWay(npcid, npcPosX, npcPosY, chasePosX, chasePosY, PATHFINDER_Z_DIFF, PATHFINDER_STEP_SIZE, PATHFINDER_STEP_LIMIT, PATHFINDER_MAX_STEPS);
-	// 	return 0;
-	// }
+	if(FCNPC_IsBlockedByCollision(npcid))
+	{
+		return false;
+	}
+	return true;
+}
 
-//#endregion
+// Check if NPC is blocked by a collision (during a chase on a player).
+// If collision has been reached, usually NPC is going to try finding a Path (with PathFinder) to the player or ignore him.
+FCNPC_IsBlockedByCollision(npcid)
+{
+	new Float:nX, Float:nY, Float:nZ;
+	FCNPC_GetPosition(npcid, nX, nY, nZ);
+
+	new Float:pX, Float:pY, Float:pZ;
+	GetPlayerPos(eNpcInfo[npcid][e_iChaseId], pX, pY, pZ);
+
+	static Float:cut_size = 1.0;
+	new Float:tX, Float:tY, Float:tZ;
+	if(!MovePointColCutLineEx(nX, nY, nZ, pX, pY, pZ, tX, tY, tZ, cut_size, true))
+	{
+		return true;
+	}
+	return false;
+}
+
+// Calculates path to the player with PathFinder.
+// bool:FCNPC_CalculatePathToPlayer(npcid, playerid)
+// {
+// 	new Float:npcPosX, Float:npcPosY, Float:npcPosZ;
+// 	FCNPC_GetPosition(npcid, npcPosX, npcPosY, npcPosZ);
+
+// 	if(!IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, npcPosX, npcPosY, npcPosZ))
+// 	{
+// 		return false;
+// 	}
+	
+// 	static Float:z;
+// 	new Float:chasePosX, Float:chasePosY;
+// 	GetPlayerPos(playerid, chasePosX, chasePosY, z);
+
+// 	PathFinder_FindWay(npcid, npcPosX, npcPosY, chasePosX, chasePosY, PATHFINDER_Z_DIFF, PATHFINDER_STEP_SIZE, PATHFINDER_STEP_LIMIT, PATHFINDER_MAX_STEPS);
+// 	return true;
+// }
 
 // Starts chasing player (updating)
 bool:FCNPC_ChasePlayer(npcid, playerid)
 {
-	new Float:x, Float:y, Float:z;
-	FCNPC_GetPosition(npcid, x, y, z);
+	// if(FCNPC_IsBlockedByCollision(npcid))
+	// {
+	// 	FCNPC_CalculatePathToPlayer(npcid, playerid);
+	// 	return true;
+	// }
 
-	if(!IsPlayerInRangeOfPoint(playerid, RANGE_NPC_LOOSE_PLAYER, x, y, z)
-	|| FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN) == false
-	|| (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_ATTACK_AFTER_DAM)
+	if(!FCNPC_ValidateChasingPlayer(npcid, playerid))
 	{
 		FCNPC_OnLostPlayer(npcid, playerid);
 		return false;
 	}
 
+	FCNPC_GoToPlayerOnGroundCol(npcid, playerid, FCNPC_MOVE_RUN);
 	FCNPC_OnChasePlayer(npcid, playerid);
 	return true;
 }
@@ -79,14 +125,9 @@ FCNPC_StopMoving(npcid)
 // This function makes NPC go to player as long as it reaches collision on the way.
 // For example when NPC goes to player and has a fence during its way - it will stop moving.
 // Movement is set through parameter (WALK or RUN) with animations being applied.
-bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
+//bool:
+FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250)
 {
-	if(FCNPC_IsUnableToPerformAction(npcid) || CA_IsPlayerNearWater(playerid)
-	|| (GetTickCount() - eNpcInfo[npcid][e_iTickCounter_damageAnim]) < TICK_RATE_ATTACK_AFTER_DAM)
-	{
-		return false;
-	}
-
 	new Float:speed = NpcMovementSpeed[_:FCNPC_GetType(npcid)];
 	if(walkOrRun == FCNPC_MOVE_WALK)
 	{
@@ -96,7 +137,6 @@ bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, t
 	static Float:radius = NPC_RUN_OFFSET;
 	static pathfinding = FCNPC_MOVE_PATHFINDING_NONE;
 	static Float:min_distance = 0.0;
-	static Float:climbing = 2.0;
 	static Float:cut_size = 1.0;
 
 	new 
@@ -105,12 +145,6 @@ bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, t
 
 	GetPlayerPos(playerid, pX, pY, pZ);
 	FCNPC_GetPosition(npcid, nX, nY, nZ);
-
-	if(GetDistanceBetweenPoints1D(nZ, pZ) > climbing)
-	{
-		pZ = nZ;
-		return false;
-	}
 
 	new Float:tX, Float:tY, Float:tZ;
 	if(MovePointColCutLineEx(nX, nY, nZ, pX, pY, pZ, tX, tY, tZ, cut_size, true))
@@ -125,9 +159,7 @@ bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = FCNPC_MOVE_WALK, t
 		{
 			FCNPC_ApplyAnimation(npcid, "TLoU", "INF_RUN", 4.1, 1, 1, 1, 0, 0);
 		}
-		return true;
 	}
-	return false;
 }
 
 // This function makes NPC is a copy of FCNPC_GoToPlayer...

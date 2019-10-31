@@ -10,7 +10,7 @@ forward Float:SkillsTd_GetStartBarColumnPosX(targetTextdrawBarIdx);
 forward NPC_STATUS:FCNPC_GetStatus(npcid);
 forward NPC_TYPE:FCNPC_GetType(npcid);
 forward bool:FCNPC_ChasePlayer(npcid, playerid);
-forward bool:FCNPC_GoToPlayerOnGroundCol(npcid, playerid, walkOrRun = 0, type = FCNPC_MOVE_TYPE_AUTO, mode = FCNPC_MOVE_MODE_AUTO, bool:set_angle = true, stopdelay = 250);
+forward bool:FCNPC_ValidateChasingPlayer(npcid, playerid);
 forward bool:FCNPC_SetStatus(npcid, NPC_STATUS:status, statusIssuerId = INVALID_PLAYER_ID);
 forward bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = INVALID_PLAYER_ID);
 forward bool:FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId, Float:distanceBetweenPlayers);
