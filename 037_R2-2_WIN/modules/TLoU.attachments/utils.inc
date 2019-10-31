@@ -225,7 +225,7 @@ FindAttachSlotIdxForLsRsModel(playerid, modelId)
 // Detach weapon models from player's body.
 DetachWeaponFromPlayersBody(playerid, itemId)
 {
-	if(!IsItemType(itemId, ITEM_TYPE_WEAPON) 
+	if(!IsItemType(itemId, ITEM_TYPE_BULLET_WEAPON) // Don't detach BOW because it's attached custom weapon
 	&& !IsItemType(itemId, ITEM_TYPE_MELEE))
 	{
 		return false;
