@@ -2,6 +2,7 @@
 #include    <a_samp>
 #include    <includes\tlou>
 #include    <includes\projectiles>
+#include    <includes\PathFinder>
 
 // Dependencies.
 #include    <audio>
