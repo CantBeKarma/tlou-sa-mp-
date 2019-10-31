@@ -1,5 +1,22 @@
 IsPlayerAimingBow(playerid)	return (ePlayerWeapon[playerid][e_bAimingArrow]);
 
+// Attaching bow item to player's hand with different coords based on player's current state (crouched or not).
+AttachBowToPlayersHand(playerid)
+{
+	new slotIndex = GetDynamicSlotIndexForModel(playerid, ITEM_MODEL_BOW);
+	if(slotIndex != INVALID_ATTACH_SLOT)
+	{
+		if(IsPlayerCrouched(playerid))
+		{
+			SetPlayerAttachedObject(playerid, slotIndex, ITEM_MODEL_BOW, 6, -0.090999, -0.061999, -0.011000, -5.899932, -171.399917, 1.700000, 0.758000, 0.627999, 1.000000);
+		}
+		else
+		{
+			SetPlayerAttachedObject(playerid, slotIndex, ITEM_MODEL_BOW, 6, -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000);
+		}
+	}
+}
+
 // Pull player's bow string.
 Bow_PullString(playerid)
 {
@@ -11,9 +28,8 @@ Bow_PullString(playerid)
 	ApplyAnimation(playerid, "TLoU", "BOW_AIM_IN", 3.1, 0, 1, 1, 1, 1);
 	Audio_PlayEx(playerid, AUDIO_BOW_PULL);
 
+	AttachBowToPlayersHand(playerid);
 	SPAO(playerid, ITEM_MODEL_ARROW);
-	new slotIndex = GetDynamicSlotIndexForModel(playerid, ITEM_MODEL_BOW);
-	SetPlayerAttachedObject(playerid, slotIndex, ITEM_MODEL_BOW, 6, -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000);
 
 	ePlayerWeapon[playerid][e_bAimingArrow] = true;
 	ePlayerWeapon[playerid][e_iTickCounter_bowString] = GetConnectedTime(playerid);
@@ -25,12 +41,8 @@ Bow_ReleaseString(playerid)
 	Audio_StopEx(playerid);
 	Audio_PlayEx(playerid, AUDIO_BOW_CANCEL);
 	
-	new slotIndex = GetDynamicSlotIndexForModel(playerid, ITEM_MODEL_BOW);
-	SetPlayerAttachedObject(playerid, slotIndex, ITEM_MODEL_BOW, 6, -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000);
+	AttachBowToPlayersHand(playerid);
 	RemovePlayerAttachedObj(playerid, eCharsInfo[playerid][e_iAttachSlot_Dynamic]);
-
-	// normal = -0.071999, 0.002999, 0.069999, -72.899917, -171.399917, 1.300000, 0.758000, 0.627999, 1.000000
-	// crouched = -0.090999, -0.061999, -0.011000, -5.899932, -171.399917,  1.700000, 0.758000, 0.627999, 1.000000
 
 	if(!IsPlayerCrouched(playerid))
 	{
