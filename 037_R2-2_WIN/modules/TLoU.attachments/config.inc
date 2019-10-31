@@ -82,7 +82,7 @@ enum e_ATTACHMENTS_DATA
 {
     e_iSkinId,
     bool:e_bExtraInfo,
-    e_iSlotId,
+    e_iSlotIndex,
     e_iModelId,
     e_iBoneId,
 

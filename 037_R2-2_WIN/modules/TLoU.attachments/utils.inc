@@ -94,7 +94,7 @@ SPAO(playerid, modelId, bool:extraInfo = false)
 		return false;
 	}
 
-	new slotIndex = eAttachmentsData[attachmentIndex][e_iSlotId];
+	new slotIndex = eAttachmentsData[attachmentIndex][e_iSlotIndex];
 	if(slotIndex == ATTACH_SLOT_DYNAMIC)
 	{
 		slotIndex = GetDynamicSlotIndexForModel(playerid, modelId);
@@ -242,7 +242,7 @@ DetachWeaponFromPlayersBody(playerid, itemId)
 			continue;
 		}
 
-		slotIndex = eAttachmentsData[i][e_iSlotId];
+		slotIndex = eAttachmentsData[i][e_iSlotIndex];
 		break;
 	}
 
