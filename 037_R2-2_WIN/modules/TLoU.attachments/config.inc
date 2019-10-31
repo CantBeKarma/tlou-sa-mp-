@@ -77,6 +77,27 @@
 #define		MAX_ATTACHMENTS_DATA	(37)
 #define     MIN_ATTACH_SLOT_START   (6) // 0-5 are reserved
 
+// Current attached objects to player data
+enum e_PLAYER_ATTACHED_OBJS_DATA
+{
+    e_iSlotIndex,
+    e_iModelId,
+    e_iBoneId,
+    Float:e_fX,
+    Float:e_fY,
+    Float:e_fZ,
+    Float:e_fRotX,
+    Float:e_fRotY,
+    Float:e_fRotZ,
+    Float:e_fScaleX,
+    Float:e_fScaleY,
+    Float:e_fScaleZ,
+    e_iMaterialColor1,
+    e_iMaterialColor2,
+	bool:e_bSavedData
+};
+new ePlayerAttachedObjs[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS][e_PLAYER_ATTACHED_OBJS_DATA];
+
 // Data related to the attachments.
 enum e_ATTACHMENTS_DATA
 {

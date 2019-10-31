@@ -68,6 +68,64 @@ RemovePlayerAttachedObj(playerid, slotIndex)
 	}
 }
 
+// Attach all objects back to the player previously removed with function: SaveAndDetachAllObjsFromPlayer()
+AttachAllObjsBackToPlayer(playerid)
+{
+	for(new i = 1; i != MAX_PLAYER_ATTACHED_OBJECTS; i++) // Skip 0 because that's backpack. It's always attached.
+	{
+		if(!ePlayerAttachedObjs[playerid][i][e_bSavedData])
+		{
+			continue;
+		}
+
+		SetPlayerAttachedObject(playerid, \
+								i, \
+								ePlayerAttachedObjs[playerid][i][e_iModelId], \
+								ePlayerAttachedObjs[playerid][i][e_iBoneId], \
+								ePlayerAttachedObjs[playerid][i][e_fX], \
+								ePlayerAttachedObjs[playerid][i][e_fY], \
+								ePlayerAttachedObjs[playerid][i][e_fZ], \
+								ePlayerAttachedObjs[playerid][i][e_fRotX], \
+								ePlayerAttachedObjs[playerid][i][e_fRotY], \
+								ePlayerAttachedObjs[playerid][i][e_fRotZ], \
+								ePlayerAttachedObjs[playerid][i][e_fScaleX], \
+								ePlayerAttachedObjs[playerid][i][e_fScaleY], \
+								ePlayerAttachedObjs[playerid][i][e_fScaleZ]);
+
+		ePlayerAttachedObjs[playerid][i][e_bSavedData] = false;
+	}
+}
+
+// Save to array current objects attached to the player and detach them all.
+SaveAndDetachAllObjsFromPlayer(playerid)
+{
+    for(new i = 1; i != MAX_PLAYER_ATTACHED_OBJECTS; i++) // Skip 0 because that's backpack. It's always attached.
+	{
+		if(!IsPlayerAttachedObjectSlotUsed(playerid, i))
+		{
+			continue;
+		}
+
+		GetPlayerAttachedObject(playerid, \
+								i, \
+								ePlayerAttachedObjs[playerid][i][e_iModelId], \
+								ePlayerAttachedObjs[playerid][i][e_iBoneId], \
+								ePlayerAttachedObjs[playerid][i][e_fX], \
+								ePlayerAttachedObjs[playerid][i][e_fY], \
+								ePlayerAttachedObjs[playerid][i][e_fZ], \
+								ePlayerAttachedObjs[playerid][i][e_fRotX], \
+								ePlayerAttachedObjs[playerid][i][e_fRotY], \
+								ePlayerAttachedObjs[playerid][i][e_fRotZ], \
+								ePlayerAttachedObjs[playerid][i][e_fScaleX], \
+								ePlayerAttachedObjs[playerid][i][e_fScaleY], \
+								ePlayerAttachedObjs[playerid][i][e_fScaleZ]);
+		
+		ePlayerAttachedObjs[playerid][i][e_bSavedData] = true;
+
+		RemovePlayerAttachedObj(playerid, i);
+	}
+}
+
 // Removes dynamically attached object to the player if used
 RemoveDynamicAttachedObj(playerid)
 {

@@ -72,6 +72,7 @@ Perform_BackpackOpening(playerid)
     }
 
     HideHud(playerid);
+    SaveAndDetachAllObjsFromPlayer(playerid);
     AttachBackpackToPlayer(playerid, .isInFrontOfPlayer = true);
     MoveCameraNextToPlayer(playerid, -0.9, 0.25, 500);
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 1, 1, 1, 0, 1);
@@ -96,6 +97,7 @@ function Perform_BackpackClosing(playerid)
 
     ShowHud(playerid);
     SetCameraBehindPlayer(playerid);
+    AttachAllObjsBackToPlayer(playerid);
     AttachBackpackToPlayer(playerid);
     Audio_PlayEx(playerid, AUDIO_BP_CLOSE);
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.1, 0, 1, 1, 0, 0, 0);
