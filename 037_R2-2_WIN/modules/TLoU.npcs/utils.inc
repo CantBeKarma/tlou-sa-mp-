@@ -32,6 +32,7 @@
 	// Prepares FCNPC for (re)spawn (first spawn or not are both supported).
 	FCNPC_PrepareForSpawn(npcid, bool:firstSpawn = false)
 	{
+		FCNPC_DestroyMovePathFinder(npcid);
 		if(firstSpawn)
 		{
 			PreloadAnimations(npcid);

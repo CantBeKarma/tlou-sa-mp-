@@ -14,6 +14,7 @@ forward bool:FCNPC_ValidateChasingPlayer(npcid, playerid);
 forward bool:FCNPC_SetStatus(npcid, NPC_STATUS:status, statusIssuerId = INVALID_PLAYER_ID);
 forward bool:FCNPC_ValidateStatusChange(npcid, NPC_STATUS:newStatusId, statusIssuerId = INVALID_PLAYER_ID);
 forward bool:FCNPC_PlayDamageAnimation(npcid, bodypart, issuerWeaponId, Float:distanceBetweenPlayers);
+forward bool:FCNPC_CalculatePathToPlayer(npcid, playerid);
 
 forward bool:SetPlayerShivCND(playerid, cnd);
 forward bool:DegradePlayerShivCND(playerid);
