@@ -23,6 +23,8 @@
 #include    <colour-manipulation>
 #include    <streamer>
 #include    <FCNPC>
+#include    <ColAndreas>
+#include    <MapAndreas>
 #include    <a_mysql_yinline>
 #include    <bcrypt>
 

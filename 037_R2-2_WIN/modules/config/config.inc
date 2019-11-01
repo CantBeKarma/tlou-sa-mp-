@@ -5,6 +5,7 @@
 #define		MAX_PLAYERS				(50)
 #define		MAX_LOG_FILES			(7)
 #define 	SKIP_INTRO				// comment out to have default connection intro
+#define     MAX_PATHFINDER_THREADS      (1)
 
 // ON-CLIENT DISPLAY SETTINGS
 //#define		USE_VPS
@@ -162,8 +163,8 @@ hook OnGameModeInit()
 	Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], INFO, "Setting up in-game global game settings. Please wait...");
 
 	CA_Init();
-	//MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
-	//PathFinder_Init(MapAndreas_GetAddress(), MAX_PATHFINDER_THREADS);
+	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
+	PathFinder_Init(MapAndreas_GetAddress(), MAX_PATHFINDER_THREADS);
 
 	SetWorldTime(hour);
     ShowNameTags(false);
