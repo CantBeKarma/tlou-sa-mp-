@@ -21,11 +21,6 @@ bool:FCNPC_ValidateChasingPlayer(npcid, playerid)
 		pZ = nZ;
 		return false;
 	}
-
-	if(FCNPC_IsBlockedByCollision(npcid))
-	{
-		return false;
-	}
 	return true;
 }
 
@@ -48,33 +43,23 @@ FCNPC_IsBlockedByCollision(npcid)
 	return false;
 }
 
-// Calculates path to the player with PathFinder.
-// bool:FCNPC_CalculatePathToPlayer(npcid, playerid)
-// {
-// 	new Float:npcPosX, Float:npcPosY, Float:npcPosZ;
-// 	FCNPC_GetPosition(npcid, npcPosX, npcPosY, npcPosZ);
-
-// 	if(!IsPlayerInRangeOfPoint(playerid, RANGE_NPC_START_CHASE, npcPosX, npcPosY, npcPosZ))
-// 	{
-// 		return false;
-// 	}
-	
-// 	static Float:z;
-// 	new Float:chasePosX, Float:chasePosY;
-// 	GetPlayerPos(playerid, chasePosX, chasePosY, z);
-
-// 	PathFinder_FindWay(npcid, npcPosX, npcPosY, chasePosX, chasePosY, PATHFINDER_Z_DIFF, PATHFINDER_STEP_SIZE, PATHFINDER_STEP_LIMIT, PATHFINDER_MAX_STEPS);
-// 	return true;
-// }
-
 // Starts chasing player (updating)
 bool:FCNPC_ChasePlayer(npcid, playerid)
 {
-	// if(FCNPC_IsBlockedByCollision(npcid))
-	// {
-	// 	FCNPC_CalculatePathToPlayer(npcid, playerid);
-	// 	return true;
-	// }
+	if(FCNPC_IsBlockedByCollision(npcid)
+	&& GetDistanceBetweenPlayers(npcid, playerid) > RANGE_NPC_ATTACK)
+	{
+		SCMF_ALL(-1, "FCNPC_ChasePlayer > FCNPC_IsBlockedByCollision");
+		new bool:calculationSuccess = FCNPC_CalculatePathToPlayer(npcid, playerid);
+		if(!calculationSuccess && eNpcInfo[npcid][FCNPC_MovePathId] == FCNPC_INVALID_MOVEPATH_ID)
+		{
+			FCNPC_OnLostPlayer(npcid, playerid);
+			return false;
+		}
+
+		SCMF_ALL(-1, "Calculated!");
+		return false;
+	}
 
 	if(!FCNPC_ValidateChasingPlayer(npcid, playerid))
 	{
