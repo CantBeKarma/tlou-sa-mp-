@@ -209,20 +209,24 @@ DisplayCollectibleContents(playerid, collectibleType, title[], message[])
         TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_FireflyPend]);
     }
 
-    new formattedMessage[512];
-    strcat(formattedMessage, message, sizeof(formattedMessage));
+    new messageLen = strlen(message);
 
-    new count = 0;
-    for(new i = 0; i < strlen(message); i++)
+    if(messageLen > 30)
     {
-        count += 1;
-        if(count == 35)
+        new charCount = 0;
+        for(new i = 0; i < messageLen; i++)
         {
-            strins(formattedMessage, "-~n~", i, MAX_COLL_MSG_LEN);
-            count = 0;
+            if(charCount == 30)
+            {
+                new spaceCharPos = strfind(message, " ", false, i);
+                strins(message, "~n~", spaceCharPos+1, MAX_COLL_MSG_LEN);
+                charCount = spaceCharPos = 0;
+            }
+
+            charCount += 1;
         }
     }
     
-    TextDrawSetString(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], formattedMessage);
+    TextDrawSetString(eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid], message);
     TextDrawShowForPlayer(playerid, eTextDrawInfo[e_Bp_Rs_Coll_MessageText][playerid]);
 }
