@@ -515,7 +515,7 @@ YCMD:shiv(playerid, params[], help)
     CMD:npc(playerid, params[])
     {
         new option[32], npcid, NPC_TYPE:type;
-        if(sscanf(params, "s[32]D(-1)D(-1)", option, npcid, _:type))return SCM(playerid, -1, "/npc [create/spawn/type/move/status/check]");
+        if(sscanf(params, "s[32]D(-1)D(-1)", option, npcid, _:type))return SCM(playerid, -1, "/npc [create/spawn/destroy/type/move/status/check]");
         {
             if(!strcmp(option, "create", false))
             {
@@ -537,6 +537,18 @@ YCMD:shiv(playerid, params[], help)
                 new Float:x, Float:y, Float:z;
                 GetPlayerPos(playerid, x, y, z);
                 FCNPC_Spawn(npcid, FCNPC_GetSkin(npcid), x, y, z);
+            }
+            else if(!strcmp(option, "destroy", false))
+            {
+                if(npcid == -1 || npcid == INVALID_PLAYER_ID)
+                {
+                    SCMF(playerid, -1, "/npc destroy [id]");
+                    return 1;
+                }
+
+                dynamicNpcsCount--;
+                FCNPC_Destroy(npcid);
+                SCMF(playerid, -1, "Destroyed %d NPC", npcid);
             }
             else if(!strcmp(option, "type", false))
             {
