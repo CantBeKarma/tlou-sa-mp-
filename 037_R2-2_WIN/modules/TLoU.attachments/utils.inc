@@ -20,6 +20,11 @@ AttachBackpackToPlayer(playerid, bool:isInFrontOfPlayer = false)
 // Attach : attach weapons to player (happens during respawn).
 AttachItemsToPlayer(playerid, itemId = -1)
 {
+	if(IsPlayerUsingBackpack(playerid))
+	{
+		return false;
+	}
+	
 	if(itemId == -1)
 	{
 		for(new i = 0; i != MAX_ITEMS_DATA; i++)
