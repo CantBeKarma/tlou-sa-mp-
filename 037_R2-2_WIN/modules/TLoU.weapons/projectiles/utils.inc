@@ -7,44 +7,19 @@ Projectile_Throw(playerid, itemId)
     {
         return 1;
     }
-    
-    // Physics.
-    new Float:fPX, Float:fPY, Float:fPZ;
-    GetPlayerCameraPos(playerid, fPX, fPY, fPZ);
 
-    new Float:fVX, Float:fVY, Float:fVZ;
-    GetPlayerCameraFrontVector(playerid, fVX, fVY, fVZ);
-
-    new Float:pAngle;
-    GetPlayerFacingAngle(playerid, pAngle);
-
-    const Float:fScale = 4.1;
-    new Float:dest_projX = fPX + floatmul(0.8, floatcos(pAngle, degrees)) + floatmul(fVX, fScale);
-    new Float:dest_projY = fPY + floatmul(0.7, floatsin(pAngle, degrees)) + floatmul(fVY, fScale);
-    new Float:dest_projZ = fPZ + floatmul(fVZ, fScale);
-
-    new projid = CreateProjectile(dest_projX, dest_projY, dest_projZ, \
-                    (MAX_PROJECTILE_SPEED * fVX), (MAX_PROJECTILE_SPEED * fVY), (MAX_PROJECTILE_SPEED * fVZ) + 5.0, \
-                    0.0, 0.0, 0.0, \
-                    PROJ_PHYS_SPHERECOL_RADIUS, PROJ_PHYS_GROUND_FRICTION, PROJ_PHYS_COLL_FRICTION, PROJ_PHYS_AIR_ASSISTANCE, PROJ_PHYS_GRAVITY, PROJ_PHYS_PLAYER_COL_RADIUS, PROJ_PHYS_COLLIDE_SIMULATION, PROJ_PHYS_MASS);
-
-    if(projid == -1)
-    {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Throw: Unable to create projectile for player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
-        return 1;
-    }
-
-    // Object creation.
-    new projObjectId = INVALID_OBJECT_ID;
-    projObjectId = CreateDynamicObject(GetItemModel(itemId), dest_projX, dest_projY, dest_projZ + 0.5, 0, 0, 0);
-
+    new projObjectId = CreateProjectileObjectForPlayer(playerid, GetItemModel(itemId));
     if(projObjectId == INVALID_OBJECT_ID)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Throw: Unable to create projectile's objectId. Player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         return 1;
     }
 
-    // Update.
+    new projid = CalculateProjDestinationXYZ(playerid);
+    if(projid == -1)
+    {
+        return 1;
+    }
+
     foreach(new i : Player)
     {
         Streamer_Update(i, STREAMER_TYPE_OBJECT);
@@ -70,30 +45,18 @@ Projectile_Drop_Nailbomb(playerid)
         return 1;
     }
 
-    new Float:x, Float:y, Float:z, Float:ang;
-    GetPlayerPos(playerid, x, y, z);
-    GetPlayerFacingAngle(playerid, ang);
-
-    new projid = CreateProjectile(x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, \
-                5.0 * floatsin(-ang, degrees), 5.0 * floatcos(-ang, degrees), 3.0, \
-                0.0, 0.0, 0.0, \
-                PROJ_PHYSDROP_SPHERECOL_RADIUS, PROJ_PHYSDROP_GROUND_FRICTION, PROJ_PHYSDROP_COLL_FRICTION, PROJ_PHYSDROP_AIR_ASSISTANCE, PROJ_PHYSDROP_GRAVITY, PROJ_PHYSDROP_PLAYER_COL_RADIUS, PROJ_PHYSDROP_COLLIDE_SIMULATION, PROJ_PHYSDROP_MASS);
-
-    if(projid == -1)
-    {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Drop_Nailbomb: Unable to create projectile for player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
-        return 1;
-    }
-
-    // Object creation.
-    new projObjectId = CreateDynamicObject(GetItemModel(_:ITEM_IDX_NAIL_BOMB), x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, 93.7, 120.0, ang + 60.0);
+    new projObjectId = CreateProjectileObjectForPlayer(playerid, GetItemModel(_:ITEM_IDX_NAIL_BOMB), true);
     if(projObjectId == INVALID_OBJECT_ID)
     {
-        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "Projectile_Drop_Nailbomb: Unable to create projectile's objectId. Player: %s (UID: %d | GUID: %d)", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid));
         return 1;
     }
 
-    // Update.
+    new projid = CalculateProjDestinationXYZ(playerid, true);
+    if(projid == -1)
+    {
+        return 1;
+    }
+
     foreach(new i : Player)
     {
         Streamer_Update(i, STREAMER_TYPE_OBJECT);
@@ -106,6 +69,79 @@ Projectile_Drop_Nailbomb(playerid)
     
     OnPlayerDropNailbomb(playerid);
     return 0;
+}
+
+// Create object for projectile (in-world game object).
+CreateProjectileObjectForPlayer(playerid, model, bool:droppingNailBmb = false)
+{
+    new projObjectId = INVALID_OBJECT_ID;
+    
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
+
+    if(!droppingNailBmb)
+    {
+        projObjectId = CreateDynamicObject(model, x, y, z + 0.5, 0, 0, 0);
+    }
+    else
+    {
+        new Float:ang;
+        GetPlayerFacingAngle(playerid, ang);
+
+        projObjectId = CreateDynamicObject(model, x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, 93.7, 120.0, ang + 60.0);
+    }
+
+    if(projObjectId == INVALID_OBJECT_ID)
+    {
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CreateProjectileObjectForPlayer: Unable to create projectile's objectId. Player: %s (UID: %d | GUID: %d) - droppingNailBmb = %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), droppingNailBmb);
+        return INVALID_OBJECT_ID;
+    }
+    return projObjectId;
+}
+
+// Calculate projectile's destination X, Y, Z (for standard throw & close drop of a nailbomb item)
+CalculateProjDestinationXYZ(playerid, bool:droppingNailBmb = false)
+{
+    new projid = -1;
+    
+    new Float:pAngle;
+    GetPlayerFacingAngle(playerid, pAngle);
+
+    if(!droppingNailBmb)
+    {
+        new Float:fPX, Float:fPY, Float:fPZ;
+        GetPlayerCameraPos(playerid, fPX, fPY, fPZ);
+
+        new Float:fVX, Float:fVY, Float:fVZ;
+        GetPlayerCameraFrontVector(playerid, fVX, fVY, fVZ);
+
+        const Float:fScale = 4.1;
+        new Float:dest_projX = fPX + floatmul(0.8, floatcos(pAngle, degrees)) + floatmul(fVX, fScale);
+        new Float:dest_projY = fPY + floatmul(0.7, floatsin(pAngle, degrees)) + floatmul(fVY, fScale);
+        new Float:dest_projZ = fPZ + floatmul(fVZ, fScale);
+
+        projid = CreateProjectile(dest_projX, dest_projY, dest_projZ, \
+                    (MAX_PROJECTILE_SPEED * fVX), (MAX_PROJECTILE_SPEED * fVY), (MAX_PROJECTILE_SPEED * fVZ) + 5.0, \
+                    0.0, 0.0, 0.0, \
+                    PROJ_PHYS_SPHERECOL_RADIUS, PROJ_PHYS_GROUND_FRICTION, PROJ_PHYS_COLL_FRICTION, PROJ_PHYS_AIR_ASSISTANCE, PROJ_PHYS_GRAVITY, PROJ_PHYS_PLAYER_COL_RADIUS, PROJ_PHYS_COLLIDE_SIMULATION, PROJ_PHYS_MASS);
+    }
+    else
+    {
+        new Float:x, Float:y, Float:z;
+        GetPlayerPos(playerid, x, y, z);
+
+        projid = CreateProjectile(x, y - 0.5 * floatcos(-(pAngle + 90.0), degrees), z, \
+                    5.0 * floatsin(-pAngle, degrees), 5.0 * floatcos(-pAngle, degrees), 3.0, \
+                    0.0, 0.0, 0.0, \
+                    PROJ_PHYSDROP_SPHERECOL_RADIUS, PROJ_PHYSDROP_GROUND_FRICTION, PROJ_PHYSDROP_COLL_FRICTION, PROJ_PHYSDROP_AIR_ASSISTANCE, PROJ_PHYSDROP_GRAVITY, PROJ_PHYSDROP_PLAYER_COL_RADIUS, PROJ_PHYSDROP_COLLIDE_SIMULATION, PROJ_PHYSDROP_MASS);
+    }
+
+    if(projid == -1)
+    {
+        Log(eLogs[e_Log_Index][LOG_INDEX_SERVER], WARNING, "CalculateProjDestinationXYZ: Unable to create projectile for player: %s (UID: %d | GUID: %d) - droppingNailBmb = %d", PlayerName(playerid), GetPlayerCharUid(playerid), GetPlayerGuid(playerid), droppingNailBmb);
+        return -1;
+    }
+    return projid;
 }
 
 // Initiates nailbomb in the "idle" state.
