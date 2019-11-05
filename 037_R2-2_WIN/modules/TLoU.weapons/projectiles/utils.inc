@@ -79,16 +79,27 @@ CreateProjectileObjectForPlayer(playerid, model, bool:droppingNailBmb = false)
     new Float:x, Float:y, Float:z;
     GetPlayerPos(playerid, x, y, z);
 
+    new Float:pAngle;
+    GetPlayerFacingAngle(playerid, pAngle);
+
     if(!droppingNailBmb)
     {
+        new Float:fPX, Float:fPY, Float:fPZ;
+        GetPlayerCameraPos(playerid, fPX, fPY, fPZ);
+
+        new Float:fVX, Float:fVY, Float:fVZ;
+        GetPlayerCameraFrontVector(playerid, fVX, fVY, fVZ);
+
+        const Float:fScale = 4.1;
+        x = fPX + floatmul(0.8, floatcos(pAngle, degrees)) + floatmul(fVX, fScale);
+        y = fPY + floatmul(0.7, floatsin(pAngle, degrees)) + floatmul(fVY, fScale);
+        z = fPZ + floatmul(fVZ, fScale);
+
         projObjectId = CreateDynamicObject(model, x, y, z + 0.5, 0, 0, 0);
     }
     else
     {
-        new Float:ang;
-        GetPlayerFacingAngle(playerid, ang);
-
-        projObjectId = CreateDynamicObject(model, x, y - 0.5 * floatcos(-(ang + 90.0), degrees), z, 93.7, 120.0, ang + 60.0);
+        projObjectId = CreateDynamicObject(model, x, y - 0.5 * floatcos(-(pAngle + 90.0), degrees), z, 93.7, 120.0, pAngle + 60.0);
     }
 
     if(projObjectId == INVALID_OBJECT_ID)
