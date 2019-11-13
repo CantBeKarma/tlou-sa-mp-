@@ -2,7 +2,7 @@ CMD:cmd(playerid, params[])
 {
     static icmdTip[73] = "Type: /icmd (command_name) to find more information about a command.\n\n";
     static cmdListRow1[74] = "/ls, /hp, /kill, /unfreeze, /anim, /clearanim, /skin, /windnoise, /shiv\n";
-    static cmdListRow2[52] = "/itemlist, /createitem, /createmelee, /createnote\n";
+    static cmdListRow2[59] = "/itemlist, /createitem, /createmelee, /createnote, /time\n";
     static cmdListRow3[47] = "/giveitem, /givemelee, /myitems, /removeitem\n";
     static cmdListRow4[43] = "/skills, /myskills, /setskill, /setsupps\n";
     static cmdListRow5[66] = "/ugradeitems, /setitemlvl, /ingrs, /allin, /setteam, /removeatt";
@@ -33,31 +33,6 @@ YCMD:icmd(playerid, params[], help)
     else
     {
         Command_ReProcess(playerid, params, true);
-    }
-    return 1;
-}
-
-YCMD:shiv(playerid, params[], help)
-{
-    if(help)
-    {
-        new string[64];
-        format(string, sizeof(string), "Your shiv CND: %d (MAX: %d)", GetPlayerShivCND(playerid), GetPlayerMaxShivCND(playerid));
-        ShowDialogMessage(playerid, "Your shiv information", string);
-        return 0;
-    }
-
-    new shivCnd;
-    if(sscanf(params, "d", shivCnd))return ShowDialogMessage(playerid, "Usage..", "Type: /shiv (cnd)");
-    {
-        if(SetPlayerShivCND(playerid, shivCnd))
-        {
-            ShowDialogMessage(playerid, "Success", "Successfully changed shiv CND");
-        }
-        else
-        {
-            ShowDialogMessage(playerid, "Failure", "Failed changing shiv CND");
-        }
     }
     return 1;
 }
@@ -148,6 +123,31 @@ YCMD:shiv(playerid, params[], help)
         return 1;
     }
 
+    YCMD:shiv(playerid, params[], help)
+    {
+        if(help)
+        {
+            new string[64];
+            format(string, sizeof(string), "Your shiv CND: %d (MAX: %d)", GetPlayerShivCND(playerid), GetPlayerMaxShivCND(playerid));
+            ShowDialogMessage(playerid, "Your shiv information", string);
+            return 0;
+        }
+
+        new shivCnd;
+        if(sscanf(params, "d", shivCnd))return ShowDialogMessage(playerid, "Usage..", "Type: /shiv (cnd)");
+        {
+            if(SetPlayerShivCND(playerid, shivCnd))
+            {
+                ShowDialogMessage(playerid, "Success", "Successfully changed shiv CND");
+            }
+            else
+            {
+                ShowDialogMessage(playerid, "Failure", "Failed changing shiv CND");
+            }
+        }
+        return 1;
+    }
+
 //#endregion
 
 //#region ROW2
@@ -216,77 +216,17 @@ YCMD:shiv(playerid, params[], help)
         return 1;
     }
 
-    CMD:skills(playerid, params[])
+    CMD:time(playerid, params[])
     {
-        new skillName[32];
-        new string[350];
-
-        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
+        new hour;
+        if(sscanf(params, "d", hour))return ShowDialogMessage(playerid, "Usage..", "Type: /time (hour)");
         {
-            switch(i)
+            if(hour < 0 || hour > 23)
             {
-                case 0: skillName = "MAX HP";
-                case 1: skillName = "LISTEN MODE DISTANCE";
-                case 2: skillName = "CRAFTING SPEED";
-                case 3: skillName = "HEALING SPEED";
-                case 4: skillName = "WEAPON SWAY";
-                case 5: skillName = "SHIV MASTER";
+                return ShowDialogMessage(playerid, "Failure!", "You can't set hour below 0 and higher than 23.");
             }
-            format(string, sizeof(string), "%s%s | ID: %d | MAX LVL: %d\n", string, skillName, i, Skill_GetMaxLevel(i));
-        }
-        ShowDialogMessage(playerid, "Skills list", string);
-        return 1;
-    }
 
-    CMD:myskills(playerid, params[])
-    {
-        new skillName[32];
-        new string[350];
-        
-        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
-        {
-            switch(i)
-            {
-                case 0: skillName = "MAX HP";
-                case 1: skillName = "LISTEN MODE DISTANCE";
-                case 2: skillName = "CRAFTING SPEED";
-                case 3: skillName = "HEALING SPEED";
-                case 4: skillName = "WEAPON SWAY";
-                case 5: skillName = "SHIV MASTER";
-            }
-            format(string, sizeof(string), "%s%s - Level: %d\n", string, skillName, Skill_GetPlayerLevel(playerid, i));
-        }
-        ShowDialogMessage(playerid, "Your skill levels", string);
-        return 1;
-    }
-
-    YCMD:setskill(playerid, params[], help)
-    {
-        if(help)
-        {
-            return ShowDialogMessage(playerid, "icmd > setskill", "Changes character skill (from skill tree). /skills");
-        }
-
-        new skillId, level;
-        if(sscanf(params, "dd", skillId, level))return ShowDialogMessage(playerid, "Usage..", "/setskill (skill_id) (level)");
-        {
-            Skill_SetPlayerLevel(playerid, skillId, level);
-            SkillsTd_FillPlayerSkillBars(playerid);
-        }
-        return 1;
-    }
-
-    YCMD:setsupps(playerid, params[], help)
-    {
-        if(help)
-        {
-            return ShowDialogMessage(playerid, "icmd > setsupps", "Changes your amount of supplements to increase your skill level in backpack.");
-        }
-
-        new suppsAmount;
-        if(sscanf(params, "d", suppsAmount))return ShowDialogMessage(playerid, "Usage..", "Type: /setsupps (amount)");
-        {
-            SetPlayerSupplements(playerid, suppsAmount);
+            SetWorldTime(hour);
         }
         return 1;
     }
@@ -379,6 +319,85 @@ YCMD:shiv(playerid, params[], help)
 //#endregion
 
 //#region ROW4
+
+    CMD:skills(playerid, params[])
+    {
+        new skillName[32];
+        new string[350];
+
+        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
+        {
+            switch(i)
+            {
+                case 0: skillName = "MAX HP";
+                case 1: skillName = "LISTEN MODE DISTANCE";
+                case 2: skillName = "CRAFTING SPEED";
+                case 3: skillName = "HEALING SPEED";
+                case 4: skillName = "WEAPON SWAY";
+                case 5: skillName = "SHIV MASTER";
+            }
+            format(string, sizeof(string), "%s%s | ID: %d | MAX LVL: %d\n", string, skillName, i, Skill_GetMaxLevel(i));
+        }
+        ShowDialogMessage(playerid, "Skills list", string);
+        return 1;
+    }
+
+    CMD:myskills(playerid, params[])
+    {
+        new skillName[32];
+        new string[350];
+        
+        for(new i = 0; i != MAX_SKILLS_ITEMS; i++)
+        {
+            switch(i)
+            {
+                case 0: skillName = "MAX HP";
+                case 1: skillName = "LISTEN MODE DISTANCE";
+                case 2: skillName = "CRAFTING SPEED";
+                case 3: skillName = "HEALING SPEED";
+                case 4: skillName = "WEAPON SWAY";
+                case 5: skillName = "SHIV MASTER";
+            }
+            format(string, sizeof(string), "%s%s - Level: %d\n", string, skillName, Skill_GetPlayerLevel(playerid, i));
+        }
+        ShowDialogMessage(playerid, "Your skill levels", string);
+        return 1;
+    }
+
+    YCMD:setskill(playerid, params[], help)
+    {
+        if(help)
+        {
+            return ShowDialogMessage(playerid, "icmd > setskill", "Changes character skill (from skill tree). /skills");
+        }
+
+        new skillId, level;
+        if(sscanf(params, "dd", skillId, level))return ShowDialogMessage(playerid, "Usage..", "/setskill (skill_id) (level)");
+        {
+            Skill_SetPlayerLevel(playerid, skillId, level);
+            SkillsTd_FillPlayerSkillBars(playerid);
+        }
+        return 1;
+    }
+
+    YCMD:setsupps(playerid, params[], help)
+    {
+        if(help)
+        {
+            return ShowDialogMessage(playerid, "icmd > setsupps", "Changes your amount of supplements to increase your skill level in backpack.");
+        }
+
+        new suppsAmount;
+        if(sscanf(params, "d", suppsAmount))return ShowDialogMessage(playerid, "Usage..", "Type: /setsupps (amount)");
+        {
+            SetPlayerSupplements(playerid, suppsAmount);
+        }
+        return 1;
+    }
+
+//#endregion
+
+//#region ROW5
 
     CMD:upgradeitems(playerid, params[])
     {
@@ -484,21 +503,6 @@ YCMD:shiv(playerid, params[], help)
 //#endregion
 
 //#region DEBUG CMDs
-
-    CMD:time(playerid, params[])
-    {
-        new hour;
-        if(sscanf(params, "d", hour))return ShowDialogMessage(playerid, "Usage..", "Type: /time (hour)");
-        {
-            if(hour < 0 || hour > 23)
-            {
-                return ShowDialogMessage(playerid, "Failure!", "You can't set hour below 0 and higher than 23.");
-            }
-
-            SetWorldTime(hour);
-        }
-        return 1;
-    }
 
     CMD:movecam(playerid, params[])
     {
