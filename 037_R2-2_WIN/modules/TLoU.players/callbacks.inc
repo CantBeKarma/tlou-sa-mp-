@@ -202,6 +202,10 @@ public OnPlayerShakeOffStun(playerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public OnPlayerGetHitByThrowable(playerid, issuerId, itemId)
 {
+	ApplyAnimation(playerid, "PED", \
+		(random(2) == 0) ? ("HIT_BACK") : ("HIT_BEHIND"), \
+			4.1, 0, 1, 1, 0, 0);
+
 	return 0;
 }
 

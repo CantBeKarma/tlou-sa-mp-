@@ -114,6 +114,10 @@ public FCNPC_OnGetArrowShot(npcid, damagerid)
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 public FCNPC_OnGetHitByThrowable(npcId, issuerId, itemId)
 {
+    FCNPC_SetAnimation(npcId,
+		(random(2) == 0) ? PED_HIT_BACK : PED_HIT_BEHIND, \
+			4.1, 0, 1, 1, 0, 0);
+            
     return 0;
 }
 
