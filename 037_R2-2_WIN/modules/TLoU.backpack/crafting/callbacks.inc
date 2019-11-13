@@ -67,7 +67,8 @@ public OnPlayerCraftedItem(playerid, craftItemId)
     SetPlayerItemAmount(playerid, secondRequiredIngr, GetPlayerItemAmount(playerid, secondRequiredIngr) - reductIngrAmount);
 
     // Set newly crafted item as last item used.
-    if(IsItemType(itemId, ITEM_TYPE_PROJECTILE))
+    if(IsItemType(itemId, ITEM_TYPE_MELEE)
+    || IsItemType(itemId, ITEM_TYPE_PROJECTILE))
     {
         ePlayerInfo[playerid][e_iLastEquippedItemId] = itemId;
     }
