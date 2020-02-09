@@ -1,7 +1,0 @@
-"TLoU", "WEAPON_SWITCH"
-"TLoU", "BOW_AIM_IN",
-"TLoU", "BOW_AIM_IDLE",
-"TLoU", "INF_BITE"
-"TLoU", "INF_EAT_IN",
-"TLoU", "INF_WALK",
-"TLoU", "INF_RUN",
