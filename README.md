@@ -33,9 +33,45 @@ In order to continue the development of the project it is necessary to know:
 | The Last of Us original game                          	| that's helpful if you played it - so you'll know what features to implement apart from the ones I did             	|
 | SA-MP                                                 	| understand SA-MP's sync. logic, features and other things that are required to create a multi-player gamemode 	|
 
-# Repositories
+# Branches
+
+This repository is split into 2 branches which either of them contain different stuff:
+
 - master
   
-That repository contains some documentation docs
+| Title     | Link                                                               | Description                                                                                                                                 |
+|-----------|--------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Docs      | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/documentation | Some documentation parts from 2014-2016 & 2019                                                                                              |
+| Assests   | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/assets        | Game assets such as in-game models, textures, sprites, animations etc.                                                                      |
+| Installer | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/installer     | An installation package ready to compile for Install Creator Pro software (creates an *.exe file for the client machine to be installed on) |
 
-https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/documentation
+
+- 0_3_7_R2-2_sampctl
+
+The heart of the gamemode - code itself.
+
+# Forks & Pull requests
+
+Feel free to fork this repository. If you're willing to have anything implemented into this repository as well, you may create a pull request and I will have a look into it.
+
+Remember to keep that original author somewhere.
+
+# Dependencies
+
+This project require some dependencies in order to run correctly. All of them are compiled-in already but here's the list of them anyway:
+
+| Name        | Language | Type    |                                            |
+|-------------|----------|---------|--------------------------------------------|
+| FCNPC       | C/C++    | Plugin  |                                            |
+| PawnPlus    | C/C++    | Plugin  |                                            |
+| YSF         | C/C++    | Plugin  |                                            |
+| Audio       | C/C++    | Plugin  |                                            |
+| Crashdetect | C/C++    | Plugin  |                                            |
+| log-plugin  | C/C++    | Plugin  |                                            |
+| MySQL       | C/C++    | Plugin  |                                            |
+| Sscanf2     | C/C++    | Plugin  |                                            |
+| Streamer    | C/C++    | Plugin  |                                            |
+| tlou_server | C/C++    | Plugin  |                                            |
+| PathFinder  | C/C++    | Plugin  | Implemented internally in FCNPC            |
+| projectiles | PAWN     | Include |                                            |
+| tlou        | PAWN     | Include | Related to tlou_server plugin (ex. SA-MP+) |
