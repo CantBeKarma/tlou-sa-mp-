@@ -75,3 +75,9 @@ This project require some dependencies in order to run correctly. All of them ar
 | PathFinder  | C/C++    | Plugin  | Implemented internally in FCNPC            |
 | projectiles | PAWN     | Include |                                            |
 | tlou        | PAWN     | Include | Related to tlou_server plugin (ex. SA-MP+) |
+
+# Discord
+
+An official discord server is available here: https://discord.gg/54WrPcv
+
+I don't know for how long people are going to be active there.
