@@ -15,7 +15,7 @@ The reason why another attempt has occured is because I couldn't read my own cod
 # Future
 Even though I'm trying not to be very connected with the code I have written for this project - *I can't* - simply because if I wouldn't then I would have no-one to thank for my current Software Developer ASP.NET Job. Crazy how simple procedural PAWN language can lead you to higher standards.
 
-I am not interested in participating of the development of that gamemode anymore. If you message me I might answer some questions but other than that I wouldn't want to write any more code for it.
+I am not interested in participating in the development of that gamemode anymore. If you message me I might answer some questions but other than that I wouldn't want to write any more code for it.
 
 # Prerequisites
 In order to continue the development of the project it is necessary to know:
@@ -32,23 +32,23 @@ In order to continue the development of the project it is necessary to know:
 | Alci's IMG Editor, Alci's SAAT, CollEditor2, MagicTXD 	| a basic set of tools to manage GTA: SA files such as libraries, collision, texture files and models               	|
 | The Last of Us original game                          	| that's helpful if you played it - so you'll know what features to implement apart from the ones I did             	|
 | SA-MP                                                 	| understand SA-MP's sync. logic, features and other things that are required to create a multi-player gamemode 	|
+| sampctl | vital tools for any server owner or library maintainer
 
 # Branches
 
 This repository is split into 2 branches which either of them contain different stuff:
 
+- 0_3_7_R2-2_sampctl
+
+The heart of the gamemode - code itself.
+
 - master
   
 | Title     | Link                                                               | Description                                                                                                                                 |
 |-----------|--------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| Docs      | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/documentation | Some documentation parts from 2014-2016 & 2019                                                                                              |
-| Assests   | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/assets        | Game assets such as in-game models, textures, sprites, animations etc.                                                                      |
+| Assets   | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/assets        | Game assets such as in-game models, textures, sprites, animations etc.           
+| Documentation      | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/documentation | Some documentation parts from 2014-2016 & 2019                                                                                         |                                                           |
 | Installer | https://github.com/Jedrzej94/tlou-sa-mp-/tree/master/installer     | An installation package ready to compile for Install Creator Pro software (creates an *.exe file for the client machine to be installed on) |
-
-
-- 0_3_7_R2-2_sampctl
-
-The heart of the gamemode - code itself.
 
 # Forks & Pull requests
 
